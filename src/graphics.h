@@ -24,7 +24,6 @@ class Graphics
     int winWidth();
     int texHeight();
     int texWidth();
-
 };
 
 #endif

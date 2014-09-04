@@ -26,7 +26,7 @@ Graphics::Graphics()
   SDL_SetRenderDrawColor(renderer, 0xA0, 0xA0, 0xA0, 0xFF);
 
   //load tex
-  SDL_Surface* surf = SDL_LoadBMP("../assets/tex.bmp");
+  SDL_Surface* surf = SDL_LoadBMP("tex.bmp");
   SDL_SetColorKey(surf, SDL_TRUE, SDL_MapRGB(surf->format,0xFF,0x00,0xFF));
   tex = SDL_CreateTextureFromSurface(renderer, surf);
   SDL_FreeSurface(surf);

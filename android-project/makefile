@@ -1,4 +1,4 @@
-DEVICE=-e #-e = emulator, -d = device (usb)
+DEVICE=-d #-e = emulator, -d = device (usb)
 
 build: bin/SDLActivity-debug.apk
 	ndk-build ; ant -S debug
@@ -11,4 +11,7 @@ run: install
 
 debug: run
 	adb logcat -c && adb logcat | sed -n /FG/p
+
+debug-unfiltered: run
+	adb logcat -c && adb logcat
 

@@ -14,6 +14,9 @@ PC_DEF=FG_PC
 #
 # defaults (switch out for sugar w/r/t currently working-on platform)
 #
+vmake: avmake
+	
+
 build: abuild
 	
 
@@ -33,6 +36,9 @@ debug: adebug
 adefine:
 	sed -i.bak -E -e 's/$(IOS_DEF)|$(PC_DEF)/$(ANDROID_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
 
+avmake:
+	vim $(ANDROID_DIR)/makefile
+
 abuild: adefine
 	cd $(ANDROID_DIR); amake build;
 
@@ -50,6 +56,9 @@ adebug: adefine
 #
 idefine:
 	sed -i.bak -E -e 's/$(ANDROID_DEF)|$(PC_DEF)/$(IOS_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
+
+ivmake:
+	vim $(IOS_DIR)/makefile
 
 ibuild: idefine
 	cd $(IOS_DIR); amake build;
@@ -69,6 +78,9 @@ idebug: idefine
 pdefine:
 	sed -i.bak -E -e 's/$(IOS_DEF)|$(ANDROID_DEF)/$(PC_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
 
+pvmake:
+	vim $(PC_DIR)/makefile
+
 pbuild: pdefine
 	cd $(PC_DIR); amake build;
 
@@ -84,6 +96,9 @@ pdebug: pdefine
 #
 # testing
 #
+tvmake:
+	vim $(TEST_DIR)/makefile
+
 tbuild: pdefine
 	cd $(TEST_DIR); amake build;
 
