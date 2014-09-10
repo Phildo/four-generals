@@ -15,3 +15,6 @@ debug: run
 debug-unfiltered: run
 	adb logcat -c && adb logcat
 
+vactivity:
+	vim src/com/phildogames/fourgenerals/FourGeneralsActivity.java
+
