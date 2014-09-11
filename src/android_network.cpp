@@ -1,31 +1,17 @@
+#include <cstddef>
 #include <jni.h>
 
 extern "C"
 {
-  JNIEXPORT void JNICALL Java_com_phildogames_fourgenerals_FourGeneralsActivity_cFunc(JNIEnv* env, jclass jc)
+  JNIEXPORT jstring JNICALL Java_com_phildogames_fourgenerals_FourGeneralsActivity_cFunc(JNIEnv* env, jclass jc, jstring js)
   {
     fg_log("C Func!");
-    /*
-    //create jstring
-    jstring jstr = (*env)->NewStringUTF(env, "This comes from jni.");
 
-    //find class
-    jclass clazz = (*env)->FindClass(env, "com/inceptix/android/t3d/MainActivity");
-    //find method
-    jmethodID messageMe = (*env)->GetMethodID(env, clazz, "messageMe", "(Ljava/lang/String;)Ljava/lang/String;");
+    const char *s = env->GetStringUTFChars(js, NULL);
+    fg_log("In C, the received string is: %s\n", s);
+    env->ReleaseStringUTFChars(js, s);
 
-    //call method, get result
-    jobject result = (*env)->CallObjectMethod(env, obj, messageMe, jstr);
-
-    //convert result to string
-    jstring 
-    */
-
-    /*
-    const char* str = (*env)->GetStringUTFChars(env,(jstring) result, NULL);
-    (*env)->ReleaseStringUTFChars((jstring) result, str);
-
-    return (*env)->NewStringUTF(env, str);
-    */
+    char cs[22] = "String from C to Java";
+    return env->NewStringUTF(cs);
   }
 }

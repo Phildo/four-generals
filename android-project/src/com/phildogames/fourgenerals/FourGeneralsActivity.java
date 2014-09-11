@@ -24,7 +24,7 @@ import org.libsdl.app.SDLActivity;
 
 public class FourGeneralsActivity extends SDLActivity
 {
-  public static native void cFunc();
+  public static native String cFunc(String str);
   public static void jFunc()
   {
     Log.v("FG", "Java Func!");
@@ -33,11 +33,8 @@ public class FourGeneralsActivity extends SDLActivity
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
-    Log.v("FG", "Java onCreate()");
     super.onCreate(savedInstanceState);
-    Log.v("FG", "Java dubalidoo()");
-    cFunc();
-    Log.v("FG", "Java hey?");
+    Log.v("FG",cFunc("String from Java to C"));
   }
 }
 
