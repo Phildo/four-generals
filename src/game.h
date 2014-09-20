@@ -5,12 +5,14 @@
 #include "scene.h"
 
 class Graphics;
+class Network;
 class Model;
 
 class Game
 {
   private:
     Graphics* graphics;
+    Network* network;
     Model* model;
     Scene** scenes;
 

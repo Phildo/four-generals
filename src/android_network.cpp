@@ -1,5 +1,6 @@
 #include <cstddef>
 #include <jni.h>
+// ../android-project/src/com/phildogames/fourgenerals/FourGeneralsActivity.java //here for vim gf
 
 extern "C"
 {

@@ -1,5 +1,6 @@
 #include "game.h"
 #include "graphics.h"
+#include "network.h"
 #include "model.h"
 #include "sprite.h"
 #include "logger.h"
@@ -11,6 +12,7 @@ const int MS_PER_TICK = 1000/FPS;
 Game::Game()
 {
   graphics = new Graphics();
+  network = new Network();
   model = new Model();
 }
 
@@ -52,6 +54,7 @@ void Game::run()
 Game::~Game()
 {
   delete graphics;
+  delete network;
   delete model;
 }
 
