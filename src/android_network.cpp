@@ -11,14 +11,14 @@ extern "C"
     fg_log("C Func!");
 
     //save jvm
-    env->GetJavaVM(env, &jvm);
+    env->GetJavaVM(&jvm);
 
     /*
     Assuming we didn't have env...
 
     //reattach thread
     JNIEnv *env;
-    (*jvm)->AttachCurrentThread(jvm, &env, NULL);
+    (*jvm)->AttachCurrentThread(&env, NULL);
 
     */
 
@@ -28,13 +28,14 @@ extern "C"
     env->ReleaseStringUTFChars(js, s);
 
     //call java fuc with string
-    jstring js2 = env->NewStringUTF(env, "String from C to Java (local)");
-    jmethodID jm = env->GetStaticMethodID(env, jc, "jFunc", "(Ljava/lang/String;)V");
-    env->CallStaticVoidMethod(env, jc, jm, js2);
+    char cs[] = "String from C to Java (local)";
+    jstring js2 = env->NewStringUTF(cs);
+    jmethodID jm = env->GetStaticMethodID(jc, "jFunc", "(Ljava/lang/String;)V");
+    env->CallStaticVoidMethod(jc, jm, js2);
 
     //return string
-    char cs[22] = "String from C to Java (returned)";
-    return env->NewStringUTF(cs);
+    char cs2[] = "String from C to Java (returned)";
+    return env->NewStringUTF(cs2);
   }
 }
 
