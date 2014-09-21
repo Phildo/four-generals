@@ -4,9 +4,23 @@
 
 extern "C"
 {
+  static JavaVM *jvm;
+
   JNIEXPORT jstring JNICALL Java_com_phildogames_fourgenerals_FourGeneralsActivity_cFunc(JNIEnv* env, jclass jc, jstring js)
   {
     fg_log("C Func!");
+
+    //save jvm
+    env->GetJavaVM(env, &jvm);
+
+    /*
+    Assuming we didn't have env...
+
+    //reattach thread
+    JNIEnv *env;
+    (*jvm)->AttachCurrentThread(jvm, &env, NULL);
+
+    */
 
     //echo passed in string
     const char *s = env->GetStringUTFChars(js, NULL);
