@@ -25,9 +25,9 @@ import org.libsdl.app.SDLActivity;
 public class FourGeneralsActivity extends SDLActivity
 {
   public static native String cFunc(String str);
-  public static void jFunc()
+  public static void jFunc(String str)
   {
-    Log.v("FG", "Java Func!");
+    Log.v("FG", "Java Func!:"+str);
   }
 
   @Override
