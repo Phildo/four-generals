@@ -24,17 +24,24 @@ import org.libsdl.app.SDLActivity;
 
 public class FourGeneralsActivity extends SDLActivity
 {
+  //THIS MAINLY SERVES AS AN EXAMPLE FOR PHIL'S OWN REFERENCE. DON'T ACTUALLY CALL.
   public static native String cFunc(String str);
   public static void jFunc(String str)
   {
     Log.v("FG", "Java Func!:"+str);
   }
 
+  public static native void setupEnv();
+  public static void broadcast(String str)
+  {
+    Log.v("FG", "Broadcasting: "+str);
+  }
+
   @Override
   public void onCreate(Bundle savedInstanceState)
   {
     super.onCreate(savedInstanceState);
-    Log.v("FG",cFunc("String from Java to C"));
+    setupEnv();
   }
 }
 

@@ -23,6 +23,8 @@ void Game::run()
   SDL_Event event;
 
   float x, y;
+  char c[] = "whatup";
+  network->broadcast(c,6);
   while(!done)
   {
     while(SDL_PollEvent(&event))

@@ -16,7 +16,7 @@ class Network
 
     void host();
     void connect();
-    void broadcast(char *c);
+    void broadcast(char *c, int l);
 };
 
 #endif

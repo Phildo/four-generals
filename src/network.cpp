@@ -15,12 +15,16 @@
 
 Network::Network()
 {
-
+  #ifdef FG_ANDROID
+    AndroidNetwork::construct();
+  #endif
 }
 
 Network::~Network()
 {
-
+  #ifdef FG_ANDROID
+    AndroidNetwork::destruct();
+  #endif
 }
 
 void Network::host()
@@ -33,8 +37,10 @@ void Network::connect()
 
 }
 
-void Network::broadcast(char *c)
+void Network::broadcast(char *c, int l)
 {
-
+  #ifdef FG_ANDROID
+    AndroidNetwork::broadcast(c,l);
+  #endif
 }
 
