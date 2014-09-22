@@ -34,6 +34,101 @@ public class FourGeneralsActivity extends SDLActivity
     super.onCreate(savedInstanceState);
     setupEnv();
   }
+
+  private class SocketServerThread extends Thread
+  {
+    int port = 8080;
+    int count = 0;
+    ServerSocket serverSocket;
+
+    @override
+    public void run()
+    {
+      try
+      {
+        /*
+        //If you want to do shit on main thread, this is how:
+        MainActivity.this.runOnUiThread(new Runnable()
+        {
+          @Override
+          public void run()
+          {
+            //Do shit
+          }
+        });
+        */
+
+        serverSocket = new ServerSocket(port);
+        serverSocket.getLocalPort(); //NN: I think just returns port?
+
+        while(true)
+        {
+          Socket socket = serverSocket.accept();
+          count++;
+          socket.getInetAddress(); //NN: I think returns IP Address?
+          socket.getPort(); //NN: I think returns port?
+
+          SocketServerReplyThread socketServerReplyThread = new SocketServerReplyThread(socket, count);
+          socketServerReplyThread.run();
+        }
+      }
+      catch(IOException e) { e.printStackTrace(); }
+
+    }
+  }
+
+  private class SocketServerReplyThread extends Thread
+  {
+    private Socket hostThreadSocket;
+    int count;
+
+    SocketServerReplyThread(Socket socket, int c)
+    {
+      hostThreadSocket = socket;
+      count = c;
+    }
+
+    @Override
+    public void run()
+    {
+      OutputStream outputStream;
+
+      try
+      {
+        outputStream = hostThreadSocket.getOutputStream();
+        PrintStream printStream = new PrintStream(outputStream);
+        printStream.print("Whatup");
+        printStream.close();
+      }
+      catch(IOException e) { e.printStackTrace(); }
+
+    }
+  }
+
+  private String getIpAddress()
+  {
+    String ip = "";
+    try
+    {
+      Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
+      while(enumNetworkInterfaces.hasMoreElements())
+      {
+        NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
+        Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
+        while(enumInetAddress.hasMoreElements())
+        {
+          InetAddress inetAddress = enumInetAddress.nextElement();
+          if(inetAddress.isSiteLocalAddress())
+          {
+            ip += "SiteLocalAddress: "+inetAddress.getHostAddress()+"\n";
+          }
+        }
+      }
+    }
+    catch(SocketException e) { e.printStackTrace(); }
+
+    return ip;
+  }
 }
 
 /*
@@ -332,7 +427,6 @@ public class MainActivity extends Activity
 //Client
 public class MainActivity extends Activity
 {
-  TextView textResponse;
   EditText editTextAddress, editTextPort;
   Button buttonConnect, buttonClear;
 
@@ -348,20 +442,10 @@ public class MainActivity extends Activity
     editTextPort = (EditText) findViewById(R.id.port);
     buttonConnect = (Button) findViewById(R.id.connect);
     buttonClear = (Button) findViewById(R.id.clear);
-    textResponse = (TextView) findViewById(R.id.response);
 
     welcomeMsg = (EditText)findViewById(R.id.welcomemsg);
 
     buttonConnect.setOnClickListener(buttonConnectOnClickListener);
-
-    buttonClear.setOnClickListener(new OnClickListener()
-      {
-        @Override
-        public void onClick(View v)
-        {
-          textResponse.setText("");
-        }
-      });
   }
 
   OnClickListener buttonConnectOnClickListener = new OnClickListener()
@@ -449,7 +533,7 @@ public class MainActivity extends Activity
     @Override
     protected void onPostExecute(Void result)
     {
-      textResponse.setText(response);
+      //looks like 'response' is text?
       super.onPostExecute(result);
     }
   }
