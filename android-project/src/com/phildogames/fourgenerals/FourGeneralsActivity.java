@@ -24,17 +24,15 @@ public class FourGeneralsActivity extends SDLActivity
 {
   int port = 8080;
 
-  //server
-  List<Client> userList;
   ServerSocket serverSocket;
+  List<Connection> connections;
 
-  //client
-  ClientThread clientThread;
+  ServerThread serverThread;
 
   public static native void initNativeEnv();
   public static void broadcast(String str)
   {
-    Log.v("FG", "Broadcasting: "+str);
+    Log.v("FG", "Broadcasting: " + str);
   }
 
   @Override
@@ -42,11 +40,7 @@ public class FourGeneralsActivity extends SDLActivity
   {
     super.onCreate(savedInstanceState);
 
-    userList = new ArrayList<Client>();
-
-    //init server
-    ServerThread serverThread = new ServerThread();
-    serverThread.start();
+    connections = new ArrayList<Connection>();
 
     initNativeEnv();
   }
@@ -55,40 +49,71 @@ public class FourGeneralsActivity extends SDLActivity
   protected void onDestroy()
   {
     super.onDestroy();
+  }
 
-    if(serverSocket)
+  private void connectAsServer()
+  {
+    serverThread = new ServerThread();
+    serverThread.start();
+  }
+
+  private void connectAsClient()
+  {
+    Connection connection = new Connection();
+    connection.socket = new Socket("User", "192.168.2.1", 8080);
+    connections.add(connection);
+
+    ConnectionThread connectionThread = new ConnectionThread(connection);
+    connectionThread.start();
+  }
+
+  private void broadcastMsg(String msg)
+  {
+    for(int i = 0; i < connections.size(); i++)
     {
-      try                  { serverSocket.close(); }
-      catch(IOException e) { e.printStackTrace(); }
+      connections.get(i).thread.sendMsg(msg);
     }
   }
 
-  private void connect()
+  private class ServerThread extends Thread
   {
-    //init client
-    clientThread = new ClientThread("User","192.168.2.1",8080);
-    clientThread.start();
+    @Override
+    public void run()
+    {
+      try
+      {
+        serverSocket = new ServerSocket(port);
+
+        while(true)
+        {
+          Connection connection = new Connection();
+          connection.socket = serverSocket.accept(); //will block here
+          connections.add(connection);
+
+          ConnectionThread connectionThread = new ConnectionThread(connection);
+          connectionThread.start();
+        }
+      }
+      catch(IOException e) { e.printStackTrace(); }
+      finally
+      {
+        if(serverSocket) try{ serverSocket.close(); } catch(IOException e) { e.printStackTrace(); }
+      }
+    }
   }
 
-  private void disconnect()
+  private class ConnectionThread extends Thread
   {
-    if(clientThread==null) { return; }
-    clientThread.disconnect();
-  }
-
-  private class ClientThread extends Thread
-  {
-    String address;
-    int port;
+    Connection connection;
     String message;
     String response;
 
     boolean requestsDisconnect = false;
 
-    ClientThread(String address, int port)
+    ConnectionThread(Connection connection)
     {
-      this.address = address;
-      this.port = port;
+      this.connection = connection;
+      this.connection.thread = this;
     }
 
     public void sendMsg(String msg) { message = msg; }
@@ -97,15 +122,13 @@ public class FourGeneralsActivity extends SDLActivity
     @Override
     public void run()
     {
-      Socket socket = null;
-      DataOutputStream dataOutputStream;
-      DataInputStream dataInputStream;
+      DataOutputStream dataOutputStream = null;
+      DataInputStream dataInputStream = null;
 
       try
       {
-        socket = new Socket(address, port);
-        dataOutputStream = new DataOutputStream(socket.getOutputStream());
-        dataInputStream = new DataInputStream(socket.getInputStream());
+        dataOutputStream = new DataOutputStream(this.connection.socket.getOutputStream());
+        dataInputStream = new DataInputStream(this.connection.socket.getInputStream());
 
         while(!requestsDisconnect)
         {
@@ -126,110 +149,18 @@ public class FourGeneralsActivity extends SDLActivity
       catch(IOException e) { e.printStackTrace(); }
       finally
       {
-        if(socket)           { try { socket.close(); }           catch(IOException e) { e.printStackTrace(); } }
-        if(dataOutputStream) { try { dataOutputStream.close(); } catch(IOException e) { e.printStackTrace(); } }
-        if(dataInputStream)  { try { dataInputStream.close(); }  catch(IOException e) { e.printStackTrace(); } }
+        if(this.connection.socket) { try { this.connection.socket.close(); } catch(IOException e) { e.printStackTrace(); } }
+        if(dataInputStream)        { try{ dataInputStream.close(); }         catch(IOException e) { e.printStackTrace(); } }
+        if(dataOutputStream)       { try{ dataOutputStream.close(); }        catch(IOException e) { e.printStackTrace(); } }
+        connections.remove(connection);
       }
     }
   }
 
-  private class ServerThread extends Thread
-  {
-    @Override
-    public void run()
-    {
-      Socket socket = null;
-
-      try
-      {
-        serverSocket = new ServerSocket(port);
-
-        while(true)
-        {
-          socket = serverSocket.accept();
-
-          Client client = new Client();
-          userList.add(client);
-
-          ServerClientThread serverClientThread = new ServerClientThread(client, socket);
-          serverClientThread.start();
-        }
-      }
-      catch(IOException e) { e.printStackTrace(); }
-      finally
-      {
-        if(socket) { try{ socket.close(); } catch(IOException e) { e.printStackTrace(); } }
-      }
-    }
-  }
-
-  private class ServerClientThread extends Thread
+  class Connection
   {
     Socket socket;
-    Client client;
-    String message;
-    String response;
-
-    ServerClientThread(Client client, Socket socket)
-    {
-      this.client = client;
-      this.socket = socket;
-
-      client.socket = socket;
-      client.thread = this;
-    }
-
-    public void sendMsg(String msg) { message = msg; }
-
-    @Override
-    public void run()
-    {
-      DataInputStream dataInputStream = null;
-      DataOutputStream dataOutputStream = null;
-
-      try
-      {
-        dataInputStream = new DataInputStream(socket.getInputStream());
-        dataOutputStream = new DataOutputStream(socket.getOutputStream());
-
-        while(true)
-        {
-          if(dataInputStream.available() > 0)
-          {
-            response = dataInputStream.readUTF();
-            broadcastMsg(newMsg);
-          }
-
-          if(message)
-          {
-            dataOutputStream.writeUTF(message);
-            dataOutputStream.flush();
-            message = null;
-          }
-        }
-      }
-      catch(IOException e) { e.printStackTrace(); }
-      finally
-      {
-        if(dataInputStream)  { try{ dataInputStream.close(); }  catch(IOException e) { e.printStackTrace(); } }
-        if(dataOutputStream) { try{ dataOutputStream.close(); } catch(IOException e) { e.printStackTrace(); } }
-        userList.remove(client);
-      }
-    }
-  }
-
-  private void broadcastMsg(String msg)
-  {
-    for(int i = 0; i < userList.size(); i++)
-    {
-      userList.get(i).thread.sendMsg(msg);
-    }
-  }
-
-  class Client
-  {
-    Socket socket;
-    ServerClientThread thread;
+    ConnectionThread thread;
   }
 
   private String getIpAddress()
