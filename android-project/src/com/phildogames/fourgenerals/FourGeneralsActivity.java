@@ -18,16 +18,17 @@ import org.libsdl.app.SDLActivity;
 
 public class FourGeneralsActivity extends SDLActivity
 {
-  int port = 8080;
+  static int port = 8080;
 
-  ServerSocket serverSocket;
-  ArrayList<Connection> connections;
+  static ServerSocket serverSocket;
+  static ArrayList<Connection> connections;
 
-  ServerThread serverThread;
+  static ServerThread serverThread;
 
   public static native void initNativeEnv();
   public static void broadcast(String str)
   {
+    broadcastMsg(str);
     Log.v("FG", "Broadcasting: " + str);
   }
 
@@ -39,6 +40,8 @@ public class FourGeneralsActivity extends SDLActivity
     connections = new ArrayList<Connection>();
 
     initNativeEnv();
+
+    Log.v("FG", "IP Address: " + getIpAddress());
   }
 
   @Override
@@ -47,22 +50,24 @@ public class FourGeneralsActivity extends SDLActivity
     super.onDestroy();
   }
 
-  private void connectAsServer()
+  static private void connectAsServer()
   {
+    Log.v("FG", "Connecting As Server");
     serverThread = new ServerThread();
     serverThread.start();
   }
 
-  private void connectAsClient()
+  static private void connectAsClient()
   {
+    Log.v("FG", "Connecting As Client");
     Connection connection = new Connection();
-    try { connection.socket = new Socket("192.168.2.1", 8080); } catch(Exception e){}
+    try { connection.socket = new Socket("192.168.2.1", port); } catch(Exception e){}
 
     ConnectionThread connectionThread = new ConnectionThread(connection);
     connectionThread.start();
   }
 
-  private void broadcastMsg(String msg)
+  static private void broadcastMsg(String msg)
   {
     for(int i = 0; i < connections.size(); i++)
     {
@@ -70,19 +75,21 @@ public class FourGeneralsActivity extends SDLActivity
     }
   }
 
-  private class ServerThread extends Thread
+  static private class ServerThread extends Thread
   {
     @Override
     public void run()
     {
       try
       {
+        Log.v("FG", "doin server stufffff");
         serverSocket = new ServerSocket(port);
 
         while(true)
         {
           Connection connection = new Connection();
           connection.socket = serverSocket.accept(); //will block here
+          Log.v("FG", "stopped blockin server stufffff");
 
           ConnectionThread connectionThread = new ConnectionThread(connection);
           connectionThread.start();
@@ -91,12 +98,13 @@ public class FourGeneralsActivity extends SDLActivity
       catch(IOException e) { e.printStackTrace(); }
       finally
       {
+        Log.v("FG", "done ?! doin server stufffff");
         if(serverSocket != null) try{ serverSocket.close(); } catch(IOException e) { e.printStackTrace(); }
       }
     }
   }
 
-  private class ConnectionThread extends Thread
+  static private class ConnectionThread extends Thread
   {
     Connection connection;
     String message;
@@ -126,11 +134,25 @@ public class FourGeneralsActivity extends SDLActivity
         dataOutputStream = new DataOutputStream(this.connection.socket.getOutputStream());
         dataInputStream = new DataInputStream(this.connection.socket.getInputStream());
 
+        Log.v("FG", "doin stufffff");
         while(!requestsDisconnect)
         {
           if(dataInputStream.available() > 0)
           {
-            response = dataInputStream.readUTF();
+            Log.v("FG", "Received Something:" + dataInputStream.available());
+            boolean endRead = false;
+            StringBuilder sb =  new StringBuilder();
+            char c;
+            while(!endRead)
+            {
+              c = (char)dataInputStream.readByte(); //read as byte (ascii) cast to char (utf16)
+              if(c == '\n') endRead = true;
+              else sb.append(c);
+
+              if(dataInputStream.available() == 0) endRead = true;
+            }
+            response = sb.toString();
+            //response = dataInputStream.readUTF(); //waits for format delivered explicitly by writeUTF
             Log.v("FG", "Received: " + response);
           }
 
@@ -147,6 +169,7 @@ public class FourGeneralsActivity extends SDLActivity
       catch(IOException e) { e.printStackTrace(); }
       finally
       {
+        Log.v("FG", "done?!?!");
         if(this.connection.socket != null) { try { this.connection.socket.close(); } catch(IOException e) { e.printStackTrace(); } }
         if(dataInputStream        != null) { try{ dataInputStream.close(); }         catch(IOException e) { e.printStackTrace(); } }
         if(dataOutputStream       != null) { try{ dataOutputStream.close(); }        catch(IOException e) { e.printStackTrace(); } }
@@ -155,34 +178,37 @@ public class FourGeneralsActivity extends SDLActivity
     }
   }
 
-  class Connection
+  static class Connection
   {
     Socket socket;
     ConnectionThread thread;
   }
 
-  private String getIpAddress()
+
+  static private String getIpAddress()
   {
     String ip = "";
     try
     {
-      Enumeration<NetworkInterface> enumNetworkInterfaces = NetworkInterface.getNetworkInterfaces();
-      while(enumNetworkInterfaces.hasMoreElements())
+      Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+      while (interfaces.hasMoreElements())
       {
-        NetworkInterface networkInterface = enumNetworkInterfaces.nextElement();
-        Enumeration<InetAddress> enumInetAddress = networkInterface.getInetAddresses();
-        while(enumInetAddress.hasMoreElements())
+        NetworkInterface iface = interfaces.nextElement();
+        //filters out 127.0.0.1 and inactive interfaces
+        if (iface.isLoopback() || !iface.isUp()) continue;
+
+        Enumeration<InetAddress> addresses = iface.getInetAddresses();
+        while(addresses.hasMoreElements())
         {
-          InetAddress inetAddress = enumInetAddress.nextElement();
-          if(inetAddress.isSiteLocalAddress())
-          {
-            ip += "SiteLocalAddress: "+inetAddress.getHostAddress()+"\n";
-          }
+          InetAddress addr = addresses.nextElement();
+          ip += iface.getDisplayName() + ": " + addr.getHostAddress() + "; ";
         }
       }
     }
-    catch(SocketException e) { e.printStackTrace(); }
-
+    catch (SocketException e)
+    {
+      return "" + e.getMessage() + e.getStackTrace();//throw new RuntimeException(e);
+    }
     return ip;
   }
 }

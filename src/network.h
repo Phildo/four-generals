@@ -14,8 +14,8 @@ class Network
     Network();
     ~Network();
 
-    void host();
-    void connect();
+    void connectAsServer();
+    void connectAsClient();
     void broadcast(char *c, int l);
 };
 

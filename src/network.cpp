@@ -27,12 +27,14 @@ Network::~Network()
   #endif
 }
 
-void Network::host()
+void Network::connectAsServer()
 {
-
+  #ifdef FG_ANDROID
+    AndroidNetwork::connectAsServer();
+  #endif
 }
 
-void Network::connect()
+void Network::connectAsClient()
 {
 
 }

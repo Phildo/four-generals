@@ -23,8 +23,7 @@ void Game::run()
   SDL_Event event;
 
   float x, y;
-  char c[] = "whatup";
-  network->broadcast(c,6);
+  network->connectAsServer();
   while(!done)
   {
     while(SDL_PollEvent(&event))
@@ -44,6 +43,8 @@ void Game::run()
         x = event.tfinger.x;
         y = event.tfinger.y;
         fg_log("finger");
+        char c[] = "whatup";
+        network->broadcast(c,6);
       }
     }
 

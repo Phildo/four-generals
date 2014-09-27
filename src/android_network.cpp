@@ -12,6 +12,15 @@ namespace AndroidNetwork
 
   }
 
+  void connectAsServer()
+  {
+    JNIEnv *env;
+    jvm->AttachCurrentThread(&env, NULL);
+
+    jmethodID jm = env->GetStaticMethodID(jc, "connectAsServer", "()V");
+    env->CallStaticVoidMethod(jc, jm);
+  }
+
   void broadcast(char *c, int l)
   {
     JNIEnv *env;
