@@ -3,10 +3,6 @@ package com.phildogames.fourgenerals;
 import android.app.*;
 import android.content.*;
 import android.view.*;
-import android.view.inputmethod.BaseInputConnection;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputConnection;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsoluteLayout;
 import android.os.*;
 import android.util.Log;
@@ -16,7 +12,7 @@ import android.hardware.*;
 
 import java.io.*;
 import java.net.*;
-import java.util.Enumeration;
+import java.util.*;
 
 import org.libsdl.app.SDLActivity;
 
@@ -25,7 +21,7 @@ public class FourGeneralsActivity extends SDLActivity
   int port = 8080;
 
   ServerSocket serverSocket;
-  List<Connection> connections;
+  ArrayList<Connection> connections;
 
   ServerThread serverThread;
 
@@ -60,7 +56,7 @@ public class FourGeneralsActivity extends SDLActivity
   private void connectAsClient()
   {
     Connection connection = new Connection();
-    connection.socket = new Socket("User", "192.168.2.1", 8080);
+    try { connection.socket = new Socket("192.168.2.1", 8080); } catch(Exception e){}
     connections.add(connection);
 
     ConnectionThread connectionThread = new ConnectionThread(connection);
@@ -97,7 +93,7 @@ public class FourGeneralsActivity extends SDLActivity
       catch(IOException e) { e.printStackTrace(); }
       finally
       {
-        if(serverSocket) try{ serverSocket.close(); } catch(IOException e) { e.printStackTrace(); }
+        if(serverSocket != null) try{ serverSocket.close(); } catch(IOException e) { e.printStackTrace(); }
       }
     }
   }
@@ -137,7 +133,7 @@ public class FourGeneralsActivity extends SDLActivity
             response = dataInputStream.readUTF();
           }
 
-          if(message)
+          if(message != null)
           {
             dataOutputStream.writeUTF(message);
             dataOutputStream.flush();
@@ -149,9 +145,9 @@ public class FourGeneralsActivity extends SDLActivity
       catch(IOException e) { e.printStackTrace(); }
       finally
       {
-        if(this.connection.socket) { try { this.connection.socket.close(); } catch(IOException e) { e.printStackTrace(); } }
-        if(dataInputStream)        { try{ dataInputStream.close(); }         catch(IOException e) { e.printStackTrace(); } }
-        if(dataOutputStream)       { try{ dataOutputStream.close(); }        catch(IOException e) { e.printStackTrace(); } }
+        if(this.connection.socket != null) { try { this.connection.socket.close(); } catch(IOException e) { e.printStackTrace(); } }
+        if(dataInputStream        != null) { try{ dataInputStream.close(); }         catch(IOException e) { e.printStackTrace(); } }
+        if(dataOutputStream       != null) { try{ dataOutputStream.close(); }        catch(IOException e) { e.printStackTrace(); } }
         connections.remove(connection);
       }
     }
