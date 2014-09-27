@@ -57,7 +57,6 @@ public class FourGeneralsActivity extends SDLActivity
   {
     Connection connection = new Connection();
     try { connection.socket = new Socket("192.168.2.1", 8080); } catch(Exception e){}
-    connections.add(connection);
 
     ConnectionThread connectionThread = new ConnectionThread(connection);
     connectionThread.start();
@@ -84,7 +83,6 @@ public class FourGeneralsActivity extends SDLActivity
         {
           Connection connection = new Connection();
           connection.socket = serverSocket.accept(); //will block here
-          connections.add(connection);
 
           ConnectionThread connectionThread = new ConnectionThread(connection);
           connectionThread.start();
@@ -118,6 +116,8 @@ public class FourGeneralsActivity extends SDLActivity
     @Override
     public void run()
     {
+      connections.add(connection);
+
       DataOutputStream dataOutputStream = null;
       DataInputStream dataInputStream = null;
 
@@ -131,12 +131,14 @@ public class FourGeneralsActivity extends SDLActivity
           if(dataInputStream.available() > 0)
           {
             response = dataInputStream.readUTF();
+            Log.v("FG", "Received: " + response);
           }
 
           if(message != null)
           {
             dataOutputStream.writeUTF(message);
             dataOutputStream.flush();
+            Log.v("FG", "Sent: " + message);
             message = null;
           }
         }
