@@ -60,7 +60,7 @@ public class FourGeneralsActivity extends SDLActivity
   {
     Log.v("FG", "Connecting As Client");
     Connection connection = new Connection();
-    try { connection.socket = new Socket("192.168.2.1", port); } catch(Exception e){}
+    try { connection.socket = new Socket("192.168.2.7", port); } catch(Exception e){ Log.v("FG","Failed connection"); }
 
     ConnectionThread connectionThread = new ConnectionThread(connection);
     connectionThread.start();

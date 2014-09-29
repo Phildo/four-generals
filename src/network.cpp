@@ -36,7 +36,9 @@ void Network::connectAsServer()
 
 void Network::connectAsClient()
 {
-
+  #ifdef FG_ANDROID
+    AndroidNetwork::connectAsClient();
+  #endif
 }
 
 void Network::broadcast(char *c, int l)

@@ -23,7 +23,7 @@ void Game::run()
   SDL_Event event;
 
   float x, y;
-  network->connectAsServer();
+  network->connectAsClient();
   while(!done)
   {
     while(SDL_PollEvent(&event))
