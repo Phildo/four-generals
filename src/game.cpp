@@ -23,7 +23,7 @@ Game::Game()
   input = new Input(graphics);
   network = new Network();
   model = new Model();
-  scenes[0] = new IntroScene(graphics);
+  scenes[0] = new IntroScene(graphics, network);
 }
 
 void Game::run()
@@ -38,12 +38,8 @@ void Game::run()
     while(input->poll(in, q))
       if(!q) scenes[scene]->touch(in);
 
-    /*
-    char c[] = "whatup\n";
-    network->broadcast(c,7);
-    */
-
     scenes[scene]->tick(); //should decouple from drawing
+
     graphics->clear();
     scenes[scene]->draw();
     graphics->flip();

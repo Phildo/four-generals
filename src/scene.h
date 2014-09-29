@@ -2,6 +2,7 @@
 #define _SCENE_H_
 
 #include "graphics.h"
+#include "network.h"
 #include "input.h"
 
 class Scene
