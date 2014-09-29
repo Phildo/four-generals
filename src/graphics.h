@@ -17,6 +17,7 @@ class Graphics
     ~Graphics();
 
     void draw(const SDL_Rect& src, const SDL_Rect& dest);
+    void drawAt(const SDL_Rect& src, int x, int y);
     void clear();
     void flip();
 

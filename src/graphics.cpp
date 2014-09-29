@@ -2,11 +2,11 @@
 #include "defines.h"
 
 #ifndef FG_HALF_SIZE
-#define FG_SAFE_WIDTH 720
-#define FG_SAFE_HEIGHT 1184
+#define FG_SAFE_WIDTH 1184
+#define FG_SAFE_HEIGHT 720
 #else
-#define FG_SAFE_WIDTH 360
-#define FG_SAFE_HEIGHT 592
+#define FG_SAFE_WIDTH 592
+#define FG_SAFE_HEIGHT 360
 #endif
 
 Graphics::Graphics()
@@ -51,6 +51,16 @@ void Graphics::draw(const SDL_Rect& src, const SDL_Rect& dest)
   offsetDest.y = dest.y+offsetY;
   offsetDest.w = dest.w;
   offsetDest.h = dest.h;
+  SDL_RenderCopy(renderer, tex, &src, &offsetDest);
+}
+
+void Graphics::drawAt(const SDL_Rect& src, int x, int y)
+{
+  SDL_Rect offsetDest;
+  offsetDest.x = x+offsetX;
+  offsetDest.y = y+offsetY;
+  offsetDest.w = src.w;
+  offsetDest.h = src.h;
   SDL_RenderCopy(renderer, tex, &src, &offsetDest);
 }
 

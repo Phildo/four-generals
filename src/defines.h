@@ -2,7 +2,7 @@
 #define _DEFINES_H_
 
 #define FG_ANDROID
-#define FG_HALF_SIZE
+//#define FG_HALF_SIZE
 
 #endif
 
