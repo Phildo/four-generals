@@ -18,3 +18,6 @@ debug-unfiltered: run
 vactivity:
 	vim src/com/phildogames/fourgenerals/FourGeneralsActivity.java
 
+vsrc:
+	vim jni/src/Android.mk
+

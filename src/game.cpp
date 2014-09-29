@@ -1,9 +1,16 @@
 #include "game.h"
 #include "graphics.h"
+#include "ui.h"
+#include "input.h"
 #include "network.h"
 #include "model.h"
+#include "scene.h"
+
+#include "intro_scene.h"
+
 #include "sprite.h"
 #include "logger.h"
+
 #include <SDL.h>
 
 const int FPS = 60;
@@ -12,52 +19,47 @@ const int MS_PER_TICK = 1000/FPS;
 Game::Game()
 {
   graphics = new Graphics();
+  ui = new UI(graphics);
+  input = new Input(graphics);
   network = new Network();
   model = new Model();
+  scenes[0] = new IntroScene(graphics);
 }
 
 void Game::run()
 {
-  fg_log("Begin!");
-  Uint8 done = 0;
-  SDL_Event event;
+  bool q = false;
+  In in;
+  int scene = 0;
 
-  float x, y;
-  network->connectAsClient();
-  while(!done)
+  network->connectAsServer();
+  while(!q)
   {
-    while(SDL_PollEvent(&event))
-    {
-      if(event.type == SDL_QUIT)
-      {
-        done = 1;
-      }
-      else if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
-      {
-        x = (float)event.button.x/(float)graphics->winWidth();
-        y = (float)event.button.y/(float)graphics->winHeight();
-        fg_log("mouse");
-      }
-      else if(event.type == SDL_FINGERDOWN)
-      {
-        x = event.tfinger.x;
-        y = event.tfinger.y;
-        fg_log("finger");
-        char c[] = "whatup";
-        network->broadcast(c,6);
-      }
-    }
+    while(input->poll(in, q))
+      if(!q) scenes[scene]->touch(in);
 
+    /*
+    char c[] = "whatup\n";
+    network->broadcast(c,7);
+    */
+
+    scenes[scene]->tick(); //should decouple from drawing
     graphics->clear();
+    scenes[scene]->draw();
     graphics->flip();
+
     SDL_Delay(10);
   }
 }
 
 Game::~Game()
 {
-  delete graphics;
-  delete network;
+  for(int i = 0; i < FG_NUM_SCENES; i++)
+    delete scenes[i];
   delete model;
+  delete network;
+  delete input;
+  delete ui;
+  delete graphics;
 }
 

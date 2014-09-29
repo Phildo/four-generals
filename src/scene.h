@@ -1,19 +1,17 @@
 #ifndef _SCENE_H_
 #define _SCENE_H_
 
-#include "units.h"
-class Graphics;
+#include "graphics.h"
+#include "input.h"
 
 class Scene
 {
   private:
-    Graphics* graphics;
   public:
-    Scene(Graphics* g);
-
-    virtual void touch(screen_p x,screen_p y);
-    virtual void tick();
-    virtual void draw();
+    virtual ~Scene() = 0;
+    virtual void touch(In &in) = 0;
+    virtual void tick() = 0;
+    virtual void draw() = 0;
 };
 
 #endif
