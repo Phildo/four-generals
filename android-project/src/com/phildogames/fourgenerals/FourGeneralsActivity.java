@@ -29,7 +29,6 @@ public class FourGeneralsActivity extends SDLActivity
   public static void broadcast(String str)
   {
     broadcastMsg(str);
-    Log.v("FG", "Broadcasting: " + str);
   }
 
   @Override
@@ -69,6 +68,7 @@ public class FourGeneralsActivity extends SDLActivity
 
   static private void broadcastMsg(String msg)
   {
+    Log.v("FG", "Broadcasting: " + msg);
     for(int i = 0; i < connections.size(); i++)
     {
       connections.get(i).thread.sendMsg(msg);
@@ -82,14 +82,13 @@ public class FourGeneralsActivity extends SDLActivity
     {
       try
       {
-        Log.v("FG", "doin server stufffff");
+        Log.v("FG", "Listen as Server");
         serverSocket = new ServerSocket(port);
 
         while(true)
         {
           Connection connection = new Connection();
           connection.socket = serverSocket.accept(); //will block here
-          Log.v("FG", "stopped blockin server stufffff");
 
           ConnectionThread connectionThread = new ConnectionThread(connection);
           connectionThread.start();
@@ -98,7 +97,7 @@ public class FourGeneralsActivity extends SDLActivity
       catch(IOException e) { e.printStackTrace(); }
       finally
       {
-        Log.v("FG", "done ?! doin server stufffff");
+        Log.v("FG", "Stop Server");
         if(serverSocket != null) try{ serverSocket.close(); } catch(IOException e) { e.printStackTrace(); }
       }
     }
@@ -107,8 +106,8 @@ public class FourGeneralsActivity extends SDLActivity
   static private class ConnectionThread extends Thread
   {
     Connection connection;
-    String message;
-    String response;
+    String messOut;
+    String messIn;
 
     boolean requestsDisconnect = false;
 
@@ -118,7 +117,7 @@ public class FourGeneralsActivity extends SDLActivity
       this.connection.thread = this;
     }
 
-    public void sendMsg(String msg) { message = msg; }
+    public void sendMsg(String msg) { messOut = msg; }
     public void disconnect() { requestsDisconnect = true; }
 
     @Override
@@ -126,42 +125,42 @@ public class FourGeneralsActivity extends SDLActivity
     {
       connections.add(connection);
 
-      DataOutputStream dataOutputStream = null;
-      DataInputStream dataInputStream = null;
+      DataOutputStream dataOut = null;
+      DataInputStream dataIn = null;
 
       try
       {
-        dataOutputStream = new DataOutputStream(this.connection.socket.getOutputStream());
-        dataInputStream = new DataInputStream(this.connection.socket.getInputStream());
+        Log.v("FG", "Connection Made");
+        dataOut = new DataOutputStream(this.connection.socket.getOutputStream());
+        dataIn = new DataInputStream(this.connection.socket.getInputStream());
 
-        Log.v("FG", "doin stufffff");
+        StringBuilder sb = new StringBuilder();
+        boolean inReady = false;
+        char c;
+
         while(!requestsDisconnect)
         {
-          if(dataInputStream.available() > 0)
+          while(dataIn.available() > 0 && !inReady) //if message is ready jump out and handle it
           {
-            Log.v("FG", "Received Something:" + dataInputStream.available());
-            boolean endRead = false;
-            StringBuilder sb =  new StringBuilder();
-            char c;
-            while(!endRead)
-            {
-              c = (char)dataInputStream.readByte(); //read as byte (ascii) cast to char (utf16)
-              if(c == '\n') endRead = true;
-              else sb.append(c);
-
-              if(dataInputStream.available() == 0) endRead = true;
-            }
-            response = sb.toString();
-            //response = dataInputStream.readUTF(); //waits for format delivered explicitly by writeUTF
-            Log.v("FG", "Received: " + response);
+            c = (char)dataIn.readByte(); //read as byte (ascii) cast to char (utf16)
+            if(c == '\n') inReady = true;
+            else sb.append(c);
           }
 
-          if(message != null)
+          if(inReady)
           {
-            dataOutputStream.writeUTF(message);
-            dataOutputStream.flush();
-            Log.v("FG", "Sent: " + message);
-            message = null;
+            messIn = sb.toString();
+            sb = new StringBuilder();
+            inReady = false;
+            Log.v("FG", "Received: " + messIn);
+          }
+
+          if(messOut != null)
+          {
+            dataOut.writeUTF(messOut);
+            dataOut.flush();
+            Log.v("FG", "Sent: " + messOut);
+            messOut = null;
           }
         }
       }
@@ -169,10 +168,10 @@ public class FourGeneralsActivity extends SDLActivity
       catch(IOException e) { e.printStackTrace(); }
       finally
       {
-        Log.v("FG", "done?!?!");
+        Log.v("FG", "Connection Stopped");
         if(this.connection.socket != null) { try { this.connection.socket.close(); } catch(IOException e) { e.printStackTrace(); } }
-        if(dataInputStream        != null) { try{ dataInputStream.close(); }         catch(IOException e) { e.printStackTrace(); } }
-        if(dataOutputStream       != null) { try{ dataOutputStream.close(); }        catch(IOException e) { e.printStackTrace(); } }
+        if(dataIn                 != null) { try { dataIn.close(); }                 catch(IOException e) { e.printStackTrace(); } }
+        if(dataOut                != null) { try { dataOut.close(); }                catch(IOException e) { e.printStackTrace(); } }
         connections.remove(connection);
       }
     }
