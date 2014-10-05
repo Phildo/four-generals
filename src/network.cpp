@@ -27,6 +27,7 @@ struct Connection
 {
   int connection; //0-MAX_CONNECTIONS
   bool stale;
+  bool welcome;
 
   int sock_fd;
   socklen_t sock_addr_len; //sizeof addr
@@ -86,9 +87,19 @@ void * serverThread(void * arg)
   if(bind(serv_sock_fd, (struct sockaddr *) &serv_sock_addr, sizeof(serv_sock_addr)) < 0) fg_log("Failure binding server socket.");
   listen(serv_sock_fd,5);
 
+  Connection *con;
   Connection *tmp_con_p;
   while(!should_disconnect)
   {
+    con = con_ps[n_cons];
+
+    con->stale = false;
+    con->welcome = true;
+    con->sock_addr_len = sizeof(con->sock_addr);
+    con->sock_fd = accept(serv_sock_fd, (struct sockaddr *)&(con->sock_addr), &(con->sock_addr_len));
+    if(con->sock_fd < 0) fg_log("Failure accepting connection.");
+    n_cons++;
+
     //check for disconnected cons
     for(int i = 0; i < n_cons; i++)
     {
@@ -105,24 +116,30 @@ void * serverThread(void * arg)
         con_ps[n_cons] = tmp_con_p;
       }
     }
-    int n = con_ps[n_cons]->connection; //n = index of next available con
-
-    cons[n].stale = false;
-    cons[n].sock_addr_len = sizeof(cons[n].sock_addr);
-    cons[n].sock_fd = accept(serv_sock_fd, (struct sockaddr *)&cons[n].sock_addr, &cons[n].sock_addr_len);
-    if(cons[n].sock_fd < 0) fg_log("Failure accepting connection.");
-
-    int r = pthread_create(&cons[n].thread, NULL, connectionThread, (void *)(&cons[n]));
-    if(r != 0) fg_log("Failure creating connection thread.");
-    n_cons++;
 
     //Final connection will be told off and closed
     //Wait for that to happen before accepting any more
     if(n_cons == MAX_CONNECTIONS)
     {
-      pthread_join(cons[n].thread, NULL);
-      close(cons[n].sock_fd);
+      con->welcome = false;
+      int r = pthread_create(&(con->thread), NULL, connectionThread, (void *)con);
+      if(r != 0) fg_log("Failure creating connection thread.");
+      pthread_join(con->thread, NULL);
+      close(con->sock_fd);
+
+      //find con and put it back at the end of the queue #ugly
+      int con_index = 0;
+      for(int i = 0; i < n_cons; i++) if(con_ps[i] == con) con_index = i;
       n_cons--;
+
+      tmp_con_p = con_ps[con_index];
+      con_ps[con_index] = con_ps[n_cons];
+      con_ps[n_cons] = tmp_con_p;
+    }
+    else
+    {
+      int r = pthread_create(&(con->thread), NULL, connectionThread, (void *)con);
+      if(r != 0) fg_log("Failure creating connection thread.");
     }
   }
 
@@ -142,6 +159,12 @@ void * connectionThread(void * arg)
   Connection *con = (Connection *)arg;
   int n = 1;
 
+  if(!con->welcome)
+  {
+    n = write(con->sock_fd,"Go away.\n",9);
+    if(n < 0) fg_log("Failure writing connection.");
+    n = -1;
+  }
   while(!should_disconnect && n >= 0)
   {
     bzero(con->read_buff, BUFF_SIZE);
