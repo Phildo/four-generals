@@ -1,13 +1,51 @@
 #include "network.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <netdb.h>
+
+extern "C"
+{
+  #include <pthread.h>
+  #include <unistd.h>
+}
+
 #include "defines.h"
 #include "logger.h"
 
+#define MAX_IP_LENGTH 256 //really only need 12, but might as well leave it for urls?
+
+#define MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
+#define BUFF_SIZE 256
+
+struct Connection
+{
+  int connection; //0-MAX_CONNECTIONS
+  bool stale;
+
+  int sock_fd;
+  socklen_t sock_addr_len; //sizeof addr
+  struct sockaddr_in sock_addr;
+
+  pthread_t thread;
+  char read_buff[BUFF_SIZE];
+  char write_buff[BUFF_SIZE];
+};
+
+void * serverThread(void * arg);
+void * connectionThread(void * arg);
+void * clientThread(void * arg);
+
 const bool host_priv = true;
-const int portno = 8080;
+int portno = 8080;
+char ip[MAX_IP_LENGTH];
 
 bool listening = false;
-char ip[MAX_IP_LENGTH];
 
 bool should_disconnect = false;
 
@@ -16,18 +54,28 @@ struct sockaddr_in serv_sock_addr;
 pthread_t serv_thread;
 
 int n_cons;
+
+//an odd pattern-
+//holds connection memory contiguously on stack
+//pointers to the above memory, Q'd w/ emtpy connctions last
 Connection cons[MAX_CONNECTIONS];
+Connection *con_ps[MAX_CONNECTIONS];
 
 struct hostent *server;
-
-void * serverThread(void * arg);
-void * connectionThread(void * arg);
-void * clientThread(void * arg);
 
 void Network::connectAsServer()
 {
   listening = true;
+  int r = pthread_create(&serv_thread, NULL, serverThread, NULL)  ;
+  if(r != 0) fg_log("Failure creating server thread.");
+}
+
+void * serverThread(void * arg)
+{
   n_cons = 0;
+  for(int i = 0; i < MAX_CONNECTIONS; i++) cons[i].connection = i;
+  for(int i = 0; i < MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
+
   serv_sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
@@ -38,31 +86,33 @@ void Network::connectAsServer()
   if(bind(serv_sock_fd, (struct sockaddr *) &serv_sock_addr, sizeof(serv_sock_addr)) < 0) fg_log("Failure binding server socket.");
   listen(serv_sock_fd,5);
 
-  int r = pthread_create(&serv_thread, NULL, serverThread, NULL)  ;
-  if(r != 0) fg_log("Failure creating server thread.");
-}
-
-void * serverThread(void * arg)
-{
+  Connection *tmp_con_p;
   while(!should_disconnect)
   {
-    //unfortunately doesn't shift stuff around as necessary
+    //check for disconnected cons
     for(int i = 0; i < n_cons; i++)
     {
-      if(cons[i].stale)
+      if(con_ps[i]->stale)
       {
-        pthread_join(cons[i].thread, NULL);
-        close(cons[i].sock_fd);
+        //clean up/kill thread/connection
+        pthread_join(con_ps[i]->thread, NULL);
+        close(con_ps[i]->sock_fd);
+        n_cons--;
+
+        //put newly cleaned con at end of list
+        tmp_con_p = con_ps[i];
+        con_ps[i] = con_ps[n_cons];
+        con_ps[n_cons] = tmp_con_p;
       }
     }
+    int n = con_ps[n_cons]->connection; //n = index of next available con
 
-    cons[n_cons].connection = n_cons;
-    cons[n_cons].stale = false;
-    cons[n_cons].sock_addr_len = sizeof(cons[n_cons].sock_addr);
-    cons[n_cons].sock_fd = accept(serv_sock_fd, (struct sockaddr *)&cons[n_cons].sock_addr, &cons[n_cons].sock_addr_len);
-    if(cons[n_cons].sock_fd < 0) fg_log("Failure accepting connection.");
+    cons[n].stale = false;
+    cons[n].sock_addr_len = sizeof(cons[n].sock_addr);
+    cons[n].sock_fd = accept(serv_sock_fd, (struct sockaddr *)&cons[n].sock_addr, &cons[n].sock_addr_len);
+    if(cons[n].sock_fd < 0) fg_log("Failure accepting connection.");
 
-    int r = pthread_create(&cons[n_cons].thread, NULL, connectionThread, (void *)(&cons[n_cons]));
+    int r = pthread_create(&cons[n].thread, NULL, connectionThread, (void *)(&cons[n]));
     if(r != 0) fg_log("Failure creating connection thread.");
     n_cons++;
 
@@ -70,18 +120,19 @@ void * serverThread(void * arg)
     //Wait for that to happen before accepting any more
     if(n_cons == MAX_CONNECTIONS)
     {
-      pthread_join(cons[n_cons-1].thread, NULL);
+      pthread_join(cons[n].thread, NULL);
+      close(cons[n].sock_fd);
       n_cons--;
     }
   }
+
   for(int i = 0; i < n_cons; i++)
   {
-    if(cons[i].stale)
-    {
-      pthread_join(cons[i].thread, NULL);
-      close(cons[i].sock_fd);
-    }
+    pthread_join(con_ps[i]->thread, NULL);
+    close(con_ps[i]->sock_fd);
   }
+  n_cons = 0;
+
   close(serv_sock_fd);
   return 0;
 }
