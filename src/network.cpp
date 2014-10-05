@@ -34,8 +34,7 @@ struct Connection
   struct sockaddr_in sock_addr;
 
   pthread_t thread;
-  char read_buff[BUFF_SIZE];
-  char write_buff[BUFF_SIZE];
+  char buff[BUFF_SIZE];
 };
 
 void * serverThread(void * arg);
@@ -46,7 +45,8 @@ const bool host_priv = true;
 int portno = 8080;
 char ip[MAX_IP_LENGTH];
 
-bool listening = false;
+bool is_serv = false;
+bool is_cli = false;
 
 bool should_disconnect = false;
 
@@ -62,11 +62,15 @@ int n_cons;
 Connection cons[MAX_CONNECTIONS];
 Connection *con_ps[MAX_CONNECTIONS];
 
-struct hostent *server;
+int cli_sock_fd;
+pthread_t cli_thread;
+struct sockaddr_in cli_serv_sock_addr; //client's serv addr
+struct hostent *cli_server; //client's reference to server
+char cli_buff[BUFF_SIZE];
 
 void Network::connectAsServer()
 {
-  listening = true;
+  is_serv = true;
   int r = pthread_create(&serv_thread, NULL, serverThread, NULL)  ;
   if(r != 0) fg_log("Failure creating server thread.");
 }
@@ -84,7 +88,12 @@ void * serverThread(void * arg)
   serv_sock_addr.sin_addr.s_addr = INADDR_ANY;
   serv_sock_addr.sin_port = htons(portno);
 
-  if(bind(serv_sock_fd, (struct sockaddr *) &serv_sock_addr, sizeof(serv_sock_addr)) < 0) fg_log("Failure binding server socket.");
+  if(bind(serv_sock_fd, (struct sockaddr *) &serv_sock_addr, sizeof(serv_sock_addr)) < 0)
+  {
+    fg_log("Failure binding server socket.");
+    close(serv_sock_fd);
+    return 0;
+  }
   listen(serv_sock_fd,5);
 
   Connection *con;
@@ -162,21 +171,21 @@ void * connectionThread(void * arg)
   if(!con->welcome)
   {
     n = write(con->sock_fd,"Go away.\n",9);
-    if(n < 0) fg_log("Failure writing connection.");
-    n = -1;
+    if(n <= 0) fg_log("Failure writing connection.");
+    n = 0;
   }
-  while(!should_disconnect && n >= 0)
+  while(!should_disconnect && n > 0)
   {
-    bzero(con->read_buff, BUFF_SIZE);
-    n = read(con->sock_fd, con->read_buff, BUFF_SIZE-1);
-    if(n < 0) fg_log("Failure reading connection.");
+    bzero(con->buff, BUFF_SIZE);
+    n = read(con->sock_fd, con->buff, BUFF_SIZE-1);
+    if(n <= 0) fg_log("Failure reading connection.");
     else
     {
-      fg_log("Received: %s",con->read_buff);
+      fg_log("Serv Received: %s",con->buff);
 
       //ack
       n = write(con->sock_fd,"I gotchu\n",9);
-      if(n < 0) fg_log("Failure writing connection.");
+      if(n <= 0) fg_log("Failure writing connection.");
     }
   }
   con->stale = true; //cheap way to alert server to kill this thread at its convenience
@@ -185,50 +194,54 @@ void * connectionThread(void * arg)
 
 void Network::connectAsClient()
 {
-  listening = false;
+  is_cli = true;
+  int r = pthread_create(&cli_thread, NULL, clientThread, NULL)  ;
+  if(r != 0) fg_log("Failure creating client thread.");
 }
 
 void * clientThread(void *arg)
 {
-  /*
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if(sockfd < 0) fg_log("Nope");
+  cli_sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-  server = gethostbyname("blah.com");//should take raw ip
-  if(server == NULL) fg_log("Nope");
+  cli_server = gethostbyname("localhost");
+  if(cli_server == NULL) fg_log("Failure finding server.");
 
-  bzero((char *)&serv_addr, sizeof(serv_addr));
-  serv_addr.sin_family = AF_INET;
+  bzero((char *)&cli_serv_sock_addr, sizeof(cli_serv_sock_addr));
+  cli_serv_sock_addr.sin_family = AF_INET;
+  bcopy((char *)cli_server->h_addr, (char *)&cli_serv_sock_addr.sin_addr.s_addr, cli_server->h_length);
+  cli_serv_sock_addr.sin_port = htons(portno);
 
-  bcopy((char *)server->h_addr, (char *)&serv_addr.sin_addr.s_addr, server->h_length);
-  serv_addr.sin_port = htons(portno);
+  if(connect(cli_sock_fd,(struct sockaddr *)&cli_serv_sock_addr, sizeof(cli_serv_sock_addr)) < 0)
+  {
+    fg_log("Failure connecting client.");
+    close(cli_sock_fd);
+    return 0;
+  }
+  int n = 1;
 
-  if(connect(sockfd,(struct sockaddr *)&serv_addr, sizeof(serv_addr)) < 0)
-    fg_log("Nope");
-
-  printf("Massage?: ");
-  bzero(buffer,256);
-  fgets(buffer,255,stdin);
-  n = write(sockfd, buffer, strlen(buffer));
-  if(n < 0) fg_log("Nope");
-
-  bzero(buffer, 256);
-  n = read(sockfd,buffer,255);
-  if(n < 0) fg_log("Nope");
-
-  printf("%s\n",buffer);
-  close(sockfd);
-  */
+  while(!should_disconnect && n > 0)
+  {
+    bzero(cli_buff, BUFF_SIZE);
+    n = read(cli_sock_fd,cli_buff,BUFF_SIZE-1);
+    if(n <= 0) fg_log("Failure reading client.");
+    else fg_log("Cli Received(%d): %s",n,cli_buff);
+  }
+  close(cli_sock_fd);
   return 0;
 }
 
 void Network::broadcast(char *c, int l)
 {
+  if(is_serv) fg_log("Serv should broadcast %s",c);
+  if(is_cli) fg_log("Cli should broadcast %s",c);
 }
 
 void Network::disconnect()
 {
   should_disconnect = true;
-  if(listening) pthread_join(serv_thread, NULL); //main thread waits for serv_thread to finish
+  if(is_serv) pthread_join(serv_thread, NULL); //main thread waits for serv_thread to finish
+  if(is_cli)  pthread_join(cli_thread, NULL); //main thread waits for cli_thread to finish
+  is_cli = false;
+  is_serv = false;
 }
 
