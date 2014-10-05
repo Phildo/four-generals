@@ -46,7 +46,18 @@ void * serverThread(void * arg)
 {
   while(!should_disconnect)
   {
+    //unfortunately doesn't shift stuff around as necessary
+    for(int i = 0; i < n_cons; i++)
+    {
+      if(cons[i].stale)
+      {
+        pthread_join(cons[i].thread, NULL);
+        close(cons[i].sock_fd);
+      }
+    }
+
     cons[n_cons].connection = n_cons;
+    cons[n_cons].stale = false;
     cons[n_cons].sock_addr_len = sizeof(cons[n_cons].sock_addr);
     cons[n_cons].sock_fd = accept(serv_sock_fd, (struct sockaddr *)&cons[n_cons].sock_addr, &cons[n_cons].sock_addr_len);
     if(cons[n_cons].sock_fd < 0) fg_log("Failure accepting connection.");
@@ -65,8 +76,11 @@ void * serverThread(void * arg)
   }
   for(int i = 0; i < n_cons; i++)
   {
-    pthread_join(cons[i].thread, NULL);
-    close(cons[i].sock_fd);
+    if(cons[i].stale)
+    {
+      pthread_join(cons[i].thread, NULL);
+      close(cons[i].sock_fd);
+    }
   }
   close(serv_sock_fd);
   return 0;
@@ -91,6 +105,7 @@ void * connectionThread(void * arg)
       if(n < 0) fg_log("Failure writing connection.");
     }
   }
+  con->stale = true; //cheap way to alert server to kill this thread at its convenience
   return 0;
 }
 

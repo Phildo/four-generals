@@ -24,6 +24,8 @@ extern "C"
 struct Connection
 {
   int connection; //0-MAX_CONNECTIONS
+  bool stale;
+
   int sock_fd;
   socklen_t sock_addr_len; //sizeof addr
   struct sockaddr_in sock_addr;
