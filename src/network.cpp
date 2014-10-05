@@ -35,11 +35,11 @@ void Network::connectAsServer()
   serv_sock_addr.sin_addr.s_addr = INADDR_ANY;
   serv_sock_addr.sin_port = htons(portno);
 
-  if(bind(serv_sock_fd, (struct sockaddr *) &serv_sock_addr, sizeof(serv_sock_addr)) < 0) fg_log("Nope");
+  if(bind(serv_sock_fd, (struct sockaddr *) &serv_sock_addr, sizeof(serv_sock_addr)) < 0) fg_log("Failure binding server socket.");
   listen(serv_sock_fd,5);
 
   int r = pthread_create(&serv_thread, NULL, serverThread, NULL)  ;
-  if(r != 0) fg_log("Nope");
+  if(r != 0) fg_log("Failure creating server thread.");
 }
 
 void * serverThread(void * arg)
@@ -49,10 +49,10 @@ void * serverThread(void * arg)
     cons[n_cons].connection = n_cons;
     cons[n_cons].sock_addr_len = sizeof(cons[n_cons].sock_addr);
     cons[n_cons].sock_fd = accept(serv_sock_fd, (struct sockaddr *)&cons[n_cons].sock_addr, &cons[n_cons].sock_addr_len);
-    if(cons[n_cons].sock_fd < 0) fg_log("Nope");
+    if(cons[n_cons].sock_fd < 0) fg_log("Failure accepting connection.");
 
     int r = pthread_create(&cons[n_cons].thread, NULL, connectionThread, (void *)(&cons[n_cons]));
-    if(r != 0) fg_log("Nope");
+    if(r != 0) fg_log("Failure creating connection thread.");
     n_cons++;
 
     //Final connection will be told off and closed
@@ -75,19 +75,21 @@ void * serverThread(void * arg)
 void * connectionThread(void * arg)
 {
   Connection *con = (Connection *)arg;
-  int n;
+  int n = 1;
 
-  while(!should_disconnect)
+  while(!should_disconnect && n >= 0)
   {
     bzero(con->read_buff, BUFF_SIZE);
     n = read(con->sock_fd, con->read_buff, BUFF_SIZE-1);
-    if(n < 0) fg_log("Nope");
+    if(n < 0) fg_log("Failure reading connection.");
+    else
+    {
+      fg_log("Received: %s",con->read_buff);
 
-    fg_log("Received: %s\n",con->read_buff);
-
-    //ack
-    n = write(con->sock_fd,"I gotchu",8);
-    if(n < 0) fg_log("Nope");
+      //ack
+      n = write(con->sock_fd,"I gotchu\n",9);
+      if(n < 0) fg_log("Failure writing connection.");
+    }
   }
   return 0;
 }
