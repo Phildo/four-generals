@@ -34,7 +34,7 @@ void Game::run()
   Network::connectAsServer();
   while(!q)
   {
-    while(input->poll(in, q))
+    while(!q && input->poll(in, q))
       if(!q) scenes[scene]->touch(in);
 
     scenes[scene]->tick(); //should decouple from drawing

@@ -1,5 +1,6 @@
 #include "input.h"
 #include "graphics.h"
+#include "logger.h"
 
 Input::Input(Graphics *g)
 {
@@ -21,9 +22,10 @@ bool Input::poll(In &in, bool &quit)
     }
     else if(event.type == SDL_FINGERDOWN)
     {
-      in.x = event.tfinger.x*winWidth;
-      in.y = event.tfinger.y*winHeight;
+      //in.x = event.tfinger.x*winWidth;
+      //in.y = event.tfinger.y*winHeight;
     }
+    else return false;
     return true;
   }
   return false;

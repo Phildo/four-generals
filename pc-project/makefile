@@ -1,12 +1,12 @@
 SRCDIR = ../src
 BINDIR = ../bin
 CC = g++
-DEBUG = -ggdb3
-DEBUGGER = gdb
+DEBUG = -g
+DEBUGGER = lldb
 CFLAGS = -Wall `sdl2-config --cflags`
 LFLAGS = -Wall `sdl2-config --libs`
 
-SOURCES=$(SRCDIR)/main.cpp $(SRCDIR)/game.cpp $(SRCDIR)/graphics.cpp $(SRCDIR)/model.cpp $(SRCDIR)/units.cpp
+SOURCES=$(SRCDIR)/main.cpp $(SRCDIR)/game.cpp $(SRCDIR)/graphics.cpp $(SRCDIR)/input.cpp $(SRCDIR)/ui.cpp $(SRCDIR)/network.cpp $(SRCDIR)/model.cpp $(SRCDIR)/intro_scene.cpp $(SRCDIR)/sprite.cpp
 
 build:
 	$(CC) $(CFLAGS) $(LFLAGS) $(SOURCES) -o $(BINDIR)/pc.out
