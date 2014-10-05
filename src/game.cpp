@@ -21,9 +21,8 @@ Game::Game()
   graphics = new Graphics();
   //ui = new UI(graphics);
   input = new Input(graphics);
-  network = new Network();
   model = new Model();
-  scenes[0] = new IntroScene(graphics, network);
+  scenes[0] = new IntroScene(graphics);
 }
 
 void Game::run()
@@ -32,7 +31,7 @@ void Game::run()
   In in;
   int scene = 0;
 
-  network->connectAsServer();
+  Network::connectAsServer();
   while(!q)
   {
     while(input->poll(in, q))
@@ -46,6 +45,7 @@ void Game::run()
 
     SDL_Delay(10);
   }
+  Network::disconnect();
 }
 
 Game::~Game()
@@ -53,7 +53,6 @@ Game::~Game()
   for(int i = 0; i < FG_NUM_SCENES; i++)
     delete scenes[i];
   delete model;
-  delete network;
   delete input;
   //delete ui;
   delete graphics;

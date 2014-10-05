@@ -6,7 +6,6 @@
 class Graphics;
 class UI;
 class Input;
-class Network;
 class Model;
 class Scene;
 
@@ -18,7 +17,6 @@ class Game
     Graphics* graphics;
     UI* ui;
     Input *input;
-    Network* network;
     Model* model;
     Scene* scenes[FG_NUM_SCENES];
 

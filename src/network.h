@@ -1,10 +1,6 @@
 #ifndef NETWORK_H
 #define NETWORK_H
 
-#define MAX_PORT_LENGTH 20
-#define MAX_IP_LENGTH 256 //really only need 12, but might as well leave it for urls?
-
-/*
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,36 +9,37 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
-*/
 
-class Network
+extern "C"
 {
-  private:
-    bool host_priv;
-    char port[MAX_PORT_LENGTH];
-    char ip[MAX_IP_LENGTH];
+  #include <pthread.h>
+  #include <unistd.h>
+}
 
-    /*
-    int sockfd;
-    int newsockfd;
-    static const int portno = 8080;
-    int n;
+#define MAX_IP_LENGTH 256 //really only need 12, but might as well leave it for urls?
 
-    socklen_t clilen;
-    char buffer[256];
-    struct sockaddr_in serv_addr;
-    struct sockaddr_in cli_addr;
-    struct hostent *server;
-    */
+#define MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
+#define BUFF_SIZE 256
 
-  public:
-    Network();
-    ~Network();
+struct Connection
+{
+  int connection; //0-MAX_CONNECTIONS
+  int sock_fd;
+  socklen_t sock_addr_len; //sizeof addr
+  struct sockaddr_in sock_addr;
 
-    void connectAsServer();
-    void connectAsClient();
-    void broadcast(char *c, int l);
+  pthread_t thread;
+  char read_buff[BUFF_SIZE];
+  char write_buff[BUFF_SIZE];
 };
+
+namespace Network
+{
+  void connectAsServer();
+  void connectAsClient();
+  void broadcast(char *c, int l);
+  void disconnect();
+}
 
 #endif
 

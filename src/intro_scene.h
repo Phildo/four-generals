@@ -7,9 +7,8 @@ class IntroScene : public Scene
 {
   private:
     Graphics *graphics;
-    Network *network;
   public:
-    IntroScene(Graphics *g, Network *n);
+    IntroScene(Graphics *g);
     void touch(In &in);
     void tick();
     void draw();

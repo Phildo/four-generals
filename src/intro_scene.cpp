@@ -2,9 +2,8 @@
 #include "logger.h"
 #include "sprite.h"
 
-IntroScene::IntroScene(Graphics *g, Network *n)
+IntroScene::IntroScene(Graphics *g)
 {
-  network = n;
   graphics = g;
 }
 
@@ -12,7 +11,7 @@ void IntroScene::touch(In &in)
 {
   fg_log("touched %d, %d",in.x,in.y);
   char c[] = "whatup\n";
-  network->broadcast(c,7);
+  //network->broadcast(c,7);
 
   fg_log("width:%d height:%d",graphics->winWidth(),graphics->winHeight());
 }
