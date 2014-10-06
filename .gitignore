@@ -10,3 +10,4 @@ build.prop
 *.so
 tags
 
+.DS_Store

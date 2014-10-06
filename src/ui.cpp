@@ -28,48 +28,77 @@ void Button::draw(Graphics *g)
 {
   SDL_Rect tmp;
 
-  tmp = Sprite::tl_border();
+  tmp = Sprite::border_tl();
   tmp.x = rect.x;
   tmp.y = rect.y;
-  g->draw(Sprite::tl_border(),tmp);
+  g->draw(Sprite::border_tl(),tmp);
 
-  tmp = Sprite::t_border();
+  tmp = Sprite::border_t();
   tmp.x = rect.x;
   tmp.y = rect.y;
   tmp.w = rect.w;
-  g->draw(Sprite::t_border(), tmp);
+  g->draw(Sprite::border_t(), tmp);
 
-  tmp = Sprite::tr_border();
+  tmp = Sprite::border_tr();
   tmp.x = rect.x+rect.w-tmp.w;
   tmp.y = rect.y;
-  g->draw(Sprite::tr_border(),tmp);
+  g->draw(Sprite::border_tr(),tmp);
 
-  tmp = Sprite::r_border();
+  tmp = Sprite::border_r();
   tmp.x = rect.x+rect.w-tmp.w;
   tmp.y = rect.y;
   tmp.h = rect.h;
-  g->draw(Sprite::r_border(), tmp);
+  g->draw(Sprite::border_r(), tmp);
 
-  tmp = Sprite::br_border();
+  tmp = Sprite::border_br();
   tmp.x = rect.x+rect.w-tmp.w;
   tmp.y = rect.y+rect.h-tmp.h;
-  g->draw(Sprite::br_border(),tmp);
+  g->draw(Sprite::border_br(),tmp);
 
-  tmp = Sprite::b_border();
+  tmp = Sprite::border_b();
   tmp.x = rect.x;
   tmp.y = rect.y+rect.h-tmp.h;
   tmp.w = rect.w;
-  g->draw(Sprite::b_border(), tmp);
+  g->draw(Sprite::border_b(), tmp);
 
-  tmp = Sprite::bl_border();
+  tmp = Sprite::border_bl();
   tmp.x = rect.x;
   tmp.y = rect.y+rect.h-tmp.h;
-  g->draw(Sprite::bl_border(),tmp);
+  g->draw(Sprite::border_bl(),tmp);
 
-  tmp = Sprite::l_border();
+  tmp = Sprite::border_l();
   tmp.x = rect.x;
   tmp.y = rect.y;
   tmp.h = rect.h;
-  g->draw(Sprite::l_border(), tmp);
+  g->draw(Sprite::border_l(), tmp);
+}
+
+String::String() { }
+String::String(SDL_Rect r, char *s, int l)
+{
+  rect = r;
+  r.w = w;
+  r.h = h;
+  string = s;
+  length = l;
+}
+String::String(int x, int y, char *s, int l)
+{
+  rect.x = x;
+  rect.y = y;
+  rect.w = w;
+  rect.h = h;
+  string = s;
+  length = l;
+}
+
+void String::draw(Graphics *g)
+{
+  SDL_Rect tmp = rect;
+  for(int i = 0; i < length; i++)
+  {
+    g->draw(Sprite::alpha(*(string+i)),tmp);
+    tmp.x += w;
+  }
 }
 

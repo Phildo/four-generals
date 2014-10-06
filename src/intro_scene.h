@@ -10,6 +10,8 @@ class IntroScene : public Scene
   private:
     Graphics *graphics;
     UI::Button b;
+    UI::String s;
+    char test[5];
   public:
     IntroScene(Graphics *g);
     void touch(In &in);
