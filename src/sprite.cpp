@@ -11,7 +11,7 @@ SDL_Rect Sprite::border_b()  { return rect(110,20,10,10); }
 SDL_Rect Sprite::border_br() { return rect(120,20,10,10); }
 
 bool mapPop = false;
-SDL_Rect alphamap[52];
+SDL_Rect alphamap[78];
 SDL_Rect Sprite::alpha(char a)
 {
   if(!mapPop)
@@ -68,10 +68,60 @@ SDL_Rect Sprite::alpha(char a)
     alphamap[49] = alpha_X();
     alphamap[50] = alpha_Y();
     alphamap[51] = alpha_Z();
+    alphamap[52] = alpha_0();
+    alphamap[53] = alpha_1();
+    alphamap[54] = alpha_2();
+    alphamap[55] = alpha_3();
+    alphamap[56] = alpha_4();
+    alphamap[57] = alpha_5();
+    alphamap[58] = alpha_6();
+    alphamap[59] = alpha_7();
+    alphamap[60] = alpha_8();
+    alphamap[61] = alpha_9();
+    alphamap[62] = alpha_space();
+    alphamap[63] = alpha_paren_l();
+    alphamap[64] = alpha_bang();
+    alphamap[65] = alpha_at();
+    alphamap[66] = alpha_sha();
+    alphamap[67] = alpha_dollar();
+    alphamap[68] = alpha_mod();
+    alphamap[69] = alpha_amp();
+    alphamap[70] = alpha_period();
+    alphamap[71] = alpha_comma();
+    alphamap[72] = alpha_question();
+    alphamap[73] = alpha_colon();
+    alphamap[74] = alpha_colon_semi();
+    alphamap[75] = alpha_paren_r();
+    alphamap[76] = alpha_NO();
+    alphamap[77] = alpha_NOPE();
   }
   if(a >= 'a' && a <= 'z') return alphamap[a-'a'];
   if(a >= 'A' && a <= 'Z') return alphamap[a-'A'];
-  return alphamap[0];
+  if(a == '0') return alphamap[52];
+  if(a == '1') return alphamap[53];
+  if(a == '2') return alphamap[54];
+  if(a == '3') return alphamap[55];
+  if(a == '4') return alphamap[56];
+  if(a == '5') return alphamap[57];
+  if(a == '6') return alphamap[58];
+  if(a == '7') return alphamap[59];
+  if(a == '8') return alphamap[60];
+  if(a == '9') return alphamap[61];
+  if(a == ' ') return alphamap[62];
+  if(a == '(') return alphamap[63];
+  if(a == '!') return alphamap[64];
+  if(a == '@') return alphamap[65];
+  if(a == '#') return alphamap[66];
+  if(a == '$') return alphamap[67];
+  if(a == '%') return alphamap[68];
+  if(a == '&') return alphamap[69];
+  if(a == '.') return alphamap[70];
+  if(a == ',') return alphamap[71];
+  if(a == '?') return alphamap[72];
+  if(a == ':') return alphamap[73];
+  if(a == ';') return alphamap[74];
+  if(a == ')') return alphamap[75];
+  return alphamap[76];
 }
 SDL_Rect Sprite::alpha_a() { return rect(0,100,18,31); }
 SDL_Rect Sprite::alpha_b() { return rect(18,100,18,31); }
@@ -125,3 +175,30 @@ SDL_Rect Sprite::alpha_W() { return rect(396,131,18,31); }
 SDL_Rect Sprite::alpha_X() { return rect(414,131,18,31); }
 SDL_Rect Sprite::alpha_Y() { return rect(432,131,18,31); }
 SDL_Rect Sprite::alpha_Z() { return rect(450,131,18,31); }
+SDL_Rect Sprite::alpha_0() { return rect(0,162,18,31); }
+SDL_Rect Sprite::alpha_1() { return rect(18,162,18,31); }
+SDL_Rect Sprite::alpha_2() { return rect(36,162,18,31); }
+SDL_Rect Sprite::alpha_3() { return rect(54,162,18,31); }
+SDL_Rect Sprite::alpha_4() { return rect(72,162,18,31); }
+SDL_Rect Sprite::alpha_5() { return rect(90,162,18,31); }
+SDL_Rect Sprite::alpha_6() { return rect(108,162,18,31); }
+SDL_Rect Sprite::alpha_7() { return rect(126,162,18,31); }
+SDL_Rect Sprite::alpha_8() { return rect(144,162,18,31); }
+SDL_Rect Sprite::alpha_9() { return rect(162,162,18,31); }
+SDL_Rect Sprite::alpha_space() { return rect(180,162,18,31); }
+SDL_Rect Sprite::alpha_paren_l() { return rect(198,162,18,31); }
+SDL_Rect Sprite::alpha_bang() { return rect(216,162,18,31); }
+SDL_Rect Sprite::alpha_at() { return rect(234,162,18,31); }
+SDL_Rect Sprite::alpha_sha() { return rect(252,162,18,31); }
+SDL_Rect Sprite::alpha_dollar() { return rect(270,162,18,31); }
+SDL_Rect Sprite::alpha_mod() { return rect(288,162,18,31); }
+SDL_Rect Sprite::alpha_amp() { return rect(306,162,18,31); }
+SDL_Rect Sprite::alpha_period() { return rect(324,162,18,31); }
+SDL_Rect Sprite::alpha_comma() { return rect(342,162,18,31); }
+SDL_Rect Sprite::alpha_question() { return rect(360,162,18,31); }
+SDL_Rect Sprite::alpha_colon() { return rect(378,162,18,31); }
+SDL_Rect Sprite::alpha_colon_semi() { return rect(396,162,18,31); }
+SDL_Rect Sprite::alpha_paren_r() { return rect(414,162,18,31); }
+SDL_Rect Sprite::alpha_NO() { return rect(432,162,18,31); }
+SDL_Rect Sprite::alpha_NOPE() { return rect(450,162,18,31); }
+

@@ -67,6 +67,32 @@ namespace Sprite
   SDL_Rect alpha_X();
   SDL_Rect alpha_Y();
   SDL_Rect alpha_Z();
+  SDL_Rect alpha_0();
+  SDL_Rect alpha_1();
+  SDL_Rect alpha_2();
+  SDL_Rect alpha_3();
+  SDL_Rect alpha_4();
+  SDL_Rect alpha_5();
+  SDL_Rect alpha_6();
+  SDL_Rect alpha_7();
+  SDL_Rect alpha_8();
+  SDL_Rect alpha_9();
+  SDL_Rect alpha_space();
+  SDL_Rect alpha_paren_l();
+  SDL_Rect alpha_bang();
+  SDL_Rect alpha_at();
+  SDL_Rect alpha_sha();
+  SDL_Rect alpha_dollar();
+  SDL_Rect alpha_mod();
+  SDL_Rect alpha_amp();
+  SDL_Rect alpha_period();
+  SDL_Rect alpha_comma();
+  SDL_Rect alpha_question();
+  SDL_Rect alpha_colon();
+  SDL_Rect alpha_colon_semi();
+  SDL_Rect alpha_paren_r();
+  SDL_Rect alpha_NO();
+  SDL_Rect alpha_NOPE();
 };
 
 #endif

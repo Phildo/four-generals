@@ -8,6 +8,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include <ifaddrs.h>
+#include <string.h>
 
 extern "C"
 {
@@ -243,5 +245,29 @@ void Network::disconnect()
   if(is_cli)  pthread_join(cli_thread, NULL); //main thread waits for cli_thread to finish
   is_cli = false;
   is_serv = false;
+}
+
+void Network::getIP(char *ip)
+{
+  struct ifaddrs *ap;
+  struct ifaddrs *cur;
+  int r;
+
+  char host[NI_MAXHOST];
+  strcpy(ip,"0.0.0.0");
+
+  r = getifaddrs(&ap);
+  for(cur = ap; cur != NULL; cur = cur->ifa_next)
+  {
+    r = cur->ifa_addr->sa_family;
+
+    if(r == AF_INET)
+    {
+      r = getnameinfo(cur->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
+      if(strcmp(cur->ifa_name, "en0") == 0) strcpy(ip, host);
+    }
+  }
+
+  freeifaddrs(ap);
 }
 

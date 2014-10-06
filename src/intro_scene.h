@@ -12,6 +12,7 @@ class IntroScene : public Scene
     UI::Button b;
     UI::String s;
     char test[5];
+    char ip[16];
   public:
     IntroScene(Graphics *g);
     void touch(In &in);

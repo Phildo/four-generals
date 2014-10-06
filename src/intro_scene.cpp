@@ -18,7 +18,9 @@ IntroScene::IntroScene(Graphics *g)
   test[3] = 't';
   test[4] = '\0';
   b = UI::Button(20,20,100,50);
-  s = UI::String(25,25,test,4);
+  Network::getIP(ip);
+  s = UI::String(25,25,ip,16);
+
 }
 
 void IntroScene::touch(In &in)
