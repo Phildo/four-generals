@@ -9,12 +9,13 @@
 
 #include "logger.h"
 
-IntroScene::IntroScene(Graphics *g)
+IntroScene::IntroScene(Graphics *g) : keyboard(0,100,300,100)
 {
   graphics = g;
-  int l = Network::getIP(Network::ip);
-  ipString = UI::String(25,25,Network::ip,l);
+  //int l = Network::getIP(Network::ip);
+  //ipString = UI::String(25,25,25,Network::ip,l);
   connectServerButton = UI::Button(20,60,100,50);
+  connectServerButton = UI::Button(0,0,100,100);
   connectClientButton = UI::Button(80,60,100,50);
 }
 
@@ -32,9 +33,10 @@ void IntroScene::tick()
 
 void IntroScene::draw()
 {
-  ipString.draw(graphics);
+  //ipString.draw(graphics);
   connectServerButton.draw(graphics);
   connectClientButton.draw(graphics);
+  keyboard.draw(graphics);
 }
 
 Scene::~Scene()

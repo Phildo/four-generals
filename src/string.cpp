@@ -1,0 +1,28 @@
+String::String() { }
+String::String(SDL_Rect r, char *s, int l)
+{
+  rect = r;
+  r.w = n_w*(r.h/n_h);
+  string = s;
+  length = l;
+}
+String::String(int x, int y, int h, char *s, int l)
+{
+  rect.x = x;
+  rect.y = y;
+  rect.w = n_w*((float)h/(float)n_h);
+  rect.h = h;
+  string = s;
+  length = l;
+}
+
+void String::draw(Graphics *g)
+{
+  SDL_Rect tmp = rect;
+  for(int i = 0; i < length; i++)
+  {
+    g->draw(Sprite::alpha(*(string+i)),tmp);
+    tmp.x += tmp.w;
+  }
+}
+

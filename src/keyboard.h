@@ -1,0 +1,26 @@
+
+struct Keyboard
+{
+  int inQLen;
+  char inputQ[256];
+
+  char characters[50];
+  String glyphs[50];
+  Button keys[50];
+
+  int keyw, keyh;
+  SDL_Rect rect;
+
+  Keyboard();
+  Keyboard(SDL_Rect r);
+  Keyboard(int x, int y, int w, int h);
+  void touch(In &in);
+  char poll();
+  void draw(Graphics *g);
+
+  //Ugh
+  private:
+    void initBoard();
+    void initKeyInRow(SDL_Rect &r, int &i, char c);
+};
+

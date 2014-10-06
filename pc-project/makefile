@@ -2,7 +2,7 @@ SRCDIR = ../src
 BINDIR = ../bin
 CC = g++
 DEBUG = -g
-DEBUGGER = lldb
+DEBUGGER = gdb
 CFLAGS = -Wall `sdl2-config --cflags`
 LFLAGS = -Wall `sdl2-config --libs`
 
