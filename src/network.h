@@ -7,7 +7,7 @@ namespace Network
   void connectAsClient();
   void broadcast(char *c, int l);
   void disconnect();
-  void getIP(char *ip);
+  int getIP(char *ip);
 };
 
 #endif

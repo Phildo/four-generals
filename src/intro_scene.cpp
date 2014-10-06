@@ -18,8 +18,8 @@ IntroScene::IntroScene(Graphics *g)
   test[3] = 't';
   test[4] = '\0';
   b = UI::Button(20,20,100,50);
-  Network::getIP(ip);
-  s = UI::String(25,25,ip,16);
+  ip[15] = Network::getIP(ip);
+  s = UI::String(25,25,ip,ip[15]);
 
 }
 

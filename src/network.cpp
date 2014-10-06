@@ -247,7 +247,7 @@ void Network::disconnect()
   is_serv = false;
 }
 
-void Network::getIP(char *ip)
+int Network::getIP(char *ip)
 {
   struct ifaddrs *ap;
   struct ifaddrs *cur;
@@ -268,6 +268,7 @@ void Network::getIP(char *ip)
     }
   }
 
-  freeifaddrs(ap);
+ freeifaddrs(ap);
+ return strlen(ip);
 }
 
