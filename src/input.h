@@ -22,7 +22,7 @@ class Input
   public:
     Input(Graphics *g);
     ~Input();
-    bool poll(In &in, bool &quit);
+    bool poll(In &in, bool &put, bool &quit);
 };
 
 #endif

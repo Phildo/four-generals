@@ -26,14 +26,15 @@ Game::Game()
 void Game::run()
 {
   bool q = false;
+  bool p = false;
   In in;
   int scene = 0;
 
   //Network::connectAsServer();
   while(!q)
   {
-    while(!q && input->poll(in, q))
-      if(!q) scenes[scene]->touch(in);
+    while(!q && input->poll(in, p, q))
+      if(p) scenes[scene]->touch(in);
 
     scenes[scene]->tick(); //should decouple from drawing
 
