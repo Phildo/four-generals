@@ -9,10 +9,9 @@ class IntroScene : public Scene
 {
   private:
     Graphics *graphics;
-    UI::Button b;
-    UI::String s;
-    char test[5];
-    char ip[16];
+    UI::String ipString;
+    UI::Button connectServerButton;
+    UI::Button connectClientButton;
   public:
     IntroScene(Graphics *g);
     void touch(In &in);

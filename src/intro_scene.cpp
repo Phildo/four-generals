@@ -12,20 +12,16 @@
 IntroScene::IntroScene(Graphics *g)
 {
   graphics = g;
-  test[0] = 't';
-  test[1] = 'e';
-  test[2] = 's';
-  test[3] = 't';
-  test[4] = '\0';
-  b = UI::Button(20,20,100,50);
-  ip[15] = Network::getIP(ip);
-  s = UI::String(25,25,ip,ip[15]);
-
+  int l = Network::getIP(Network::ip);
+  ipString = UI::String(25,25,Network::ip,l);
+  connectServerButton = UI::Button(20,60,100,50);
+  connectClientButton = UI::Button(80,60,100,50);
 }
 
 void IntroScene::touch(In &in)
 {
-  if(b.query(in)) fg_log("touched!");
+  if(connectServerButton.query(in)) fg_log("touched s!");
+  if(connectClientButton.query(in)) fg_log("touched c!");
   else fg_log("nope");
 }
 
@@ -36,8 +32,9 @@ void IntroScene::tick()
 
 void IntroScene::draw()
 {
-  b.draw(graphics);
-  s.draw(graphics);
+  ipString.draw(graphics);
+  connectServerButton.draw(graphics);
+  connectClientButton.draw(graphics);
 }
 
 Scene::~Scene()

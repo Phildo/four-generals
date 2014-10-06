@@ -8,6 +8,8 @@ namespace Network
   void broadcast(char *c, int l);
   void disconnect();
   int getIP(char *ip);
+  extern char ip[16];
+  extern int iplen;
 };
 
 #endif

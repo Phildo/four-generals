@@ -70,8 +70,12 @@ struct sockaddr_in cli_serv_sock_addr; //client's serv addr
 struct hostent *cli_server; //client's reference to server
 char cli_buff[BUFF_SIZE];
 
+char Network::ip[16] = "\0";
+int Network::iplen = 0;
+
 void Network::connectAsServer()
 {
+  if(!iplen) iplen = getIP(ip);
   is_serv = true;
   int r = pthread_create(&serv_thread, NULL, serverThread, NULL)  ;
   if(r != 0) fg_log("Failure creating server thread.");
@@ -196,6 +200,7 @@ void * connectionThread(void * arg)
 
 void Network::connectAsClient()
 {
+  if(!iplen) iplen = getIP(ip);
   is_cli = true;
   int r = pthread_create(&cli_thread, NULL, clientThread, NULL)  ;
   if(r != 0) fg_log("Failure creating client thread.");
