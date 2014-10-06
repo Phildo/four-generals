@@ -1,6 +1,5 @@
 #include "game.h"
 #include "graphics.h"
-#include "ui.h"
 #include "input.h"
 #include "network.h"
 #include "model.h"
@@ -19,7 +18,6 @@ const int MS_PER_TICK = 1000/FPS;
 Game::Game()
 {
   graphics = new Graphics();
-  //ui = new UI(graphics);
   input = new Input(graphics);
   model = new Model();
   scenes[0] = new IntroScene(graphics);
@@ -31,7 +29,7 @@ void Game::run()
   In in;
   int scene = 0;
 
-  Network::connectAsServer();
+  //Network::connectAsServer();
   while(!q)
   {
     while(!q && input->poll(in, q))
@@ -45,7 +43,7 @@ void Game::run()
 
     SDL_Delay(10);
   }
-  Network::disconnect();
+  //Network::disconnect();
 }
 
 Game::~Game()
@@ -54,7 +52,6 @@ Game::~Game()
     delete scenes[i];
   delete model;
   delete input;
-  //delete ui;
   delete graphics;
 }
 

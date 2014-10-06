@@ -1,9 +1,7 @@
 #ifndef _SCENE_H_
 #define _SCENE_H_
 
-#include "graphics.h"
-#include "network.h"
-#include "input.h"
+struct In;
 
 class Scene
 {

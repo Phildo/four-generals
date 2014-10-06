@@ -4,7 +4,6 @@
 #include "var_array.h"
 
 class Graphics;
-class UI;
 class Input;
 class Model;
 class Scene;
@@ -15,7 +14,6 @@ class Game
 {
   private:
     Graphics* graphics;
-    UI* ui;
     Input *input;
     Model* model;
     Scene* scenes[FG_NUM_SCENES];

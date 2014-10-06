@@ -1,64 +1,75 @@
 #include "ui.h"
+#include "input.h"
+#include "graphics.h"
+#include "sprite.h"
 
-/*
-Button::Button(SDL_Rect r, int own)
+using namespace UI;
+
+Button::Button() { }
+Button::Button(SDL_Rect r)
 {
   rect = r;
-  ower = own;
+}
+Button::Button(int x, int y, int w, int h)
+{
+  rect.x = x;
+  rect.y = y;
+  rect.w = w;
+  rect.h = h;
 }
 
-bool Button::query(In &in)
+bool Button::query(const In &in)
 {
-  return false;
+  return (in.x > rect.x && in.x < rect.x+rect.w &&
+          in.y > rect.y && in.y < rect.y+rect.h);
 }
 
-UI::UI()
+void Button::draw(Graphics *g)
 {
-  ownerCount = 0;
-  buttonCount = 0;
-}
+  SDL_Rect tmp;
 
-int UI::getOwnerId()
-{
-  return ownerCount++;
-}
+  tmp = Sprite::tl_border();
+  tmp.x = rect.x;
+  tmp.y = rect.y;
+  g->draw(Sprite::tl_border(),tmp);
 
-int UI::registerButton(int owner, SDL_Rect r); //returns i
-{
-  buttons.add(Button(r, owner, buttonCount));
-  return buttonCount++;
-}
+  tmp = Sprite::t_border();
+  tmp.x = rect.x;
+  tmp.y = rect.y;
+  tmp.w = rect.w;
+  g->draw(Sprite::t_border(), tmp);
 
-void UI::unregisterButton(int id)
-{
-  for(int i = 0; i < buttons.length(); i++)
-    if(buttons[i].id == id) buttons.remove(i--);
-}
+  tmp = Sprite::tr_border();
+  tmp.x = rect.x+rect.w-tmp.w;
+  tmp.y = rect.y;
+  g->draw(Sprite::tr_border(),tmp);
 
-void UI::unregisterOwner(int owner)
-{
-  for(int i = 0; i < buttons.length(); i++)
-    if(buttons[i].owner == owner) buttons.remove(i--);
-}
+  tmp = Sprite::r_border();
+  tmp.x = rect.x+rect.w-tmp.w;
+  tmp.y = rect.y;
+  tmp.h = rect.h;
+  g->draw(Sprite::r_border(), tmp);
 
-const &vArray<int> UI::queryTouch(const In &in); //returns reference to queryResults. not thread safe
-{
-  queryResults.removeAll();
-  for(int i = 0; i < buttons.length(); i++)
-    if(buttons[i].query(in)) queryResults.add(buttons[i].id);
-  return queryResults;
-}
+  tmp = Sprite::br_border();
+  tmp.x = rect.x+rect.w-tmp.w;
+  tmp.y = rect.y+rect.h-tmp.h;
+  g->draw(Sprite::br_border(),tmp);
 
-const &vArray<int> UI::queryOwnedTouch(const In &in, int owner); //returns reference to queryResults. not thread safe
-{
-  queryResults.removeAll();
-  for(int i = 0; i < buttons.length(); i++)
-    if(buttons[i].owner == owner && buttons[i].query(in)) queryResults.add(buttons[i].id);
-  return queryResults;
-}
+  tmp = Sprite::b_border();
+  tmp.x = rect.x;
+  tmp.y = rect.y+rect.h-tmp.h;
+  tmp.w = rect.w;
+  g->draw(Sprite::b_border(), tmp);
 
-UI::~UI()
-{
+  tmp = Sprite::bl_border();
+  tmp.x = rect.x;
+  tmp.y = rect.y+rect.h-tmp.h;
+  g->draw(Sprite::bl_border(),tmp);
+
+  tmp = Sprite::l_border();
+  tmp.x = rect.x;
+  tmp.y = rect.y;
+  tmp.h = rect.h;
+  g->draw(Sprite::l_border(), tmp);
 }
-*/
 
