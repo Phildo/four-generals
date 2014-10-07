@@ -9,7 +9,7 @@
 
 #include "logger.h"
 
-IntroScene::IntroScene(Graphics *g) : keyboard(0,100,300,100)
+IntroScene::IntroScene(Graphics *g) : keyboard(0,100,300,100), textbox(20,20,300,20)
 {
   graphics = g;
   int l = Network::getIP(Network::ip);
@@ -31,7 +31,8 @@ void IntroScene::tick()
   char c;
   while((c = keyboard.poll()))
   {
-    fg_log("touched %c",c);
+    if(c == '<') textbox.backspace();
+    else textbox.input(c);
   }
 }
 
@@ -41,6 +42,7 @@ void IntroScene::draw()
   connectServerButton.draw(graphics);
   connectClientButton.draw(graphics);
   keyboard.draw(graphics);
+  textbox.draw(graphics);
 }
 
 Scene::~Scene()

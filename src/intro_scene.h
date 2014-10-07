@@ -13,6 +13,7 @@ class IntroScene : public Scene
     UI::Button connectServerButton;
     UI::Button connectClientButton;
     UI::Keyboard keyboard;
+    UI::Textbox textbox;
   public:
     IntroScene(Graphics *g);
     void touch(In &in);

@@ -10,6 +10,7 @@ namespace UI
   #include "button.h"
   #include "string.h"
   #include "keyboard.h"
+  #include "textbox.h"
 }
 
 #endif

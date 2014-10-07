@@ -2,7 +2,7 @@ String::String() { }
 String::String(SDL_Rect r, char *s, int l)
 {
   rect = r;
-  r.w = n_w*(r.h/n_h);
+  rect.w = n_w*((float)r.h/(float)n_h);
   string = s;
   length = l;
 }
