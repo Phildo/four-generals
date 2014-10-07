@@ -1,6 +1,7 @@
 Keyboard::Keyboard() {}
 Keyboard::Keyboard(int x, int y, int w, int h)
 {
+  inQLen = 0;
   rect.x = x;
   rect.y = y;
   rect.w = w;
@@ -11,6 +12,7 @@ Keyboard::Keyboard(int x, int y, int w, int h)
 }
 Keyboard::Keyboard(SDL_Rect r)
 {
+  inQLen = 0;
   rect = r;
   keyw = rect.w/10;
   keyh = rect.h/4;
@@ -68,6 +70,7 @@ void Keyboard::initBoard()
   initKeyInRow(tmp, i, 'n');
   initKeyInRow(tmp, i, 'm');
   initKeyInRow(tmp, i, '.');
+  initKeyInRow(tmp, i, '<');
 }
 
 void Keyboard::initKeyInRow(SDL_Rect &r, int &i, char c)
@@ -81,16 +84,36 @@ void Keyboard::initKeyInRow(SDL_Rect &r, int &i, char c)
 
 void Keyboard::touch(In &in)
 {
+  for(int i = 0; i < 38; i++)
+    if(keys[i].query(in)) enqueue(characters[i]);
 }
 
 char Keyboard::poll()
 {
+  if(inQLen > 0)
+    return dequeue();
   return 0;
+}
+
+void Keyboard::enqueue(char c)
+{
+  if(inQLen >= MAX_KEYBOARD_Q_LEN) return; //ignore input
+  inputQ[inQLen] = c;
+  inQLen++;
+}
+
+char Keyboard::dequeue()
+{
+  char c = inputQ[0];
+  for(int i = 0; i < inQLen; i++)
+    inputQ[i] = inputQ[i+1];
+  inQLen--;
+  return c;
 }
 
 void Keyboard::draw(Graphics *g)
 {
-  for(int i = 0; i < 37; i++)
+  for(int i = 0; i < 38; i++)
   {
     keys[i].draw(g);
     glyphs[i].draw(g);

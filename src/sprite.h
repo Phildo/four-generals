@@ -91,7 +91,7 @@ namespace Sprite
   SDL_Rect alpha_colon();
   SDL_Rect alpha_colon_semi();
   SDL_Rect alpha_paren_r();
-  SDL_Rect alpha_NO();
+  SDL_Rect alpha_back();
   SDL_Rect alpha_NOPE();
 };
 

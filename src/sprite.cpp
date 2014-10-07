@@ -92,7 +92,7 @@ SDL_Rect Sprite::alpha(char a)
     alphamap[73] = alpha_colon();
     alphamap[74] = alpha_colon_semi();
     alphamap[75] = alpha_paren_r();
-    alphamap[76] = alpha_NO();
+    alphamap[76] = alpha_back();
     alphamap[77] = alpha_NOPE();
   }
   if(a >= 'a' && a <= 'z') return alphamap[a-'a'];
@@ -121,7 +121,8 @@ SDL_Rect Sprite::alpha(char a)
   if(a == ':') return alphamap[73];
   if(a == ';') return alphamap[74];
   if(a == ')') return alphamap[75];
-  return alphamap[76];
+  if(a == '<') return alphamap[76];
+  return alphamap[77];
 }
 SDL_Rect Sprite::alpha_a() { return rect(0,100,18,31); }
 SDL_Rect Sprite::alpha_b() { return rect(18,100,18,31); }
@@ -199,6 +200,6 @@ SDL_Rect Sprite::alpha_question() { return rect(360,162,18,31); }
 SDL_Rect Sprite::alpha_colon() { return rect(378,162,18,31); }
 SDL_Rect Sprite::alpha_colon_semi() { return rect(396,162,18,31); }
 SDL_Rect Sprite::alpha_paren_r() { return rect(414,162,18,31); }
-SDL_Rect Sprite::alpha_NO() { return rect(432,162,18,31); }
+SDL_Rect Sprite::alpha_back() { return rect(432,162,18,31); }
 SDL_Rect Sprite::alpha_NOPE() { return rect(450,162,18,31); }
 

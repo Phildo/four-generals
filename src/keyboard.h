@@ -1,8 +1,9 @@
 
 struct Keyboard
 {
+  #define MAX_KEYBOARD_Q_LEN 256
   int inQLen;
-  char inputQ[256];
+  char inputQ[MAX_KEYBOARD_Q_LEN];
 
   char characters[50];
   String glyphs[50];
@@ -16,11 +17,14 @@ struct Keyboard
   Keyboard(int x, int y, int w, int h);
   void touch(In &in);
   char poll();
+  void clear();
   void draw(Graphics *g);
 
   //Ugh
   private:
     void initBoard();
     void initKeyInRow(SDL_Rect &r, int &i, char c);
+    void enqueue(char c);
+    char dequeue();
 };
 
