@@ -3,13 +3,16 @@
 
 namespace Network
 {
-  void connectAsServer();
-  void connectAsClient();
+  void connectAsServer(int port);
+  void connectAsClient(char *ip, int port);
   void broadcast(char *c, int l);
   void disconnect();
-  int getIP(char *ip);
-  extern char ip[16];
+  void getIP(char *ip, int *len);
+
+  #define MAX_IP_LENGTH 16
+  extern char ip[MAX_IP_LENGTH];
   extern int iplen;
+  extern int port;
 };
 
 #endif

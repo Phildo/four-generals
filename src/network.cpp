@@ -20,8 +20,6 @@ extern "C"
 #include "defines.h"
 #include "logger.h"
 
-#define MAX_IP_LENGTH 256 //really only need 12, but might as well leave it for urls?
-
 #define MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
 #define BUFF_SIZE 256
 
@@ -44,8 +42,6 @@ void * connectionThread(void * arg);
 void * clientThread(void * arg);
 
 const bool host_priv = true;
-int portno = 8080;
-char ip[MAX_IP_LENGTH];
 
 bool is_serv = false;
 bool is_cli = false;
@@ -70,12 +66,15 @@ struct sockaddr_in cli_serv_sock_addr; //client's serv addr
 struct hostent *cli_server; //client's reference to server
 char cli_buff[BUFF_SIZE];
 
-char Network::ip[16] = "\0";
+char Network::ip[MAX_IP_LENGTH] = "\0";
 int Network::iplen = 0;
+int Network::port = 8080;
 
-void Network::connectAsServer()
+void Network::connectAsServer(int port)
 {
-  if(!iplen) iplen = getIP(ip);
+  if(!Network::iplen) getIP(Network::ip, &Network::iplen);
+  Network::port = port;
+
   is_serv = true;
   int r = pthread_create(&serv_thread, NULL, serverThread, NULL)  ;
   if(r != 0) fg_log("Failure creating server thread.");
@@ -92,7 +91,7 @@ void * serverThread(void * arg)
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
   serv_sock_addr.sin_family = AF_INET;
   serv_sock_addr.sin_addr.s_addr = INADDR_ANY;
-  serv_sock_addr.sin_port = htons(portno);
+  serv_sock_addr.sin_port = htons(Network::port);
 
   if(bind(serv_sock_fd, (struct sockaddr *) &serv_sock_addr, sizeof(serv_sock_addr)) < 0)
   {
@@ -198,9 +197,11 @@ void * connectionThread(void * arg)
   return 0;
 }
 
-void Network::connectAsClient()
+void Network::connectAsClient(char *ip, int port)
 {
-  if(!iplen) iplen = getIP(ip);
+  if(!Network::iplen) getIP(Network::ip, &Network::iplen);
+  Network::port = port;
+
   is_cli = true;
   int r = pthread_create(&cli_thread, NULL, clientThread, NULL)  ;
   if(r != 0) fg_log("Failure creating client thread.");
@@ -216,7 +217,7 @@ void * clientThread(void *arg)
   bzero((char *)&cli_serv_sock_addr, sizeof(cli_serv_sock_addr));
   cli_serv_sock_addr.sin_family = AF_INET;
   bcopy((char *)cli_server->h_addr, (char *)&cli_serv_sock_addr.sin_addr.s_addr, cli_server->h_length);
-  cli_serv_sock_addr.sin_port = htons(portno);
+  cli_serv_sock_addr.sin_port = htons(Network::port);
 
   if(connect(cli_sock_fd,(struct sockaddr *)&cli_serv_sock_addr, sizeof(cli_serv_sock_addr)) < 0)
   {
@@ -252,7 +253,7 @@ void Network::disconnect()
   is_serv = false;
 }
 
-int Network::getIP(char *ip)
+void Network::getIP(char *ip, int *len)
 {
   struct ifaddrs *ap;
   struct ifaddrs *cur;
@@ -274,6 +275,6 @@ int Network::getIP(char *ip)
   }
 
  freeifaddrs(ap);
- return strlen(ip);
+ *len = strlen(ip);
 }
 

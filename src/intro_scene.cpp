@@ -1,9 +1,5 @@
 #include "intro_scene.h"
 #include "graphics.h"
-#include "input.h"
-#include "ui.h"
-#include "network.h"
-#include "sprite.h"
 
 #include <SDL.h>
 
