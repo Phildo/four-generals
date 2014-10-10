@@ -9,7 +9,7 @@ class Scene
   public:
     virtual ~Scene() = 0;
     virtual void touch(In &in) = 0;
-    virtual void tick() = 0;
+    virtual int tick() = 0;
     virtual void draw() = 0;
 };
 

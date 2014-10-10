@@ -17,17 +17,20 @@ IntroScene::IntroScene(Graphics *g)
 
   howLabel  = UI::Label( g->winWidth()-225,85,    20,"How",4);
   howButton = UI::Button(g->winWidth()-225,85,200,20);
+
+  SCENE_CHANGE_HACK = 0;
 }
 
 void IntroScene::touch(In &in)
 {
-  if(hostButton.query(in)) fg_log("touched s!");
+  if(hostButton.query(in)) { fg_log("touched s!"); SCENE_CHANGE_HACK = 1; }
   if(joinButton.query(in)) fg_log("touched j!");
   if(howButton.query(in)) fg_log("touched h!");
 }
 
-void IntroScene::tick()
+int IntroScene::tick()
 {
+  return SCENE_CHANGE_HACK;
 }
 
 void IntroScene::draw()
@@ -42,7 +45,7 @@ void IntroScene::draw()
   howButton.draw(graphics);
 }
 
-Scene::~Scene()
+IntroScene::~IntroScene()
 {
 
 }

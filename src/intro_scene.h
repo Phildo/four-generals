@@ -1,5 +1,5 @@
-#ifndef _INRO_SCENE_H_
-#define _INRO_SCENE_H_
+#ifndef _INTRO_SCENE_H_
+#define _INTRO_SCENE_H_
 
 #include "scene.h"
 #include "ui.h"
@@ -18,10 +18,13 @@ class IntroScene : public Scene
 
     UI::Label howLabel;
     UI::Button howButton;
+
+    int SCENE_CHANGE_HACK;
   public:
     IntroScene(Graphics *g);
+    ~IntroScene();
     void touch(In &in);
-    void tick();
+    int tick();
     void draw();
 };
 

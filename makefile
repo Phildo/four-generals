@@ -11,6 +11,9 @@ ANDROID_DEF=FG_ANDROID
 IOS_DEF=FG_IOS
 PC_DEF=FG_PC
 
+tags:
+	ctags -R $(SRC_DIR)/*
+
 #
 # defaults (switch out for sugar w/r/t currently working-on platform)
 #

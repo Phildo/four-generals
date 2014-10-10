@@ -6,6 +6,7 @@
 #include "scene.h"
 
 #include "intro_scene.h"
+#include "host_scene.h"
 
 #include "sprite.h"
 #include "logger.h"
@@ -21,6 +22,7 @@ Game::Game()
   input = new Input(graphics);
   model = new Model();
   scenes[0] = new IntroScene(graphics);
+  scenes[1] = new HostScene(graphics);
 }
 
 void Game::run()
@@ -35,7 +37,7 @@ void Game::run()
     while(!q && input->poll(in, p, q))
       if(p) scenes[scene]->touch(in);
 
-    scenes[scene]->tick(); //should decouple from drawing
+    scene += scenes[scene]->tick(); //should decouple from drawing
 
     graphics->clear();
     scenes[scene]->draw();

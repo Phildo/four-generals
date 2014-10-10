@@ -8,7 +8,7 @@ class Input;
 class Model;
 class Scene;
 
-#define FG_NUM_SCENES 1
+#define FG_NUM_SCENES 2
 
 class Game
 {
