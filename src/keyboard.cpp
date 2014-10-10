@@ -76,7 +76,7 @@ void Keyboard::initBoard()
 void Keyboard::initKeyInRow(SDL_Rect &r, int &i, char c)
 {
   characters[i] = c;
-  glyphs[i] = String(r, &characters[i], 1);
+  glyphs[i] = Label(r, &characters[i], 1);
   keys[i] = Button(r);
   i++;
   r.x += r.w;

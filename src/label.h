@@ -1,4 +1,4 @@
-struct String
+struct Label
 {
   SDL_Rect rect; //really only uses its x,y
   char *string;
@@ -6,8 +6,8 @@ struct String
   static const int n_w = 18; //native_width
   static const int n_h = 31; //native_height
   void draw(Graphics *g);
-  String();
-  String(SDL_Rect r, char *s, int l);
-  String(int x, int y, int h, char *s, int l);
+  Label();
+  Label(SDL_Rect r, char *s, int l);
+  Label(int x, int y, int h, char *s, int l);
 };
 

@@ -30,7 +30,6 @@ void Game::run()
   In in;
   int scene = 0;
 
-  //Network::connectAsServer();
   while(!q)
   {
     while(!q && input->poll(in, p, q))
@@ -44,7 +43,6 @@ void Game::run()
 
     SDL_Delay(10);
   }
-  //Network::disconnect();
 }
 
 Game::~Game()

@@ -8,7 +8,7 @@ class Graphics;
 namespace UI
 {
   #include "button.h"
-  #include "string.h"
+  #include "label.h"
   #include "keyboard.h"
   #include "textbox.h"
 }

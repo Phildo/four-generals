@@ -4,7 +4,7 @@ struct Textbox
   #define MAX_TEXTBOX_LEN 256
   int textLen;
   char text[MAX_TEXTBOX_LEN+1]; //+1 for null
-  String string;
+  Label string;
 
   SDL_Rect rect;
 

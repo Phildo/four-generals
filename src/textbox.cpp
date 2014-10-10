@@ -3,7 +3,7 @@ Textbox::Textbox(SDL_Rect r)
 {
   textLen = 0;
   rect = r;
-  string = String(rect, text, 0);
+  string = Label(rect, text, 0);
 }
 Textbox::Textbox(int x, int y, int w, int h)
 {
@@ -12,7 +12,7 @@ Textbox::Textbox(int x, int y, int w, int h)
   rect.y = y;
   rect.w = w;
   rect.h = h;
-  string = String(rect, text, 0);
+  string = Label(rect, text, 0);
 }
 
 void Textbox::getString(char *&c)

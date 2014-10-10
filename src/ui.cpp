@@ -7,7 +7,7 @@
 using namespace UI;
 
 #include "button.cpp"
-#include "string.cpp"
+#include "label.cpp"
 #include "keyboard.cpp"
 #include "textbox.cpp"
 

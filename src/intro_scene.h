@@ -9,11 +9,15 @@ class IntroScene : public Scene
 {
   private:
     Graphics *graphics;
-    UI::String ipString;
-    UI::Button connectServerButton;
-    UI::Button connectClientButton;
-    UI::Keyboard keyboard;
-    UI::Textbox textbox;
+
+    UI::Label hostLabel;
+    UI::Button hostButton;
+
+    UI::Label joinLabel;
+    UI::Button joinButton;
+
+    UI::Label howLabel;
+    UI::Button howButton;
   public:
     IntroScene(Graphics *g);
     void touch(In &in);

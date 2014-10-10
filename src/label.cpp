@@ -1,12 +1,12 @@
-String::String() { }
-String::String(SDL_Rect r, char *s, int l)
+Label::Label() { }
+Label::Label(SDL_Rect r, char *s, int l)
 {
   rect = r;
   rect.w = n_w*((float)r.h/(float)n_h);
   string = s;
   length = l;
 }
-String::String(int x, int y, int h, char *s, int l)
+Label::Label(int x, int y, int h, char *s, int l)
 {
   rect.x = x;
   rect.y = y;
@@ -16,7 +16,7 @@ String::String(int x, int y, int h, char *s, int l)
   length = l;
 }
 
-void String::draw(Graphics *g)
+void Label::draw(Graphics *g)
 {
   SDL_Rect tmp = rect;
   for(int i = 0; i < length; i++)

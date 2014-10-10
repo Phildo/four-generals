@@ -6,7 +6,7 @@ struct Keyboard
   char inputQ[MAX_KEYBOARD_Q_LEN];
 
   char characters[50];
-  String glyphs[50];
+  Label glyphs[50];
   Button keys[50];
 
   int keyw, keyh;

@@ -9,40 +9,41 @@
 
 #include "logger.h"
 
-IntroScene::IntroScene(Graphics *g) : keyboard(0,100,300,100), textbox(20,20,300,20)
+IntroScene::IntroScene(Graphics *g)
 {
   graphics = g;
-  int l = Network::getIP(Network::ip);
-  ipString = UI::String(25,25,25,Network::ip,l);
-  connectServerButton = UI::Button(20,60,100,50);
-  connectServerButton = UI::Button(0,0,100,100);
-  connectClientButton = UI::Button(80,60,100,50);
+
+  hostLabel  = UI::Label( g->winWidth()-225,25,    20,"Host",4);
+  hostButton = UI::Button(g->winWidth()-225,25,200,20);
+
+  joinLabel  = UI::Label( g->winWidth()-225,55,    20,"Join",4);
+  joinButton = UI::Button(g->winWidth()-225,55,200,20);
+
+  howLabel  = UI::Label( g->winWidth()-225,85,    20,"How",4);
+  howButton = UI::Button(g->winWidth()-225,85,200,20);
 }
 
 void IntroScene::touch(In &in)
 {
-  if(connectServerButton.query(in)) fg_log("touched s!");
-  if(connectClientButton.query(in)) fg_log("touched c!");
-  keyboard.touch(in);
+  if(hostButton.query(in)) fg_log("touched s!");
+  if(joinButton.query(in)) fg_log("touched j!");
+  if(howButton.query(in)) fg_log("touched h!");
 }
 
 void IntroScene::tick()
 {
-  char c;
-  while((c = keyboard.poll()))
-  {
-    if(c == '<') textbox.backspace();
-    else textbox.input(c);
-  }
 }
 
 void IntroScene::draw()
 {
-  ipString.draw(graphics);
-  connectServerButton.draw(graphics);
-  connectClientButton.draw(graphics);
-  keyboard.draw(graphics);
-  textbox.draw(graphics);
+  hostLabel.draw(graphics);
+  hostButton.draw(graphics);
+
+  joinLabel.draw(graphics);
+  joinButton.draw(graphics);
+
+  howLabel.draw(graphics);
+  howButton.draw(graphics);
 }
 
 Scene::~Scene()
