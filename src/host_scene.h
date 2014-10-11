@@ -10,17 +10,25 @@ class HostScene : public Scene
   private:
     Graphics *graphics;
 
-    UI::Label nLabel;
-    UI::Label sLabel;
-    UI::Label eLabel;
-    UI::Label wLabel;
-    UI::Button nButton;
-    UI::Button sButton;
-    UI::Button eButton;
-    UI::Button wButton;
+    UI::Button backButton;
 
-    char ip[16]; int iplen;
-    UI::Label ipLabel;
+    UI::Label hostGameLabel; char hostGame[10];
+    UI::Label ipLabel;       char ip[16];  int iplen;
+    UI::Label portLabel;     char port[6]; int portlen;
+
+    UI::Label nLabel; char n; UI::Label npLabel; char np; UI::Button nButton;
+    UI::Label sLabel; char s; UI::Label spLabel; char sp; UI::Button sButton;
+    UI::Label wLabel; char w; UI::Label wpLabel; char wp; UI::Button wButton;
+    UI::Label eLabel; char e; UI::Label epLabel; char ep; UI::Button eButton;
+
+    UI::Label startSessLabel;  char startSess[14];
+    UI::Label cancelSessLabel; char cancelSess[15];
+    UI::Label joinSessLabel;   char joinSess[13];
+    UI::Label leaveSessLabel;  char leaveSess[14];
+    UI::Button sessionButton;
+
+    UI::Label inRoomLabel; char inRoom[8];
+
   public:
     HostScene(Graphics *g);
     ~HostScene();

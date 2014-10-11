@@ -11,6 +11,12 @@ ANDROID_DEF=FG_ANDROID
 IOS_DEF=FG_IOS
 PC_DEF=FG_PC
 
+#
+# first to handle argumentless make
+#
+r: run
+	
+
 tags:
 	ctags -R $(SRC_DIR)/*
 
