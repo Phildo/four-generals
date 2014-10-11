@@ -17,6 +17,8 @@ extern "C"
 #define MAX_IP_LENGTH 16
 #define BUFF_SIZE 256
 
+class Model;
+
 struct Connection
 {
   int connection; //0-MAX_CONNECTIONS
@@ -62,8 +64,10 @@ class Network
     struct sockaddr_in cli_serv_sock_addr; //client's serv addr
     struct hostent *cli_server; //client's reference to server
     char cli_buff[BUFF_SIZE];
+
+    Model *model;
   public:
-    Network();
+    Network(Model *m);
     ~Network();
     void connectAsServer(int _port);
     void connectAsClient(char *_ip, int _port);

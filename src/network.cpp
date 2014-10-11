@@ -13,8 +13,10 @@ void * serverThreadHandle(void * arg);
 void * connectionThreadHandle(void * arg);
 void * clientThreadHandle(void * arg);
 
-Network::Network() : ip("")
+Network::Network(Model *m) : ip("")
 {
+  model = m;
+
   host_priv = true;
   iplen = 0;
   port = 8080;
