@@ -28,7 +28,7 @@ HostScene::HostScene(Graphics *g) :
   hostGameLabel = UI::Label(ww/2-100,wh/2-100,20,hostGame,10);
 
   Network::getIP(ip, &iplen);
-  ipLabel = UI::Label(ww/2-100,wh/2-100,20,ip,iplen);
+  ipLabel = UI::Label(ww/2-100,wh/2-80,20,ip,iplen);
 
   port[0] = '8';port[1] = '0';port[2] = '8';port[3] = '0';
   portlen = 4;
@@ -69,20 +69,22 @@ void HostScene::draw()
   backButton.draw(graphics);
   hostGameLabel.draw(graphics);
   ipLabel.draw(graphics);
-  portLabel.draw(graphics);
+  //portLabel.draw(graphics);
+
   nLabel.draw(graphics);
-  nButton.draw(graphics);
   sLabel.draw(graphics);
-  sButton.draw(graphics);
   wLabel.draw(graphics);
-  wButton.draw(graphics);
   eLabel.draw(graphics);
+
+  nButton.draw(graphics);
+  sButton.draw(graphics);
+  wButton.draw(graphics);
   eButton.draw(graphics);
 
   startSessLabel.draw(graphics);
-  cancelSessLabel.draw(graphics);
-  joinSessLabel.draw(graphics);
-  leaveSessLabel.draw(graphics);
+  //cancelSessLabel.draw(graphics);
+  //joinSessLabel.draw(graphics);
+  //leaveSessLabel.draw(graphics);
   sessionButton.draw(graphics);
 
   inRoomLabel.draw(graphics);

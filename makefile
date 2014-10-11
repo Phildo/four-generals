@@ -23,19 +23,19 @@ tags:
 #
 # defaults (switch out for sugar w/r/t currently working-on platform)
 #
-vmake: avmake
+vmake: pvmake
 	
 
-build: abuild
+build: pbuild
 	
 
-install: ainstall
+install: pinstall
 	
 
-run: arun
+run: prun
 	
 
-debug: adebug
+debug: pdebug
 	
 
 
