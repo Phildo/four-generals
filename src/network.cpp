@@ -3,84 +3,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <ifaddrs.h>
-#include <string.h>
-
-extern "C"
-{
-  #include <pthread.h>
-  #include <unistd.h>
-}
 
 #include "defines.h"
 #include "logger.h"
 
-#define MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
-#define BUFF_SIZE 256
+Network *net; //singleton, I know, I'm sorry
 
-struct Connection
+void * serverThreadHandle(void * arg);
+void * connectionThreadHandle(void * arg);
+void * clientThreadHandle(void * arg);
+
+Network::Network() : ip("")
 {
-  int connection; //0-MAX_CONNECTIONS
-  bool stale;
-  bool welcome;
+  host_priv = true;
+  iplen = 0;
+  port = 8080;
+  is_serv = false;
+  is_cli = false;
+  should_disconnect = false;
 
-  int sock_fd;
-  socklen_t sock_addr_len; //sizeof addr
-  struct sockaddr_in sock_addr;
+  net = this;
+}
 
-  pthread_t thread;
-  char buff[BUFF_SIZE];
-};
-
-void * serverThread(void * arg);
-void * connectionThread(void * arg);
-void * clientThread(void * arg);
-
-const bool host_priv = true;
-
-bool is_serv = false;
-bool is_cli = false;
-
-bool should_disconnect = false;
-
-int serv_sock_fd;
-struct sockaddr_in serv_sock_addr;
-pthread_t serv_thread;
-
-int n_cons;
-
-//an odd pattern-
-//holds connection memory contiguously on stack
-//pointers to the above memory, Q'd w/ emtpy connctions last
-Connection cons[MAX_CONNECTIONS];
-Connection *con_ps[MAX_CONNECTIONS];
-
-int cli_sock_fd;
-pthread_t cli_thread;
-struct sockaddr_in cli_serv_sock_addr; //client's serv addr
-struct hostent *cli_server; //client's reference to server
-char cli_buff[BUFF_SIZE];
-
-char Network::ip[MAX_IP_LENGTH] = "\0";
-int Network::iplen = 0;
-int Network::port = 8080;
-
-void Network::connectAsServer(int port)
+void Network::connectAsServer(int _port)
 {
-  if(!Network::iplen) getIP(Network::ip, &Network::iplen);
-  Network::port = port;
+  if(!iplen) getIP(ip, &iplen);
+  port = _port;
 
   is_serv = true;
-  int r = pthread_create(&serv_thread, NULL, serverThread, NULL)  ;
+  int r = pthread_create(&serv_thread, NULL, serverThreadHandle, NULL)  ;
   if(r != 0) fg_log("Failure creating server thread.");
 }
 
-void * serverThread(void * arg)
+void * serverThreadHandle(void * arg)
+{
+  if(!net) return 0;
+  return net->serverThread();
+}
+void * Network::serverThread()
 {
   n_cons = 0;
   for(int i = 0; i < MAX_CONNECTIONS; i++) cons[i].connection = i;
@@ -91,7 +51,7 @@ void * serverThread(void * arg)
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
   serv_sock_addr.sin_family = AF_INET;
   serv_sock_addr.sin_addr.s_addr = INADDR_ANY;
-  serv_sock_addr.sin_port = htons(Network::port);
+  serv_sock_addr.sin_port = htons(port);
 
   if(bind(serv_sock_fd, (struct sockaddr *) &serv_sock_addr, sizeof(serv_sock_addr)) < 0)
   {
@@ -136,7 +96,7 @@ void * serverThread(void * arg)
     if(n_cons == MAX_CONNECTIONS)
     {
       con->welcome = false;
-      int r = pthread_create(&(con->thread), NULL, connectionThread, (void *)con);
+      int r = pthread_create(&(con->thread), NULL, connectionThreadHandle, (void *)con);
       if(r != 0) fg_log("Failure creating connection thread.");
       pthread_join(con->thread, NULL);
       close(con->sock_fd);
@@ -152,7 +112,7 @@ void * serverThread(void * arg)
     }
     else
     {
-      int r = pthread_create(&(con->thread), NULL, connectionThread, (void *)con);
+      int r = pthread_create(&(con->thread), NULL, connectionThreadHandle, (void *)con);
       if(r != 0) fg_log("Failure creating connection thread.");
     }
   }
@@ -168,9 +128,14 @@ void * serverThread(void * arg)
   return 0;
 }
 
-void * connectionThread(void * arg)
+void * connectionThreadHandle(void * arg)
 {
   Connection *con = (Connection *)arg;
+  if(!net) return 0;
+  return net->connectionThread(con);
+}
+void * Network::connectionThread(Connection * con)
+{
   int n = 1;
 
   if(!con->welcome)
@@ -197,17 +162,22 @@ void * connectionThread(void * arg)
   return 0;
 }
 
-void Network::connectAsClient(char *ip, int port)
+void Network::connectAsClient(char *_ip, int _port)
 {
-  if(!Network::iplen) getIP(Network::ip, &Network::iplen);
-  Network::port = port;
+  if(!iplen) getIP(ip, &iplen);
+  port = _port;
 
   is_cli = true;
-  int r = pthread_create(&cli_thread, NULL, clientThread, NULL)  ;
+  int r = pthread_create(&cli_thread, NULL, clientThreadHandle, NULL)  ;
   if(r != 0) fg_log("Failure creating client thread.");
 }
 
-void * clientThread(void *arg)
+void * clientThreadHandle(void *arg)
+{
+  if(!net) return 0;
+  return net->clientThread();
+}
+void * Network::clientThread()
 {
   cli_sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -217,7 +187,7 @@ void * clientThread(void *arg)
   bzero((char *)&cli_serv_sock_addr, sizeof(cli_serv_sock_addr));
   cli_serv_sock_addr.sin_family = AF_INET;
   bcopy((char *)cli_server->h_addr, (char *)&cli_serv_sock_addr.sin_addr.s_addr, cli_server->h_length);
-  cli_serv_sock_addr.sin_port = htons(Network::port);
+  cli_serv_sock_addr.sin_port = htons(port);
 
   if(connect(cli_sock_fd,(struct sockaddr *)&cli_serv_sock_addr, sizeof(cli_serv_sock_addr)) < 0)
   {
@@ -253,14 +223,14 @@ void Network::disconnect()
   is_serv = false;
 }
 
-void Network::getIP(char *ip, int *len)
+void Network::getIP(char *_ip, int *_len)
 {
   struct ifaddrs *ap;
   struct ifaddrs *cur;
   int r;
 
   char host[NI_MAXHOST];
-  strcpy(ip,"0.0.0.0");
+  strcpy(_ip,"0.0.0.0");
 
   r = getifaddrs(&ap);
   for(cur = ap; cur != NULL; cur = cur->ifa_next)
@@ -270,11 +240,16 @@ void Network::getIP(char *ip, int *len)
     if(r == AF_INET)
     {
       r = getnameinfo(cur->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-      if(strcmp(cur->ifa_name, "en0") == 0) strcpy(ip, host);
+      if(strcmp(cur->ifa_name, "en0") == 0) strcpy(_ip, host);
     }
   }
 
  freeifaddrs(ap);
- *len = strlen(ip);
+ *_len = strlen(_ip);
+}
+
+Network::~Network()
+{
+  disconnect();
 }
 

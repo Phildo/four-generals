@@ -8,14 +8,14 @@
 
 HostScene::HostScene(Graphics *g) : 
   hostGame("Host Game"),
-  startSess("Start Session"),
-  cancelSess("Cancel Session"),
-  joinSess("Join Session"),
-  leaveSess("Leave Session"),
   n('N'),
   s('S'),
   w('W'),
   e('E'),
+  startSess("Start Session"),
+  cancelSess("Cancel Session"),
+  joinSess("Join Session"),
+  leaveSess("Leave Session"),
   inRoom("In Room")
 {
   graphics = g;
@@ -27,7 +27,7 @@ HostScene::HostScene(Graphics *g) :
 
   hostGameLabel = UI::Label(ww/2-100,wh/2-100,20,hostGame,10);
 
-  Network::getIP(ip, &iplen);
+  //Network::getIP(ip, &iplen);
   ipLabel = UI::Label(ww/2-100,wh/2-80,20,ip,iplen);
 
   port[0] = '8';port[1] = '0';port[2] = '8';port[3] = '0';
