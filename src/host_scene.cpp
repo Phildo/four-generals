@@ -17,7 +17,7 @@ HostScene::HostScene(Graphics *g)
 
   hostGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Host Game");
 
-  ipLabel = UI::Label(ww/2-100,wh/2-80,20,"exampleip");
+  ipLabel = UI::Label(ww/2-100,wh/2-80,20,Network::getIP().ptr());
 
   portLabel = UI::Label(ww/2-100,wh/2-100,20,"8080");
 
