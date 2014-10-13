@@ -1,5 +1,5 @@
-#ifndef _INTRO_SCENE_H_
-#define _INTRO_SCENE_H_
+#ifndef _FG_INTRO_SCENE_H_
+#define _FG_INTRO_SCENE_H_
 
 #include "scene.h"
 #include "ui.h"

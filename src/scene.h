@@ -1,5 +1,5 @@
-#ifndef _SCENE_H_
-#define _SCENE_H_
+#ifndef _FG_SCENE_H_
+#define _FG_SCENE_H_
 
 struct In;
 

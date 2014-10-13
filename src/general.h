@@ -1,5 +1,5 @@
-#ifndef _GENERAL_H_
-#define _GENERAL_H_
+#ifndef _FG_GENERAL_H_
+#define _FG_GENERAL_H_
 
 class General
 {

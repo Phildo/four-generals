@@ -1,5 +1,5 @@
-#ifndef _DEFINES_H_
-#define _DEFINES_H_
+#ifndef _FG_DEFINES_H_
+#define _FG_DEFINES_H_
 
 #define FG_PC
 

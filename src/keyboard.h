@@ -1,9 +1,9 @@
 
 struct Keyboard
 {
-  #define MAX_KEYBOARD_Q_LEN 256
+  #define FG_MAX_KEYBOARD_Q_LEN 256
   int inQLen;
-  char inputQ[MAX_KEYBOARD_Q_LEN];
+  char inputQ[FG_MAX_KEYBOARD_Q_LEN];
 
   char characters[50];
   Label glyphs[50];

@@ -97,7 +97,7 @@ char Keyboard::poll()
 
 void Keyboard::enqueue(char c)
 {
-  if(inQLen >= MAX_KEYBOARD_Q_LEN) return; //ignore input
+  if(inQLen >= FG_MAX_KEYBOARD_Q_LEN) return; //ignore input
   inputQ[inQLen] = c;
   inQLen++;
 }

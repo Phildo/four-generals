@@ -1,5 +1,5 @@
-#ifndef _LOGGER_H_
-#define _LOGGER_H_
+#ifndef _FG_LOGGER_H_
+#define _FG_LOGGER_H_
 
 #include "defines.h"
 

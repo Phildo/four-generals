@@ -1,5 +1,5 @@
-#ifndef _INPUT_H_
-#define _INPUT_H_
+#ifndef _FG_INPUT_H_
+#define _FG_INPUT_H_
 
 #include <SDL.h>
 

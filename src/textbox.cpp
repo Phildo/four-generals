@@ -23,7 +23,7 @@ void Textbox::getString(char *&c)
 
 void Textbox::input(char c)
 {
-  if(textLen >= MAX_TEXTBOX_LEN) return; //ignore input
+  if(textLen >= FG_MAX_TEXTBOX_LEN) return; //ignore input
   text[textLen] = c;
   textLen++;
   string.length = textLen;

@@ -45,8 +45,8 @@ void * serverThreadHandle(void * arg)
 void * Network::serverThread()
 {
   n_cons = 0;
-  for(int i = 0; i < MAX_CONNECTIONS; i++) cons[i].connection = i;
-  for(int i = 0; i < MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
+  for(int i = 0; i < FG_MAX_CONNECTIONS; i++) cons[i].connection = i;
+  for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
 
   serv_sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -95,7 +95,7 @@ void * Network::serverThread()
 
     //Final connection will be told off and closed
     //Wait for that to happen before accepting any more
-    if(n_cons == MAX_CONNECTIONS)
+    if(n_cons == FG_MAX_CONNECTIONS)
     {
       con->welcome = false;
       int r = pthread_create(&(con->thread), NULL, connectionThreadHandle, (void *)con);
@@ -148,8 +148,8 @@ void * Network::connectionThread(Connection * con)
   }
   while(!should_disconnect && n > 0)
   {
-    bzero(con->buff, BUFF_SIZE);
-    n = read(con->sock_fd, con->buff, BUFF_SIZE-1);
+    bzero(con->buff, FG_BUFF_SIZE);
+    n = read(con->sock_fd, con->buff, FG_BUFF_SIZE-1);
     if(n <= 0) fg_log("Failure reading connection.");
     else
     {
@@ -201,8 +201,8 @@ void * Network::clientThread()
 
   while(!should_disconnect && n > 0)
   {
-    bzero(cli_buff, BUFF_SIZE);
-    n = read(cli_sock_fd,cli_buff,BUFF_SIZE-1);
+    bzero(cli_buff, FG_BUFF_SIZE);
+    n = read(cli_sock_fd,cli_buff,FG_BUFF_SIZE-1);
     if(n <= 0) fg_log("Failure reading client.");
     else fg_log("Cli Received(%d): %s",n,cli_buff);
   }

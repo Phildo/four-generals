@@ -1,5 +1,5 @@
-#ifndef NETWORK_H
-#define NETWORK_H
+#ifndef _FG_NETWORK_H
+#define _FG_NETWORK_H
 
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -13,15 +13,15 @@ extern "C"
   #include <unistd.h>
 }
 
-#define MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
-#define MAX_IP_LENGTH 16
-#define BUFF_SIZE 256
+#define FG_MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
+#define FG_MAX_IP_LENGTH 16
+#define FG_BUFF_SIZE 256
 
 class Model;
 
 struct Connection
 {
-  int connection; //0-MAX_CONNECTIONS
+  int connection; //0-FG_MAX_CONNECTIONS
   bool stale;
   bool welcome;
 
@@ -30,13 +30,13 @@ struct Connection
   struct sockaddr_in sock_addr;
 
   pthread_t thread;
-  char buff[BUFF_SIZE];
+  char buff[FG_BUFF_SIZE];
 };
 
 class Network
 {
   private:
-    char ip[MAX_IP_LENGTH];
+    char ip[FG_MAX_IP_LENGTH];
     int iplen;
     int port;
 
@@ -56,14 +56,14 @@ class Network
     //an odd pattern-
     //holds connection memory contiguously on stack
     //pointers to the above memory, Q'd w/ emtpy connctions last
-    Connection cons[MAX_CONNECTIONS];
-    Connection *con_ps[MAX_CONNECTIONS];
+    Connection cons[FG_MAX_CONNECTIONS];
+    Connection *con_ps[FG_MAX_CONNECTIONS];
 
     int cli_sock_fd;
     pthread_t cli_thread;
     struct sockaddr_in cli_serv_sock_addr; //client's serv addr
     struct hostent *cli_server; //client's reference to server
-    char cli_buff[BUFF_SIZE];
+    char cli_buff[FG_BUFF_SIZE];
 
     Model *model;
   public:

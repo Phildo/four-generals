@@ -1,5 +1,5 @@
-#ifndef _GAME_H_
-#define _GAME_H_
+#ifndef _FG_GAME_H_
+#define _FG_GAME_H_
 
 #include "var_array.h"
 

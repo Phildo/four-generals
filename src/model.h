@@ -1,5 +1,5 @@
-#ifndef _MODEL_H_
-#define _MODEL_H_
+#ifndef _FG_MODEL_H_
+#define _FG_MODEL_H_
 
 #include "general.h"
 
