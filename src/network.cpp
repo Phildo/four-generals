@@ -18,18 +18,18 @@ Network::Network(Model *m) : ip("")
   model = m;
 
   host_priv = true;
-  iplen = 0;
   port = 8080;
   is_serv = false;
   is_cli = false;
   should_disconnect = false;
+
+  ip = getIP();
 
   net = this;
 }
 
 void Network::connectAsServer(int _port)
 {
-  if(!iplen) getIP(ip, &iplen);
   port = _port;
 
   is_serv = true;
@@ -164,9 +164,8 @@ void * Network::connectionThread(Connection * con)
   return 0;
 }
 
-void Network::connectAsClient(char *_ip, int _port)
+void Network::connectAsClient(const String &_ip, int _port)
 {
-  if(!iplen) getIP(ip, &iplen);
   port = _port;
 
   is_cli = true;
@@ -210,10 +209,10 @@ void * Network::clientThread()
   return 0;
 }
 
-void Network::broadcast(char *c, int l)
+void Network::broadcast(const String &s)
 {
-  if(is_serv) fg_log("Serv should broadcast %s",c);
-  if(is_cli) fg_log("Cli should broadcast %s",c);
+  if(is_serv) fg_log("Serv should broadcast %s",s.ptr());
+  if(is_cli) fg_log("Cli should broadcast %s",s.ptr());
 }
 
 void Network::disconnect()
@@ -225,14 +224,14 @@ void Network::disconnect()
   is_serv = false;
 }
 
-void Network::getIP(char *_ip, int *_len)
+String Network::getIP()
 {
   struct ifaddrs *ap;
   struct ifaddrs *cur;
   int r;
 
   char host[NI_MAXHOST];
-  strcpy(_ip,"0.0.0.0");
+  String ip;
 
   r = getifaddrs(&ap);
   for(cur = ap; cur != NULL; cur = cur->ifa_next)
@@ -242,12 +241,12 @@ void Network::getIP(char *_ip, int *_len)
     if(r == AF_INET)
     {
       r = getnameinfo(cur->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-      if(strcmp(cur->ifa_name, "en0") == 0) strcpy(_ip, host);
+      if(strcmp(cur->ifa_name, "en0") == 0) ip = String(host, strlen(host));
     }
   }
 
  freeifaddrs(ap);
- *_len = strlen(_ip);
+ return ip;
 }
 
 Network::~Network()

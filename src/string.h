@@ -18,6 +18,7 @@ class String
     String(String &&other);
 
     String(const char* s, int l);
+    String(const char* s); //derive length from string
     ~String();
     int len() const;
     const char *ptr() const;

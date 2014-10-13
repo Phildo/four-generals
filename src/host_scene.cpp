@@ -6,17 +6,7 @@
 
 #include "logger.h"
 
-HostScene::HostScene(Graphics *g) : 
-  hostGame("Host Game"),
-  n('N'),
-  s('S'),
-  w('W'),
-  e('E'),
-  startSess("Start Session"),
-  cancelSess("Cancel Session"),
-  joinSess("Join Session"),
-  leaveSess("Leave Session"),
-  inRoom("In Room")
+HostScene::HostScene(Graphics *g)
 {
   graphics = g;
 
@@ -25,27 +15,24 @@ HostScene::HostScene(Graphics *g) :
 
   backButton = UI::Button(10,10,20,20);
 
-  hostGameLabel = UI::Label(ww/2-100,wh/2-100,20,hostGame,10);
+  hostGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Host Game",9);
 
-  //Network::getIP(ip, &iplen);
-  ipLabel = UI::Label(ww/2-100,wh/2-80,20,ip,iplen);
+  ipLabel = UI::Label(ww/2-100,wh/2-80,20,"exampleip",9);
 
-  port[0] = '8';port[1] = '0';port[2] = '8';port[3] = '0';
-  portlen = 4;
-  portLabel = UI::Label(ww/2-100,wh/2-100,20,port,portlen);
+  portLabel = UI::Label(ww/2-100,wh/2-100,20,"8080",4);
 
-  nLabel = UI::Label(ww/2-10,     10, 20, &n, 1);  nButton = UI::Button(ww/2-10,     10, 20, 20);
-  sLabel = UI::Label(ww/2-10,   wh-30, 20, &s, 1);  sButton = UI::Button(ww/2-10,   wh-30, 20, 20);
-  wLabel = UI::Label(10,     wh/2-10, 20, &w, 1);  wButton = UI::Button(10,     wh/2-10, 20, 20);
-  eLabel = UI::Label(ww-30,   wh/2-10, 20, &e, 1);  eButton = UI::Button(ww-30,   wh/2-10, 20, 20);
+  nLabel = UI::Label(ww/2-10,      10, 20, "N", 1);  nButton = UI::Button(ww/2-10,     10, 20, 20);
+  sLabel = UI::Label(ww/2-10, wh  -30, 20, "S", 1);  sButton = UI::Button(ww/2-10,   wh-30, 20, 20);
+  wLabel = UI::Label(10,      wh/2-10, 20, "W", 1);  wButton = UI::Button(10,     wh/2-10, 20, 20);
+  eLabel = UI::Label(ww-30,   wh/2-10, 20, "E", 1);  eButton = UI::Button(ww-30,   wh/2-10, 20, 20);
 
-  startSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, startSess,  14);
-  cancelSessLabel = UI::Label(ww/2-100, wh/2-50, 20, cancelSess, 15);
-  joinSessLabel   = UI::Label(ww/2-100, wh/2-50, 20, joinSess,   13);
-  leaveSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, leaveSess,  14);
+  startSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, "Start Session",  13);
+  cancelSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Cancel Session", 14);
+  joinSessLabel   = UI::Label(ww/2-100, wh/2-50, 20, "Join Session",   12);
+  leaveSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, "Leave Session",  13);
   sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
 
-  inRoomLabel = UI::Label(ww/2-100, wh/2, 20, inRoom, 8);
+  inRoomLabel = UI::Label(ww/2-100, wh/2, 20, "In Room", 8);
 }
 
 

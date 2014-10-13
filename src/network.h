@@ -13,8 +13,9 @@ extern "C"
   #include <unistd.h>
 }
 
+#include "string.h"
+
 #define FG_MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
-#define FG_MAX_IP_LENGTH 16
 #define FG_BUFF_SIZE 256
 
 class Model;
@@ -36,8 +37,7 @@ struct Connection
 class Network
 {
   private:
-    char ip[FG_MAX_IP_LENGTH];
-    int iplen;
+    String ip;
     int port;
 
     bool host_priv;
@@ -70,10 +70,10 @@ class Network
     Network(Model *m);
     ~Network();
     void connectAsServer(int _port);
-    void connectAsClient(char *_ip, int _port);
-    void broadcast(char *c, int l);
+    void connectAsClient(const String &_ip, int _port);
+    void broadcast(const String &s);
     void disconnect();
-    void getIP(char *_ip, int *_len);
+    String getIP();
 
     void *serverThread();
     void *connectionThread(Connection * con);
