@@ -7,6 +7,8 @@ struct Label
   void draw(Graphics *g);
   Label();
   Label(SDL_Rect r, const char *s, int l);
+  Label(SDL_Rect r, const char *s);
   Label(int x, int y, int h, const char *s, int l);
+  Label(int x, int y, int h, const char *s);
 };
 
