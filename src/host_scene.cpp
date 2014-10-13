@@ -6,9 +6,10 @@
 
 #include "logger.h"
 
-HostScene::HostScene(Graphics *g)
+HostScene::HostScene(Graphics *g, Model *m)
 {
   graphics = g;
+  model = m;
 
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
@@ -43,7 +44,12 @@ void HostScene::touch(In &in)
   if(sButton.query(in)) fg_log("sButton");
   if(wButton.query(in)) fg_log("wButton");
   if(eButton.query(in)) fg_log("eButton");
-  if(sessionButton.query(in)) fg_log("sessionButton");
+  if(sessionButton.query(in))
+  {
+    fg_log("sessionButton");
+    server = new Network::Server(model);
+    server->connect(8080);
+  }
 }
 
 int HostScene::tick()
@@ -79,6 +85,7 @@ void HostScene::draw()
 
 HostScene::~HostScene()
 {
+  if(server) delete server;
 
 }
 

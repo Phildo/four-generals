@@ -158,6 +158,11 @@ void Server::disconnect()
   pthread_join(thread, NULL);
 }
 
+Server::~Server()
+{
+  disconnect();
+}
+
 
 Client::Client(Model *m)
 {

@@ -21,7 +21,7 @@ Game::Game()
   input = new Input(graphics);
   model = new Model();
   scenes[0] = new IntroScene(graphics);
-  scenes[1] = new HostScene(graphics);
+  scenes[1] = new HostScene(graphics, model);
 }
 
 void Game::run()

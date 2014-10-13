@@ -3,6 +3,8 @@
 
 #include "scene.h"
 #include "ui.h"
+#include "network.h"
+
 class Graphics;
 
 class HostScene : public Scene
@@ -29,8 +31,12 @@ class HostScene : public Scene
 
     UI::Label inRoomLabel;
 
+    Network::Server *server;
+    Network::Client *client;
+
+    Model *model;
   public:
-    HostScene(Graphics *g);
+    HostScene(Graphics *g, Model *m);
     ~HostScene();
     void touch(In &in);
     int tick();
