@@ -20,65 +20,105 @@ extern "C"
 
 class Model;
 
-struct Connection
+namespace Network
 {
-  int connection; //0-FG_MAX_CONNECTIONS
-  bool stale;
-  bool welcome;
+  extern bool host_priv;
+  String getIP();
+  void * servThreadHandoff(void * arg);
+  void * conThreadHandoff(void * arg);
+  void * cliThreadHandoff(void * arg);
 
-  int sock_fd;
-  socklen_t sock_addr_len; //sizeof addr
-  struct sockaddr_in sock_addr;
+  class Connection;
+  struct ConThreadHandle { Connection *connection; };
+  class Connection
+  {
+    private:
+      bool should_disconnect;
+    public:
+      ConThreadHandle handle;
 
-  pthread_t thread;
-  char buff[FG_BUFF_SIZE];
-};
+      int connection; //0-FG_MAX_CONNECTIONS
+      bool stale;
+      bool welcome;
 
-class Network
-{
-  private:
-    String ip;
-    int port;
+      int sock_fd;
+      socklen_t sock_addr_len; //sizeof addr
+      struct sockaddr_in sock_addr;
 
-    bool host_priv;
+      pthread_t thread;
+      char buff[FG_BUFF_SIZE];
 
-    bool is_serv;
-    bool is_cli;
+      Connection();
+      void disconnect();
 
-    bool should_disconnect;
+      void *fork();
+  };
 
-    int serv_sock_fd;
-    struct sockaddr_in serv_sock_addr;
-    pthread_t serv_thread;
+  class Server;
+  struct ServThreadHandle { Server *server; };
+  class Server
+  {
+    private:
+      ServThreadHandle handle;
 
-    int n_cons;
+      String ip;
+      int port;
 
-    //an odd pattern-
-    //holds connection memory contiguously on stack
-    //pointers to the above memory, Q'd w/ emtpy connctions last
-    Connection cons[FG_MAX_CONNECTIONS];
-    Connection *con_ps[FG_MAX_CONNECTIONS];
+      bool should_disconnect;
 
-    int cli_sock_fd;
-    pthread_t cli_thread;
-    struct sockaddr_in cli_serv_sock_addr; //client's serv addr
-    struct hostent *cli_server; //client's reference to server
-    char cli_buff[FG_BUFF_SIZE];
+      int sock_fd;
+      struct sockaddr_in sock_addr;
+      pthread_t thread;
 
-    Model *model;
-  public:
-    Network(Model *m);
-    ~Network();
-    void connectAsServer(int _port);
-    void connectAsClient(const String &_ip, int _port);
-    void broadcast(const String &s);
-    void disconnect();
-    String getIP();
+      //an odd pattern-
+      //holds connection memory contiguously on stack
+      //pointers to the above memory, Q'd w/ emtpy connctions last
+      Connection cons[FG_MAX_CONNECTIONS];
+      Connection *con_ps[FG_MAX_CONNECTIONS];
+      int n_cons;
 
-    void *serverThread();
-    void *connectionThread(Connection * con);
-    void *clientThread();
-};
+      Model *model;
+    public:
+      Server(Model *m);
+      ~Server();
+
+      void connect(int _port);
+      void broadcast(const String &s);
+      void disconnect();
+
+      void *fork();
+  };
+
+  class Client;
+  struct CliThreadHandle { Client *client; };
+  class Client
+  {
+    private:
+      CliThreadHandle handle;
+
+      String ip;
+      int port;
+
+      bool should_disconnect;
+
+      int sock_fd;
+      pthread_t thread;
+      struct sockaddr_in serv_sock_addr; //client's serv addr
+      struct hostent *serv_host; //client's reference to server
+      char buff[FG_BUFF_SIZE];
+
+      Model *model;
+    public:
+      Client(Model *m);
+      ~Client();
+
+      void connect(const String &_ip, int _port);
+      void broadcast(const String &s);
+      void disconnect();
+
+      void *fork();
+  };
+}
 
 #endif
 

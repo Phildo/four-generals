@@ -6,7 +6,6 @@
 class Graphics;
 class Input;
 class Model;
-class Network;
 class Scene;
 
 #define FG_NUM_SCENES 2
@@ -17,7 +16,6 @@ class Game
     Graphics* graphics;
     Input *input;
     Model* model;
-    Network* network;
     Scene* scenes[FG_NUM_SCENES];
 
   public:

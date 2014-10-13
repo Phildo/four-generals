@@ -2,7 +2,6 @@
 #include "graphics.h"
 #include "input.h"
 #include "model.h"
-#include "network.h"
 #include "scene.h"
 
 #include "intro_scene.h"
@@ -21,7 +20,6 @@ Game::Game()
   graphics = new Graphics();
   input = new Input(graphics);
   model = new Model();
-  network = new Network(model);
   scenes[0] = new IntroScene(graphics);
   scenes[1] = new HostScene(graphics);
 }
@@ -52,7 +50,6 @@ Game::~Game()
 {
   for(int i = 0; i < FG_NUM_SCENES; i++)
     delete scenes[i];
-  delete network;
   delete model;
   delete input;
   delete graphics;
