@@ -3,7 +3,7 @@ Textbox::Textbox(SDL_Rect r)
 {
   textLen = 0;
   rect = r;
-  string = Label(rect, text, 0);
+  label = Label(rect, text, 0);
 }
 Textbox::Textbox(int x, int y, int w, int h)
 {
@@ -12,7 +12,7 @@ Textbox::Textbox(int x, int y, int w, int h)
   rect.y = y;
   rect.w = w;
   rect.h = h;
-  string = Label(rect, text, 0);
+  label = Label(rect, text, 0);
 }
 
 void Textbox::getString(char *&c)
@@ -26,20 +26,20 @@ void Textbox::input(char c)
   if(textLen >= FG_MAX_TEXTBOX_LEN) return; //ignore input
   text[textLen] = c;
   textLen++;
-  string.length = textLen;
+  label = Label(rect, text, textLen); //ouch- copy every time
 }
 
 void Textbox::backspace()
 {
   if(textLen == 0) return;
   textLen--;
-  string.length = textLen;
+  label = Label(rect, text, textLen); //ouch- copy every time
 }
 
 void Textbox::clear()
 {
   textLen = 0;
-  string.length = textLen;
+  label = Label(rect, "\0", 0); //ouch- copy every time
 }
 
 void Textbox::draw(Graphics *g)
@@ -90,6 +90,6 @@ void Textbox::draw(Graphics *g)
   tmp.h = rect.h;
   g->draw(Sprite::border_l(), tmp);
 
-  string.draw(g);
+  label.draw(g);
 }
 

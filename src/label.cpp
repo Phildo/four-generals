@@ -1,27 +1,23 @@
 Label::Label() { }
-Label::Label(SDL_Rect r, char *s, int l)
+Label::Label(SDL_Rect r, const char *s, int l) : string(s, l)
 {
   rect = r;
   rect.w = n_w*((float)r.h/(float)n_h);
-  string = s;
-  length = l;
 }
-Label::Label(int x, int y, int h, char *s, int l)
+Label::Label(int x, int y, int h, const char *s, int l) : string(s, l)
 {
   rect.x = x;
   rect.y = y;
   rect.w = n_w*((float)h/(float)n_h);
   rect.h = h;
-  string = s;
-  length = l;
 }
 
 void Label::draw(Graphics *g)
 {
   SDL_Rect tmp = rect;
-  for(int i = 0; i < length; i++)
+  for(int i = 0; i < string.len(); i++)
   {
-    g->draw(Sprite::alpha(*(string+i)),tmp);
+    g->draw(Sprite::alpha(*(string.ptr()+i)),tmp);
     tmp.x += tmp.w;
   }
 }

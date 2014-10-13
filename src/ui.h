@@ -2,6 +2,8 @@
 #define _FG_UI_H_
 
 #include <SDL.h>
+#include "string.h"
+
 struct In;
 class Graphics;
 

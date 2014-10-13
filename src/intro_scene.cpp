@@ -5,17 +5,17 @@
 
 #include "logger.h"
 
-IntroScene::IntroScene(Graphics *g) : host("Host"), join("Join"), how("How to Play")
+IntroScene::IntroScene(Graphics *g)
 {
   graphics = g;
 
-  hostLabel  = UI::Label( g->winWidth()-225,25,    20,host,4);
+  hostLabel  = UI::Label( g->winWidth()-225,25,    20,"Host",5);
   hostButton = UI::Button(g->winWidth()-225,25,200,20);
 
-  joinLabel  = UI::Label( g->winWidth()-225,55,    20,join,4);
+  joinLabel  = UI::Label( g->winWidth()-225,55,    20,"Join",5);
   joinButton = UI::Button(g->winWidth()-225,55,200,20);
 
-  howLabel  = UI::Label( g->winWidth()-225,85,    20,how,4);
+  howLabel  = UI::Label( g->winWidth()-225,85,    20,"How to Play",12);
   howButton = UI::Button(g->winWidth()-225,85,200,20);
 
   SCENE_CHANGE_HACK = 0;

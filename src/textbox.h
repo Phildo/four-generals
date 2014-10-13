@@ -4,7 +4,7 @@ struct Textbox
   #define FG_MAX_TEXTBOX_LEN 256
   int textLen;
   char text[FG_MAX_TEXTBOX_LEN+1]; //+1 for null
-  Label string;
+  Label label;
 
   SDL_Rect rect;
 
