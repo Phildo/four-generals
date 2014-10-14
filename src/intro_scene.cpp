@@ -24,7 +24,7 @@ IntroScene::IntroScene(Graphics *g)
 void IntroScene::touch(In &in)
 {
   if(hostButton.query(in)) { fg_log("touched s!"); SCENE_CHANGE_HACK = 1; }
-  if(joinButton.query(in)) fg_log("touched j!");
+  if(joinButton.query(in)) { fg_log("touched j!"); SCENE_CHANGE_HACK = 2; }
   if(howButton.query(in)) fg_log("touched h!");
 }
 

@@ -1,5 +1,5 @@
-#ifndef _FG_HOST_SCENE_H_
-#define _FG_HOST_SCENE_H_
+#ifndef _FG_CLIENT_SCENE_H_
+#define _FG_CLIENT_SCENE_H_
 
 #include "scene.h"
 #include "ui.h"
@@ -7,26 +7,28 @@
 
 class Graphics;
 
-class HostScene : public Scene
+class ClientScene : public Scene
 {
   private:
     Graphics *graphics;
 
     UI::Button backButton;
 
-    UI::Label hostGameLabel;
+    UI::Label joinGameLabel;
     UI::Label ipLabel;
     UI::Label portLabel;
 
-    UI::Label startSessLabel;
+    UI::Label joinSessLabel;
     UI::Button sessionButton;
 
-    Network::Server *server;
+    UI::Label inRoomLabel;
+
+    Network::Client *client;
 
     Model *model;
   public:
-    HostScene(Graphics *g, Model *m);
-    ~HostScene();
+    ClientScene(Graphics *g, Model *m);
+    ~ClientScene();
     void touch(In &in);
     int tick();
     void draw();

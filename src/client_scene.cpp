@@ -1,4 +1,4 @@
-#include "host_scene.h"
+#include "client_scene.h"
 #include "graphics.h"
 #include "network.h"
 #include "model.h"
@@ -7,7 +7,7 @@
 
 #include "logger.h"
 
-HostScene::HostScene(Graphics *g, Model *m)
+ClientScene::ClientScene(Graphics *g, Model *m)
 {
   graphics = g;
   model = m;
@@ -17,48 +17,48 @@ HostScene::HostScene(Graphics *g, Model *m)
 
   backButton = UI::Button(10,10,20,20);
 
-  hostGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Host Game");
+  joinGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Join Game");
 
   ipLabel = UI::Label(ww/2-100,wh/2-80,20,Network::getIP().ptr());
 
   portLabel = UI::Label(ww/2-100,wh/2-100,20,"8080");
 
-  startSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, "Start Session");
+  joinSessLabel   = UI::Label(ww/2-100, wh/2-50, 20, "Join Session");
   sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
 
-  server = 0;
+  client = 0;
 }
 
 
-void HostScene::touch(In &in)
+void ClientScene::touch(In &in)
 {
   if(backButton.query(in)) fg_log("backButton");
   if(sessionButton.query(in))
   {
     fg_log("sessionButton");
-    server = new Network::Server(model);
-    server->connect(8080);
+    client = new Network::Client(model);
+    client->connect(String("localhost"),8080);
   }
 }
 
-int HostScene::tick()
+int ClientScene::tick()
 {
   return 0;
 }
 
-void HostScene::draw()
+void ClientScene::draw()
 {
   backButton.draw(graphics);
-  hostGameLabel.draw(graphics);
+  joinGameLabel.draw(graphics);
   ipLabel.draw(graphics);
   portLabel.draw(graphics);
 
-  startSessLabel.draw(graphics);
+  joinSessLabel.draw(graphics);
   sessionButton.draw(graphics);
 }
 
-HostScene::~HostScene()
+ClientScene::~ClientScene()
 {
-  if(server) delete server;
+  if(client) delete client;
 }
 

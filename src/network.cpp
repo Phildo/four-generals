@@ -160,7 +160,6 @@ void Server::disconnect()
 
 Server::~Server()
 {
-  disconnect();
 }
 
 
@@ -225,6 +224,10 @@ void Client::disconnect()
   pthread_join(thread, NULL);
 }
 
+Client::~Client()
+{
+}
+
 Connection::Connection()
 {
   should_disconnect = false;
@@ -264,5 +267,9 @@ void Connection::disconnect()
 {
   should_disconnect = true;
   pthread_join(thread, NULL);
+}
+
+Connection::~Connection()
+{
 }
 

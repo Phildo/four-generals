@@ -6,6 +6,8 @@
 
 #include "intro_scene.h"
 #include "host_scene.h"
+#include "client_scene.h"
+#include "room_scene.h"
 
 #include "sprite.h"
 #include "logger.h"
@@ -22,6 +24,8 @@ Game::Game()
   model = new Model();
   scenes[0] = new IntroScene(graphics);
   scenes[1] = new HostScene(graphics, model);
+  scenes[2] = new ClientScene(graphics, model);
+  scenes[3] = new RoomScene(graphics, model);
 }
 
 void Game::run()

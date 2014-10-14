@@ -49,6 +49,8 @@ namespace Network
       char buff[FG_BUFF_SIZE];
 
       Connection();
+      ~Connection();
+
       void disconnect();
 
       void *fork();
