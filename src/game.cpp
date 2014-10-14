@@ -1,6 +1,7 @@
 #include "game.h"
 #include "graphics.h"
 #include "input.h"
+#include "network.h"
 #include "model.h"
 #include "scene.h"
 
@@ -21,10 +22,13 @@ Game::Game()
 {
   graphics = new Graphics();
   input = new Input(graphics);
+  //save allocation until necessary
+  server = 0;
+  client = 0;
   model = new Model();
   scenes[0] = new IntroScene(graphics);
-  scenes[1] = new HostScene(graphics, model);
-  scenes[2] = new ClientScene(graphics, model);
+  scenes[1] = new HostScene(graphics, server, client);
+  scenes[2] = new ClientScene(graphics, client);
   scenes[3] = new RoomScene(graphics, model);
 }
 
@@ -55,6 +59,8 @@ Game::~Game()
   for(int i = 0; i < FG_NUM_SCENES; i++)
     delete scenes[i];
   delete model;
+  if(client) delete client;
+  if(server) delete server;
   delete input;
   delete graphics;
 }

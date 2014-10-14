@@ -24,10 +24,8 @@ class ClientScene : public Scene
     UI::Label inRoomLabel;
 
     Network::Client *client;
-
-    Model *model;
   public:
-    ClientScene(Graphics *g, Model *m);
+    ClientScene(Graphics *g, Network::Client *& c);
     ~ClientScene();
     void touch(In &in);
     int tick();

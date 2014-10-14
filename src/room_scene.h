@@ -6,6 +6,7 @@
 #include "network.h"
 
 class Graphics;
+class Model;
 
 class RoomScene : public Scene
 {

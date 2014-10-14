@@ -18,8 +18,6 @@ extern "C"
 #define FG_MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
 #define FG_BUFF_SIZE 256
 
-class Model;
-
 namespace Network
 {
   extern bool host_priv;
@@ -78,10 +76,8 @@ namespace Network
       Connection cons[FG_MAX_CONNECTIONS];
       Connection *con_ps[FG_MAX_CONNECTIONS];
       int n_cons;
-
-      Model *model;
     public:
-      Server(Model *m);
+      Server();
       ~Server();
 
       void connect(int _port);
@@ -108,10 +104,8 @@ namespace Network
       struct sockaddr_in serv_sock_addr; //client's serv addr
       struct hostent *serv_host; //client's reference to server
       char buff[FG_BUFF_SIZE];
-
-      Model *model;
     public:
-      Client(Model *m);
+      Client();
       ~Client();
 
       void connect(const String &_ip, int _port);

@@ -1,16 +1,14 @@
 #include "client_scene.h"
 #include "graphics.h"
 #include "network.h"
-#include "model.h"
 
 #include <SDL.h>
 
 #include "logger.h"
 
-ClientScene::ClientScene(Graphics *g, Model *m)
+ClientScene::ClientScene(Graphics *g, Network::Client *& c)
 {
   graphics = g;
-  model = m;
 
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
@@ -36,7 +34,7 @@ void ClientScene::touch(In &in)
   if(sessionButton.query(in))
   {
     fg_log("sessionButton");
-    client = new Network::Client(model);
+    client = new Network::Client();
     client->connect(String("localhost"),8080);
   }
 }

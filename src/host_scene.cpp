@@ -1,16 +1,14 @@
 #include "host_scene.h"
 #include "graphics.h"
 #include "network.h"
-#include "model.h"
 
 #include <SDL.h>
 
 #include "logger.h"
 
-HostScene::HostScene(Graphics *g, Model *m)
+HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c)
 {
   graphics = g;
-  model = m;
 
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
@@ -36,7 +34,7 @@ void HostScene::touch(In &in)
   if(sessionButton.query(in))
   {
     fg_log("sessionButton");
-    server = new Network::Server(model);
+    server = new Network::Server();
     server->connect(8080);
   }
 }

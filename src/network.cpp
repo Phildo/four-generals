@@ -40,10 +40,8 @@ void * Network::servThreadHandoff(void * arg) { return ((ServThreadHandle*)arg)-
 void * Network::conThreadHandoff(void * arg)  { return ((ConThreadHandle*) arg)->connection->fork(); }
 void * Network::cliThreadHandoff(void * arg)  { return ((CliThreadHandle*) arg)->client->fork(); }
 
-Server::Server(Model *m)
+Server::Server()
 {
-  model = m;
-
   ip = getIP();
   port = 8080;
   should_disconnect = false;
@@ -163,10 +161,8 @@ Server::~Server()
 }
 
 
-Client::Client(Model *m)
+Client::Client()
 {
-  model = m;
-
   ip = getIP();
   port = 8080;
   should_disconnect = false;

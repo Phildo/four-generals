@@ -5,6 +5,11 @@
 
 class Graphics;
 class Input;
+namespace Network
+{
+class Server;
+class Client;
+}
 class Model;
 class Scene;
 
@@ -15,6 +20,8 @@ class Game
   private:
     Graphics* graphics;
     Input *input;
+    Network::Server* server;
+    Network::Client* client;
     Model* model;
     Scene* scenes[FG_NUM_SCENES];
 

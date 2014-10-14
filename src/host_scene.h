@@ -22,10 +22,8 @@ class HostScene : public Scene
     UI::Button sessionButton;
 
     Network::Server *server;
-
-    Model *model;
   public:
-    HostScene(Graphics *g, Model *m);
+    HostScene(Graphics *g, Network::Server *& s, Network::Client *& c);
     ~HostScene();
     void touch(In &in);
     int tick();
