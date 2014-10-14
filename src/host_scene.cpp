@@ -25,23 +25,31 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c)
   sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
 
   server = 0;
-}
 
+  SCENE_CHANGE_HACK = 0;
+}
 
 void HostScene::touch(In &in)
 {
-  if(backButton.query(in)) fg_log("backButton");
+  if(backButton.query(in))
+  {
+    fg_log("backButton");
+    SCENE_CHANGE_HACK = -1;
+  }
   if(sessionButton.query(in))
   {
     fg_log("sessionButton");
     server = new Network::Server();
     server->connect(8080);
+    SCENE_CHANGE_HACK = 1;
   }
 }
 
 int HostScene::tick()
 {
-  return 0;
+  int tmp = SCENE_CHANGE_HACK;
+  SCENE_CHANGE_HACK = 0;
+  return tmp;
 }
 
 void HostScene::draw()

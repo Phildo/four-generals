@@ -24,6 +24,8 @@ class ClientScene : public Scene
     UI::Label inRoomLabel;
 
     Network::Client *client;
+
+    int SCENE_CHANGE_HACK;
   public:
     ClientScene(Graphics *g, Network::Client *& c);
     ~ClientScene();

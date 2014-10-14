@@ -30,7 +30,9 @@ void IntroScene::touch(In &in)
 
 int IntroScene::tick()
 {
-  return SCENE_CHANGE_HACK;
+  int tmp = SCENE_CHANGE_HACK;
+  SCENE_CHANGE_HACK = 0;
+  return tmp;
 }
 
 void IntroScene::draw()

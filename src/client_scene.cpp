@@ -25,23 +25,31 @@ ClientScene::ClientScene(Graphics *g, Network::Client *& c)
   sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
 
   client = 0;
-}
 
+  SCENE_CHANGE_HACK = 0;
+}
 
 void ClientScene::touch(In &in)
 {
-  if(backButton.query(in)) fg_log("backButton");
+  if(backButton.query(in))
+  {
+    fg_log("backButton");
+    SCENE_CHANGE_HACK = -2;
+  }
   if(sessionButton.query(in))
   {
     fg_log("sessionButton");
     client = new Network::Client();
     client->connect(String("localhost"),8080);
+    SCENE_CHANGE_HACK = 1;
   }
 }
 
 int ClientScene::tick()
 {
-  return 0;
+  int tmp = SCENE_CHANGE_HACK;
+  SCENE_CHANGE_HACK = 0;
+  return tmp;
 }
 
 void ClientScene::draw()

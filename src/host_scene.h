@@ -22,6 +22,8 @@ class HostScene : public Scene
     UI::Button sessionButton;
 
     Network::Server *server;
+
+    int SCENE_CHANGE_HACK;
   public:
     HostScene(Graphics *g, Network::Server *& s, Network::Client *& c);
     ~HostScene();
