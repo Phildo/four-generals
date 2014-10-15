@@ -19,12 +19,13 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c)
 
   ipLabel = UI::Label(ww/2-100,wh/2-80,20,Network::getIP().ptr());
 
-  portLabel = UI::Label(ww/2-100,wh/2-100,20,"8080");
+  portLabel = UI::Label(ww/2+30,wh/2-80,20,"8080");
 
-  startSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, "Start Session");
+  startSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Start Session");
   sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
 
-  server = 0;
+  serverPtr = &s;
+  clientPtr = &c;
 
   SCENE_CHANGE_HACK = 0;
 }
@@ -41,7 +42,11 @@ void HostScene::touch(In &in)
     fg_log("sessionButton");
     server = new Network::Server();
     server->connect(8080);
-    SCENE_CHANGE_HACK = 1;
+    *serverPtr = server;
+
+    client = new Network::Client();
+    client->connect(String("localhost"),8080);
+    SCENE_CHANGE_HACK = 2;
   }
 }
 
@@ -65,6 +70,5 @@ void HostScene::draw()
 
 HostScene::~HostScene()
 {
-  if(server) delete server;
 }
 

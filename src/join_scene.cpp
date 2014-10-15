@@ -1,4 +1,4 @@
-#include "client_scene.h"
+#include "join_scene.h"
 #include "graphics.h"
 #include "network.h"
 
@@ -6,7 +6,7 @@
 
 #include "logger.h"
 
-ClientScene::ClientScene(Graphics *g, Network::Client *& c)
+JoinScene::JoinScene(Graphics *g, Network::Client *& c)
 {
   graphics = g;
 
@@ -29,7 +29,7 @@ ClientScene::ClientScene(Graphics *g, Network::Client *& c)
   SCENE_CHANGE_HACK = 0;
 }
 
-void ClientScene::touch(In &in)
+void JoinScene::touch(In &in)
 {
   if(backButton.query(in))
   {
@@ -45,14 +45,14 @@ void ClientScene::touch(In &in)
   }
 }
 
-int ClientScene::tick()
+int JoinScene::tick()
 {
   int tmp = SCENE_CHANGE_HACK;
   SCENE_CHANGE_HACK = 0;
   return tmp;
 }
 
-void ClientScene::draw()
+void JoinScene::draw()
 {
   backButton.draw(graphics);
   joinGameLabel.draw(graphics);
@@ -63,7 +63,7 @@ void ClientScene::draw()
   sessionButton.draw(graphics);
 }
 
-ClientScene::~ClientScene()
+JoinScene::~JoinScene()
 {
   if(client) delete client;
 }

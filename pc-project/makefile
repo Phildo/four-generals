@@ -6,7 +6,7 @@ DEBUGGER = gdb
 CFLAGS = -Wall -std=c++11 `sdl2-config --cflags`
 LFLAGS = -Wall `sdl2-config --libs`
 
-SOURCES=$(SRCDIR)/main.cpp $(SRCDIR)/game.cpp $(SRCDIR)/graphics.cpp $(SRCDIR)/input.cpp $(SRCDIR)/ui.cpp $(SRCDIR)/network.cpp $(SRCDIR)/scene.cpp $(SRCDIR)/intro_scene.cpp $(SRCDIR)/host_scene.cpp $(SRCDIR)/client_scene.cpp $(SRCDIR)/room_scene.cpp $(SRCDIR)/sprite.cpp $(SRCDIR)/model.cpp $(SRCDIR)/general.cpp $(SRCDIR)/string.cpp
+SOURCES=$(SRCDIR)/main.cpp $(SRCDIR)/game.cpp $(SRCDIR)/graphics.cpp $(SRCDIR)/input.cpp $(SRCDIR)/ui.cpp $(SRCDIR)/network.cpp $(SRCDIR)/scene.cpp $(SRCDIR)/intro_scene.cpp $(SRCDIR)/host_scene.cpp $(SRCDIR)/join_scene.cpp $(SRCDIR)/room_scene.cpp $(SRCDIR)/sprite.cpp $(SRCDIR)/model.cpp $(SRCDIR)/general.cpp $(SRCDIR)/string.cpp
 
 build:
 	$(CC) $(CFLAGS) $(LFLAGS) $(SOURCES) -o $(BINDIR)/pc.out

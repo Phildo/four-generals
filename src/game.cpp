@@ -7,7 +7,7 @@
 
 #include "intro_scene.h"
 #include "host_scene.h"
-#include "client_scene.h"
+#include "join_scene.h"
 #include "room_scene.h"
 
 #include "sprite.h"
@@ -28,7 +28,7 @@ Game::Game()
   model = new Model();
   scenes[0] = new IntroScene(graphics);
   scenes[1] = new HostScene(graphics, server, client);
-  scenes[2] = new ClientScene(graphics, client);
+  scenes[2] = new JoinScene(graphics, client);
   scenes[3] = new RoomScene(graphics, model);
 }
 

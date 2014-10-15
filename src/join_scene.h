@@ -1,5 +1,5 @@
-#ifndef _FG_CLIENT_SCENE_H_
-#define _FG_CLIENT_SCENE_H_
+#ifndef _FG_JOIN_SCENE_H_
+#define _FG_JOIN_SCENE_H_
 
 #include "scene.h"
 #include "ui.h"
@@ -7,7 +7,7 @@
 
 class Graphics;
 
-class ClientScene : public Scene
+class JoinScene : public Scene
 {
   private:
     Graphics *graphics;
@@ -27,8 +27,8 @@ class ClientScene : public Scene
 
     int SCENE_CHANGE_HACK;
   public:
-    ClientScene(Graphics *g, Network::Client *& c);
-    ~ClientScene();
+    JoinScene(Graphics *g, Network::Client *& c);
+    ~JoinScene();
     void touch(In &in);
     int tick();
     void draw();
