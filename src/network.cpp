@@ -1,5 +1,6 @@
 #include "network.h"
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -64,6 +65,7 @@ void * Server::fork()
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
 
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
+  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
 
   bzero((char *)&sock_addr, sizeof(sock_addr));
   sock_addr.sin_family = AF_INET;
@@ -87,8 +89,10 @@ void * Server::fork()
     con->stale = false;
     con->welcome = true;
     con->sock_addr_len = sizeof(con->sock_addr);
-    con->sock_fd = accept(sock_fd, (struct sockaddr *)&(con->sock_addr), &(con->sock_addr_len));
-    if(con->sock_fd < 0) fg_log("Failure accepting connection.");
+    con->sock_fd = -1;
+
+    while(!should_disconnect && con->sock_fd < 0) //spin wait. bad idea? tune in next time to find out.
+      con->sock_fd = accept(sock_fd, (struct sockaddr *)&(con->sock_addr), &(con->sock_addr_len));
     n_cons++;
 
     //check for disconnected cons
@@ -182,7 +186,7 @@ void * Client::fork()
 {
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-  serv_host = gethostbyname("localhost");
+  serv_host = gethostbyname("192.168.2.2");
   if(serv_host == NULL) fg_log("Failure finding server.");
 
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
@@ -196,14 +200,27 @@ void * Client::fork()
     close(sock_fd);
     return 0;
   }
-  int n = 1;
 
-  while(!should_disconnect && n > 0)
+  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
+  bufflen = 0;
+  messlen = 0;
+  bzero(buff, FG_BUFF_SIZE);
+  bzero(mess, FG_BUFF_SIZE);
+  while(!should_disconnect)
   {
-    bzero(buff, FG_BUFF_SIZE);
-    n = read(sock_fd,buff,FG_BUFF_SIZE-1);
-    if(n <= 0) fg_log("Failure reading client.");
-    else fg_log("Cli Received(%d): %s",n,buff);
+    bufflen = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
+    if(bufflen > 0)
+    {
+      fg_log("Cli Received(%d): %s",bufflen,buff);
+      bufflen = 0;
+    }
+
+    if(messlen > 0)
+    {
+      messlen = send(sock_fd, mess, messlen, 0);
+      if(messlen <= 0) { fg_log("Failure writing connection."); should_disconnect = true; }
+      messlen = 0;
+    }
   }
   close(sock_fd);
   return 0;
@@ -233,26 +250,31 @@ Connection::Connection()
 
 void * Connection::fork()
 {
-  int n = 1;
-
   if(!welcome)
   {
-    n = write(sock_fd,"Go away.\n",9);
-    if(n <= 0) fg_log("Failure writing connection.");
-    n = 0;
+    messlen = send(sock_fd, "Go away.\n", 9, 0);
+    if(messlen <= 0) fg_log("Failure writing connection.");
+    should_disconnect = true;
   }
-  while(!should_disconnect && n > 0)
-  {
-    bzero(buff, FG_BUFF_SIZE);
-    n = read(sock_fd, buff, FG_BUFF_SIZE-1);
-    if(n <= 0) fg_log("Failure reading connection.");
-    else
-    {
-      fg_log("Serv Received: %s",buff);
 
-      //ack
-      n = write(sock_fd,"I gotchu\n",9);
-      if(n <= 0) fg_log("Failure writing connection.");
+  bufflen = 0;
+  messlen = 0;
+  bzero(buff, FG_BUFF_SIZE);
+  bzero(mess, FG_BUFF_SIZE);
+  while(!should_disconnect)
+  {
+    bufflen = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
+    if(bufflen > 0)
+    {
+      fg_log("Serv Received %d: %s",bufflen,buff);
+      bufflen = 0;
+    }
+
+    if(messlen > 0)
+    {
+      messlen = send(sock_fd, mess, messlen, 0);
+      if(messlen <= 0) { fg_log("Failure writing connection."); should_disconnect = true; }
+      messlen = 0;
     }
   }
   stale = true; //cheap way to alert server to kill this thread at its convenience
