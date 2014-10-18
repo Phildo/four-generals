@@ -25,6 +25,9 @@ class JoinScene : public Scene
 
     Network::Client *client;
 
+    //Pointer to the client pointer 'owned' by game
+    Network::Client **clientPtr;
+
     int SCENE_CHANGE_HACK;
   public:
     JoinScene(Graphics *g, Network::Client *& c);

@@ -26,8 +26,8 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c)
 
   serverPtr = &s;
   clientPtr = &c;
-  server = NULL;
-  client = NULL;
+  server = 0;
+  client = 0;
 
   SCENE_CHANGE_HACK = 0;
 }
