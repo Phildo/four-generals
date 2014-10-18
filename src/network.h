@@ -31,7 +31,7 @@ namespace Network
   class Connection
   {
     private:
-      bool should_disconnect;
+      bool keep_connection;
     public:
       ConThreadHandle handle;
 
@@ -51,6 +51,7 @@ namespace Network
       ~Connection();
 
       void disconnect();
+      bool healthy();
 
       void *fork();
   };
@@ -65,7 +66,7 @@ namespace Network
       String ip;
       int port;
 
-      bool should_disconnect;
+      bool keep_connection;
 
       int sock_fd;
       struct sockaddr_in sock_addr;
@@ -84,6 +85,7 @@ namespace Network
       void connect(int _port);
       void broadcast(const String &s);
       void disconnect();
+      bool healthy();
 
       void *fork();
   };
@@ -98,7 +100,7 @@ namespace Network
       String ip;
       int port;
 
-      bool should_disconnect;
+      bool keep_connection;
 
       int sock_fd;
       pthread_t thread;
@@ -113,6 +115,7 @@ namespace Network
       void connect(const String &_ip, int _port);
       void broadcast(const String &s);
       void disconnect();
+      bool healthy();
 
       void *fork();
   };

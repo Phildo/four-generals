@@ -45,8 +45,7 @@ Server::Server()
 {
   ip = getIP();
   port = 8080;
-  should_disconnect = false;
-
+  keep_connection = false;
   handle.server = this;
 }
 
@@ -60,6 +59,7 @@ void Server::connect(int _port)
 
 void * Server::fork()
 {
+  keep_connection = true;
   n_cons = 0;
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) cons[i].connection = i;
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
@@ -76,13 +76,14 @@ void * Server::fork()
   {
     fg_log("Failure binding server socket.");
     close(sock_fd);
+    keep_connection = false;
     return 0;
   }
   listen(sock_fd,5);
 
   Connection *con;
   Connection *tmp_con_p;
-  while(!should_disconnect)
+  while(keep_connection)
   {
     con = con_ps[n_cons];
 
@@ -91,7 +92,7 @@ void * Server::fork()
     con->sock_addr_len = sizeof(con->sock_addr);
     con->sock_fd = -1;
 
-    while(!should_disconnect && con->sock_fd < 0) //spin wait. bad idea? tune in next time to find out.
+    while(keep_connection && con->sock_fd < 0) //spin wait. bad idea? tune in next time to find out.
       con->sock_fd = accept(sock_fd, (struct sockaddr *)&(con->sock_addr), &(con->sock_addr_len));
     n_cons++;
 
@@ -134,7 +135,7 @@ void * Server::fork()
     else
     {
       int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
-      if(r != 0) fg_log("Failure creating connection thread.");
+      if(r != 0) { fg_log("Failure creating connection thread."); keep_connection = false; }
     }
   }
 
@@ -156,12 +157,18 @@ void Server::broadcast(const String &s)
 
 void Server::disconnect()
 {
-  should_disconnect = true;
+  keep_connection = false;
   pthread_join(thread, NULL);
+}
+
+bool Server::healthy()
+{
+  return keep_connection;
 }
 
 Server::~Server()
 {
+  if(keep_connection) disconnect();
 }
 
 
@@ -169,8 +176,7 @@ Client::Client()
 {
   ip = getIP();
   port = 8080;
-  should_disconnect = false;
-
+  keep_connection = false;
   handle.client = this;
 }
 
@@ -184,10 +190,11 @@ void Client::connect(const String &_ip, int _port)
 
 void * Client::fork()
 {
+  keep_connection = true;
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
   serv_host = gethostbyname("192.168.2.2");
-  if(serv_host == NULL) fg_log("Failure finding server.");
+  if(serv_host == NULL) { fg_log("Failure finding server."); keep_connection = false; }
 
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
   serv_sock_addr.sin_family = AF_INET;
@@ -198,6 +205,7 @@ void * Client::fork()
   {
     fg_log("Failure connecting client.");
     close(sock_fd);
+    keep_connection = false;
     return 0;
   }
 
@@ -206,7 +214,7 @@ void * Client::fork()
   messlen = 0;
   bzero(buff, FG_BUFF_SIZE);
   bzero(mess, FG_BUFF_SIZE);
-  while(!should_disconnect)
+  while(keep_connection)
   {
     bufflen = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
     if(bufflen > 0)
@@ -218,7 +226,7 @@ void * Client::fork()
     if(messlen > 0)
     {
       messlen = send(sock_fd, mess, messlen, 0);
-      if(messlen <= 0) { fg_log("Failure writing connection."); should_disconnect = true; }
+      if(messlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
       messlen = 0;
     }
   }
@@ -233,18 +241,23 @@ void Client::broadcast(const String &s)
 
 void Client::disconnect()
 {
-  should_disconnect = true;
+  keep_connection = false;
   pthread_join(thread, NULL);
+}
+
+bool Client::healthy()
+{
+  return keep_connection;
 }
 
 Client::~Client()
 {
+  if(keep_connection) disconnect();
 }
 
 Connection::Connection()
 {
-  should_disconnect = false;
-
+  keep_connection = false;
   handle.connection = this;
 }
 
@@ -254,14 +267,14 @@ void * Connection::fork()
   {
     messlen = send(sock_fd, "Go away.\n", 9, 0);
     if(messlen <= 0) fg_log("Failure writing connection.");
-    should_disconnect = true;
   }
+  keep_connection = welcome;
 
   bufflen = 0;
   messlen = 0;
   bzero(buff, FG_BUFF_SIZE);
   bzero(mess, FG_BUFF_SIZE);
-  while(!should_disconnect)
+  while(keep_connection)
   {
     bufflen = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
     if(bufflen > 0)
@@ -273,7 +286,7 @@ void * Connection::fork()
     if(messlen > 0)
     {
       messlen = send(sock_fd, mess, messlen, 0);
-      if(messlen <= 0) { fg_log("Failure writing connection."); should_disconnect = true; }
+      if(messlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
       messlen = 0;
     }
   }
@@ -283,11 +296,17 @@ void * Connection::fork()
 
 void Connection::disconnect()
 {
-  should_disconnect = true;
+  keep_connection = false;
   pthread_join(thread, NULL);
+}
+
+bool Connection::healthy()
+{
+  return keep_connection;
 }
 
 Connection::~Connection()
 {
+  if(keep_connection) disconnect();
 }
 
