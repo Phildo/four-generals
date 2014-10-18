@@ -21,8 +21,6 @@ class JoinScene : public Scene
     UI::Label joinSessLabel;
     UI::Button sessionButton;
 
-    UI::Label inRoomLabel;
-
     Network::Client *client;
 
     //Pointer to the client pointer 'owned' by game

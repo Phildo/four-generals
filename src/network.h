@@ -32,6 +32,7 @@ namespace Network
   {
     private:
       bool keep_connection;
+      bool connected;
     public:
       ConThreadHandle handle;
 
@@ -67,6 +68,7 @@ namespace Network
       int port;
 
       bool keep_connection;
+      bool connected;
 
       int sock_fd;
       struct sockaddr_in sock_addr;
@@ -102,6 +104,7 @@ namespace Network
       int port;
 
       bool keep_connection;
+      bool connected;
 
       int sock_fd;
       pthread_t thread;

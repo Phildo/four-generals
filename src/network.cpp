@@ -45,12 +45,14 @@ Server::Server()
 {
   ip = getIP();
   port = 8080;
+  connected = false;
   keep_connection = false;
   handle.server = this;
 }
 
 void Server::connect(int _port)
 {
+  if(connected || keep_connection) { fg_log("Aborting server connect request- standing connection unhealthy."); return; }
   port = _port;
 
   fg_log("Server connecting on port %d",port);
@@ -80,6 +82,7 @@ void * Server::fork()
     return 0;
   }
   listen(sock_fd,5);
+  connected = true;
 
   Connection *con;
   Connection *tmp_con_p;
@@ -140,6 +143,7 @@ void * Server::fork()
       }
     }
   }
+  connected = false;
 
   for(int i = 0; i < n_cons; i++)
     con_ps[i]->disconnect();
@@ -163,7 +167,7 @@ void Server::disconnect()
 
 bool Server::healthy()
 {
-  return keep_connection;
+  return connected && keep_connection;
 }
 
 Server::~Server()
@@ -176,12 +180,14 @@ Client::Client()
 {
   ip = getIP();
   port = 8080;
+  connected = false;
   keep_connection = false;
   handle.client = this;
 }
 
 void Client::connect(const String &_ip, int _port)
 {
+  if(connected || keep_connection) { fg_log("Aborting client connect request- standing connection unhealthy."); return; }
   port = _port;
   serv_ip = _ip;
 
@@ -209,6 +215,7 @@ void * Client::fork()
     keep_connection = false;
     return 0;
   }
+  connected = true;
 
   fcntl(sock_fd, F_SETFL, O_NONBLOCK);
   bufflen = 0;
@@ -231,6 +238,7 @@ void * Client::fork()
       messlen = 0;
     }
   }
+  connected = false;
   return 0;
 }
 
@@ -249,7 +257,7 @@ void Client::disconnect()
 
 bool Client::healthy()
 {
-  return keep_connection;
+  return connected && keep_connection;
 }
 
 Client::~Client()
@@ -259,6 +267,7 @@ Client::~Client()
 
 Connection::Connection()
 {
+  connection = false;
   keep_connection = false;
   handle.connection = this;
 }
@@ -273,6 +282,7 @@ void * Connection::fork()
   }
   else fg_log("Connection created");
   keep_connection = welcome;
+  connected = true;
 
   bufflen = 0;
   messlen = 0;
@@ -294,6 +304,7 @@ void * Connection::fork()
       messlen = 0;
     }
   }
+  connected = false;
   stale = true; //cheap way to alert server to kill this thread at its convenience
   return 0;
 }
@@ -308,7 +319,7 @@ void Connection::disconnect()
 
 bool Connection::healthy()
 {
-  return keep_connection;
+  return connected && keep_connection;
 }
 
 Connection::~Connection()

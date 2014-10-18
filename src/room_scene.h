@@ -15,7 +15,7 @@ class RoomScene : public Scene
 
     UI::Button backButton;
 
-    UI::Label hostGameLabel;
+    UI::Label inRoomLabel;
     UI::Label ipLabel;
     UI::Label portLabel;
 
@@ -24,13 +24,8 @@ class RoomScene : public Scene
     UI::Label wLabel; UI::Label wpLabel; UI::Button wButton;
     UI::Label eLabel; UI::Label epLabel; UI::Button eButton;
 
-    UI::Label startSessLabel;
-    UI::Label cancelSessLabel;
-    UI::Label joinSessLabel;
     UI::Label leaveSessLabel;
     UI::Button sessionButton;
-
-    UI::Label inRoomLabel;
 
     Model *model;
   public:

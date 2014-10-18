@@ -17,26 +17,20 @@ RoomScene::RoomScene(Graphics *g, Model *m)
 
   backButton = UI::Button(10,10,20,20);
 
-  hostGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Host Game");
+  inRoomLabel = UI::Label(ww/2-100,wh/2-100,20,"In Room");
 
   ipLabel = UI::Label(ww/2-100,wh/2-80,20,Network::getIP().ptr());
 
-  portLabel = UI::Label(ww/2-100,wh/2-100,20,"8080");
+  portLabel = UI::Label(ww/2+30,wh/2-80,20,"8080");
+
+  leaveSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, "Leave Session");
+  sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
 
   nLabel = UI::Label(ww/2-10,      10, 20, "N");  nButton = UI::Button(ww/2-10,      10, 20, 20);
   sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");  sButton = UI::Button(ww/2-10, wh  -30, 20, 20);
   wLabel = UI::Label(     10, wh/2-10, 20, "W");  wButton = UI::Button(     10, wh/2-10, 20, 20);
   eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");  eButton = UI::Button(ww  -30, wh/2-10, 20, 20);
-
-  startSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, "Start Session");
-  cancelSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Cancel Session");
-  joinSessLabel   = UI::Label(ww/2-100, wh/2-50, 20, "Join Session");
-  leaveSessLabel  = UI::Label(ww/2-100, wh/2-50, 20, "Leave Session");
-  sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
-
-  inRoomLabel = UI::Label(ww/2-100, wh/2, 20, "In Room");
 }
-
 
 void RoomScene::touch(In &in)
 {
@@ -56,9 +50,9 @@ int RoomScene::tick()
 void RoomScene::draw()
 {
   backButton.draw(graphics);
-  hostGameLabel.draw(graphics);
+  inRoomLabel.draw(graphics);
   ipLabel.draw(graphics);
-  //portLabel.draw(graphics);
+  portLabel.draw(graphics);
 
   nLabel.draw(graphics);
   sLabel.draw(graphics);
@@ -70,13 +64,8 @@ void RoomScene::draw()
   wButton.draw(graphics);
   eButton.draw(graphics);
 
-  startSessLabel.draw(graphics);
-  //cancelSessLabel.draw(graphics);
-  //joinSessLabel.draw(graphics);
-  //leaveSessLabel.draw(graphics);
+  leaveSessLabel.draw(graphics);
   sessionButton.draw(graphics);
-
-  inRoomLabel.draw(graphics);
 }
 
 RoomScene::~RoomScene()
