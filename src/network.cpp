@@ -53,13 +53,14 @@ void Server::connect(int _port)
 {
   port = _port;
 
+  fg_log("Server connecting on port %d",port);
+  keep_connection = true;
   int r = pthread_create(&thread, NULL, servThreadHandoff, (void *)&handle)  ;
-  if(r != 0) fg_log("Failure creating server thread.");
+  if(r != 0) { fg_log("Failure creating server thread."); keep_connection = false; }
 }
 
 void * Server::fork()
 {
-  keep_connection = true;
   n_cons = 0;
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) cons[i].connection = i;
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
@@ -157,6 +158,7 @@ void Server::broadcast(const String &s)
 
 void Server::disconnect()
 {
+  fg_log("Server disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
 }
@@ -183,17 +185,19 @@ Client::Client()
 void Client::connect(const String &_ip, int _port)
 {
   port = _port;
+  serv_ip = _ip;
 
+  fg_log("Client connecting to IP:%s on port %d", serv_ip.ptr(), port);
+  keep_connection = true;
   int r = pthread_create(&thread, NULL, cliThreadHandoff, (void *)&handle)  ;
-  if(r != 0) fg_log("Failure creating client thread.");
+  if(r != 0) { fg_log("Failure creating client thread."); keep_connection = false; }
 }
 
 void * Client::fork()
 {
-  keep_connection = true;
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
-  serv_host = gethostbyname("192.168.2.2");
+  serv_host = gethostbyname(serv_ip.ptr());
   if(serv_host == NULL) { fg_log("Failure finding server."); keep_connection = false; }
 
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
@@ -241,6 +245,7 @@ void Client::broadcast(const String &s)
 
 void Client::disconnect()
 {
+  fg_log("Cient disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
 }
@@ -265,9 +270,11 @@ void * Connection::fork()
 {
   if(!welcome)
   {
+    fg_log("Connection unwelcome");
     messlen = send(sock_fd, "Go away.\n", 9, 0);
     if(messlen <= 0) fg_log("Failure writing connection.");
   }
+  else fg_log("Connection created");
   keep_connection = welcome;
 
   bufflen = 0;
@@ -296,6 +303,7 @@ void * Connection::fork()
 
 void Connection::disconnect()
 {
+  fg_log("Connection disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
 }

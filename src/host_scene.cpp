@@ -40,18 +40,20 @@ void HostScene::touch(In &in)
   if(sessionButton.query(in))
   {
     fg_log("sessionButton");
-    server = new Network::Server();
-    server->connect(8080);
-    *serverPtr = server;
-
-    client = new Network::Client();
-    client->connect(String("localhost"),8080);
-    SCENE_CHANGE_HACK = 2;
+    if(!server) { server = new Network::Server(); *serverPtr = server; }
+    if(!server->healthy()) server->connect(8080);
   }
 }
 
 int HostScene::tick()
 {
+  if(server && server->healthy())
+  {
+    if(!client) { client = new Network::Client(); *clientPtr = client; }
+    if(!client->healthy()) client->connect(String("localhost"),8080);
+  }
+  if(client && client->healthy()) SCENE_CHANGE_HACK = 2;
+
   int tmp = SCENE_CHANGE_HACK;
   SCENE_CHANGE_HACK = 0;
   return tmp;

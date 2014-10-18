@@ -98,6 +98,7 @@ namespace Network
       CliThreadHandle handle;
 
       String ip;
+      String serv_ip;
       int port;
 
       bool keep_connection;
