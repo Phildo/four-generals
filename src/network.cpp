@@ -76,7 +76,6 @@ void * Server::fork()
   if(bind(sock_fd, (struct sockaddr *) &sock_addr, sizeof(sock_addr)) < 0)
   {
     fg_log("Failure binding server socket.");
-    close(sock_fd);
     keep_connection = false;
     return 0;
   }
@@ -84,7 +83,7 @@ void * Server::fork()
 
   Connection *con;
   Connection *tmp_con_p;
-  while(keep_connection)
+  while(keep_connection) //spin wait. bad idea? tune in next time to find out.
   {
     con = con_ps[n_cons];
 
@@ -93,9 +92,35 @@ void * Server::fork()
     con->sock_addr_len = sizeof(con->sock_addr);
     con->sock_fd = -1;
 
-    while(keep_connection && con->sock_fd < 0) //spin wait. bad idea? tune in next time to find out.
-      con->sock_fd = accept(sock_fd, (struct sockaddr *)&(con->sock_addr), &(con->sock_addr_len));
-    n_cons++;
+    con->sock_fd = accept(sock_fd, (struct sockaddr *)&(con->sock_addr), &(con->sock_addr_len));
+    if(con->sock_fd >= 0)
+    {
+      n_cons++;
+
+      //Final connection will be told off and closed
+      //Wait for that to happen before accepting any more
+      if(n_cons == FG_MAX_CONNECTIONS)
+      {
+        con->welcome = false;
+        int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
+        if(r != 0) fg_log("Failure creating connection thread.");
+        con->disconnect();
+
+        //find con and put it back at the end of the queue #ugly
+        int con_index = 0;
+        for(int i = 0; i < n_cons; i++) if(con_ps[i] == con) con_index = i;
+        n_cons--;
+
+        tmp_con_p = con_ps[con_index];
+        con_ps[con_index] = con_ps[n_cons];
+        con_ps[n_cons] = tmp_con_p;
+      }
+      else
+      {
+        int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
+        if(r != 0) { fg_log("Failure creating connection thread."); keep_connection = false; }
+      }
+    }
 
     //check for disconnected cons
     for(int i = 0; i < n_cons; i++)
@@ -103,51 +128,23 @@ void * Server::fork()
       if(con_ps[i]->stale)
       {
         //clean up/kill thread/connection
-        pthread_join(con_ps[i]->thread, NULL);
-        close(con_ps[i]->sock_fd);
+        con_ps[i]->disconnect();
         n_cons--;
 
         //put newly cleaned con at end of list
         tmp_con_p = con_ps[i];
         con_ps[i] = con_ps[n_cons];
         con_ps[n_cons] = tmp_con_p;
+
+        i--;
       }
-    }
-
-    //Final connection will be told off and closed
-    //Wait for that to happen before accepting any more
-    if(n_cons == FG_MAX_CONNECTIONS)
-    {
-      con->welcome = false;
-      int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
-      if(r != 0) fg_log("Failure creating connection thread.");
-      pthread_join(con->thread, NULL);
-      close(con->sock_fd);
-
-      //find con and put it back at the end of the queue #ugly
-      int con_index = 0;
-      for(int i = 0; i < n_cons; i++) if(con_ps[i] == con) con_index = i;
-      n_cons--;
-
-      tmp_con_p = con_ps[con_index];
-      con_ps[con_index] = con_ps[n_cons];
-      con_ps[n_cons] = tmp_con_p;
-    }
-    else
-    {
-      int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
-      if(r != 0) { fg_log("Failure creating connection thread."); keep_connection = false; }
     }
   }
 
   for(int i = 0; i < n_cons; i++)
-  {
     con_ps[i]->disconnect();
-    close(con_ps[i]->sock_fd);
-  }
   n_cons = 0;
 
-  close(sock_fd);
   return 0;
 }
 
@@ -161,6 +158,7 @@ void Server::disconnect()
   fg_log("Server disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
+  close(sock_fd);
 }
 
 bool Server::healthy()
@@ -208,7 +206,6 @@ void * Client::fork()
   if(::connect(sock_fd,(struct sockaddr *)&serv_sock_addr, sizeof(serv_sock_addr)) < 0)
   {
     fg_log("Failure connecting client.");
-    close(sock_fd);
     keep_connection = false;
     return 0;
   }
@@ -234,7 +231,6 @@ void * Client::fork()
       messlen = 0;
     }
   }
-  close(sock_fd);
   return 0;
 }
 
@@ -248,6 +244,7 @@ void Client::disconnect()
   fg_log("Cient disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
+  close(sock_fd);
 }
 
 bool Client::healthy()
@@ -306,6 +303,7 @@ void Connection::disconnect()
   fg_log("Connection disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
+  close(sock_fd);
 }
 
 bool Connection::healthy()
