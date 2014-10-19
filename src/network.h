@@ -45,8 +45,8 @@ namespace Network
       struct sockaddr_in sock_addr;
 
       pthread_t thread;
-      char buff[FG_BUFF_SIZE]; int bufflen;
-      char mess[FG_BUFF_SIZE]; int messlen;
+      char read[FG_BUFF_SIZE]; int readlen;
+      char writ[FG_BUFF_SIZE]; int writlen;
 
       Connection();
       ~Connection();
@@ -110,8 +110,8 @@ namespace Network
       pthread_t thread;
       struct sockaddr_in serv_sock_addr; //client's serv addr
       struct hostent *serv_host; //client's reference to server
-      char buff[FG_BUFF_SIZE]; int bufflen;
-      char mess[FG_BUFF_SIZE]; int messlen;
+      char read[FG_BUFF_SIZE]; int readlen;
+      char writ[FG_BUFF_SIZE]; int writlen;
     public:
       Client();
       ~Client();

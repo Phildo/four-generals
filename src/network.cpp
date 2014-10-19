@@ -218,24 +218,24 @@ void * Client::fork()
   connected = true;
 
   fcntl(sock_fd, F_SETFL, O_NONBLOCK);
-  bufflen = 0;
-  messlen = 0;
-  bzero(buff, FG_BUFF_SIZE);
-  bzero(mess, FG_BUFF_SIZE);
+  readlen = 0;
+  writlen = 0;
+  bzero(read, FG_BUFF_SIZE);
+  bzero(writ, FG_BUFF_SIZE);
   while(keep_connection)
   {
-    bufflen = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
-    if(bufflen > 0)
+    readlen = recv(sock_fd, read, FG_BUFF_SIZE-1, 0);
+    if(readlen > 0)
     {
-      fg_log("Cli Received(%d): %s",bufflen,buff);
-      bufflen = 0;
+      fg_log("Cli Received(%d): %s",readlen,read);
+      readlen = 0;
     }
 
-    if(messlen > 0)
+    if(writlen > 0)
     {
-      messlen = send(sock_fd, mess, messlen, 0);
-      if(messlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
-      messlen = 0;
+      writlen = send(sock_fd, writ, writlen, 0);
+      if(writlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
+      writlen = 0;
     }
   }
   connected = false;
@@ -277,33 +277,33 @@ void * Connection::fork()
   if(!welcome)
   {
     fg_log("Connection unwelcome");
-    messlen = send(sock_fd, "Go away.\n", 9, 0);
-    if(messlen <= 0) fg_log("Failure writing connection.");
+    writlen = send(sock_fd, "Go away.\n", 9, 0);
+    if(writlen <= 0) fg_log("Failure writing connection.");
   }
   else fg_log("Connection created");
   keep_connection = welcome;
   connected = true;
 
-  bufflen = 0;
-  messlen = 0;
-  bzero(buff, FG_BUFF_SIZE);
-  bzero(mess, FG_BUFF_SIZE);
+  readlen = 0;
+  writlen = 0;
+  bzero(read, FG_BUFF_SIZE);
+  bzero(writ, FG_BUFF_SIZE);
   while(keep_connection)
   {
-    bufflen = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
-    if(bufflen > 0)
+    readlen = recv(sock_fd, read, FG_BUFF_SIZE-1, 0);
+    if(readlen > 0)
     {
-      fg_log("Serv Received %d: %s",bufflen,buff);
-      bufflen = 0;
+      fg_log("Serv Received %d: %s",readlen,read);
+      readlen = 0;
     }
-    else if(bufflen == 0)
+    else if(readlen == 0)
       keep_connection = false;
 
-    if(messlen > 0)
+    if(writlen > 0)
     {
-      messlen = send(sock_fd, mess, messlen, 0);
-      if(messlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
-      messlen = 0;
+      writlen = send(sock_fd, writ, writlen, 0);
+      if(writlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
+      writlen = 0;
     }
   }
   connected = false;
