@@ -64,7 +64,7 @@ void Server::connect(int _port)
 void * Server::fork()
 {
   n_cons = 0;
-  for(int i = 0; i < FG_MAX_CONNECTIONS; i++) cons[i].connection = i;
+  for(int i = 0; i < FG_MAX_CONNECTIONS; i++) cons[i].connection = '0'+i; //char so '0' != null
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
 
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -180,6 +180,8 @@ Client::Client()
 {
   ip = getIP();
   port = 8080;
+  evt_q_front_i = 0;
+  evt_q_back_i = 0;
   connected = false;
   keep_connection = false;
   handle.client = this;
@@ -227,6 +229,7 @@ void * Client::fork()
     readlen = recv(sock_fd, read, FG_BUFF_SIZE-1, 0);
     if(readlen > 0)
     {
+      enqueueEvent(Event(read));
       fg_log("Cli Received(%d): %s",readlen,read);
       readlen = 0;
     }
@@ -260,6 +263,19 @@ bool Client::healthy()
   return connected && keep_connection;
 }
 
+void Client::enqueueEvent(Event e)
+{
+  evt_q[evt_q_back_i] = e;
+  evt_q_back_i++;
+}
+
+Event *Client::getEvent()
+{
+  if(evt_q_front_i == evt_q_back_i) return 0;
+  evt_q_front_i++;
+  return &evt_q[evt_q_front_i-1];
+}
+
 Client::~Client()
 {
   if(keep_connection) disconnect();
@@ -267,7 +283,8 @@ Client::~Client()
 
 Connection::Connection()
 {
-  connection = false;
+  connection = 0;
+  connected = false;
   keep_connection = false;
   handle.connection = this;
 }
@@ -276,12 +293,21 @@ void * Connection::fork()
 {
   if(!welcome)
   {
+    keep_connection = false;
     fg_log("Connection unwelcome");
-    writlen = send(sock_fd, "Go away.\n", 9, 0);
+    Event e(connection, '0', e_type_refuse_con);
+    writlen = send(sock_fd, e.serialize(), e.serlen(), 0);
     if(writlen <= 0) fg_log("Failure writing connection.");
   }
-  else fg_log("Connection created");
-  keep_connection = welcome;
+  else
+  {
+    keep_connection = true;
+    fg_log("Connection created");
+    Event e(connection, '0', e_type_assign_con);
+    fg_log("Connection writing %c %s %d", e.connection, e.serialize(), e.serlen());
+    writlen = send(sock_fd, e.serialize(), e.serlen(), 0);
+    if(writlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
+  }
   connected = true;
 
   readlen = 0;

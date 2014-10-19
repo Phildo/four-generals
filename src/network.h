@@ -17,6 +17,7 @@ extern "C"
 
 #define FG_MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
 #define FG_BUFF_SIZE 256
+#define FG_EVT_Q_SIZE 1024
 
 namespace Network
 {
@@ -25,6 +26,37 @@ namespace Network
   void * servThreadHandoff(void * arg);
   void * conThreadHandoff(void * arg);
   void * cliThreadHandoff(void * arg);
+
+  //to keep track of already assigned (CAPS = taken) (god what a terrible system)
+  //AbCdefghiJkLmNopqRstuvwxyz
+  static const char e_type_assign_con  = 'c';
+  static const char e_type_refuse_con  = 'n';
+  static const char e_type_join        = 'j';
+  static const char e_type_leave       = 'l';
+  static const char e_type_assign_card = 'a';
+  static const char e_type_revoke_card = 'r';
+  struct Event //all members chars for quick/simple serializability
+  {
+    char connection;
+    char cardinal;
+    char type;
+    const char null;
+
+    //default constructor
+    Event() : null('\0') {};
+
+    //copy constructor
+    Event(const Event &e)     : null('\0') { connection = e.connection; cardinal = e.cardinal; type = e.type; }
+    Event &operator=(const Event &e) { connection = e.connection; cardinal = e.cardinal; type = e.type; return *this; } //no need to set null
+
+    //custom constructor
+    Event(char con, char card, char t) : connection(con), cardinal(card), type(t), null('\0') {}
+
+    //serializability
+    char *serialize() { return (char *)&connection; }
+    Event(char *c) : null('\0') { connection = c[0]; cardinal = c[1]; type = c[2]; }
+    int serlen() { return 3; }
+  };
 
   class Connection;
   struct ConThreadHandle { Connection *connection; };
@@ -36,7 +68,7 @@ namespace Network
     public:
       ConThreadHandle handle;
 
-      int connection; //0-FG_MAX_CONNECTIONS
+      char connection; //'0' - '0'+FG_MAX_CONNECTIONS
       bool stale;
       bool welcome;
 
@@ -112,6 +144,11 @@ namespace Network
       struct hostent *serv_host; //client's reference to server
       char read[FG_BUFF_SIZE]; int readlen;
       char writ[FG_BUFF_SIZE]; int writlen;
+
+      void enqueueEvent(Event);
+      Event evt_q[FG_EVT_Q_SIZE];
+      int evt_q_front_i;
+      int evt_q_back_i;
     public:
       Client();
       ~Client();
@@ -120,6 +157,8 @@ namespace Network
       void broadcast(const String &s);
       void disconnect();
       bool healthy();
+
+      Event *getEvent(); //aka dequeue
 
       void *fork();
   };
