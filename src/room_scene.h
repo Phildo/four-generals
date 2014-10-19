@@ -27,13 +27,20 @@ class RoomScene : public Scene
     UI::Label leaveSessLabel;
     UI::Button sessionButton;
 
+    Network::Client *client;
+    Network::Client **clientPtr;//Pointer to the client pointer 'owned' by game
     Model *model;
+    Model **modelPtr;//Pointer to the model pointer 'owned' by game
+
   public:
+    RoomScene(Graphics *g, Network::Client *& c, Model *&m);
     RoomScene(Graphics *g, Model *m);
     ~RoomScene();
+    void enter();
     void touch(In &in);
     int tick();
     void draw();
+    void leave();
 };
 
 #endif

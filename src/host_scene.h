@@ -22,19 +22,19 @@ class HostScene : public Scene
     UI::Button sessionButton;
 
     Network::Server *server;
+    Network::Server **serverPtr; //Pointers to the server pointer 'owned' by game
     Network::Client *client;
-
-    //Pointers to the server and client pointers 'owned' by game
-    Network::Server **serverPtr;
-    Network::Client **clientPtr;
+    Network::Client **clientPtr; //Pointers to the client pointer 'owned' by game
 
     int SCENE_CHANGE_HACK;
   public:
     HostScene(Graphics *g, Network::Server *& s, Network::Client *& c);
     ~HostScene();
+    void enter();
     void touch(In &in);
     int tick();
     void draw();
+    void leave();
 };
 
 #endif

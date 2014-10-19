@@ -25,11 +25,11 @@ Game::Game()
   //save allocation until necessary
   server = 0;
   client = 0;
-  model = new Model();
+  model = 0;
   scenes[0] = new IntroScene(graphics);
   scenes[1] = new HostScene(graphics, server, client);
   scenes[2] = new JoinScene(graphics, client);
-  scenes[3] = new RoomScene(graphics, model);
+  scenes[3] = new RoomScene(graphics, client, model);
 }
 
 void Game::run()
@@ -44,7 +44,10 @@ void Game::run()
     while(!q && input->poll(in, p, q))
       if(p) scenes[scene]->touch(in);
 
-    scene += scenes[scene]->tick(); //should decouple from drawing
+    int tmp = scenes[scene]->tick(); //should decouple from drawing
+    if(tmp) scenes[scene]->leave();
+    scene += tmp;
+    scenes[scene]->enter();
 
     graphics->clear();
     scenes[scene]->draw();
@@ -56,9 +59,9 @@ void Game::run()
 
 Game::~Game()
 {
-  for(int i = 0; i < FG_NUM_SCENES; i++)
+  for(int i = FG_NUM_SCENES-1; i >= 0; i--)
     delete scenes[i];
-  delete model;
+  if(model) delete model;
   if(client) delete client;
   if(server) delete server;
   delete input;

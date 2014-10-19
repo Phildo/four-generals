@@ -32,6 +32,11 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c)
   SCENE_CHANGE_HACK = 0;
 }
 
+void HostScene::enter()
+{
+
+}
+
 void HostScene::touch(In &in)
 {
   if(backButton.query(in))
@@ -70,6 +75,11 @@ void HostScene::draw()
 
   startSessLabel.draw(graphics);
   sessionButton.draw(graphics);
+}
+
+void HostScene::leave()
+{
+
 }
 
 HostScene::~HostScene()

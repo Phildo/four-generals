@@ -30,6 +30,11 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c)
   SCENE_CHANGE_HACK = 0;
 }
 
+void JoinScene::enter()
+{
+
+}
+
 void JoinScene::touch(In &in)
 {
   if(backButton.query(in))
@@ -64,6 +69,11 @@ void JoinScene::draw()
 
   joinSessLabel.draw(graphics);
   sessionButton.draw(graphics);
+}
+
+void JoinScene::leave()
+{
+
 }
 
 JoinScene::~JoinScene()

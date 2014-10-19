@@ -18,9 +18,11 @@ class IntroScene : public Scene
   public:
     IntroScene(Graphics *g);
     ~IntroScene();
+    void enter();
     void touch(In &in);
     int tick();
     void draw();
+    void leave();
 };
 
 #endif

@@ -7,7 +7,7 @@
 
 #include "logger.h"
 
-RoomScene::RoomScene(Graphics *g, Model *m)
+RoomScene::RoomScene(Graphics *g, Network::Client *& c, Model *&m)
 {
   graphics = g;
   model = m;
@@ -30,6 +30,16 @@ RoomScene::RoomScene(Graphics *g, Model *m)
   sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");  sButton = UI::Button(ww/2-10, wh  -30, 20, 20);
   wLabel = UI::Label(     10, wh/2-10, 20, "W");  wButton = UI::Button(     10, wh/2-10, 20, 20);
   eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");  eButton = UI::Button(ww  -30, wh/2-10, 20, 20);
+
+  clientPtr = &c;
+  client = 0;
+
+  modelPtr = &m;
+  model = 0;
+}
+
+void RoomScene::enter()
+{
 }
 
 void RoomScene::touch(In &in)
@@ -66,6 +76,10 @@ void RoomScene::draw()
 
   leaveSessLabel.draw(graphics);
   sessionButton.draw(graphics);
+}
+
+void RoomScene::leave()
+{
 }
 
 RoomScene::~RoomScene()

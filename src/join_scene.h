@@ -22,17 +22,17 @@ class JoinScene : public Scene
     UI::Button sessionButton;
 
     Network::Client *client;
-
-    //Pointer to the client pointer 'owned' by game
-    Network::Client **clientPtr;
+    Network::Client **clientPtr; //Pointer to the client pointer 'owned' by game
 
     int SCENE_CHANGE_HACK;
   public:
     JoinScene(Graphics *g, Network::Client *& c);
     ~JoinScene();
+    void enter();
     void touch(In &in);
     int tick();
     void draw();
+    void leave();
 };
 
 #endif

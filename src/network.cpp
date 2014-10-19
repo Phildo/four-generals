@@ -304,7 +304,6 @@ void * Connection::fork()
     keep_connection = true;
     fg_log("Connection created");
     Event e(connection, '0', e_type_assign_con);
-    fg_log("Connection writing %c %s %d", e.connection, e.serialize(), e.serlen());
     writlen = send(sock_fd, e.serialize(), e.serlen(), 0);
     if(writlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
   }

@@ -21,6 +21,11 @@ IntroScene::IntroScene(Graphics *g)
   SCENE_CHANGE_HACK = 0;
 }
 
+void IntroScene::enter()
+{
+
+}
+
 void IntroScene::touch(In &in)
 {
   if(hostButton.query(in)) { fg_log("touched s!"); SCENE_CHANGE_HACK = 1; }
@@ -45,6 +50,11 @@ void IntroScene::draw()
 
   howLabel.draw(graphics);
   howButton.draw(graphics);
+}
+
+void IntroScene::leave()
+{
+
 }
 
 IntroScene::~IntroScene()
