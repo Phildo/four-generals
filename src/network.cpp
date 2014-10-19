@@ -296,6 +296,8 @@ void * Connection::fork()
       fg_log("Serv Received %d: %s",bufflen,buff);
       bufflen = 0;
     }
+    else if(bufflen == 0)
+      keep_connection = false;
 
     if(messlen > 0)
     {
