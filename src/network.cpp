@@ -366,6 +366,12 @@ void * Connection::fork()
     readlen = recv(sock_fd, read, FG_BUFF_SIZE-1, 0);
     if(readlen > 0)
     {
+      Event e(read);
+      if(e.type == e_type_ack) ackReceived(e.id_i);
+      else
+      {
+        //needs to be processed and potentially re-broadcast
+      }
       fg_log("Serv Received %d: %s",readlen,read);
       readlen = 0;
     }
