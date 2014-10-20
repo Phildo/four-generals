@@ -40,6 +40,9 @@ RoomScene::RoomScene(Graphics *g, Network::Client *& c, Model *&m)
 
 void RoomScene::enter()
 {
+  client = *clientPtr;
+  model = new Model(client);
+  *modelPtr = model;
 }
 
 void RoomScene::touch(In &in)
@@ -54,6 +57,7 @@ void RoomScene::touch(In &in)
 
 int RoomScene::tick()
 {
+  model->tick();
   return 0;
 }
 

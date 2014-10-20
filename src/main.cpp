@@ -1,8 +1,5 @@
 #include "game.h"
 #include "logger.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <time.h>
 
 #include <SDL.h>
 #include <signal.h>
