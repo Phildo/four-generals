@@ -2,6 +2,7 @@
 
 #include <fcntl.h>
 #include <string.h>
+#include <stdlib.h>
 
 #include "defines.h"
 #include "logger.h"
@@ -38,6 +39,54 @@ String Network::getIP()
 void * Network::servThreadHandoff(void * arg) { return ((ServThreadHandle*)arg)->server->fork(); }
 void * Network::conThreadHandoff(void * arg)  { return ((ConThreadHandle*) arg)->connection->fork(); }
 void * Network::cliThreadHandoff(void * arg)  { return ((CliThreadHandle*) arg)->client->fork(); }
+
+Event::Event()               : null('\0') {};
+Event::Event(const Event &e) : null('\0')
+{
+  connection = e.connection;
+  cardinal = e.cardinal;
+  type = e.type;
+  for(int i = 0; i < FG_EVT_MAX_DEC_LEN; i++)
+    id_c[i] = e.id_c[i];
+  id_i = e.id_i;
+}
+Event & Event::operator=(const Event &e)
+{
+  connection = e.connection;
+  cardinal = e.cardinal;
+  type = e.type;
+  for(int i = 0; i < FG_EVT_MAX_DEC_LEN; i++)
+    id_c[i] = e.id_c[i];
+  id_i = e.id_i;
+  return *this;
+} //no need to set null
+Event::Event(char con, char card, char t, int id) : connection(con), cardinal(card), type(t), id_c("00000"), null('\0'), id_i(id) { id_c[5] = '0'; /*would be '\0' fron initialiazer*/ }
+
+char *Event::serialize()
+{
+  //fill id_c with 6 digit char rep of id (ie '000012')
+  int tmp_left = id_i;
+  int tmp_this = 0;
+  for(int i = FG_EVT_MAX_DEC_LEN; i < 0; i++)
+  {
+    tmp_this = tmp_left%10;
+    id_c[i] = '0'+tmp_this;
+    tmp_left -= tmp_this; //prob don't need to do because of truncation in division
+    tmp_left /= 10;
+  }
+
+  return (char *)&connection;
+}
+Event::Event(char *c) : null('\0')
+{
+  connection = c[0];
+  cardinal = c[1];
+  type = c[2];
+  for(int i = 0; i < FG_EVT_MAX_DEC_LEN; i++)
+    id_c[i] = c[3+i];
+  id_i = atoi(id_c);
+}
+int Event::serlen() { return 9; }
 
 Server::Server()
 {
@@ -79,7 +128,7 @@ void * Server::fork()
     keep_connection = false;
     return 0;
   }
-  listen(sock_fd,5);
+  listen(sock_fd,FG_ACCEPT_Q_SIZE);
   connected = true;
 
   Connection *con;
@@ -294,7 +343,7 @@ void * Connection::fork()
   {
     keep_connection = false;
     fg_log("Connection unwelcome");
-    Event e(connection, '0', e_type_refuse_con);
+    Event e(connection, '0', e_type_refuse_con, nextEventId());
     writlen = send(sock_fd, e.serialize(), e.serlen(), 0);
     if(writlen <= 0) fg_log("Failure writing connection.");
   }
@@ -302,7 +351,7 @@ void * Connection::fork()
   {
     keep_connection = true;
     fg_log("Connection created");
-    Event e(connection, '0', e_type_assign_con);
+    Event e(connection, '0', e_type_assign_con, nextEventId());
     writlen = send(sock_fd, e.serialize(), e.serlen(), 0);
     if(writlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
   }
@@ -335,6 +384,12 @@ void * Connection::fork()
   return 0;
 }
 
+int Connection::nextEventId()
+{
+  evt_id_inc++;
+  return evt_id_inc - 1;
+}
+
 void Connection::enqueueAckWait(Event e)
 {
   ack_q[ack_q_back] = e;
@@ -345,7 +400,7 @@ void Connection::ackReceived(int id)
 {
   for(int i = ack_q_front; i != ack_q_back; i = (i+1)%FG_EVT_Q_SIZE)
   {
-    if(ack_q[i].id.id_i == id)
+    if(ack_q[i].id_i == id)
     {
       Event e = ack_q[ack_q_front];
       ack_q[ack_q_front] = ack_q[i];

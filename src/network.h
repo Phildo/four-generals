@@ -16,8 +16,10 @@ extern "C"
 #include "string.h"
 
 #define FG_MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
+#define FG_ACCEPT_Q_SIZE 5 //recommended (also, can't be more... I don't think...)
 #define FG_BUFF_SIZE 256
 #define FG_EVT_Q_SIZE 1024
+#define FG_EVT_MAX_DEC_LEN 6
 
 namespace Network
 {
@@ -41,27 +43,24 @@ namespace Network
     char connection;
     char cardinal;
     char type;
+    char id_c[FG_EVT_MAX_DEC_LEN]; //string val of id_i (ie "2415")
     const char null;
-    union
-    {
-      char id_c[4];
-      int id_i;
-    } id;
+    int id_i;
 
     //default constructor
-    Event() : null('\0') {};
+    Event();
 
     //copy constructor
-    Event(const Event &e)     : null('\0') { connection = e.connection; cardinal = e.cardinal; type = e.type; }
-    Event &operator=(const Event &e) { connection = e.connection; cardinal = e.cardinal; type = e.type; return *this; } //no need to set null
+    Event(const Event &e);
+    Event &operator=(const Event &e);
 
     //custom constructor
-    Event(char con, char card, char t) : connection(con), cardinal(card), type(t), null('\0') {}
+    Event(char con, char card, char t, int id);
 
     //serializability
-    char *serialize() { return (char *)&connection; }
-    Event(char *c) : null('\0') { connection = c[0]; cardinal = c[1]; type = c[2]; }
-    int serlen() { return 3; }
+    char *serialize();
+    Event(char *c);
+    int serlen();
   };
 
   class Connection;
@@ -72,6 +71,8 @@ namespace Network
       bool keep_connection;
       bool connected;
 
+      int evt_id_inc;
+      int nextEventId();
       void enqueueAckWait(Event e);
       void ackReceived(int id);
       Event ack_q[FG_EVT_Q_SIZE];
