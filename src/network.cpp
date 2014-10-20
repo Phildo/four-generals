@@ -62,7 +62,7 @@ void Server::connect(int _port)
 void * Server::fork()
 {
   n_cons = 0;
-  for(int i = 0; i < FG_MAX_CONNECTIONS; i++) cons[i].connection = '0'+i; //char so '0' != null
+  for(int i = 0; i < FG_MAX_CONNECTIONS; i++) cons[i].connection = '1'+i; //char so con != null ('0' for no connection)
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
 
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -178,8 +178,8 @@ Client::Client()
 {
   ip = getIP();
   port = 8080;
-  evt_q_front_i = 0;
-  evt_q_back_i = 0;
+  evt_q_front = 0;
+  evt_q_back = 0;
   connected = false;
   keep_connection = false;
   handle.client = this;
@@ -263,15 +263,16 @@ bool Client::healthy()
 
 void Client::enqueueEvent(Event e)
 {
-  evt_q[evt_q_back_i] = e;
-  evt_q_back_i++;
+  evt_q[evt_q_back] = e;
+  evt_q_back = (evt_q_back+1)%FG_EVT_Q_SIZE;
 }
 
 Event *Client::getEvent()
 {
-  if(evt_q_front_i == evt_q_back_i) return 0;
-  evt_q_front_i++;
-  return &evt_q[evt_q_front_i-1];
+  if(evt_q_front == evt_q_back) return 0;
+  int tmp = evt_q_front;
+  evt_q_front = (evt_q_front+1)%FG_EVT_Q_SIZE;
+  return &evt_q[tmp];
 }
 
 Client::~Client()
@@ -332,6 +333,27 @@ void * Connection::fork()
   connected = false;
   stale = true; //cheap way to alert server to kill this thread at its convenience
   return 0;
+}
+
+void enqueueAckWait(Event e)
+{
+  ack_q[evt_q_back] = e;
+  ack_q_back = (ack_q_back+1)%FG_EVT_Q_SIZE;
+}
+
+void ackReceived(int id)
+{
+  for(int i = ack_q_front; i != ack_q_back; i = (i+1)%FG_EVT_Q_SIZE)
+  {
+    if(ack_q[i].id.id_i == id)
+    {
+      Event e = ack_q[ack_q_front];
+      ack_q[ack_q_front] = ack_q[i];
+      ack_q[i] = e;
+      ack_q_front = (ack_q_front+1)%FG_EVT_Q_SIZE;
+      return;
+    }
+  }
 }
 
 void Connection::disconnect()

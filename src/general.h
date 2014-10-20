@@ -5,7 +5,7 @@ class General
 {
   private:
   public:
-    bool connection_id;
+    char connection;
     char cardinal;
 
     General();

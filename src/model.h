@@ -10,6 +10,10 @@ class Model
     Network::Client *client;
   public :
     General generals[4];
+    General *cardGeneral(char card);
+    General *conGeneral(char con);
+    General *emptyGeneral();
+
     Model(Network::Client *c);
     ~Model();
     void tick();

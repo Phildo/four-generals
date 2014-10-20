@@ -28,12 +28,13 @@ namespace Network
   void * cliThreadHandoff(void * arg);
 
   //to keep track of already assigned (CAPS = taken) (god what a terrible system)
-  //AbCdefghiJkLmNopqRstuvwxyz
+  //AbCDefghiJkLmNopqRstuvwxyz
+  static const char e_type_ack         = 'a';
   static const char e_type_assign_con  = 'c';
   static const char e_type_refuse_con  = 'n';
   static const char e_type_join        = 'j';
   static const char e_type_leave       = 'l';
-  static const char e_type_assign_card = 'a';
+  static const char e_type_assign_card = 'd';
   static const char e_type_revoke_card = 'r';
   struct Event //all members chars for quick/simple serializability
   {
@@ -41,6 +42,11 @@ namespace Network
     char cardinal;
     char type;
     const char null;
+    union id
+    {
+      char id_c[4];
+      int id_i;
+    }
 
     //default constructor
     Event() : null('\0') {};
@@ -65,10 +71,16 @@ namespace Network
     private:
       bool keep_connection;
       bool connected;
+
+      void enqueueAckWait(Event e);
+      void ackReceived(int id);
+      Event ack_q[FG_EVT_Q_SIZE];
+      int ack_q_front;
+      int ack_q_back;
     public:
       ConThreadHandle handle;
 
-      char connection; //'0' - '0'+FG_MAX_CONNECTIONS
+      char connection; //'1' thru '1'+(FG_MAX_CONNECTIONS-1) or '0' for none
       bool stale;
       bool welcome;
 
@@ -147,8 +159,8 @@ namespace Network
 
       void enqueueEvent(Event);
       Event evt_q[FG_EVT_Q_SIZE];
-      int evt_q_front_i;
-      int evt_q_back_i;
+      int evt_q_front;
+      int evt_q_back;
     public:
       Client();
       ~Client();

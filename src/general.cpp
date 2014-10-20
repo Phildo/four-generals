@@ -2,7 +2,8 @@
 
 General::General()
 {
-  connection_id = 0;
+  connection = '0';
+  cardinal = '0';
 }
 
 General::~General()
