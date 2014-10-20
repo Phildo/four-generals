@@ -1,6 +1,11 @@
 #include "model.h"
+
+#include "client.h"
+#include "event.h"
+
 #include "defines.h"
 #include "logger.h"
+
 #include <stdlib.h>
 
 Model::Model(Network::Client *c)

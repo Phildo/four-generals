@@ -1,6 +1,7 @@
 #include "room_scene.h"
 #include "graphics.h"
 #include "network.h"
+#include "client.h"
 #include "model.h"
 
 #include <SDL.h>

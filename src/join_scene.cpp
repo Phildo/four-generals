@@ -1,6 +1,7 @@
 #include "join_scene.h"
 #include "graphics.h"
 #include "network.h"
+#include "client.h"
 
 #include <SDL.h>
 

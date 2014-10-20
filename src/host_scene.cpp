@@ -1,6 +1,8 @@
 #include "host_scene.h"
 #include "graphics.h"
 #include "network.h"
+#include "server.h"
+#include "client.h"
 
 #include <SDL.h>
 

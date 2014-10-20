@@ -1,7 +1,8 @@
 #include "game.h"
 #include "graphics.h"
 #include "input.h"
-#include "network.h"
+#include "server.h"
+#include "client.h"
 #include "model.h"
 #include "scene.h"
 
