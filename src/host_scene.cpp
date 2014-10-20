@@ -34,7 +34,8 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c)
 
 void HostScene::enter()
 {
-
+  server = *serverPtr;
+  client = *clientPtr;
 }
 
 void HostScene::touch(In &in)
@@ -80,6 +81,15 @@ void HostScene::draw()
 void HostScene::leave()
 {
 
+}
+void HostScene::pass()
+{
+
+}
+void HostScene::pop()
+{
+  if(client) { if(client->healthy()) client->disconnect(); delete client; client = 0; *clientPtr = 0; }
+  if(server) { if(server->healthy()) server->disconnect(); delete server; server = 0; *serverPtr = 0; }
 }
 
 HostScene::~HostScene()

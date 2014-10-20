@@ -41,6 +41,8 @@ class RoomScene : public Scene
     int tick();
     void draw();
     void leave();
+    void pass();
+    void pop();
 };
 
 #endif

@@ -32,7 +32,7 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c)
 
 void JoinScene::enter()
 {
-
+  client = *clientPtr;
 }
 
 void JoinScene::touch(In &in)
@@ -75,6 +75,15 @@ void JoinScene::leave()
 {
 
 }
+void JoinScene::pass()
+{
+
+}
+void JoinScene::pop()
+{
+  if(client) { if(client->healthy()) client->disconnect(); delete client; client = 0; *clientPtr = 0; }
+}
+
 
 JoinScene::~JoinScene()
 {

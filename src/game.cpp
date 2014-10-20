@@ -45,9 +45,11 @@ void Game::run()
       if(p) scenes[scene]->touch(in);
 
     int tmp = scenes[scene]->tick(); //should decouple from drawing
-    if(tmp) scenes[scene]->leave();
+    if(tmp != 0) scenes[scene]->leave();
+    if(tmp >  0) scenes[scene]->pass();
+    if(tmp <  0) scenes[scene]->pop();
     scene += tmp;
-    scenes[scene]->enter();
+    if(tmp != 0) scenes[scene]->enter();
 
     graphics->clear();
     scenes[scene]->draw();

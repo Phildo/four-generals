@@ -56,6 +56,14 @@ void IntroScene::leave()
 {
 
 }
+void IntroScene::pass()
+{
+
+}
+void IntroScene::pop()
+{
+
+}
 
 IntroScene::~IntroScene()
 {

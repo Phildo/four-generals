@@ -85,6 +85,14 @@ void RoomScene::draw()
 void RoomScene::leave()
 {
 }
+void RoomScene::pass()
+{
+
+}
+void RoomScene::pop()
+{
+  if(model) { delete model; model = 0; *modelPtr = 0; }
+}
 
 RoomScene::~RoomScene()
 {

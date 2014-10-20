@@ -13,6 +13,8 @@ class Scene
     virtual int tick() = 0;
     virtual void draw() = 0;
     virtual void leave() = 0;
+    virtual void pass() = 0;
+    virtual void pop() = 0;
 };
 
 #endif
