@@ -42,11 +42,11 @@ namespace Network
     char cardinal;
     char type;
     const char null;
-    union id
+    union
     {
       char id_c[4];
       int id_i;
-    }
+    } id;
 
     //default constructor
     Event() : null('\0') {};

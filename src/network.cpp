@@ -335,13 +335,13 @@ void * Connection::fork()
   return 0;
 }
 
-void enqueueAckWait(Event e)
+void Connection::enqueueAckWait(Event e)
 {
-  ack_q[evt_q_back] = e;
+  ack_q[ack_q_back] = e;
   ack_q_back = (ack_q_back+1)%FG_EVT_Q_SIZE;
 }
 
-void ackReceived(int id)
+void Connection::ackReceived(int id)
 {
   for(int i = ack_q_front; i != ack_q_back; i = (i+1)%FG_EVT_Q_SIZE)
   {
