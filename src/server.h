@@ -14,6 +14,7 @@ namespace Network
   {
     private:
       ServThreadHandle handle;
+      pthread_t thread;
 
       String ip;
       int port;
@@ -21,24 +22,20 @@ namespace Network
       bool keep_connection;
       bool connected;
 
-      int sock_fd;
-      struct sockaddr_in sock_addr;
-      pthread_t thread;
-
       //an odd pattern-
       //holds connection memory contiguously on stack
       //pointers to the above memory, Q'd w/ emtpy connctions last
-      Connection cons[FG_MAX_CONNECTIONS];
-      Connection *con_ps[FG_MAX_CONNECTIONS];
       int n_cons;
+      Connection cons[FG_MAX_CONNECTIONS];
+      Connection *con_ptrs[FG_MAX_CONNECTIONS];
     public:
       Server();
       ~Server();
 
       void connect(int _port);
       void broadcast(const String &s);
-      void disconnect();
       bool healthy();
+      void disconnect();
 
       void *fork();
   };

@@ -27,6 +27,7 @@ namespace Network
       circQ<Event, FG_EVT_Q_SIZE> ack_q;
     public:
       ConThreadHandle handle;
+      pthread_t thread;
 
       char connection; //'1' thru '1'+(FG_MAX_CONNECTIONS-1) or '0' for none
       bool stale;
@@ -36,9 +37,7 @@ namespace Network
       socklen_t sock_addr_len; //sizeof addr
       struct sockaddr_in sock_addr;
 
-      pthread_t thread;
       char buff[FG_BUFF_SIZE];
-
 
       Connection();
       ~Connection();

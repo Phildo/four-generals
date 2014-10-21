@@ -26,13 +26,17 @@ void Client::connect(const String &_ip, int _port)
   serv_ip = _ip;
 
   fg_log("Client connecting to IP:%s on port %d", serv_ip.ptr(), port);
-  keep_connection = true;
   int r = pthread_create(&thread, NULL, cliThreadHandoff, (void *)&handle)  ;
-  if(r != 0) { fg_log("Failure creating client thread."); keep_connection = false; }
+  if(r != 0) fg_log("Failure creating client thread.");
 }
 
 void * Client::fork()
 {
+  keep_connection = true;
+  int sock_fd;
+  struct sockaddr_in serv_sock_addr; //client's serv addr
+  struct hostent *serv_host; //client's reference to server
+
   int len;
   Event *send_evt;
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -82,6 +86,8 @@ void * Client::fork()
     }
   }
   connected = false;
+
+  close(sock_fd);
   return 0;
 }
 
@@ -120,7 +126,6 @@ void Client::disconnect()
   fg_log("Cient disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
-  close(sock_fd);
 }
 
 bool Client::healthy()

@@ -13,8 +13,8 @@ Server::Server()
 {
   ip = getIP();
   port = 8080;
-  connected = false;
   keep_connection = false;
+  connected = false;
   handle.server = this;
 }
 
@@ -24,16 +24,19 @@ void Server::connect(int _port)
   port = _port;
 
   fg_log("Server connecting on port %d",port);
-  keep_connection = true;
   int r = pthread_create(&thread, NULL, servThreadHandoff, (void *)&handle)  ;
-  if(r != 0) { fg_log("Failure creating server thread."); keep_connection = false; }
+  if(r != 0) fg_log("Failure creating server thread.");
 }
 
 void * Server::fork()
 {
+  keep_connection = true;
+  int sock_fd;
+  struct sockaddr_in sock_addr;
+
   n_cons = 0;
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) cons[i].connection = '1'+i; //char so con != null ('0' for no connection)
-  for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ps[i] = &cons[i];
+  for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ptrs[i] = &cons[i];
 
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
   fcntl(sock_fd, F_SETFL, O_NONBLOCK);
@@ -45,6 +48,7 @@ void * Server::fork()
 
   if(bind(sock_fd, (struct sockaddr *) &sock_addr, sizeof(sock_addr)) < 0)
   {
+    close(sock_fd);
     fg_log("Failure binding server socket.");
     keep_connection = false;
     return 0;
@@ -56,7 +60,7 @@ void * Server::fork()
   Connection *tmp_con_p;
   while(keep_connection) //spin wait. bad idea? tune in next time to find out.
   {
-    con = con_ps[n_cons];
+    con = con_ptrs[n_cons];
 
     con->stale = false;
     con->welcome = true;
@@ -79,12 +83,12 @@ void * Server::fork()
 
         //find con and put it back at the end of the queue #ugly
         int con_index = 0;
-        for(int i = 0; i < n_cons; i++) if(con_ps[i] == con) con_index = i;
+        for(int i = 0; i < n_cons; i++) if(con_ptrs[i] == con) con_index = i;
         n_cons--;
 
-        tmp_con_p = con_ps[con_index];
-        con_ps[con_index] = con_ps[n_cons];
-        con_ps[n_cons] = tmp_con_p;
+        tmp_con_p = con_ptrs[con_index];
+        con_ptrs[con_index] = con_ptrs[n_cons];
+        con_ptrs[n_cons] = tmp_con_p;
       }
       else
       {
@@ -96,16 +100,16 @@ void * Server::fork()
     //check for disconnected cons
     for(int i = 0; i < n_cons; i++)
     {
-      if(con_ps[i]->stale)
+      if(con_ptrs[i]->stale)
       {
         //clean up/kill thread/connection
-        con_ps[i]->disconnect();
+        con_ptrs[i]->disconnect();
         n_cons--;
 
         //put newly cleaned con at end of list
-        tmp_con_p = con_ps[i];
-        con_ps[i] = con_ps[n_cons];
-        con_ps[n_cons] = tmp_con_p;
+        tmp_con_p = con_ptrs[i];
+        con_ptrs[i] = con_ptrs[n_cons];
+        con_ptrs[n_cons] = tmp_con_p;
 
         i--;
       }
@@ -114,9 +118,10 @@ void * Server::fork()
   connected = false;
 
   for(int i = 0; i < n_cons; i++)
-    con_ps[i]->disconnect();
+    con_ptrs[i]->disconnect();
   n_cons = 0;
 
+  close(sock_fd);
   return 0;
 }
 
@@ -130,7 +135,6 @@ void Server::disconnect()
   fg_log("Server disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
-  close(sock_fd);
 }
 
 bool Server::healthy()

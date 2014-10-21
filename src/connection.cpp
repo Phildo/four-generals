@@ -68,6 +68,8 @@ void * Connection::fork()
   }
   connected = false;
   stale = true; //cheap way to alert server to kill this thread at its convenience
+
+  close(sock_fd);
   return 0;
 }
 
@@ -109,7 +111,6 @@ void Connection::disconnect()
   fg_log("Connection disconnecting");
   keep_connection = false;
   pthread_join(thread, NULL);
-  close(sock_fd);
 }
 
 bool Connection::healthy()
