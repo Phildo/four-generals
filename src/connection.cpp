@@ -19,55 +19,61 @@ Connection::Connection()
 
 void * Connection::fork()
 {
+  int len;
+  Event *send_evt;
   if(!welcome)
   {
     keep_connection = false;
     fg_log("Connection unwelcome");
     Event e(connection, '0', e_type_refuse_con, nextEventId());
-    writlen = send(sock_fd, e.serialize(), e.serlen(), 0);
-    if(writlen <= 0) fg_log("Failure writing connection.");
+    len = send(sock_fd, e.serialize(), e.serlen(), 0);
+    if(len <= 0) fg_log("Failure writing connection.");
   }
   else
   {
     keep_connection = true;
     fg_log("Connection created");
     Event e(connection, '0', e_type_assign_con, nextEventId());
-    writlen = send(sock_fd, e.serialize(), e.serlen(), 0);
-    if(writlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
+    len = send(sock_fd, e.serialize(), e.serlen(), 0);
+    if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
   }
   connected = true;
 
-  readlen = 0;
-  writlen = 0;
-  bzero(read, FG_BUFF_SIZE);
-  bzero(writ, FG_BUFF_SIZE);
+  len = 0;
+  bzero(buff, FG_BUFF_SIZE);
   while(keep_connection)
   {
-    readlen = recv(sock_fd, read, FG_BUFF_SIZE-1, 0);
-    if(readlen > 0)
+    len = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
+    if(len > 0)
     {
-      Event e(read);
+      Event e(buff);
+      recv_q.enqueue(e);
       if(e.type == e_type_ack) ackReceived(e.id_i);
       else
       {
         //needs to be processed and potentially re-broadcast
       }
-      fg_log("Serv Received %d: %s",readlen,read);
-      readlen = 0;
+      fg_log("Serv Received(%d): %s",len,buff);
+      len = 0;
     }
-    else if(readlen == 0)
+    else if(len == 0)
       keep_connection = false;
 
-    if(writlen > 0)
+    while((send_evt = send_q.next()))
     {
-      writlen = send(sock_fd, writ, writlen, 0);
-      if(writlen <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
-      writlen = 0;
+      len = send(sock_fd, send_evt->serialize(), send_evt->serlen(), 0);
+      if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
+      len = 0;
     }
   }
   connected = false;
   stale = true; //cheap way to alert server to kill this thread at its convenience
   return 0;
+}
+
+void Connection::broadcast(Event e)
+{
+  send_q.enqueue(e);
 }
 
 int Connection::nextEventId()
@@ -78,12 +84,12 @@ int Connection::nextEventId()
 
 void Connection::enqueueAckWait(Event e)
 {
-  ack_q[ack_q_back] = e;
-  ack_q_back = (ack_q_back+1)%FG_EVT_Q_SIZE;
+  ack_q.enqueue(e);
 }
 
 void Connection::ackReceived(int id)
 {
+  /*
   for(int i = ack_q_front; i != ack_q_back; i = (i+1)%FG_EVT_Q_SIZE)
   {
     if(ack_q[i].id_i == id)
@@ -95,6 +101,7 @@ void Connection::ackReceived(int id)
       return;
     }
   }
+  */
 }
 
 void Connection::disconnect()

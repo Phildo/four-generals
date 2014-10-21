@@ -3,6 +3,7 @@
 
 #include "network.h"
 #include "event.h"
+#include "circ_q.h"
 
 namespace Network
 {
@@ -20,9 +21,10 @@ namespace Network
       int nextEventId();
       void enqueueAckWait(Event e);
       void ackReceived(int id);
-      Event ack_q[FG_EVT_Q_SIZE];
-      int ack_q_front;
-      int ack_q_back;
+
+      circQ<Event, FG_EVT_Q_SIZE> recv_q;
+      circQ<Event, FG_EVT_Q_SIZE> send_q;
+      circQ<Event, FG_EVT_Q_SIZE> ack_q;
     public:
       ConThreadHandle handle;
 
@@ -35,11 +37,13 @@ namespace Network
       struct sockaddr_in sock_addr;
 
       pthread_t thread;
-      char read[FG_BUFF_SIZE]; int readlen;
-      char writ[FG_BUFF_SIZE]; int writlen;
+      char buff[FG_BUFF_SIZE];
+
 
       Connection();
       ~Connection();
+
+      void broadcast(Event e);
 
       void disconnect();
       bool healthy();
