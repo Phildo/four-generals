@@ -48,7 +48,7 @@ void * Connection::fork()
     {
       Event e(buff);
       recv_q.enqueue(e);
-      if(e.type == e_type_ack) ackReceived(e.id_i);
+      if(e.type == e_type_ack) ackReceived(e);
       else
       {
         //needs to be processed and potentially re-broadcast
@@ -89,21 +89,9 @@ void Connection::enqueueAckWait(Event e)
   ack_q.enqueue(e);
 }
 
-void Connection::ackReceived(int id)
+void Connection::ackReceived(Event e)
 {
-  /*
-  for(int i = ack_q_front; i != ack_q_back; i = (i+1)%FG_EVT_Q_SIZE)
-  {
-    if(ack_q[i].id_i == id)
-    {
-      Event e = ack_q[ack_q_front];
-      ack_q[ack_q_front] = ack_q[i];
-      ack_q[i] = e;
-      ack_q_front = (ack_q_front+1)%FG_EVT_Q_SIZE;
-      return;
-    }
-  }
-  */
+  ack_q.get(e); //finds and removes from q. note we don't actually do anything with it
 }
 
 void Connection::disconnect()

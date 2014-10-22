@@ -30,6 +30,10 @@ namespace Network
     Event(const Event &e);
     Event &operator=(const Event &e);
 
+    //test for equality is a lie for comparing events to acks and retrieving from circ_q
+    bool operator==(const Event& e){ return connection == e.connection; }
+    bool operator!=(const Event& e){ return !operator==(e); }
+
     //custom constructor
     Event(char con, char card, char t, int id);
 

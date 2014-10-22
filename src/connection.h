@@ -20,7 +20,7 @@ namespace Network
       int evt_id_inc;
       int nextEventId();
       void enqueueAckWait(Event e);
-      void ackReceived(int id);
+      void ackReceived(Event e);
 
       circQ<Event, FG_EVT_Q_SIZE> recv_q;
       circQ<Event, FG_EVT_Q_SIZE> send_q;
