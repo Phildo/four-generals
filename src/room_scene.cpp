@@ -1,17 +1,18 @@
 #include "room_scene.h"
 #include "graphics.h"
 #include "network.h"
-#include "client.h"
-#include "model.h"
+#include "server_model.h"
+#include "client_model.h"
 
 #include <SDL.h>
 
 #include "logger.h"
 
-RoomScene::RoomScene(Graphics *g, Network::Client *& c, Model *&m)
+RoomScene::RoomScene(Graphics *g, ServerModel *sm, ClientModel *cm)
 {
   graphics = g;
-  model = m;
+  serverModel = sm;
+  clientModel = cm;
 
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
@@ -31,19 +32,10 @@ RoomScene::RoomScene(Graphics *g, Network::Client *& c, Model *&m)
   sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");  sButton = UI::Button(ww/2-10, wh  -30, 20, 20);
   wLabel = UI::Label(     10, wh/2-10, 20, "W");  wButton = UI::Button(     10, wh/2-10, 20, 20);
   eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");  eButton = UI::Button(ww  -30, wh/2-10, 20, 20);
-
-  clientPtr = &c;
-  client = 0;
-
-  modelPtr = &m;
-  model = 0;
 }
 
 void RoomScene::enter()
 {
-  client = *clientPtr;
-  model = new Model(client);
-  *modelPtr = model;
 }
 
 void RoomScene::touch(In &in)
@@ -58,7 +50,8 @@ void RoomScene::touch(In &in)
 
 int RoomScene::tick()
 {
-  model->tick();
+  if(serverModel) serverModel->tick();
+  clientModel->tick();
   return 0;
 }
 
@@ -92,7 +85,6 @@ void RoomScene::pass()
 }
 void RoomScene::pop()
 {
-  if(model) { delete model; model = 0; *modelPtr = 0; }
 }
 
 RoomScene::~RoomScene()

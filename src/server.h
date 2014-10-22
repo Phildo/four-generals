@@ -34,8 +34,10 @@ namespace Network
 
       void connect(int _port);
       void broadcast(const String &s);
-      bool healthy();
       void disconnect();
+      bool healthy();
+
+      Event *getEvent(); //aka dequeue
 
       void *fork();
   };

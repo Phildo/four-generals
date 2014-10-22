@@ -6,6 +6,8 @@
 #include "network.h"
 
 class Graphics;
+class ServerModel;
+class ClientModel;
 
 class JoinScene : public Scene
 {
@@ -22,11 +24,13 @@ class JoinScene : public Scene
     UI::Button sessionButton;
 
     Network::Client *client;
-    Network::Client **clientPtr; //Pointer to the client pointer 'owned' by game
+    Network::Client **client_ptr; //Pointer to the client pointer 'owned' by game
+    ClientModel *c_model;
+    ClientModel **c_model_ptr; //Pointer to the client model pointer 'owned' by game
 
     int SCENE_CHANGE_HACK;
   public:
-    JoinScene(Graphics *g, Network::Client *& c);
+    JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm);
     ~JoinScene();
     void enter();
     void touch(In &in);

@@ -142,6 +142,11 @@ bool Server::healthy()
   return connected && keep_connection;
 }
 
+Event *Server::getEvent()
+{
+  return 0;
+}
+
 Server::~Server()
 {
   if(keep_connection) disconnect();

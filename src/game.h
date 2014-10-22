@@ -10,7 +10,8 @@ namespace Network
 class Server;
 class Client;
 }
-class Model;
+class ServerModel;
+class ClientModel;
 class Scene;
 
 #define FG_NUM_SCENES 4
@@ -22,7 +23,8 @@ class Game
     Input *input;
     Network::Server* server;
     Network::Client* client;
-    Model* model;
+    ServerModel* s_model;
+    ClientModel* c_model;
     Scene* scenes[FG_NUM_SCENES];
 
   public:

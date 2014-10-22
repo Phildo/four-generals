@@ -6,7 +6,8 @@
 #include "network.h"
 
 class Graphics;
-class Model;
+class ServerModel;
+class ClientModel;
 
 class RoomScene : public Scene
 {
@@ -27,14 +28,11 @@ class RoomScene : public Scene
     UI::Label leaveSessLabel;
     UI::Button sessionButton;
 
-    Network::Client *client;
-    Network::Client **clientPtr;//Pointer to the client pointer 'owned' by game
-    Model *model;
-    Model **modelPtr;//Pointer to the model pointer 'owned' by game
+    ServerModel *serverModel;
+    ClientModel *clientModel;
 
   public:
-    RoomScene(Graphics *g, Network::Client *& c, Model *&m);
-    RoomScene(Graphics *g, Model *m);
+    RoomScene(Graphics *g, ServerModel *sm, ClientModel *cm);
     ~RoomScene();
     void enter();
     void touch(In &in);

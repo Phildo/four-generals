@@ -3,7 +3,8 @@
 #include "input.h"
 #include "server.h"
 #include "client.h"
-#include "model.h"
+#include "server_model.h"
+#include "client_model.h"
 #include "scene.h"
 
 #include "intro_scene.h"
@@ -26,11 +27,12 @@ Game::Game()
   //save allocation until necessary
   server = 0;
   client = 0;
-  model = 0;
+  s_model = 0;
+  c_model = 0;
   scenes[0] = new IntroScene(graphics);
-  scenes[1] = new HostScene(graphics, server, client);
-  scenes[2] = new JoinScene(graphics, client);
-  scenes[3] = new RoomScene(graphics, client, model);
+  scenes[1] = new HostScene(graphics, server, client, s_model, c_model);
+  scenes[2] = new JoinScene(graphics, client, c_model);
+  scenes[3] = new RoomScene(graphics, s_model, c_model);
 }
 
 void Game::run()
@@ -64,7 +66,8 @@ Game::~Game()
 {
   for(int i = FG_NUM_SCENES-1; i >= 0; i--)
     delete scenes[i];
-  if(model) delete model;
+  if(s_model) delete s_model;
+  if(c_model) delete c_model;
   if(client) delete client;
   if(server) delete server;
   delete input;

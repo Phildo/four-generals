@@ -3,12 +3,14 @@
 #include "network.h"
 #include "server.h"
 #include "client.h"
+#include "server_model.h"
+#include "client_model.h"
 
 #include <SDL.h>
 
 #include "logger.h"
 
-HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c)
+HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
 
@@ -28,8 +30,12 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c)
 
   serverPtr = &s;
   clientPtr = &c;
+  s_model_ptr = &sm;
+  c_model_ptr = &cm;
   server = 0;
   client = 0;
+  s_model = 0;
+  c_model = 0;
 
   SCENE_CHANGE_HACK = 0;
 }
@@ -38,6 +44,8 @@ void HostScene::enter()
 {
   server = *serverPtr;
   client = *clientPtr;
+  s_model = *s_model_ptr;
+  c_model = *c_model_ptr;
 }
 
 void HostScene::touch(In &in)
@@ -59,10 +67,20 @@ int HostScene::tick()
 {
   if(server && server->healthy())
   {
+    if(!s_model)
+    {
+      s_model = new ServerModel(server);
+      *s_model_ptr = s_model;
+    }
     if(!client) { client = new Network::Client(); *clientPtr = client; }
     if(!client->healthy()) client->connect(String("localhost"),8080);
   }
-  if(client && client->healthy()) SCENE_CHANGE_HACK = 2;
+  if(client && client->healthy()) 
+  {
+    c_model = new ClientModel(client);
+    *c_model_ptr = c_model;
+    SCENE_CHANGE_HACK = 2;
+  }
 
   int tmp = SCENE_CHANGE_HACK;
   SCENE_CHANGE_HACK = 0;
@@ -90,6 +108,8 @@ void HostScene::pass()
 }
 void HostScene::pop()
 {
+  if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
+  if(s_model) { delete s_model; s_model = 0; *s_model_ptr = 0; }
   if(client) { if(client->healthy()) client->disconnect(); delete client; client = 0; *clientPtr = 0; }
   if(server) { if(server->healthy()) server->disconnect(); delete server; server = 0; *serverPtr = 0; }
 }

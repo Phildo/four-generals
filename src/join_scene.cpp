@@ -2,12 +2,13 @@
 #include "graphics.h"
 #include "network.h"
 #include "client.h"
+#include "client_model.h"
 
 #include <SDL.h>
 
 #include "logger.h"
 
-JoinScene::JoinScene(Graphics *g, Network::Client *& c)
+JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 {
   graphics = g;
 
@@ -25,15 +26,18 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c)
   joinSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Join Session");
   sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
 
-  clientPtr = &c;
+  client_ptr = &c;
+  c_model_ptr = &cm;
   client = 0;
+  c_model = 0;
 
   SCENE_CHANGE_HACK = 0;
 }
 
 void JoinScene::enter()
 {
-  client = *clientPtr;
+  client = *client_ptr;
+  c_model = *c_model_ptr;
 }
 
 void JoinScene::touch(In &in)
@@ -46,7 +50,7 @@ void JoinScene::touch(In &in)
   if(sessionButton.query(in))
   {
     fg_log("sessionButton");
-    if(!client) { client = new Network::Client(); *clientPtr = client; }
+    if(!client) { client = new Network::Client(); *client_ptr = client; }
     if(!client->healthy()) client->connect(String("localhost"),8080);
   }
 }
@@ -54,7 +58,11 @@ void JoinScene::touch(In &in)
 int JoinScene::tick()
 {
   if(client && client->healthy())
+  {
+    c_model = new ClientModel(client);
+    *c_model_ptr = c_model;
     SCENE_CHANGE_HACK = 1;
+  }
 
   int tmp = SCENE_CHANGE_HACK;
   SCENE_CHANGE_HACK = 0;
@@ -82,7 +90,8 @@ void JoinScene::pass()
 }
 void JoinScene::pop()
 {
-  if(client) { if(client->healthy()) client->disconnect(); delete client; client = 0; *clientPtr = 0; }
+  if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
+  if(client) { if(client->healthy()) client->disconnect(); delete client; client = 0; *client_ptr = 0; }
 }
 
 

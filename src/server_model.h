@@ -1,21 +1,21 @@
-#ifndef _FG_MODEL_H_
-#define _FG_MODEL_H_
+#ifndef _FG_SERVER_MODEL_H_
+#define _FG_SERVER_MODEL_H_
 
 #include "general.h"
 #include "network.h"
 
-class Model
+class ServerModel
 {
   private :
-    Network::Client *client;
+    Network::Server *server;
   public :
     General generals[4];
     General *cardGeneral(char card);
     General *conGeneral(char con);
     General *emptyGeneral();
 
-    Model(Network::Client *c);
-    ~Model();
+    ServerModel(Network::Server *s);
+    ~ServerModel();
     void tick();
 };
 

@@ -1,4 +1,4 @@
-#include "model.h"
+#include "client_model.h"
 
 #include "client.h"
 #include "event.h"
@@ -8,35 +8,35 @@
 
 #include <stdlib.h>
 
-Model::Model(Network::Client *c)
+ClientModel::ClientModel(Network::Client *c)
 {
   client = c;
 }
 
-Model::~Model()
+ClientModel::~ClientModel()
 {
 }
 
-General *Model::cardGeneral(char card)
+General *ClientModel::cardGeneral(char card)
 {
   for(int i = 0; i < 4; i++)
     if(generals[i].cardinal == card) return &generals[i];
   return 0;
 }
 
-General *Model::conGeneral(char con)
+General *ClientModel::conGeneral(char con)
 {
   for(int i = 0; i < 4; i++)
     if(generals[i].connection == con) return &generals[i];
   return 0;
 }
 
-General *Model::emptyGeneral()
+General *ClientModel::emptyGeneral()
 {
   return conGeneral(0);
 }
 
-void Model::tick()
+void ClientModel::tick()
 {
   Network::Event *e;
   while((e = client->getEvent()))
@@ -63,7 +63,7 @@ void Model::tick()
       default:
         break;
     }
-    fg_log("Model sees %s",e->serialize());
+    fg_log("ClientModel sees %s",e->serialize());
   }
 
 }
