@@ -47,10 +47,10 @@ void * Connection::fork()
     if(len > 0)
     {
       Event e(buff);
-      recv_q.enqueue(e);
       if(e.type == e_type_ack) ackReceived(e);
       else
       {
+        recv_q.enqueue(e);
         //needs to be processed and potentially re-broadcast
       }
       fg_log("Serv Received(%d): %s",len,buff);

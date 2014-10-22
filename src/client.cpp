@@ -66,11 +66,10 @@ void * Client::fork()
     if(len > 0)
     {
       Event e(buff);
-      recv_q.enqueue(e);
       if(e.type == e_type_ack) ackReceived(e);
       else
       {
-        //needs to be processed and potentially re-broadcast
+        recv_q.enqueue(e);
       }
       fg_log("Cli Received(%d): %s",len,buff);
       len = 0;
