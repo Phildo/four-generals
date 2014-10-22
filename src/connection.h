@@ -25,10 +25,17 @@ namespace Network
       circQ<Event, FG_EVT_Q_SIZE> recv_q;
       circQ<Event, FG_EVT_Q_SIZE> send_q;
       circQ<Event, FG_EVT_Q_SIZE> ack_q;
+
+      String ip;
+      String serv_ip;
+      int port;
+
+      char buff[FG_BUFF_SIZE];
     public:
       ConThreadHandle handle;
       pthread_t thread;
 
+      //difference between connection and client
       char connection; //'1' thru '1'+(FG_MAX_CONNECTIONS-1) or '0' for none
       bool stale;
       bool welcome;
@@ -36,8 +43,7 @@ namespace Network
       int sock_fd;
       socklen_t sock_addr_len; //sizeof addr
       struct sockaddr_in sock_addr;
-
-      char buff[FG_BUFF_SIZE];
+      //end difference
 
       Connection();
       ~Connection();
@@ -46,6 +52,8 @@ namespace Network
 
       void disconnect();
       bool healthy();
+
+      Event *getEvent(); //aka dequeue
 
       void *fork();
   };

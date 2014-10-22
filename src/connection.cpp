@@ -106,6 +106,11 @@ bool Connection::healthy()
   return connected && keep_connection;
 }
 
+Event *Connection::getEvent()
+{
+  return recv_q.next();
+}
+
 Connection::~Connection()
 {
   if(keep_connection) disconnect();
