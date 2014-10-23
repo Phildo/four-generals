@@ -14,6 +14,15 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, Se
 {
   graphics = g;
 
+  serverPtr = &s;
+  clientPtr = &c;
+  s_model_ptr = &sm;
+  c_model_ptr = &cm;
+  server = 0;
+  client = 0;
+  s_model = 0;
+  c_model = 0;
+
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
@@ -27,15 +36,6 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, Se
 
   startSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Start Session");
   sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
-
-  serverPtr = &s;
-  clientPtr = &c;
-  s_model_ptr = &sm;
-  c_model_ptr = &cm;
-  server = 0;
-  client = 0;
-  s_model = 0;
-  c_model = 0;
 
   SCENE_CHANGE_HACK = 0;
 }

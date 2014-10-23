@@ -12,8 +12,9 @@ void * Network::conThreadHandoff(void * arg)  { return ((ConThreadHandle*) arg)-
 Connection::Connection()
 {
   connection = 0;
-  connected = false;
   keep_connection = false;
+  connecting = false;
+  connected = false;
   handle.connection = this;
 }
 
@@ -27,7 +28,7 @@ void * Connection::fork()
     fg_log("Connection unwelcome");
     Event e(connection, '0', e_type_refuse_con, nextEventId());
     len = send(sock_fd, e.serialize(), e.serlen(), 0);
-    if(len <= 0) fg_log("Failure writing connection.");
+    if(len <= 0) { fg_log("Failure writing connection."); connecting = false; }
   }
   else
   {
@@ -35,9 +36,10 @@ void * Connection::fork()
     fg_log("Connection created");
     Event e(connection, '0', e_type_assign_con, nextEventId());
     len = send(sock_fd, e.serialize(), e.serlen(), 0);
-    if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
+    if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; connecting = false; }
   }
   connected = true;
+  connecting = false;
 
   len = 0;
   bzero(buff, FG_BUFF_SIZE);
@@ -67,7 +69,6 @@ void * Connection::fork()
     }
   }
   connected = false;
-  stale = true; //cheap way to alert server to kill this thread at its convenience
 
   close(sock_fd);
   return 0;
@@ -104,6 +105,11 @@ void Connection::disconnect()
 bool Connection::healthy()
 {
   return connected && keep_connection;
+}
+
+bool Connection::stale()
+{
+  return !connecting && !connected && !keep_connection;
 }
 
 Event *Connection::getEvent()

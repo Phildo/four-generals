@@ -15,6 +15,7 @@ namespace Network
   {
     private:
       bool keep_connection;
+      bool connecting;
       bool connected;
 
       int evt_id_inc;
@@ -42,6 +43,7 @@ namespace Network
       void broadcast(Event e);
       void disconnect();
       bool healthy();
+      bool stale();
 
       Event *getEvent(); //aka dequeue
 

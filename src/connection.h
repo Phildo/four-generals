@@ -14,9 +14,6 @@ namespace Network
   class Connection
   {
     private:
-      bool keep_connection;
-      bool connected;
-
       int evt_id_inc;
       int nextEventId();
       void enqueueAckWait(Event e);
@@ -32,12 +29,15 @@ namespace Network
 
       char buff[FG_BUFF_SIZE];
     public:
+      bool keep_connection;
+      bool connecting;
+      bool connected;
+
       ConThreadHandle handle;
       pthread_t thread;
 
       //difference between connection and client
       char connection; //'1' thru '1'+(FG_MAX_CONNECTIONS-1) or '0' for none
-      bool stale;
       bool welcome;
 
       int sock_fd;
@@ -52,6 +52,7 @@ namespace Network
 
       void disconnect();
       bool healthy();
+      bool stale();
 
       Event *getEvent(); //aka dequeue
 

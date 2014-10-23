@@ -8,11 +8,14 @@
 
 #include "logger.h"
 
-RoomScene::RoomScene(Graphics *g, ServerModel *sm, ClientModel *cm)
+RoomScene::RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
-  serverModel = sm;
-  clientModel = cm;
+
+  s_model_ptr = &sm;
+  c_model_ptr = &cm;
+  s_model = 0;
+  c_model = 0;
 
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
@@ -36,6 +39,8 @@ RoomScene::RoomScene(Graphics *g, ServerModel *sm, ClientModel *cm)
 
 void RoomScene::enter()
 {
+  s_model = *s_model_ptr;
+  c_model = *c_model_ptr;
 }
 
 void RoomScene::touch(In &in)
@@ -50,8 +55,8 @@ void RoomScene::touch(In &in)
 
 int RoomScene::tick()
 {
-  if(serverModel) serverModel->tick();
-  clientModel->tick();
+  if(s_model) s_model->tick();
+  c_model->tick();
   return 0;
 }
 

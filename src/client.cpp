@@ -14,20 +14,23 @@ Client::Client()
   ip = getIP();
   port = 8080;
 
-  connected = false;
   keep_connection = false;
+  connecting = false;
+  connected = false;
   handle.client = this;
 }
 
 void Client::connect(const String &_ip, int _port)
 {
-  if(connected || keep_connection) { fg_log("Aborting client connect request- standing connection unhealthy."); return; }
+  if(!stale()) { fg_log("Aborting client connect request- standing connection exists."); return; }
   port = _port;
   serv_ip = _ip;
 
+  connecting = true;
+
   fg_log("Client connecting to IP:%s on port %d", serv_ip.ptr(), port);
-  int r = pthread_create(&thread, NULL, cliThreadHandoff, (void *)&handle)  ;
-  if(r != 0) fg_log("Failure creating client thread.");
+  int r = pthread_create(&thread, NULL, cliThreadHandoff, (void *)&handle);
+  if(r != 0) { fg_log("Failure creating client thread."); connecting = false; }
 }
 
 void * Client::fork()
@@ -42,7 +45,7 @@ void * Client::fork()
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
   serv_host = gethostbyname(serv_ip.ptr());
-  if(serv_host == NULL) { fg_log("Failure finding server."); keep_connection = false; }
+  if(serv_host == NULL) { fg_log("Failure finding server."); keep_connection = false; connecting = false; }
 
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
   serv_sock_addr.sin_family = AF_INET;
@@ -53,9 +56,11 @@ void * Client::fork()
   {
     fg_log("Failure connecting client.");
     keep_connection = false;
+    connecting = false;
     return 0;
   }
   connected = true;
+  connecting = false;
 
   fcntl(sock_fd, F_SETFL, O_NONBLOCK);
   len = 0;
@@ -121,6 +126,11 @@ void Client::disconnect()
 bool Client::healthy()
 {
   return connected && keep_connection;
+}
+
+bool Client::stale()
+{
+  return !connecting && !connected && !keep_connection;
 }
 
 Event *Client::getEvent()

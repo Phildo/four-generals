@@ -20,6 +20,7 @@ namespace Network
       int port;
 
       bool keep_connection;
+      bool connecting;
       bool connected;
 
       //an odd pattern-
@@ -36,6 +37,7 @@ namespace Network
       void broadcast(const String &s);
       void disconnect();
       bool healthy();
+      bool stale();
 
       Event *getEvent(); //aka dequeue
 

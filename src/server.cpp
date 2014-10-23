@@ -14,18 +14,21 @@ Server::Server()
   ip = getIP();
   port = 8080;
   keep_connection = false;
+  connecting = false;
   connected = false;
   handle.server = this;
 }
 
 void Server::connect(int _port)
 {
-  if(connected || keep_connection) { fg_log("Aborting server connect request- standing connection unhealthy."); return; }
+  if(!stale()) { fg_log("Aborting server connect request- standing connection exists."); return; }
   port = _port;
+
+  connecting = true;
 
   fg_log("Server connecting on port %d",port);
   int r = pthread_create(&thread, NULL, servThreadHandoff, (void *)&handle)  ;
-  if(r != 0) fg_log("Failure creating server thread.");
+  if(r != 0)  { fg_log("Failure creating server thread."); connecting = false; }
 }
 
 void * Server::fork()
@@ -51,10 +54,12 @@ void * Server::fork()
     close(sock_fd);
     fg_log("Failure binding server socket.");
     keep_connection = false;
+    connecting = false;
     return 0;
   }
   listen(sock_fd,FG_ACCEPT_Q_SIZE);
   connected = true;
+  connecting = false;
 
   Connection *con;
   Connection *tmp_con_p;
@@ -62,8 +67,6 @@ void * Server::fork()
   {
     con = con_ptrs[n_cons];
 
-    con->stale = false;
-    con->welcome = true;
     con->sock_addr_len = sizeof(con->sock_addr);
     con->sock_fd = -1;
 
@@ -77,8 +80,9 @@ void * Server::fork()
       if(n_cons == FG_MAX_CONNECTIONS)
       {
         con->welcome = false;
+        con->connecting = true;
         int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
-        if(r != 0) fg_log("Failure creating connection thread.");
+        if(r != 0) { fg_log("Failure creating connection thread."); con->connecting = false; }
         con->disconnect();
 
         //find con and put it back at the end of the queue #ugly
@@ -92,15 +96,17 @@ void * Server::fork()
       }
       else
       {
+        con->welcome = true;
+        con->connecting = true;
         int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
-        if(r != 0) { fg_log("Failure creating connection thread."); keep_connection = false; }
+        if(r != 0) { fg_log("Failure creating connection thread."); keep_connection = false; con->connecting = false; }
       }
     }
 
     //check for disconnected cons
     for(int i = 0; i < n_cons; i++)
     {
-      if(con_ptrs[i]->stale)
+      if(con_ptrs[i]->stale())
       {
         //clean up/kill thread/connection
         con_ptrs[i]->disconnect();
@@ -141,6 +147,12 @@ bool Server::healthy()
 {
   return connected && keep_connection;
 }
+
+bool Server::stale()
+{
+  return !connecting && !connected && !keep_connection;
+}
+
 
 Event *Server::getEvent()
 {
