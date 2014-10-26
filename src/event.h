@@ -6,14 +6,19 @@
 namespace Network
 {
   //to keep track of already assigned (CAPS = taken) (god what a terrible system)
-  //AbCDefghiJkLmNopqRstuvwxyz
-  static const char e_type_ack         = 'a';
-  static const char e_type_assign_con  = 'c';
-  static const char e_type_refuse_con  = 'n';
-  static const char e_type_join        = 'j';
-  static const char e_type_leave       = 'l';
+  //abcdefghijklmnopqrstuvwxyz
+  static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)
+
+  static const char e_type_assign_con  = 'c'; //server->client only
+  static const char e_type_revoke_con  = 'c'; //server->client only
+  static const char e_type_refuse_con  = 'n'; //server->client only
+
+  static const char e_type_join_con    = 'c'; //server->client only
+  static const char e_type_leave_con   = 'c';
+
   static const char e_type_assign_card = 'd';
   static const char e_type_revoke_card = 'r';
+
   struct Event //all members chars for quick/simple serializability
   {
     char connection;

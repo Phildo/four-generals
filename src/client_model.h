@@ -9,6 +9,7 @@ class ClientModel
   private :
     Network::Client *client;
   public :
+    char myConnection; //the connection owned by this device
     General generals[4];
     General *cardGeneral(char card);
     General *conGeneral(char con);

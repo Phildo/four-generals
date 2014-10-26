@@ -43,15 +43,21 @@ void ClientModel::tick()
   {
     switch(e->type)
     {
-      case Network::e_type_assign_con:
-        generals[0].connection = e->connection;
+      case Network::e_type_ack: break; //should never reach model (handled entirely by server)
+      case Network::e_type_assign_con: //always directed at ME
+        myConnection = e->connection;
         break;
-      case Network::e_type_refuse_con:
+      case Network::e_type_revoke_con: //always directed at ME
+        myConnection = '0';
         break;
-      case Network::e_type_join:
+      case Network::e_type_refuse_con: //always directed at ME
+        myConnection = '0';
+        client->disconnect();
+        break;
+      case Network::e_type_join_con:
         emptyGeneral()->connection = e->connection;
         break;
-      case Network::e_type_leave:
+      case Network::e_type_leave_con:
         conGeneral(e->connection)->connection = '0';
         break;
       case Network::e_type_assign_card:

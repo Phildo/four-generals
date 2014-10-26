@@ -43,22 +43,25 @@ void ServerModel::tick()
   {
     switch(e->type)
     {
-      case Network::e_type_assign_con:
-        generals[0].connection = e->connection;
-        break;
-      case Network::e_type_refuse_con:
-        break;
-      case Network::e_type_join:
-        emptyGeneral()->connection = e->connection;
-        break;
-      case Network::e_type_leave:
+      case Network::e_type_ack: break; //should never reach model (handled entirely by server)
+      case Network::e_type_assign_con: break; //only received by client
+      case Network::e_type_revoke_con: break; //only received by client
+      case Network::e_type_refuse_con: break; //only received by client
+      case Network::e_type_join_con: break; //only received by client
+      case Network::e_type_leave_con:
         conGeneral(e->connection)->connection = '0';
+        server->broadcast(e); //alert others of left player
         break;
       case Network::e_type_assign_card:
-        conGeneral(e->connection)->cardinal = e->cardinal;
+        if(cardGeneral(e->cardinal) == 0)
+          server->broadcast(e);
         break;
       case Network::e_type_revoke_card:
-        conGeneral(e->connection)->cardinal = '0';
+        if(cardGeneral(e->cardinal)->connection == e->connection)
+        {
+          cardGeneral(e->cardinal) = '0';
+          server->broadcast(e);
+        }
         break;
       default:
         break;
