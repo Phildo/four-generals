@@ -9,11 +9,14 @@ class ClientModel
   private :
     Network::Client *client;
   public :
-    char myConnection; //the connection owned by this device
+    char myConnection; //the connection owned by this device //(maybe could keep on client)
+
     General generals[4];
     General *cardGeneral(char card);
     General *conGeneral(char con);
     General *emptyGeneral();
+
+    int day;
 
     ClientModel(Network::Client *c);
     ~ClientModel();

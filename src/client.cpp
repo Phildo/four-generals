@@ -95,6 +95,12 @@ void * Client::fork()
   return 0;
 }
 
+void Client::broadcast(char con, char card, char t)
+{
+  Event e(con, card, t, nextEventId());
+  send_q.enqueue(e);
+}
+
 void Client::broadcast(Event e)
 {
   send_q.enqueue(e);

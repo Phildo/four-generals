@@ -46,10 +46,10 @@ void RoomScene::enter()
 void RoomScene::touch(In &in)
 {
   if(backButton.query(in)) fg_log("backButton");
-  if(nButton.query(in)) fg_log("nButton");
-  if(sButton.query(in)) fg_log("sButton");
-  if(wButton.query(in)) fg_log("wButton");
-  if(eButton.query(in)) fg_log("eButton");
+  if(nButton.query(in)) { client.broadcast(c_model.myConnection, 'n', e_type_assign_card); }
+  if(sButton.query(in)) { client.broadcast(c_model.myConnection, 's', e_type_assign_card); }
+  if(wButton.query(in)) { client.broadcast(c_model.myConnection, 'w', e_type_assign_card); }
+  if(eButton.query(in)) { client.broadcast(c_model.myConnection, 'e', e_type_assign_card); }
   if(sessionButton.query(in)) { fg_log("sessionButton"); }
 }
 
@@ -67,10 +67,10 @@ void RoomScene::draw()
   ipLabel.draw(graphics);
   portLabel.draw(graphics);
 
-  nLabel.draw(graphics);
-  sLabel.draw(graphics);
-  wLabel.draw(graphics);
-  eLabel.draw(graphics);
+  if(c_model->cardGeneral('n')) nLabel.draw(graphics);
+  if(c_model->cardGeneral('s')) sLabel.draw(graphics);
+  if(c_model->cardGeneral('w')) wLabel.draw(graphics);
+  if(c_model->cardGeneral('e')) eLabel.draw(graphics);
 
   nButton.draw(graphics);
   sButton.draw(graphics);
