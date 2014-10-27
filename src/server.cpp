@@ -12,6 +12,7 @@ void * Network::servThreadHandoff(void * arg) { return ((ServThreadHandle*)arg)-
 Server::Server()
 {
   ip = getIP();
+  history_i = 0;
   port = 8080;
   keep_connection = false;
   connecting = false;
@@ -80,7 +81,7 @@ void * Server::fork()
       if(n_cons == FG_MAX_CONNECTIONS)
       {
         con->connect();
-        con->broadcast('0', e_type_refuse_con);
+        con->broadcast(con->connection, '0', e_type_refuse_con);
         con->disconnect(); //race condition!!!
 
         //find con and put it back at the end of the queue #ugly
@@ -95,7 +96,9 @@ void * Server::fork()
       else
       {
         con->connect();
-        con->broadcast('0', e_type_assign_con);
+        con->broadcast(con->connection, '0', e_type_assign_con);
+        dumpHistory(con);
+        broadcast(con->connection, '0', e_type_join_con);
       }
     }
 
@@ -106,6 +109,7 @@ void * Server::fork()
       {
         //clean up/kill thread/connection
         con_ptrs[i]->disconnect();
+        broadcast(con_ptrs[i]->connection, '0', e_type_leave_con);
         n_cons--;
 
         //put newly cleaned con at end of list
@@ -127,10 +131,27 @@ void * Server::fork()
   return 0;
 }
 
+void Server::dumpHistory(Connection *c)
+{
+  for(int i = 0; i < history_i; i++)
+  {
+    fg_log("dumping con:%c card:%c type:%c",history[i].connection, history[i].cardinal, history[i].type);
+    c->broadcast(history[i].connection, history[i].cardinal, history[i].type);
+  }
+}
+
+void Server::broadcast(char con, char card, char t)
+{
+  history[history_i++] = Event(con, card, t, 0); //id doesn't matter- gets assigned by con
+  for(int i = 0; i < n_cons; i++)
+    con_ptrs[i]->broadcast(con, card, t);
+}
+
 void Server::broadcast(Event e)
 {
-  fg_log("Serv should broadcast %s",e.serialize());
-  //send_q.enqueue(e);
+  history[history_i++] = e; //id doesn't matter- gets assigned by con
+  for(int i = 0; i < n_cons; i++)
+    con_ptrs[i]->broadcast(e);
 }
 
 void Server::disconnect()
@@ -145,14 +166,21 @@ bool Server::healthy()
   return connected && keep_connection;
 }
 
+bool Server::transitioning()
+{
+  return !healthy() && !stale();
+}
+
 bool Server::stale()
 {
   return !connecting && !connected && !keep_connection;
 }
 
-
 Event *Server::getEvent()
 {
+  Event *e;
+  for(int i = 0; i < n_cons; i++)
+    if((e = con_ptrs[i]->getEvent())) return e;
   return 0;
 }
 

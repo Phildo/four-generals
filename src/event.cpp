@@ -53,5 +53,4 @@ Event::Event(char *c) : null('\0')
     id_c[i] = c[3+i];
   id_i = atoi(id_c);
 }
-int Event::serlen() { return 9; }
 

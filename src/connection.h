@@ -48,10 +48,11 @@ namespace Network
       ~Connection();
 
       void connect();
-      void broadcast(char card, char t);
+      void broadcast(char con, char card, char t); //has con argument- can talk about other cons
       void broadcast(Event e);
       void disconnect();
       bool healthy();
+      bool transitioning();
       bool stale();
 
       Event *getEvent(); //aka dequeue

@@ -33,7 +33,7 @@ General *ServerModel::conGeneral(char con)
 
 General *ServerModel::emptyGeneral()
 {
-  return conGeneral(0);
+  return conGeneral('0');
 }
 
 void ServerModel::tick()

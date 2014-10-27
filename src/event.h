@@ -5,8 +5,8 @@
 
 namespace Network
 {
-  //to keep track of already assigned (CAPS = taken) (god what a terrible system)
-  //abcdefghijklmnopqrstuvwxyz
+  static const int e_ser_len = 9;
+
   static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)
 
   static const char e_type_assign_con  = 'b'; //server->client only
@@ -45,7 +45,6 @@ namespace Network
     //serializability
     char *serialize();
     Event(char *c);
-    int serlen();
   };
 }
 

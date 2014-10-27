@@ -33,7 +33,7 @@ General *ClientModel::conGeneral(char con)
 
 General *ClientModel::emptyGeneral()
 {
-  return conGeneral(0);
+  return conGeneral('0');
 }
 
 void ClientModel::tick()

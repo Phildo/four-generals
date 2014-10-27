@@ -52,6 +52,11 @@ class circQ
       }
       return 0;
     }
+    void empty() //easy!
+    {
+      front = 0;
+      back = 0;
+    }
 };
 
 #endif

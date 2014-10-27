@@ -49,33 +49,38 @@ void * Connection::fork()
   while(keep_connection)
   {
     len = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
-    if(len > 0)
+    if(len == 0) keep_connection = false;
+    int mess_num = 0;
+    while(len > 0)
     {
-      Event e(buff);
+      Event e(buff+(mess_num*e_ser_len));
       if(e.type == e_type_ack) ackReceived(e);
       else recv_q.enqueue(e);
       fg_log("Serv Received(%d): %s",len,buff);
-      len = 0;
+      len-= e_ser_len;
+      mess_num++;
     }
-    else if(len == 0)
-      keep_connection = false;
 
     while((send_evt = send_q.next()))
     {
-      len = send(sock_fd, send_evt->serialize(), send_evt->serlen(), 0);
+      len = send(sock_fd, send_evt->serialize(), e_ser_len, 0);
       if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
+      fg_log("Serv Sent(%d): %s",len,send_evt->serialize());
       len = 0;
     }
   }
   connected = false;
+  recv_q.empty();
+  send_q.empty();
+  ack_q.empty();
 
   close(sock_fd);
   return 0;
 }
 
-void Connection::broadcast(char card, char t)
+void Connection::broadcast(char con, char card, char t)
 {
-  Event e(connection, card, t, nextEventId());
+  Event e(con, card, t, nextEventId());
   broadcast(e);
 }
 
@@ -111,6 +116,11 @@ void Connection::disconnect()
 bool Connection::healthy()
 {
   return connected && keep_connection;
+}
+
+bool Connection::transitioning()
+{
+  return !healthy() && !stale();
 }
 
 bool Connection::stale()

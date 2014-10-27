@@ -70,29 +70,34 @@ void * Client::fork()
   while(keep_connection)
   {
     len = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
-    if(len > 0)
+    if(len == 0) keep_connection = false;
+    int mess_num = 0;
+    while(len > 0)
     {
-      Event e(buff);
+      Event e(buff+(mess_num*e_ser_len));
       if     (e.type == e_type_assign_con)                                connection = e.connection;
       else if(e.type == e_type_revoke_con || e.type == e_type_refuse_con) { connection = '0'; keep_connection = false; }
       else if(e.type == e_type_ack)                                       ackReceived(e);
       else                                                                recv_q.enqueue(e);
 
       fg_log("Cli Received(%d): %s",len,buff);
-      len = 0;
+      len -= e_ser_len;
+      mess_num++;
     }
-    else if(len == 0)
-      keep_connection = false;
 
     while((send_evt = send_q.next()))
     {
-      len = send(sock_fd, send_evt->serialize(), send_evt->serlen(), 0);
+      len = send(sock_fd, send_evt->serialize(), e_ser_len, 0);
       if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
+      fg_log("Cli Sent(%d): %s",len,send_evt->serialize());
       len = 0;
     }
   }
   connected = false;
   connection = '0';
+  recv_q.empty();
+  send_q.empty();
+  ack_q.empty();
 
   close(sock_fd);
   return 0;
@@ -136,6 +141,11 @@ void Client::disconnect()
 bool Client::healthy()
 {
   return connected && keep_connection;
+}
+
+bool Client::transitioning()
+{
+  return !healthy() && !stale();
 }
 
 bool Client::stale()

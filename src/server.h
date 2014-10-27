@@ -29,14 +29,20 @@ namespace Network
       int n_cons;
       Connection cons[FG_MAX_CONNECTIONS];
       Connection *con_ptrs[FG_MAX_CONNECTIONS];
+
+      Event history[1024]; //don't know best way to do this...
+      int history_i;
     public:
       Server();
       ~Server();
 
       void connect(int _port);
+      void dumpHistory(Connection *c);
+      void broadcast(char con, char card, char t);
       void broadcast(Event e);
       void disconnect();
       bool healthy();
+      bool transitioning();
       bool stale();
 
       Event *getEvent(); //aka dequeue

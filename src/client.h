@@ -46,6 +46,7 @@ namespace Network
       void broadcast(Event e);
       void disconnect();
       bool healthy();
+      bool transitioning();
       bool stale();
 
       Event *getEvent(); //aka dequeue
