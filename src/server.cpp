@@ -80,8 +80,8 @@ void * Server::fork()
       if(n_cons == FG_MAX_CONNECTIONS)
       {
         con->connect();
-        con->broadcast(con->connection, '0', e_type_refuse_con);
-        con->disconnect();
+        con->broadcast('0', e_type_refuse_con);
+        con->disconnect(); //race condition!!!
 
         //find con and put it back at the end of the queue #ugly
         int con_index = 0;
@@ -95,6 +95,7 @@ void * Server::fork()
       else
       {
         con->connect();
+        con->broadcast('0', e_type_assign_con);
       }
     }
 

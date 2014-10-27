@@ -28,25 +28,21 @@ void Connection::connect()
   //serv_ip = _ip;
 
   connecting = true;
+  keep_connection = true;
 
   fg_log("Connection connecting to IP:%s on port %d", serv_ip.ptr(), port);
   int r = pthread_create(&thread, NULL, conThreadHandoff, (void *)&handle);
-  if(r != 0) { fg_log("Failure creating connection thread."); connecting = false; }
+  if(r != 0) { fg_log("Failure creating connection thread."); connecting = false; keep_connection = false; }
 }
 
 void * Connection::fork()
 {
-  int len;
-  Event *send_evt;
-  keep_connection = true;
-  fg_log("Connection created");
-  Event e(connection, '0', e_type_assign_con, nextEventId());
-  len = send(sock_fd, e.serialize(), e.serlen(), 0);
-  if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; connecting = false; }
-
   connected = true;
   connecting = false;
+  int len;
+  Event *send_evt;
 
+  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
   len = 0;
   bzero(buff, FG_BUFF_SIZE);
   while(keep_connection)
@@ -56,11 +52,7 @@ void * Connection::fork()
     {
       Event e(buff);
       if(e.type == e_type_ack) ackReceived(e);
-      else
-      {
-        recv_q.enqueue(e);
-        //needs to be processed and potentially re-broadcast
-      }
+      else recv_q.enqueue(e);
       fg_log("Serv Received(%d): %s",len,buff);
       len = 0;
     }
@@ -80,9 +72,9 @@ void * Connection::fork()
   return 0;
 }
 
-void Connection::broadcast(char con, char card, char t)
+void Connection::broadcast(char card, char t)
 {
-  Event e(con, card, t, nextEventId());
+  Event e(connection, card, t, nextEventId());
   broadcast(e);
 }
 

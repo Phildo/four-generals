@@ -28,15 +28,15 @@ void Client::connect(const String &_ip, int _port)
   serv_ip = _ip;
 
   connecting = true;
+  keep_connection = true;
 
   fg_log("Client connecting to IP:%s on port %d", serv_ip.ptr(), port);
   int r = pthread_create(&thread, NULL, cliThreadHandoff, (void *)&handle);
-  if(r != 0) { fg_log("Failure creating client thread."); connecting = false; }
+  if(r != 0) { fg_log("Failure creating client thread."); connecting = false; keep_connection = false; }
 }
 
 void * Client::fork()
 {
-  keep_connection = true;
   int sock_fd;
   struct sockaddr_in serv_sock_addr; //client's serv addr
   struct hostent *serv_host; //client's reference to server
@@ -72,11 +72,11 @@ void * Client::fork()
     if(len > 0)
     {
       Event e(buff);
-      if(e.type == e_type_ack) ackReceived(e);
-      else
-      {
-        recv_q.enqueue(e);
-      }
+      if     (e.type == e_type_assign_con)                                connection = e.connection;
+      else if(e.type == e_type_revoke_con || e.type == e_type_refuse_con) { connection = '0'; keep_connection = false; }
+      else if(e.type == e_type_ack)                                       ackReceived(e);
+      else                                                                recv_q.enqueue(e);
+
       fg_log("Cli Received(%d): %s",len,buff);
       len = 0;
     }
@@ -91,14 +91,15 @@ void * Client::fork()
     }
   }
   connected = false;
+  connection = '0';
 
   close(sock_fd);
   return 0;
 }
 
-void Client::broadcast(char con, char card, char t)
+void Client::broadcast(char card, char t)
 {
-  Event e(con, card, t, nextEventId());
+  Event e(connection, card, t, nextEventId());
   broadcast(e);
 }
 
@@ -109,7 +110,8 @@ void Client::broadcast(Event e)
 
 int Client::nextEventId()
 {
-  evt_id_inc++;
+  if(evt_id_inc == 0) evt_id_inc = connection;
+  evt_id_inc+=5; //technically, event_id is sufficient enough to know from which connection evt was sent
   return evt_id_inc - 1;
 }
 

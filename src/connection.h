@@ -48,7 +48,7 @@ namespace Network
       ~Connection();
 
       void connect();
-      void broadcast(char con, char card, char t);
+      void broadcast(char card, char t);
       void broadcast(Event e);
       void disconnect();
       bool healthy();

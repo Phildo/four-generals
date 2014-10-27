@@ -42,7 +42,7 @@ namespace Network
       ~Client();
 
       void connect(const String &_ip, int _port);
-      void broadcast(char con, char card, char t);
+      void broadcast(char card, char t);
       void broadcast(Event e);
       void disconnect();
       bool healthy();

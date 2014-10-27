@@ -50,10 +50,10 @@ void RoomScene::enter()
 void RoomScene::touch(In &in)
 {
   if(backButton.query(in)) fg_log("backButton");
-  if(nButton.query(in)) { client->broadcast(c_model->myConnection, 'n', Network::e_type_assign_card); }
-  if(sButton.query(in)) { client->broadcast(c_model->myConnection, 's', Network::e_type_assign_card); }
-  if(wButton.query(in)) { client->broadcast(c_model->myConnection, 'w', Network::e_type_assign_card); }
-  if(eButton.query(in)) { client->broadcast(c_model->myConnection, 'e', Network::e_type_assign_card); }
+  if(nButton.query(in)) { client->broadcast('n', Network::e_type_assign_card); }
+  if(sButton.query(in)) { client->broadcast('s', Network::e_type_assign_card); }
+  if(wButton.query(in)) { client->broadcast('w', Network::e_type_assign_card); }
+  if(eButton.query(in)) { client->broadcast('e', Network::e_type_assign_card); }
   if(sessionButton.query(in)) { fg_log("sessionButton"); }
 }
 
