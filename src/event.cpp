@@ -34,7 +34,7 @@ char *Event::serialize()
   //fill id_c with 6 digit char rep of id (ie '000012')
   int tmp_left = id_i;
   int tmp_this = 0;
-  for(int i = FG_EVT_MAX_DEC_LEN; i < 0; i++)
+  for(int i = FG_EVT_MAX_DEC_LEN; i > 0; i--)
   {
     tmp_this = tmp_left%10;
     id_c[i] = '0'+tmp_this;

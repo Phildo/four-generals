@@ -14,6 +14,7 @@ Client::Client()
   ip = getIP();
   port = 8080;
 
+  evt_id_inc = 0;
   connection = '0';
   keep_connection = false;
   connecting = false;
@@ -110,9 +111,9 @@ void Client::broadcast(Event e)
 
 int Client::nextEventId()
 {
-  if(evt_id_inc == 0) evt_id_inc = connection;
-  evt_id_inc+=5; //technically, event_id is sufficient enough to know from which connection evt was sent
-  return evt_id_inc - 1;
+  if(evt_id_inc == 0) evt_id_inc = (connection-'0');
+  evt_id_inc += FG_MAX_CONNECTIONS; //technically, event_id is sufficient enough to know from which connection evt was sent
+  return evt_id_inc - FG_MAX_CONNECTIONS;
 }
 
 void Client::enqueueAckWait(Event e)
