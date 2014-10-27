@@ -41,6 +41,7 @@ void ClientModel::tick()
   Network::Event *e;
   while((e = client->getEvent()))
   {
+    fg_log("ClientModel: %s",e->serialize());
     switch(e->type)
     {
       case Network::e_type_ack: break;        //should never reach model (handled entirely by client)
@@ -51,6 +52,7 @@ void ClientModel::tick()
         emptyGeneral()->connection = e->connection;
         break;
       case Network::e_type_leave_con:
+        conGeneral(e->connection)->cardinal = '0';
         conGeneral(e->connection)->connection = '0';
         break;
       case Network::e_type_assign_card:
@@ -62,7 +64,6 @@ void ClientModel::tick()
       default:
         break;
     }
-    fg_log("ClientModel sees %s",e->serialize());
   }
 
 }

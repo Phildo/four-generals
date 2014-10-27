@@ -22,14 +22,14 @@ Server::Server()
 
 void Server::connect(int _port)
 {
-  if(!stale()) { fg_log("Aborting server connect request- standing connection exists."); return; }
+  if(!stale()) { fg_log("Server: abort connect (connection exists)"); return; }
   port = _port;
 
   connecting = true;
 
-  fg_log("Server connecting on port %d",port);
+  fg_log("Server: connect (%s:%d)",ip.ptr(),port);
   int r = pthread_create(&thread, NULL, servThreadHandoff, (void *)&handle)  ;
-  if(r != 0)  { fg_log("Failure creating server thread."); connecting = false; }
+  if(r != 0)  { fg_log("Server: abort connect (failed fork)"); connecting = false; }
 }
 
 void * Server::fork()
@@ -53,7 +53,7 @@ void * Server::fork()
   if(bind(sock_fd, (struct sockaddr *) &sock_addr, sizeof(sock_addr)) < 0)
   {
     close(sock_fd);
-    fg_log("Failure binding server socket.");
+    fg_log("Server: abort connect (cannot bind port)");
     keep_connection = false;
     connecting = false;
     return 0;
@@ -109,13 +109,13 @@ void * Server::fork()
       {
         //clean up/kill thread/connection
         con_ptrs[i]->disconnect();
-        broadcast(con_ptrs[i]->connection, '0', e_type_leave_con);
         n_cons--;
 
         //put newly cleaned con at end of list
         tmp_con_p = con_ptrs[i];
         con_ptrs[i] = con_ptrs[n_cons];
         con_ptrs[n_cons] = tmp_con_p;
+        broadcast(tmp_con_p->connection, '0', e_type_leave_con);
 
         i--;
       }
@@ -135,7 +135,7 @@ void Server::dumpHistory(Connection *c)
 {
   for(int i = 0; i < history_i; i++)
   {
-    fg_log("dumping con:%c card:%c type:%c",history[i].connection, history[i].cardinal, history[i].type);
+    fg_log("Server: hist_dump(%d) %s",c->connection,history[i].serialize());
     c->broadcast(history[i].connection, history[i].cardinal, history[i].type);
   }
 }
@@ -144,19 +144,25 @@ void Server::broadcast(char con, char card, char t)
 {
   history[history_i++] = Event(con, card, t, 0); //id doesn't matter- gets assigned by con
   for(int i = 0; i < n_cons; i++)
+  {
+    fg_log("Server: broadcasting:");
     con_ptrs[i]->broadcast(con, card, t);
+  }
 }
 
 void Server::broadcast(Event e)
 {
   history[history_i++] = e; //id doesn't matter- gets assigned by con
   for(int i = 0; i < n_cons; i++)
+  {
+    fg_log("Server: broadcasting:");
     con_ptrs[i]->broadcast(e);
+  }
 }
 
 void Server::disconnect()
 {
-  fg_log("Server disconnecting");
+  fg_log("Server: abort connection (on purpose)");
   keep_connection = false;
   pthread_join(thread, NULL);
 }

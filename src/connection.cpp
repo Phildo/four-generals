@@ -24,16 +24,16 @@ Connection::Connection()
 
 void Connection::connect()
 {
-  if(!stale()) { fg_log("Aborting connection connect request- standing connection exists."); return; }
+  if(!stale()) { fg_log("Connection: abort connect (connection exists)"); return; }
   //port = _port;
   //serv_ip = _ip;
 
   connecting = true;
   keep_connection = true;
 
-  fg_log("Connection connecting to IP:%s on port %d", serv_ip.ptr(), port);
+  fg_log("Connection: connect (%s:%d)", serv_ip.ptr(), port);
   int r = pthread_create(&thread, NULL, conThreadHandoff, (void *)&handle);
-  if(r != 0) { fg_log("Failure creating connection thread."); connecting = false; keep_connection = false; }
+  if(r != 0) { fg_log("Connection: abort connect (failed fork)"); connecting = false; keep_connection = false; }
 }
 
 void * Connection::fork()
@@ -56,7 +56,7 @@ void * Connection::fork()
       Event e(buff+(mess_num*e_ser_len));
       if(e.type == e_type_ack) ackReceived(e);
       else recv_q.enqueue(e);
-      fg_log("Serv Received(%d): %s",len,buff);
+      fg_log("Connection(%d): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
       len-= e_ser_len;
       mess_num++;
     }
@@ -64,8 +64,8 @@ void * Connection::fork()
     while((send_evt = send_q.next()))
     {
       len = send(sock_fd, send_evt->serialize(), e_ser_len, 0);
-      if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
-      fg_log("Serv Sent(%d): %s",len,send_evt->serialize());
+      if(len <= 0) { fg_log("Connection: abort connection (failed write)"); keep_connection = false; }
+      fg_log("Connection(%d): sen(%d) %s",connection,len,send_evt->serialize());
       len = 0;
     }
   }
@@ -108,7 +108,7 @@ void Connection::ackReceived(Event e)
 
 void Connection::disconnect()
 {
-  fg_log("Connection disconnecting");
+  fg_log("Connection: abort connection (on purpose)");
   keep_connection = false;
   pthread_join(thread, NULL);
 }

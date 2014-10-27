@@ -24,16 +24,16 @@ Client::Client()
 
 void Client::connect(const String &_ip, int _port)
 {
-  if(!stale()) { fg_log("Aborting client connect request- standing connection exists."); return; }
+  if(!stale()) { fg_log("Client: abort connect (existing connection)"); return; }
   port = _port;
   serv_ip = _ip;
 
   connecting = true;
   keep_connection = true;
 
-  fg_log("Client connecting to IP:%s on port %d", serv_ip.ptr(), port);
+  fg_log("Client: connect (%s:%d)", serv_ip.ptr(), port);
   int r = pthread_create(&thread, NULL, cliThreadHandoff, (void *)&handle);
-  if(r != 0) { fg_log("Failure creating client thread."); connecting = false; keep_connection = false; }
+  if(r != 0) { fg_log("Client: abort connect (failed fork)"); connecting = false; keep_connection = false; }
 }
 
 void * Client::fork()
@@ -47,7 +47,7 @@ void * Client::fork()
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
   serv_host = gethostbyname(serv_ip.ptr());
-  if(serv_host == NULL) { fg_log("Failure finding server."); keep_connection = false; connecting = false; }
+  if(serv_host == NULL) { fg_log("Client: abort connect (can't find server)"); keep_connection = false; connecting = false; }
 
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
   serv_sock_addr.sin_family = AF_INET;
@@ -56,7 +56,7 @@ void * Client::fork()
 
   if(::connect(sock_fd,(struct sockaddr *)&serv_sock_addr, sizeof(serv_sock_addr)) < 0)
   {
-    fg_log("Failure connecting client.");
+    fg_log("Client: abort connect (unable to connect)");
     keep_connection = false;
     connecting = false;
     return 0;
@@ -80,7 +80,7 @@ void * Client::fork()
       else if(e.type == e_type_ack)                                       ackReceived(e);
       else                                                                recv_q.enqueue(e);
 
-      fg_log("Cli Received(%d): %s",len,buff);
+      fg_log("Client    (%d): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
       len -= e_ser_len;
       mess_num++;
     }
@@ -88,8 +88,8 @@ void * Client::fork()
     while((send_evt = send_q.next()))
     {
       len = send(sock_fd, send_evt->serialize(), e_ser_len, 0);
-      if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; }
-      fg_log("Cli Sent(%d): %s",len,send_evt->serialize());
+      if(len <= 0) { fg_log("Client: abort connection (failed write)"); keep_connection = false; }
+      fg_log("Client    (%d): sen(%d): %s",connection,len,send_evt->serialize());
       len = 0;
     }
   }
@@ -133,7 +133,7 @@ void Client::ackReceived(Event e)
 
 void Client::disconnect()
 {
-  fg_log("Cient disconnecting");
+  fg_log("Client: abort connection (on purpose)");
   keep_connection = false;
   pthread_join(thread, NULL);
 }

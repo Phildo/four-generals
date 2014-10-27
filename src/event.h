@@ -5,7 +5,7 @@
 
 namespace Network
 {
-  static const int e_ser_len = 9;
+  static const int e_ser_len = 10;
 
   static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)
 

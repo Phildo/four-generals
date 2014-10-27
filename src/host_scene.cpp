@@ -52,12 +52,10 @@ void HostScene::touch(In &in)
 {
   if(backButton.query(in))
   {
-    fg_log("backButton");
     SCENE_CHANGE_HACK = -1;
   }
   if(sessionButton.query(in))
   {
-    fg_log("sessionButton");
     if(!server) { server = new Network::Server(); *serverPtr = server; }
     if(!server->healthy()) server->connect(8080);
   }

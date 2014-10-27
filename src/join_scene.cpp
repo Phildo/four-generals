@@ -42,14 +42,9 @@ void JoinScene::enter()
 
 void JoinScene::touch(In &in)
 {
-  if(backButton.query(in))
-  {
-    fg_log("backButton");
-    SCENE_CHANGE_HACK = -2;
-  }
+  if(backButton.query(in)) SCENE_CHANGE_HACK = -2;
   if(sessionButton.query(in))
   {
-    fg_log("sessionButton");
     if(!client) { client = new Network::Client(); *client_ptr = client; }
     if(!client->healthy()) client->connect(String("localhost"),8080);
   }
