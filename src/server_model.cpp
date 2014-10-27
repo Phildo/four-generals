@@ -50,17 +50,17 @@ void ServerModel::tick()
       case Network::e_type_join_con: break; //only received by client
       case Network::e_type_leave_con:
         conGeneral(e->connection)->connection = '0';
-        server->broadcast(e); //alert others of left player
+        server->broadcast(*e); //alert others of left player
         break;
       case Network::e_type_assign_card:
         if(cardGeneral(e->cardinal) == 0)
-          server->broadcast(e);
+          server->broadcast(*e);
         break;
       case Network::e_type_revoke_card:
         if(cardGeneral(e->cardinal)->connection == e->connection)
         {
-          cardGeneral(e->cardinal) = '0';
-          server->broadcast(e);
+          cardGeneral(e->cardinal)->cardinal = '0';
+          server->broadcast(*e);
         }
         break;
       default:

@@ -14,6 +14,7 @@ Client::Client()
   ip = getIP();
   port = 8080;
 
+  connection = '0';
   keep_connection = false;
   connecting = false;
   connected = false;
@@ -98,7 +99,7 @@ void * Client::fork()
 void Client::broadcast(char con, char card, char t)
 {
   Event e(con, card, t, nextEventId());
-  send_q.enqueue(e);
+  broadcast(e);
 }
 
 void Client::broadcast(Event e)

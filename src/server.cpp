@@ -79,10 +79,8 @@ void * Server::fork()
       //Wait for that to happen before accepting any more
       if(n_cons == FG_MAX_CONNECTIONS)
       {
-        con->welcome = false;
-        con->connecting = true;
-        int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
-        if(r != 0) { fg_log("Failure creating connection thread."); con->connecting = false; }
+        con->connect();
+        con->broadcast(con->connection, '0', e_type_refuse_con);
         con->disconnect();
 
         //find con and put it back at the end of the queue #ugly
@@ -96,10 +94,7 @@ void * Server::fork()
       }
       else
       {
-        con->welcome = true;
-        con->connecting = true;
-        int r = pthread_create(&(con->thread), NULL, conThreadHandoff, (void *)&con->handle);
-        if(r != 0) { fg_log("Failure creating connection thread."); keep_connection = false; con->connecting = false; }
+        con->connect();
       }
     }
 
@@ -131,9 +126,10 @@ void * Server::fork()
   return 0;
 }
 
-void Server::broadcast(const String &s)
+void Server::broadcast(Event e)
 {
-  fg_log("Serv should broadcast %s",s.ptr());
+  fg_log("Serv should broadcast %s",e.serialize());
+  //send_q.enqueue(e);
 }
 
 void Server::disconnect()

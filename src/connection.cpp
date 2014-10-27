@@ -11,33 +11,39 @@ void * Network::conThreadHandoff(void * arg)  { return ((ConThreadHandle*) arg)-
 
 Connection::Connection()
 {
-  connection = 0;
+  ip = getIP();
+  port = 8080;
+
+  connection = '0';
   keep_connection = false;
   connecting = false;
   connected = false;
   handle.connection = this;
 }
 
+void Connection::connect()
+{
+  if(!stale()) { fg_log("Aborting connection connect request- standing connection exists."); return; }
+  //port = _port;
+  //serv_ip = _ip;
+
+  connecting = true;
+
+  fg_log("Connection connecting to IP:%s on port %d", serv_ip.ptr(), port);
+  int r = pthread_create(&thread, NULL, conThreadHandoff, (void *)&handle);
+  if(r != 0) { fg_log("Failure creating connection thread."); connecting = false; }
+}
+
 void * Connection::fork()
 {
   int len;
   Event *send_evt;
-  if(!welcome)
-  {
-    keep_connection = false;
-    fg_log("Connection unwelcome");
-    Event e(connection, '0', e_type_refuse_con, nextEventId());
-    len = send(sock_fd, e.serialize(), e.serlen(), 0);
-    if(len <= 0) { fg_log("Failure writing connection."); connecting = false; }
-  }
-  else
-  {
-    keep_connection = true;
-    fg_log("Connection created");
-    Event e(connection, '0', e_type_assign_con, nextEventId());
-    len = send(sock_fd, e.serialize(), e.serlen(), 0);
-    if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; connecting = false; }
-  }
+  keep_connection = true;
+  fg_log("Connection created");
+  Event e(connection, '0', e_type_assign_con, nextEventId());
+  len = send(sock_fd, e.serialize(), e.serlen(), 0);
+  if(len <= 0) { fg_log("Failure writing connection."); keep_connection = false; connecting = false; }
+
   connected = true;
   connecting = false;
 
@@ -74,6 +80,12 @@ void * Connection::fork()
   return 0;
 }
 
+void Connection::broadcast(char con, char card, char t)
+{
+  Event e(con, card, t, nextEventId());
+  broadcast(e);
+}
+
 void Connection::broadcast(Event e)
 {
   send_q.enqueue(e);
@@ -81,7 +93,8 @@ void Connection::broadcast(Event e)
 
 int Connection::nextEventId()
 {
-  evt_id_inc++;
+  if(evt_id_inc == 0) evt_id_inc = connection;
+  evt_id_inc+=5; //technically, event_id is sufficient enough to know from which connection evt was sent
   return evt_id_inc - 1;
 }
 

@@ -32,7 +32,7 @@ Game::Game()
   scenes[0] = new IntroScene(graphics);
   scenes[1] = new HostScene(graphics, server, client, s_model, c_model);
   scenes[2] = new JoinScene(graphics, client, c_model);
-  scenes[3] = new RoomScene(graphics, s_model, c_model);
+  scenes[3] = new RoomScene(graphics, client, s_model, c_model);
 }
 
 void Game::run()

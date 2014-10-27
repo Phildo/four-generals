@@ -36,6 +36,8 @@ namespace Network
       CliThreadHandle handle;
       pthread_t thread;
 
+      char connection; //'1' thru '1'+(FG_MAX_CONNECTIONS-1) or '0' for none
+
       Client();
       ~Client();
 

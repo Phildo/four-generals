@@ -34,7 +34,7 @@ namespace Network
       ~Server();
 
       void connect(int _port);
-      void broadcast(const String &s);
+      void broadcast(Event e);
       void disconnect();
       bool healthy();
       bool stale();

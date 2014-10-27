@@ -1,6 +1,7 @@
 #include "room_scene.h"
 #include "graphics.h"
 #include "network.h"
+#include "client.h"
 #include "server_model.h"
 #include "client_model.h"
 
@@ -8,12 +9,14 @@
 
 #include "logger.h"
 
-RoomScene::RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm)
+RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
 
+  client_ptr = &c;
   s_model_ptr = &sm;
   c_model_ptr = &cm;
+  client = 0;
   s_model = 0;
   c_model = 0;
 
@@ -39,6 +42,7 @@ RoomScene::RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm)
 
 void RoomScene::enter()
 {
+  client = *client_ptr;
   s_model = *s_model_ptr;
   c_model = *c_model_ptr;
 }
@@ -46,10 +50,10 @@ void RoomScene::enter()
 void RoomScene::touch(In &in)
 {
   if(backButton.query(in)) fg_log("backButton");
-  if(nButton.query(in)) { client.broadcast(c_model.myConnection, 'n', e_type_assign_card); }
-  if(sButton.query(in)) { client.broadcast(c_model.myConnection, 's', e_type_assign_card); }
-  if(wButton.query(in)) { client.broadcast(c_model.myConnection, 'w', e_type_assign_card); }
-  if(eButton.query(in)) { client.broadcast(c_model.myConnection, 'e', e_type_assign_card); }
+  if(nButton.query(in)) { client->broadcast(c_model->myConnection, 'n', Network::e_type_assign_card); }
+  if(sButton.query(in)) { client->broadcast(c_model->myConnection, 's', Network::e_type_assign_card); }
+  if(wButton.query(in)) { client->broadcast(c_model->myConnection, 'w', Network::e_type_assign_card); }
+  if(eButton.query(in)) { client->broadcast(c_model->myConnection, 'e', Network::e_type_assign_card); }
   if(sessionButton.query(in)) { fg_log("sessionButton"); }
 }
 

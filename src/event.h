@@ -9,15 +9,15 @@ namespace Network
   //abcdefghijklmnopqrstuvwxyz
   static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)
 
-  static const char e_type_assign_con  = 'c'; //server->client only
+  static const char e_type_assign_con  = 'b'; //server->client only
   static const char e_type_revoke_con  = 'c'; //server->client only
-  static const char e_type_refuse_con  = 'n'; //server->client only
+  static const char e_type_refuse_con  = 'd'; //server->client only
 
-  static const char e_type_join_con    = 'c'; //server->client only
-  static const char e_type_leave_con   = 'c';
+  static const char e_type_join_con    = 'e'; //server->client only
+  static const char e_type_leave_con   = 'f';
 
-  static const char e_type_assign_card = 'd';
-  static const char e_type_revoke_card = 'r';
+  static const char e_type_assign_card = 'g';
+  static const char e_type_revoke_card = 'h';
 
   struct Event //all members chars for quick/simple serializability
   {

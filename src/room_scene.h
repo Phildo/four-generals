@@ -28,13 +28,15 @@ class RoomScene : public Scene
     UI::Label leaveSessLabel;
     UI::Button sessionButton;
 
+    Network::Client *client;
+    Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
     ServerModel *s_model;
     ServerModel **s_model_ptr; //Pointers to the server model pointer 'owned' by game
     ClientModel *c_model;
     ClientModel **c_model_ptr; //Pointers to the client model pointer 'owned' by game
 
   public:
-    RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm);
+    RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
     ~RoomScene();
     void enter();
     void touch(In &in);

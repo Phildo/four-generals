@@ -14,6 +14,10 @@ namespace Network
   class Connection
   {
     private:
+      bool keep_connection;
+      bool connecting;
+      bool connected;
+
       int evt_id_inc;
       int nextEventId();
       void enqueueAckWait(Event e);
@@ -29,17 +33,12 @@ namespace Network
 
       char buff[FG_BUFF_SIZE];
     public:
-      bool keep_connection;
-      bool connecting;
-      bool connected;
-
       ConThreadHandle handle;
       pthread_t thread;
 
-      //difference between connection and client
       char connection; //'1' thru '1'+(FG_MAX_CONNECTIONS-1) or '0' for none
-      bool welcome;
 
+      //difference between connection and client
       int sock_fd;
       socklen_t sock_addr_len; //sizeof addr
       struct sockaddr_in sock_addr;
@@ -48,8 +47,9 @@ namespace Network
       Connection();
       ~Connection();
 
+      void connect();
+      void broadcast(char con, char card, char t);
       void broadcast(Event e);
-
       void disconnect();
       bool healthy();
       bool stale();
