@@ -98,7 +98,6 @@ void * Server::fork()
         con->connect();
         con->broadcast(con->connection, '0', e_type_assign_con);
         dumpHistory(con);
-        broadcast(con->connection, '0', e_type_join_con);
       }
     }
 
@@ -115,7 +114,7 @@ void * Server::fork()
         tmp_con_p = con_ptrs[i];
         con_ptrs[i] = con_ptrs[n_cons];
         con_ptrs[n_cons] = tmp_con_p;
-        broadcast(tmp_con_p->connection, '0', e_type_leave_con);
+        recv_q.enqueue(Event(tmp_con_p->connection, '0', e_type_leave_con, 0)); //simulate receipt from now-nonexistant con
 
         i--;
       }
@@ -185,6 +184,7 @@ bool Server::stale()
 Event *Server::getEvent()
 {
   Event *e;
+  if((e = recv_q.next())) return e;
   for(int i = 0; i < n_cons; i++)
     if((e = con_ptrs[i]->getEvent())) return e;
   return 0;

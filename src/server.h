@@ -3,6 +3,8 @@
 
 #include "network.h"
 #include "connection.h"
+#include "event.h"
+#include "circ_q.h"
 
 namespace Network
 {
@@ -16,12 +18,14 @@ namespace Network
       ServThreadHandle handle;
       pthread_t thread;
 
-      String ip;
-      int port;
-
       bool keep_connection;
       bool connecting;
       bool connected;
+
+      circQ<Event, FG_EVT_Q_SIZE> recv_q;
+
+      String ip;
+      int port;
 
       //an odd pattern-
       //holds connection memory contiguously on stack

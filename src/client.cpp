@@ -75,12 +75,12 @@ void * Client::fork()
     while(len > 0)
     {
       Event e(buff+(mess_num*e_ser_len));
-      if     (e.type == e_type_assign_con)                                connection = e.connection;
+      if     (e.type == e_type_assign_con)                                { connection = e.connection; broadcast('0',e_type_join_con); }
       else if(e.type == e_type_revoke_con || e.type == e_type_refuse_con) { connection = '0'; keep_connection = false; }
       else if(e.type == e_type_ack)                                       ackReceived(e);
       else                                                                recv_q.enqueue(e);
 
-      fg_log("Client    (%d): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
+      fg_log("Client    (%c): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
       len -= e_ser_len;
       mess_num++;
     }
@@ -89,7 +89,7 @@ void * Client::fork()
     {
       len = send(sock_fd, send_evt->serialize(), e_ser_len, 0);
       if(len <= 0) { fg_log("Client: abort connection (failed write)"); keep_connection = false; }
-      fg_log("Client    (%d): sen(%d): %s",connection,len,send_evt->serialize());
+      fg_log("Client    (%c): sen(%d) %s",connection,len,send_evt->serialize());
       len = 0;
     }
   }

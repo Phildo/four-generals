@@ -14,6 +14,9 @@ namespace Network
   class Connection
   {
     private:
+      ConThreadHandle handle;
+      pthread_t thread;
+
       bool keep_connection;
       bool connecting;
       bool connected;
@@ -33,9 +36,6 @@ namespace Network
 
       char buff[FG_BUFF_SIZE];
     public:
-      ConThreadHandle handle;
-      pthread_t thread;
-
       char connection; //'1' thru '1'+(FG_MAX_CONNECTIONS-1) or '0' for none
 
       //difference between connection and client
