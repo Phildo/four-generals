@@ -14,7 +14,7 @@ class ServerModel;
 class ClientModel;
 class Scene;
 
-#define FG_NUM_SCENES 4
+#define FG_NUM_SCENES 5
 
 class Game
 {

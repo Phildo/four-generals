@@ -1,5 +1,5 @@
-#ifndef _FG_ROOM_SCENE_H_
-#define _FG_ROOM_SCENE_H_
+#ifndef _FG_PLAY_SCENE_H_
+#define _FG_PLAY_SCENE_H_
 
 #include "scene.h"
 #include "ui.h"
@@ -9,14 +9,14 @@ class Graphics;
 class ServerModel;
 class ClientModel;
 
-class RoomScene : public Scene
+class PlayScene : public Scene
 {
   private:
     Graphics *graphics;
 
     UI::Button backButton;
 
-    UI::Label inRoomLabel;
+    UI::Label inPlayLabel;
     UI::Label ipLabel;
     UI::Label portLabel;
 
@@ -38,10 +38,9 @@ class RoomScene : public Scene
     ClientModel *c_model;
     ClientModel **c_model_ptr; //Pointers to the client model pointer 'owned' by game
 
-    int SCENE_CHANGE_HACK;
   public:
-    RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
-    ~RoomScene();
+    PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
+    ~PlayScene();
     void enter();
     void touch(In &in);
     int tick();

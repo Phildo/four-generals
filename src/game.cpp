@@ -11,6 +11,7 @@
 #include "host_scene.h"
 #include "join_scene.h"
 #include "room_scene.h"
+#include "play_scene.h"
 
 #include "sprite.h"
 #include "logger.h"
@@ -33,6 +34,7 @@ Game::Game()
   scenes[1] = new HostScene(graphics, server, client, s_model, c_model);
   scenes[2] = new JoinScene(graphics, client, c_model);
   scenes[3] = new RoomScene(graphics, client, s_model, c_model);
+  scenes[4] = new PlayScene(graphics, client, s_model, c_model);
 }
 
 void Game::run()

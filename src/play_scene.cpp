@@ -1,4 +1,4 @@
-#include "room_scene.h"
+#include "play_scene.h"
 #include "graphics.h"
 #include "network.h"
 #include "client.h"
@@ -9,7 +9,7 @@
 
 #include "logger.h"
 
-RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
+PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
 
@@ -25,7 +25,7 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   backButton = UI::Button(10,10,20,20);
 
-  inRoomLabel = UI::Label(ww/2-100,wh/2-100,20,"In Room");
+  inPlayLabel = UI::Label(ww/2-100,wh/2-100,20,"In Play");
 
   ipLabel = UI::Label(ww/2-100,wh/2-80,20,Network::getIP().ptr());
 
@@ -41,18 +41,16 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");  sButton = UI::Button(ww/2-10, wh  -30, 20, 20);
   wLabel = UI::Label(     10, wh/2-10, 20, "W");  wButton = UI::Button(     10, wh/2-10, 20, 20);
   eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");  eButton = UI::Button(ww  -30, wh/2-10, 20, 20);
-
-  SCENE_CHANGE_HACK = 0;
 }
 
-void RoomScene::enter()
+void PlayScene::enter()
 {
   client = *client_ptr;
   s_model = *s_model_ptr;
   c_model = *c_model_ptr;
 }
 
-void RoomScene::touch(In &in)
+void PlayScene::touch(In &in)
 {
   if(backButton.query(in)) { }
   if(nButton.query(in)) { client->broadcast('n', Network::e_type_assign_card); }
@@ -68,25 +66,22 @@ void RoomScene::touch(In &in)
        c_model->cardGeneral('e')
         )
     {
-      SCENE_CHANGE_HACK = 1;
+
     }
   }
 }
 
-int RoomScene::tick()
+int PlayScene::tick()
 {
   if(s_model) s_model->tick();
   c_model->tick();
-
-  int tmp = SCENE_CHANGE_HACK;
-  SCENE_CHANGE_HACK = 0;
-  return tmp;
+  return 0;
 }
 
-void RoomScene::draw()
+void PlayScene::draw()
 {
   backButton.draw(graphics);
-  inRoomLabel.draw(graphics);
+  inPlayLabel.draw(graphics);
   ipLabel.draw(graphics);
   portLabel.draw(graphics);
 
@@ -103,8 +98,7 @@ void RoomScene::draw()
   leaveSessLabel.draw(graphics);
   leaveSessButton.draw(graphics);
 
-  if(s_model &&
-     c_model->cardGeneral('n') &&
+  if(c_model->cardGeneral('n') &&
      c_model->cardGeneral('w') &&
      c_model->cardGeneral('s') &&
      c_model->cardGeneral('e')
@@ -115,18 +109,18 @@ void RoomScene::draw()
   }
 }
 
-void RoomScene::leave()
+void PlayScene::leave()
 {
 }
-void RoomScene::pass()
+void PlayScene::pass()
 {
 
 }
-void RoomScene::pop()
+void PlayScene::pop()
 {
 }
 
-RoomScene::~RoomScene()
+PlayScene::~PlayScene()
 {
 
 }
