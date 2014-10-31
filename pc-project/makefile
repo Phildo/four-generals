@@ -14,8 +14,8 @@ build:
 install: build
 	$(BINDIR)/pc.out
 
-run:
-	$(CC) $(CFLAGS) $(LFLAGS) $(SOURCES) -o $(BINDIR)/pc.out && $(BINDIR)/pc.out
+run: build
+	$(BINDIR)/pc.out
 
 run4:
 	./run4.sh
