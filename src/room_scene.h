@@ -20,10 +20,10 @@ class RoomScene : public Scene
     UI::Label ipLabel;
     UI::Label portLabel;
 
-    UI::Label nLabel; UI::Label npLabel; UI::Button nButton;
-    UI::Label sLabel; UI::Label spLabel; UI::Button sButton;
-    UI::Label wLabel; UI::Label wpLabel; UI::Button wButton;
-    UI::Label eLabel; UI::Label epLabel; UI::Button eButton;
+    UI::Label nLabel; UI::Button nButton;
+    UI::Label sLabel; UI::Button sButton;
+    UI::Label wLabel; UI::Button wButton;
+    UI::Label eLabel; UI::Button eButton;
 
     UI::Label leaveSessLabel;
     UI::Button leaveSessButton;

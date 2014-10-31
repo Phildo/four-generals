@@ -25,22 +25,23 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   backButton = UI::Button(10,10,20,20);
 
-  inPlayLabel = UI::Label(ww/2-100,wh/2-100,20,"In Play");
+#define pos(x) 10+((ww-20)/7)*x
 
-  ipLabel = UI::Label(ww/2-100,wh/2-80,20,Network::getIP().ptr());
+  sunLabel = UI::Label(pos(0), 10, 20, "Su");
+  monLabel = UI::Label(pos(1), 10, 20, "Mo");
+  tueLabel = UI::Label(pos(2), 10, 20, "Tu");
+  wedLabel = UI::Label(pos(3), 10, 20, "We");
+  thuLabel = UI::Label(pos(4), 10, 20, "Th");
+  friLabel = UI::Label(pos(5), 10, 20, "Fr");
+  satLabel = UI::Label(pos(6), 10, 20, "Sa");
 
-  portLabel = UI::Label(ww/2+30,wh/2-80,20,"8080");
+  nLabel = UI::Label(ww/2-10,      10, 20, "N");
+  sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");
+  wLabel = UI::Label(     10, wh/2-10, 20, "W");
+  eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");
 
-  leaveSessLabel  = UI::Label( ww/2-100, wh/2-50, 20, "Leave Session");
-  leaveSessButton = UI::Button(ww/2-100, wh/2-50, 200, 20);
-
-  beginGameLabel  = UI::Label( ww/2-100, wh/2+50, 20, "Begin Game!");
-  beginGameButton = UI::Button(ww/2-100, wh/2+50, 200, 20);
-
-  nLabel = UI::Label(ww/2-10,      10, 20, "N");  nButton = UI::Button(ww/2-10,      10, 20, 20);
-  sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");  sButton = UI::Button(ww/2-10, wh  -30, 20, 20);
-  wLabel = UI::Label(     10, wh/2-10, 20, "W");  wButton = UI::Button(     10, wh/2-10, 20, 20);
-  eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");  eButton = UI::Button(ww  -30, wh/2-10, 20, 20);
+  attackLabel = UI::Label(       20, wh-30, 20, "attack"); attackButton = UI::Button(       20, wh-30, 100, 20);
+  defendLabel = UI::Label(ww-100-20, wh-30, 20, "defend"); defendButton = UI::Button(ww-100-20, wh-30, 100, 20);
 }
 
 void PlayScene::enter()
@@ -53,22 +54,8 @@ void PlayScene::enter()
 void PlayScene::touch(In &in)
 {
   if(backButton.query(in)) { }
-  if(nButton.query(in)) { client->broadcast('n', Network::e_type_assign_card); }
-  if(sButton.query(in)) { client->broadcast('s', Network::e_type_assign_card); }
-  if(wButton.query(in)) { client->broadcast('w', Network::e_type_assign_card); }
-  if(eButton.query(in)) { client->broadcast('e', Network::e_type_assign_card); }
-  if(leaveSessButton.query(in)) { }
-  if(beginGameButton.query(in))
-  {
-    if(c_model->cardGeneral('n') &&
-       c_model->cardGeneral('w') &&
-       c_model->cardGeneral('s') &&
-       c_model->cardGeneral('e')
-        )
-    {
-
-    }
-  }
+  if(attackButton.query(in)) { }
+  if(defendButton.query(in)) { }
 }
 
 int PlayScene::tick()
@@ -81,32 +68,22 @@ int PlayScene::tick()
 void PlayScene::draw()
 {
   backButton.draw(graphics);
-  inPlayLabel.draw(graphics);
-  ipLabel.draw(graphics);
-  portLabel.draw(graphics);
 
-  if(c_model->cardGeneral('n')) nLabel.draw(graphics);
-  if(c_model->cardGeneral('s')) sLabel.draw(graphics);
-  if(c_model->cardGeneral('w')) wLabel.draw(graphics);
-  if(c_model->cardGeneral('e')) eLabel.draw(graphics);
+  sunLabel.draw(graphics);
+  monLabel.draw(graphics);
+  tueLabel.draw(graphics);
+  wedLabel.draw(graphics);
+  thuLabel.draw(graphics);
+  friLabel.draw(graphics);
+  satLabel.draw(graphics);
 
-  nButton.draw(graphics);
-  sButton.draw(graphics);
-  wButton.draw(graphics);
-  eButton.draw(graphics);
+  nLabel.draw(graphics);
+  sLabel.draw(graphics);
+  wLabel.draw(graphics);
+  eLabel.draw(graphics);
 
-  leaveSessLabel.draw(graphics);
-  leaveSessButton.draw(graphics);
-
-  if(c_model->cardGeneral('n') &&
-     c_model->cardGeneral('w') &&
-     c_model->cardGeneral('s') &&
-     c_model->cardGeneral('e')
-    )
-  {
-    beginGameLabel.draw(graphics);
-    beginGameButton.draw(graphics);
-  }
+  attackLabel.draw(graphics); attackButton.draw(graphics);
+  defendLabel.draw(graphics); defendButton.draw(graphics);
 }
 
 void PlayScene::leave()

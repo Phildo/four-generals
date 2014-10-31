@@ -16,20 +16,21 @@ class PlayScene : public Scene
 
     UI::Button backButton;
 
-    UI::Label inPlayLabel;
-    UI::Label ipLabel;
-    UI::Label portLabel;
+    UI::Label sunLabel;
+    UI::Label monLabel;
+    UI::Label tueLabel;
+    UI::Label wedLabel;
+    UI::Label thuLabel;
+    UI::Label friLabel;
+    UI::Label satLabel;
 
-    UI::Label nLabel; UI::Label npLabel; UI::Button nButton;
-    UI::Label sLabel; UI::Label spLabel; UI::Button sButton;
-    UI::Label wLabel; UI::Label wpLabel; UI::Button wButton;
-    UI::Label eLabel; UI::Label epLabel; UI::Button eButton;
+    UI::Label nLabel; UI::Button nButton;
+    UI::Label sLabel; UI::Button sButton;
+    UI::Label wLabel; UI::Button wButton;
+    UI::Label eLabel; UI::Button eButton;
 
-    UI::Label leaveSessLabel;
-    UI::Button leaveSessButton;
-
-    UI::Label beginGameLabel;
-    UI::Button beginGameButton;
+    UI::Label attackLabel; UI::Button attackButton;
+    UI::Label defendLabel; UI::Button defendButton;
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
