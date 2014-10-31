@@ -25,7 +25,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   backButton = UI::Button(10,10,20,20);
 
-#define pos(x) 10+((ww-20)/7)*x
+#define pos(x) (10+((ww-20)/7)*x)+((ww-20)/7)/2-10
 
   sunLabel = UI::Label(pos(0), 10, 20, "Su");
   monLabel = UI::Label(pos(1), 10, 20, "Mo");

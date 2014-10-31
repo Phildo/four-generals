@@ -1,5 +1,6 @@
 bin
 android-project/bin
+pc-project/out
 *.apk
 *.apk.d
 *.ap_.d

@@ -99,6 +99,9 @@ pinstall: pdefine
 prun: pdefine
 	cd $(PC_DIR); amake run;
 
+prun4: pdefine
+	cd $(PC_DIR); amake run4;
+
 pdebug: pdefine
 	cd $(PC_DIR); amake debug;
 
