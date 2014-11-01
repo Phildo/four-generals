@@ -60,7 +60,7 @@ void Game::run()
     scenes[scene]->draw();
     graphics->flip();
 
-    SDL_Delay(10);
+    SDL_Delay(30);
   }
 }
 

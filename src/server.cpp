@@ -43,7 +43,6 @@ void * Server::fork()
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ptrs[i] = &cons[i];
 
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
-  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
 
   bzero((char *)&sock_addr, sizeof(sock_addr));
   sock_addr.sin_family = AF_INET;
@@ -62,42 +61,56 @@ void * Server::fork()
   connected = true;
   connecting = false;
 
+  //sock list
+  fd_set sock_fds;
+  struct timeval tv;
+  int retval;
+
   Connection *con;
   Connection *tmp_con_p;
   while(keep_connection) //spin wait. bad idea? tune in next time to find out.
   {
+    FD_ZERO(&sock_fds);
+    FD_SET(sock_fd, &sock_fds);
+    tv.tv_sec = 0; tv.tv_usec = 250000;
+
     con = con_ptrs[n_cons];
 
     con->sock_addr_len = sizeof(con->sock_addr);
     con->sock_fd = -1;
 
-    con->sock_fd = accept(sock_fd, (struct sockaddr *)&(con->sock_addr), &(con->sock_addr_len));
-    if(con->sock_fd >= 0)
+    retval = select(sock_fd+1, &sock_fds, NULL, NULL, &tv);
+    if(retval == -1) keep_connection = false;
+    else if(retval && FD_ISSET(sock_fd, &sock_fds))
     {
-      n_cons++;
-
-      //Final connection will be told off and closed
-      //Wait for that to happen before accepting any more
-      if(n_cons == FG_MAX_CONNECTIONS)
+      con->sock_fd = accept(sock_fd, (struct sockaddr *)&(con->sock_addr), &(con->sock_addr_len));
+      if(con->sock_fd >= 0)
       {
-        con->connect();
-        con->broadcast(con->connection, '0', e_type_refuse_con);
-        con->disconnect(); //race condition!!!
+        n_cons++;
 
-        //find con and put it back at the end of the queue #ugly
-        int con_index = 0;
-        for(int i = 0; i < n_cons; i++) if(con_ptrs[i] == con) con_index = i;
-        n_cons--;
+        //Final connection will be told off and closed
+        //Wait for that to happen before accepting any more
+        if(n_cons == FG_MAX_CONNECTIONS)
+        {
+          con->connect();
+          con->broadcast(con->connection, '0', e_type_refuse_con);
+          con->disconnect(); //race condition!!!
 
-        tmp_con_p = con_ptrs[con_index];
-        con_ptrs[con_index] = con_ptrs[n_cons];
-        con_ptrs[n_cons] = tmp_con_p;
-      }
-      else
-      {
-        con->connect();
-        con->broadcast(con->connection, '0', e_type_assign_con);
-        dumpHistory(con);
+          //find con and put it back at the end of the queue #ugly
+          int con_index = 0;
+          for(int i = 0; i < n_cons; i++) if(con_ptrs[i] == con) con_index = i;
+          n_cons--;
+
+          tmp_con_p = con_ptrs[con_index];
+          con_ptrs[con_index] = con_ptrs[n_cons];
+          con_ptrs[n_cons] = tmp_con_p;
+        }
+        else
+        {
+          con->connect();
+          con->broadcast(con->connection, '0', e_type_assign_con);
+          dumpHistory(con);
+        }
       }
     }
 

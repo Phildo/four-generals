@@ -40,25 +40,25 @@ void * Connection::fork()
 {
   connected = true;
   connecting = false;
-  int len;
+  int len = 0;
   Event *send_evt;
 
-  //fcntl(sock_fd, F_SETFL, O_NONBLOCK);
-  fd_set rfds;
+  //sock list
+  fd_set sock_fds;
   struct timeval tv;
   int retval;
-  len = 0;
+
   bzero(buff, FG_BUFF_SIZE);
   while(keep_connection)
   {
-    FD_ZERO(&rfds);
-    FD_SET(sock_fd, &rfds);
+    FD_ZERO(&sock_fds);
+    FD_SET(sock_fd, &sock_fds);
     tv.tv_sec = 0; tv.tv_usec = 250000;
 
-    retval = select(sock_fd+1, &rfds, NULL, NULL, &tv);
+    retval = select(sock_fd+1, &sock_fds, NULL, NULL, &tv);
 
     if(retval == -1) keep_connection = false;
-    else if(retval && FD_ISSET(sock_fd, &rfds))
+    else if(retval && FD_ISSET(sock_fd, &sock_fds))
     {
       len = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
       if(len == 0) keep_connection = false;

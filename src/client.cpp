@@ -42,7 +42,7 @@ void * Client::fork()
   struct sockaddr_in serv_sock_addr; //client's serv addr
   struct hostent *serv_host; //client's reference to server
 
-  int len;
+  int len = 0;
   Event *send_evt;
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -64,25 +64,38 @@ void * Client::fork()
   connected = true;
   connecting = false;
 
-  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
-  len = 0;
+  //sock list
+  fd_set sock_fds;
+  struct timeval tv;
+  int retval;
+
   bzero(buff, FG_BUFF_SIZE);
   while(keep_connection)
   {
-    len = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
-    if(len == 0) keep_connection = false;
-    int mess_num = 0;
-    while(len > 0)
-    {
-      Event e(buff+(mess_num*e_ser_len));
-      if     (e.type == e_type_assign_con)                                { connection = e.connection; broadcast('0',e_type_join_con); }
-      else if(e.type == e_type_revoke_con || e.type == e_type_refuse_con) { connection = '0'; keep_connection = false; }
-      else if(e.type == e_type_ack)                                       ackReceived(e);
-      else                                                                recv_q.enqueue(e);
+    FD_ZERO(&sock_fds);
+    FD_SET(sock_fd, &sock_fds);
+    tv.tv_sec = 0; tv.tv_usec = 250000;
 
-      fg_log("Client    (%c): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
-      len -= e_ser_len;
-      mess_num++;
+    retval = select(sock_fd+1, &sock_fds, NULL, NULL, &tv);
+
+    if(retval == -1) keep_connection = false;
+    else if(retval && FD_ISSET(sock_fd, &sock_fds))
+    {
+      len = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
+      if(len == 0) keep_connection = false;
+      int mess_num = 0;
+      while(len > 0)
+      {
+        Event e(buff+(mess_num*e_ser_len));
+        if     (e.type == e_type_assign_con)                                { connection = e.connection; broadcast('0',e_type_join_con); }
+        else if(e.type == e_type_revoke_con || e.type == e_type_refuse_con) { connection = '0'; keep_connection = false; }
+        else if(e.type == e_type_ack)                                       ackReceived(e);
+        else                                                                recv_q.enqueue(e);
+
+        fg_log("Client    (%c): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
+        len -= e_ser_len;
+        mess_num++;
+      }
     }
 
     while((send_evt = send_q.next()))
