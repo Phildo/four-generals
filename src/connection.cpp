@@ -43,22 +43,35 @@ void * Connection::fork()
   int len;
   Event *send_evt;
 
-  fcntl(sock_fd, F_SETFL, O_NONBLOCK);
+  //fcntl(sock_fd, F_SETFL, O_NONBLOCK);
+  fd_set rfds;
+  struct timeval tv;
+  int retval;
   len = 0;
   bzero(buff, FG_BUFF_SIZE);
   while(keep_connection)
   {
-    len = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
-    if(len == 0) keep_connection = false;
-    int mess_num = 0;
-    while(len > 0)
+    FD_ZERO(&rfds);
+    FD_SET(sock_fd, &rfds);
+    tv.tv_sec = 0; tv.tv_usec = 250000;
+
+    retval = select(sock_fd+1, &rfds, NULL, NULL, &tv);
+
+    if(retval == -1) keep_connection = false;
+    else if(retval && FD_ISSET(sock_fd, &rfds))
     {
-      Event e(buff+(mess_num*e_ser_len));
-      if(e.type == e_type_ack) ackReceived(e);
-      else recv_q.enqueue(e);
-      fg_log("Connection(%c): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
-      len-= e_ser_len;
-      mess_num++;
+      len = recv(sock_fd, buff, FG_BUFF_SIZE-1, 0);
+      if(len == 0) keep_connection = false;
+      int mess_num = 0;
+      while(len > 0)
+      {
+        Event e(buff+(mess_num*e_ser_len));
+        if(e.type == e_type_ack) ackReceived(e);
+        else recv_q.enqueue(e);
+        fg_log("Connection(%c): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
+        len-= e_ser_len;
+        mess_num++;
+      }
     }
 
     while((send_evt = send_q.next()))
