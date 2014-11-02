@@ -14,6 +14,9 @@ class ServerModel
     General *conGeneral(char con);
     General *emptyGeneral();
 
+    bool playing; //dumb
+    int day;
+
     ServerModel(Network::Server *s);
     ~ServerModel();
     void tick();

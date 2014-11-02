@@ -13,11 +13,13 @@ namespace Network
   static const char e_type_revoke_con  = 'c'; //server->client only
   static const char e_type_refuse_con  = 'd'; //server->client only
 
-  static const char e_type_join_con    = 'e'; //server->client only
+  static const char e_type_join_con    = 'e';
   static const char e_type_leave_con   = 'f';
 
   static const char e_type_assign_card = 'g';
   static const char e_type_revoke_card = 'h';
+
+  static const char e_type_begin_play = 'i';
 
   struct Event //all members chars for quick/simple serializability
   {

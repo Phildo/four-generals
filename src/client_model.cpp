@@ -61,6 +61,9 @@ void ClientModel::tick()
       case Network::e_type_revoke_card:
         conGeneral(e->connection)->cardinal = '0';
         break;
+      case Network::e_type_begin_play:
+        playing = true;
+        break;
       default:
         break;
     }

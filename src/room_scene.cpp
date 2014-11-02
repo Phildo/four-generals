@@ -68,7 +68,7 @@ void RoomScene::touch(In &in)
        c_model->cardGeneral('e')
         )
     {
-      SCENE_CHANGE_HACK = 1;
+      client->broadcast(c_model->conGeneral(client->connection)->cardinal, Network::e_type_begin_play);
     }
   }
 }
@@ -77,6 +77,8 @@ int RoomScene::tick()
 {
   if(s_model) s_model->tick();
   c_model->tick();
+
+  if(c_model->playing) SCENE_CHANGE_HACK = 1;
 
   int tmp = SCENE_CHANGE_HACK;
   SCENE_CHANGE_HACK = 0;

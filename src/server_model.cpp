@@ -74,6 +74,17 @@ void ServerModel::tick()
           server->broadcast(*e);
         }
         break;
+      case Network::e_type_begin_play:
+        if(cardGeneral('n') &&
+           cardGeneral('e') &&
+           cardGeneral('s') &&
+           cardGeneral('w')
+          )
+        {
+          playing = true;
+          server->broadcast(*e);
+        }
+        break;
       default:
         break;
     }
