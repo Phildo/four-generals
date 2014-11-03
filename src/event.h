@@ -41,6 +41,7 @@ namespace Network
     Event();
     Event(char con, char card, char act, char t, char wat, char wo, char wen, char were, char ty, int id);
     Event(char *c);
+    void zero();
 
     //test for equality is a lie for comparing events to acks and retrieving from circ_q
     bool operator==(const Event& e){ return connection == e.connection; }

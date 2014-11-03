@@ -10,9 +10,7 @@ using namespace Network;
 
 Event::Event() //set to pseudo 'null'
 {
-  memset(this, '0', sizeof(Event));
-  null = '\0';
-  id_i = 0;
+  zero();
 };
 Event::Event(char *c) //just memcopy that sucka
 {
@@ -25,6 +23,13 @@ Event::Event(char con, char card, char act, char t, char wat, char wo, char wen,
 {
   id_c[5] = '0'; /*would be '\0' fron initialiazer*/
   null = '\0';
+}
+
+void Event::zero()
+{
+  memset(this, '0', sizeof(Event));
+  null = '\0';
+  id_i = 0;
 }
 
 char *Event::serialize()

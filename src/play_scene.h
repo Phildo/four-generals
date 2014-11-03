@@ -37,7 +37,7 @@ class PlayScene : public Scene
     UI::Label actionMessageLabel; UI::Button actionMessageButton;
     UI::Label actionDefendLabel;  UI::Button actionDefendButton;
 
-    UI::Label whatLabel;  UI::Button whatAttackButton; UI::Button whatDefendButton;
+    UI::Label whatLabel;  UI::Button whatAttackButton; UI::Label whatAttackLabel; UI::Button whatDefendButton; UI::Label whatDefendLabel;
     UI::Label whoLabel;   UI::Button whoNButton; UI::Button whoEButton; UI::Button whoSButton; UI::Button whoWButton;
     UI::Label whenLabel;  UI::Button whenSunButton; UI::Button whenMonButton; UI::Button whenTueButton; UI::Button whenWedButton; UI::Button whenThuButton;UI::Button whenFriButton;UI::Button whenSatButton;
     UI::Label whereLabel; UI::Button whereNButton; UI::Button whereEButton; UI::Button whereSButton; UI::Button whereWButton;

@@ -35,9 +35,9 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   friLabel = UI::Label(pos(5), 10, 20, "Fr"); friBox = UI::Box(pos(5), 10, 20, 20); whenFriButton = UI::Button(pos(5), 10, 20, 20);
   satLabel = UI::Label(pos(6), 10, 20, "Sa"); satBox = UI::Box(pos(6), 10, 20, 20); whenSatButton = UI::Button(pos(6), 10, 20, 20);
 
-  actionAttackLabel  = UI::Label(         20, wh-30, 20, "attack");  actionAttackButton  = UI::Button(       20, wh-30, 100, 20); whatAttackButton = UI::Button(       20, wh-30, 100, 20);
+  actionAttackLabel  = UI::Label(         20, wh-30, 20, "attack");  actionAttackButton  = UI::Button(       20, wh-30, 100, 20); whatAttackButton = UI::Button(       20, wh-30, 100, 20); whatAttackLabel = UI::Label(       20, wh-30, 20, "attack");
   actionMessageLabel = UI::Label(ww  -100-20, wh-30, 20, "message"); actionMessageButton = UI::Button(ww-100-20, wh-30, 100, 20);
-  actionDefendLabel  = UI::Label(ww/2-50    , wh-30, 20, "defend");  actionDefendButton  = UI::Button(ww/2-50  , wh-30, 100, 20); whatDefendButton = UI::Button(ww/2-50  , wh-30, 100, 20);
+  actionDefendLabel  = UI::Label(ww/2-50    , wh-30, 20, "defend");  actionDefendButton  = UI::Button(ww/2-50  , wh-30, 100, 20); whatDefendButton = UI::Button(ww/2-50  , wh-30, 100, 20); whatDefendLabel = UI::Label(ww/2-50  , wh-30, 20, "defend");
 
   whatLabel    = UI::Label(ww/2-50, wh/2-10, 20, "what");
   whoLabel     = UI::Label(ww/2-50, wh/2-10, 20, "who");
@@ -67,10 +67,10 @@ void PlayScene::enter()
   if(c_model->cardGeneral('e')->connection == client->connection) card = 3;
   if(c_model->cardGeneral('s')->connection == client->connection) card = 0;
   if(c_model->cardGeneral('w')->connection == client->connection) card = 1;
-  nLabel = UI::Label(xs[card+0%4],ys[card+0%4], 20, "n"); whoNButton = UI::Button(xs[card+0%4],ys[card+0%4], 20, 20); whereNButton = UI::Button(xs[card+0%4],ys[card+0%4], 20, 20);
-  eLabel = UI::Label(xs[card+1%4],ys[card+1%4], 20, "e"); whoEButton = UI::Button(xs[card+1%4],ys[card+1%4], 20, 20); whereEButton = UI::Button(xs[card+1%4],ys[card+1%4], 20, 20);
-  sLabel = UI::Label(xs[card+2%4],ys[card+2%4], 20, "s"); whoSButton = UI::Button(xs[card+2%4],ys[card+2%4], 20, 20); whereSButton = UI::Button(xs[card+2%4],ys[card+2%4], 20, 20);
-  wLabel = UI::Label(xs[card+3%4],ys[card+3%4], 20, "w"); whoWButton = UI::Button(xs[card+3%4],ys[card+3%4], 20, 20); whereWButton = UI::Button(xs[card+3%4],ys[card+3%4], 20, 20);
+  nLabel = UI::Label(xs[(card+0)%4],ys[(card+0)%4], 20, "n"); whoNButton = UI::Button(xs[(card+0)%4],ys[(card+0)%4], 20, 20); whereNButton = UI::Button(xs[(card+0)%4],ys[(card+0)%4], 20, 20);
+  eLabel = UI::Label(xs[(card+1)%4],ys[(card+1)%4], 20, "e"); whoEButton = UI::Button(xs[(card+1)%4],ys[(card+1)%4], 20, 20); whereEButton = UI::Button(xs[(card+1)%4],ys[(card+1)%4], 20, 20);
+  sLabel = UI::Label(xs[(card+2)%4],ys[(card+2)%4], 20, "s"); whoSButton = UI::Button(xs[(card+2)%4],ys[(card+2)%4], 20, 20); whereSButton = UI::Button(xs[(card+2)%4],ys[(card+2)%4], 20, 20);
+  wLabel = UI::Label(xs[(card+3)%4],ys[(card+3)%4], 20, "w"); whoWButton = UI::Button(xs[(card+3)%4],ys[(card+3)%4], 20, 20); whereWButton = UI::Button(xs[(card+3)%4],ys[(card+3)%4], 20, 20);
 
   youBox = UI::Box(ww/2-10, wh-80, 20, 20);
 }
@@ -78,9 +78,121 @@ void PlayScene::enter()
 void PlayScene::touch(In &in)
 {
   if(backButton.query(in)) { }
-  if(actionAttackButton.query(in)) { }
-  if(actionMessageButton.query(in)) { }
-  if(actionDefendButton.query(in)) { }
+
+  //oh god terrible tree traversal touch propagation
+
+  //choose action
+  if(e.action == '0')
+  {
+    if(actionAttackButton.query(in))  { e.action = 'a'; }
+    if(actionMessageButton.query(in)) { e.action = 'm'; }
+    if(actionDefendButton.query(in))  { e.action = 'd'; }
+  }
+  else if(e.action == 'a')
+  {
+    //choose who
+    if(e.who == '0')
+    {
+      if(whoNButton.query(in)) e.who = 'n';
+      if(whoEButton.query(in)) e.who = 'e';
+      if(whoSButton.query(in)) e.who = 's';
+      if(whoWButton.query(in)) e.who = 'w';
+    }
+    else
+    {
+      //seek confirmation
+      if(confirmButton.query(in)) client->broadcast(e);
+      if(cancelButton.query(in)) e.zero();
+    }
+  }
+  else if(e.action == 'm')
+  {
+    //choose what
+    if(e.what == '0')
+    {
+      if(whatAttackButton.query(in)) e.what = 'a';
+      if(whatDefendButton.query(in)) e.what = 'd';
+    }
+    else if(e.what == 'a')
+    {
+      //choose who
+      if(e.who == '0')
+      {
+        if(whoNButton.query(in)) e.who = 'n';
+        if(whoEButton.query(in)) e.who = 'e';
+        if(whoSButton.query(in)) e.who = 's';
+        if(whoWButton.query(in)) e.who = 'w';
+      }
+      else
+      {
+        //choose when
+        if(e.when == '0')
+        {
+          if(whenSunButton.query(in)) e.when = 's';
+          if(whenMonButton.query(in)) e.when = 'm';
+          if(whenTueButton.query(in)) e.when = 't';
+          if(whenWedButton.query(in)) e.when = 'w';
+          if(whenThuButton.query(in)) e.when = 'h';
+          if(whenFriButton.query(in)) e.when = 'f';
+          if(whenSatButton.query(in)) e.when = 'a';
+        }
+        else
+        {
+          //choose where
+          if(e.where == '0')
+          {
+            if(whereNButton.query(in)) e.where = 'n';
+            if(whereEButton.query(in)) e.where = 'e';
+            if(whereSButton.query(in)) e.where = 's';
+            if(whereWButton.query(in)) e.where = 'w';
+          }
+          else
+          {
+            //seek confirmation
+            if(confirmButton.query(in)) client->broadcast(e);
+            if(cancelButton.query(in)) e.zero();
+          }
+        }
+      }
+    }
+    else if(e.what == 'd')
+    {
+      //choose when
+      if(e.when == '0')
+      {
+        if(whenSunButton.query(in)) e.when = 's';
+        if(whenMonButton.query(in)) e.when = 'm';
+        if(whenTueButton.query(in)) e.when = 't';
+        if(whenWedButton.query(in)) e.when = 'w';
+        if(whenThuButton.query(in)) e.when = 'h';
+        if(whenFriButton.query(in)) e.when = 'f';
+        if(whenSatButton.query(in)) e.when = 'a';
+      }
+      else
+      {
+        //choose where
+        if(e.where == '0')
+        {
+          if(whereNButton.query(in)) e.where = 'n';
+          if(whereEButton.query(in)) e.where = 'e';
+          if(whereSButton.query(in)) e.where = 's';
+          if(whereWButton.query(in)) e.where = 'w';
+        }
+        else
+        {
+          //seek confirmation
+          if(confirmButton.query(in)) client->broadcast(e);
+          if(cancelButton.query(in)) e.zero();
+        }
+      }
+    }
+  }
+  else if(e.action == 'd')
+  {
+      //seek confirmation
+      if(confirmButton.query(in)) client->broadcast(e);
+      if(cancelButton.query(in)) e.zero();
+  }
 }
 
 int PlayScene::tick()
@@ -108,9 +220,71 @@ void PlayScene::draw()
   eLabel.draw(graphics);
   youBox.draw(graphics);
 
-  actionAttackLabel.draw(graphics);  actionAttackButton.draw(graphics);
-  actionMessageLabel.draw(graphics); actionMessageButton.draw(graphics);
-  actionDefendLabel.draw(graphics);  actionDefendButton.draw(graphics);
+  if(e.action == '0')
+  {
+    actionAttackButton.draw(graphics);  actionAttackLabel.draw(graphics);
+    actionMessageButton.draw(graphics); actionMessageLabel.draw(graphics);
+    actionDefendButton.draw(graphics);  actionDefendLabel.draw(graphics);
+  }
+  else if(e.action == 'a')
+  {
+    if(e.who == '0')
+      whoLabel.draw(graphics);
+    else
+    {
+      confirmButton.draw(graphics); confirmLabel.draw(graphics);
+      cancelButton.draw(graphics);  cancelLabel.draw(graphics);
+    }
+  }
+  else if(e.action == 'm')
+  {
+    if(e.what == '0')
+    {
+      whatLabel.draw(graphics);
+      whatAttackButton.draw(graphics); whatAttackLabel.draw(graphics);
+      whatDefendButton.draw(graphics); whatDefendLabel.draw(graphics);
+    }
+    else if(e.what == 'a')
+    {
+      if(e.who == '0')
+        whoLabel.draw(graphics);
+      else
+      {
+        if(e.when == '0')
+          whenLabel.draw(graphics);
+        else
+        {
+          if(e.where == '0')
+            whereLabel.draw(graphics);
+          else
+          {
+            confirmButton.draw(graphics); confirmLabel.draw(graphics);
+            cancelButton.draw(graphics);  cancelLabel.draw(graphics);
+          }
+        }
+      }
+    }
+    else if(e.what == 'd')
+    {
+      if(e.when == '0')
+        whenLabel.draw(graphics);
+      else
+      {
+        if(e.where == '0')
+          whereLabel.draw(graphics);
+        else
+        {
+          confirmButton.draw(graphics); confirmLabel.draw(graphics);
+          cancelButton.draw(graphics);  cancelLabel.draw(graphics);
+        }
+      }
+    }
+  }
+  else if(e.action == 'd')
+  {
+    confirmButton.draw(graphics); confirmLabel.draw(graphics);
+    cancelButton.draw(graphics);  cancelLabel.draw(graphics);
+  }
 }
 
 void PlayScene::leave()
