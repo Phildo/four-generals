@@ -5,14 +5,19 @@ class Messenger
 {
   private:
   public:
-    char cardinal_from; //cardinal_to derived as opposite from
-    char cardinal_at;
+    //location
+    char from;
+    char at;
+    char to;
 
-    char message_instruction; //'a'ttack, 'd'efend
-    char message_day; //smtwhfa
-    char message_cardinal;
+    char what;  //'a' = attack, 'd' = defend, 's' = sabotage
+    char who;   //cardinal (about whom the contents of the message apply)
+    char when;  //'s|m|t|w|h|f|a'
+    char where; //cardinal (through which route messenger will take)
 
     Messenger();
+    Messenger(char fro, char a, char t, char wat, char wo, char wen, char were);
+
     ~Messenger();
 };
 

@@ -1,17 +1,18 @@
 #include "messenger.h"
 
+#include <cstring> //memset for simple initialization
+
 Messenger::Messenger()
 {
-  cardinal_from = '0';
-  cardinal_at = '0';
+  memset(this, '0', sizeof(Messenger));
+}
 
-  message_instruction = '0';
-  message_day = '0';
-  message_cardinal = '0';
+Messenger::Messenger(char fro, char a, char t, char wat, char wo, char wen, char were)
+: from(fro), at(a), to(t), what(wat), who(wo), when(wen), where(were)
+{
 }
 
 Messenger::~Messenger()
 {
-
 }
 

@@ -29,11 +29,11 @@ namespace Network
     /* 2 */ char cardinal;   //IDENTIFIER 'n|e|s|w'
     /* 3 */ char action;     //'a' = attack, 'd' = defend, 'm' = messenger, 's' = sabotage
     /* 4 */ char to;         //cardinal (for whom the message is intended)
-    /* 5 */ char what;       //'a' = attack, 'd' = defend, 's' = sabotage
-    /* 6 */ char who;        //cardinal (about whom the contents of the message apply)
-    /* 7 */ char when;       //'s|m|t|w|h|f|a'
-    /* 8 */ char where;      //cardinal (through which route messenger will take)
-    /* 9 */ char type;
+    /* 5 */ char what;       //corresponds to messenger members
+    /* 6 */ char who;        //corresponds to messenger members
+    /* 7 */ char when;       //corresponds to messenger members
+    /* 8 */ char where;      //corresponds to messenger members
+    /* 9 */ char type;       //listed above
     /* 9+FG_EVT_MAX_DEC_LEN */ char id_c[FG_EVT_MAX_DEC_LEN]; //string val of id_i (ie "2415")
     /* 9+FG_EVT_MAX_DEC_LEN+1 */ char null; //not const because then we can't use default copy
     int id_i;
