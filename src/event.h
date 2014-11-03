@@ -22,6 +22,8 @@ namespace Network
   static const char e_type_begin_play = 'i';
   static const char e_type_commit_action = 'j';
 
+  static const char e_type_set_day = 'k';
+
   struct Event //all members chars for quick/simple serializability
   {
     //'0' = unassigned / N/A

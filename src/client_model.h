@@ -23,8 +23,10 @@ class ClientModel
 
     General *emptyGeneral();
 
+    char dayForDays(int d);
+
     bool playing; //dumb
-    int day;
+    char day;
 
     ClientModel(Network::Client *c);
     ~ClientModel();

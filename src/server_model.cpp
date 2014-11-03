@@ -10,6 +10,7 @@
 ServerModel::ServerModel(Network::Server *s)
 {
   server = s;
+  days = 0;
 }
 
 ServerModel::~ServerModel()
@@ -63,10 +64,24 @@ General *ServerModel::emptyGeneral()
   return conGeneral('0');
 }
 
+char ServerModel::dayForDays(int d)
+{
+  int i = d%7;
+  if(i == 0) return 's';
+  if(i == 1) return 'm';
+  if(i == 2) return 't';
+  if(i == 3) return 'w';
+  if(i == 4) return 'h';
+  if(i == 5) return 'f';
+  if(i == 6) return 'a';
+  return '0'; //impossible
+}
+
 void ServerModel::tick()
 {
   Network::Event *e;
   Network::Event *a;
+  Network::Event event;
   while((e = server->getEvent()))
   {
     switch(e->type)
@@ -108,6 +123,7 @@ void ServerModel::tick()
            cardGeneral('w'))
         {
           playing = true;
+          days = 0;
           server->broadcast(*e);
         }
         break;
@@ -122,12 +138,23 @@ void ServerModel::tick()
            cardAction('w')->type == Network::e_type_commit_action)
         {
           //go to next day
+
+          //process events
+
           cardAction('n')->zero();
           cardAction('e')->zero();
           cardAction('s')->zero();
           cardAction('w')->zero();
+
+          days++;
+
+          event.zero();
+          event.type = Network::e_type_set_day;
+          event.when = dayForDays(days);
+          server->broadcast(event);
         }
         break;
+      case Network::e_type_set_day: break; //only received by client
       default:
         break;
     }

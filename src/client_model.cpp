@@ -10,6 +10,7 @@
 ClientModel::ClientModel(Network::Client *c)
 {
   client = c;
+  day = dayForDays(0);
 }
 
 ClientModel::~ClientModel()
@@ -63,6 +64,19 @@ General *ClientModel::emptyGeneral()
   return conGeneral('0');
 }
 
+char ClientModel::dayForDays(int d)
+{
+  int i = d%7;
+  if(i == 0) return 's';
+  if(i == 1) return 'm';
+  if(i == 2) return 't';
+  if(i == 3) return 'w';
+  if(i == 4) return 'h';
+  if(i == 5) return 'f';
+  if(i == 6) return 'a';
+  return '0'; //impossible
+}
+
 void ClientModel::tick()
 {
   Network::Event *e;
@@ -90,11 +104,21 @@ void ClientModel::tick()
         break;
       case Network::e_type_begin_play:
         playing = true;
-        day = 's';
+        day = dayForDays(0);
         break;
       case Network::e_type_commit_action:
         a = conAction(e->connection);
         *a = *e; //lol
+        break;
+      case Network::e_type_set_day:
+
+        cardAction('n')->zero();
+        cardAction('e')->zero();
+        cardAction('s')->zero();
+        cardAction('w')->zero();
+
+        day = e->when;
+
         break;
       default:
         break;

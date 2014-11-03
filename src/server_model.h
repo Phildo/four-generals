@@ -23,8 +23,10 @@ class ServerModel
 
     General *emptyGeneral();
 
+    char dayForDays(int d);
+
     bool playing; //dumb
-    int day;
+    int days;
 
     ServerModel(Network::Server *s);
     ~ServerModel();
