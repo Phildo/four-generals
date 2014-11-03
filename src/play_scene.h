@@ -26,15 +26,26 @@ class PlayScene : public Scene
     UI::Label satLabel; UI::Box satBox;
 
     UI::Label nLabel; UI::Button nButton;
+    UI::Label eLabel; UI::Button eButton;
     UI::Label sLabel; UI::Button sButton;
     UI::Label wLabel; UI::Button wButton;
-    UI::Label eLabel; UI::Button eButton;
     UI::Box youBox;
 
     Network::Event e; //populates with tentative event (holds state for what to show on screen)
-    UI::Label attackLabel;  UI::Button attackButton;
-    UI::Label messageLabel; UI::Button messageButton;
-    UI::Label defendLabel;  UI::Button defendButton;
+
+    UI::Label actionAttackLabel;  UI::Button actionAttackButton;
+    UI::Label actionMessageLabel; UI::Button actionMessageButton;
+    UI::Label actionDefendLabel;  UI::Button actionDefendButton;
+
+    UI::Label whatLabel;  UI::Button whatAttackButton; UI::Button whatDefendButton;
+    UI::Label whoLabel;   UI::Button whoNButton; UI::Button whoEButton; UI::Button whoSButton; UI::Button whoWButton;
+    UI::Label whenLabel;  UI::Button whenSunButton; UI::Button whenMonButton; UI::Button whenTueButton; UI::Button whenWedButton; UI::Button whenThuButton;UI::Button whenFriButton;UI::Button whenSatButton;
+    UI::Label whereLabel; UI::Button whereNButton; UI::Button whereEButton; UI::Button whereSButton; UI::Button whereWButton;
+
+    UI::Label confirmLabel; UI::Button confirmButton;
+    UI::Label cancelLabel;  UI::Button cancelButton;
+
+    UI::Label debreifLabel;
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
