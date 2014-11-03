@@ -37,10 +37,10 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   beginGameLabel  = UI::Label( ww/2-100, wh/2+50, 20, "Begin Game!");
   beginGameButton = UI::Button(ww/2-100, wh/2+50, 200, 20);
 
-  nLabel = UI::Label(ww/2-10,      10, 20, "N");  nButton = UI::Button(ww/2-10,      10, 20, 20);
-  sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");  sButton = UI::Button(ww/2-10, wh  -30, 20, 20);
-  wLabel = UI::Label(     10, wh/2-10, 20, "W");  wButton = UI::Button(     10, wh/2-10, 20, 20);
-  eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");  eButton = UI::Button(ww  -30, wh/2-10, 20, 20);
+  nLabel = UI::Label(ww/2-10,      10, 20, "N");  nButton = UI::Button(ww/2-10,      10, 20, 20); nBox = UI::Box(ww/2-10-5,      10-5, 30, 30);
+  eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");  eButton = UI::Button(ww  -30, wh/2-10, 20, 20); eBox = UI::Box(ww  -30-5, wh/2-10-5, 30, 30);
+  sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");  sButton = UI::Button(ww/2-10, wh  -30, 20, 20); sBox = UI::Box(ww/2-10-5, wh  -30-5, 30, 30);
+  wLabel = UI::Label(     10, wh/2-10, 20, "W");  wButton = UI::Button(     10, wh/2-10, 20, 20); wBox = UI::Box(     10-5, wh/2-10-5, 30, 30);
 
   SCENE_CHANGE_HACK = 0;
 }
@@ -112,10 +112,30 @@ void RoomScene::draw()
   ipLabel.draw(graphics);
   portLabel.draw(graphics);
 
-  if(c_model->cardGeneral('n')) nLabel.draw(graphics);
-  if(c_model->cardGeneral('s')) sLabel.draw(graphics);
-  if(c_model->cardGeneral('w')) wLabel.draw(graphics);
-  if(c_model->cardGeneral('e')) eLabel.draw(graphics);
+  if(c_model->cardGeneral('n'))
+  {
+    nLabel.draw(graphics);
+    if(c_model->cardGeneral('n')->connection == client->connection)
+      nBox.draw(graphics);
+  }
+  if(c_model->cardGeneral('e'))
+  {
+    eLabel.draw(graphics);
+    if(c_model->cardGeneral('e')->connection == client->connection)
+      eBox.draw(graphics);
+  }
+  if(c_model->cardGeneral('s'))
+  {
+    sLabel.draw(graphics);
+    if(c_model->cardGeneral('s')->connection == client->connection)
+      sBox.draw(graphics);
+  }
+  if(c_model->cardGeneral('w'))
+  {
+    wLabel.draw(graphics);
+    if(c_model->cardGeneral('w')->connection == client->connection)
+      wBox.draw(graphics);
+  }
 
   nButton.draw(graphics);
   sButton.draw(graphics);
