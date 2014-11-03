@@ -20,8 +20,8 @@ Event::Event(char *c) //just memcopy that sucka
   null = '\0';
   id_i = atoi(id_c);
 }
-Event::Event(char con, char card, char act, char t, char wo, char wen, char were, char ty, int id)
-: connection(con), cardinal(card), action(act), to(t), who(wo), when(wen), where(were), type(ty), id_c("00000"), id_i(id)
+Event::Event(char con, char card, char act, char t, char wat, char wo, char wen, char were, char ty, int id)
+: connection(con), cardinal(card), action(act), to(t), what(wat), who(wo), when(wen), where(were), type(ty), id_c("00000"), id_i(id)
 {
   id_c[5] = '0'; /*would be '\0' fron initialiazer*/
   null = '\0';
@@ -60,7 +60,7 @@ char *Event::human()
     case e_type_commit_action: sprintf(event_type_buff,"commit");    break;
   }
 
-  sprintf(human_buff,"con:%c card:%c act:%c to:%c who:%c when:%c where:%c id:%d type:%s", connection, cardinal, action, to, who, when, where, id_i, event_type_buff);
+  sprintf(human_buff,"con:%c card:%c act:%c to:%c what:%c who:%c when:%c where:%c id:%d type:%s", connection, cardinal, action, to, what, who, when, where, id_i, event_type_buff);
   return &human_buff[0];
 }
 #endif
