@@ -73,6 +73,8 @@ void PlayScene::enter()
   wLabel = UI::Label(xs[(card+3)%4],ys[(card+3)%4], 20, "w"); whoWButton = UI::Button(xs[(card+3)%4],ys[(card+3)%4], 20, 20); whereWButton = UI::Button(xs[(card+3)%4],ys[(card+3)%4], 20, 20);
 
   youBox = UI::Box(ww/2-10, wh-80, 20, 20);
+
+  e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;
 }
 
 void PlayScene::touch(In &in)
@@ -102,7 +104,7 @@ void PlayScene::touch(In &in)
     {
       //seek confirmation
       if(confirmButton.query(in)) client->broadcast(e);
-      if(cancelButton.query(in)) e.zero();
+      if(cancelButton.query(in)) { e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action; }
     }
   }
   else if(e.action == 'm')
@@ -150,7 +152,7 @@ void PlayScene::touch(In &in)
           {
             //seek confirmation
             if(confirmButton.query(in)) client->broadcast(e);
-            if(cancelButton.query(in)) e.zero();
+            if(cancelButton.query(in)) { e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;  }
           }
         }
       }
@@ -182,7 +184,7 @@ void PlayScene::touch(In &in)
         {
           //seek confirmation
           if(confirmButton.query(in)) client->broadcast(e);
-          if(cancelButton.query(in)) e.zero();
+          if(cancelButton.query(in)) { e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;   }
         }
       }
     }
@@ -191,7 +193,7 @@ void PlayScene::touch(In &in)
   {
       //seek confirmation
       if(confirmButton.query(in)) client->broadcast(e);
-      if(cancelButton.query(in)) e.zero();
+      if(cancelButton.query(in)) { e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;    }
   }
 }
 

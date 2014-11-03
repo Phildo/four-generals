@@ -3,6 +3,7 @@
 
 #include "general.h"
 #include "network.h"
+#include "event.h"
 
 class ServerModel
 {
@@ -10,8 +11,16 @@ class ServerModel
     Network::Server *server;
   public :
     General generals[4];
+    Network::Event actions[4]; //nesw
+
+    int cardToIndex(char card);
     General *cardGeneral(char card);
+    Network::Event *cardAction(char card);
+
+    int conToIndex(char con);
     General *conGeneral(char con);
+    Network::Event *conAction(char con);
+
     General *emptyGeneral();
 
     bool playing; //dumb

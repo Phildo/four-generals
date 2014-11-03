@@ -1,7 +1,6 @@
 #include "server_model.h"
 
 #include "server.h"
-#include "event.h"
 
 #include "defines.h"
 #include "logger.h"
@@ -17,17 +16,45 @@ ServerModel::~ServerModel()
 {
 }
 
-General *ServerModel::cardGeneral(char card)
+int ServerModel::cardToIndex(char card)
 {
   for(int i = 0; i < 4; i++)
-    if(generals[i].cardinal == card) return &generals[i];
+    if(generals[i].cardinal == card) return i;
+  return -1;
+}
+
+General *ServerModel::cardGeneral(char card)
+{
+  int i = cardToIndex(card);
+  if(i != -1) return &generals[i];
   return 0;
+}
+
+Network::Event *ServerModel::cardAction(char card)
+{
+  int i = cardToIndex(card);
+  if(i != -1) return &actions[i];
+  return 0;
+}
+
+int ServerModel::conToIndex(char con)
+{
+  for(int i = 0; i < 4; i++)
+    if(generals[i].connection == con) return i;
+  return -1;
 }
 
 General *ServerModel::conGeneral(char con)
 {
-  for(int i = 0; i < 4; i++)
-    if(generals[i].connection == con) return &generals[i];
+  int i = conToIndex(con);
+  if(i != -1) return &generals[i];
+  return 0;
+}
+
+Network::Event *ServerModel::conAction(char con)
+{
+  int i = conToIndex(con);
+  if(i != -1) return &actions[i];
   return 0;
 }
 
@@ -39,6 +66,7 @@ General *ServerModel::emptyGeneral()
 void ServerModel::tick()
 {
   Network::Event *e;
+  Network::Event *a;
   while((e = server->getEvent()))
   {
     switch(e->type)
@@ -77,11 +105,27 @@ void ServerModel::tick()
         if(cardGeneral('n') &&
            cardGeneral('e') &&
            cardGeneral('s') &&
-           cardGeneral('w')
-          )
+           cardGeneral('w'))
         {
           playing = true;
           server->broadcast(*e);
+        }
+        break;
+      case Network::e_type_commit_action:
+        a = conAction(e->connection);
+        *a = *e; //lol
+        server->broadcast(*e);
+
+        if(cardAction('n')->type == Network::e_type_commit_action &&
+           cardAction('e')->type == Network::e_type_commit_action &&
+           cardAction('s')->type == Network::e_type_commit_action &&
+           cardAction('w')->type == Network::e_type_commit_action)
+        {
+          //go to next day
+          cardAction('n')->zero();
+          cardAction('e')->zero();
+          cardAction('s')->zero();
+          cardAction('w')->zero();
         }
         break;
       default:

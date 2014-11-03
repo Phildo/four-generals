@@ -1,7 +1,6 @@
 #include "client_model.h"
 
 #include "client.h"
-#include "event.h"
 
 #include "defines.h"
 #include "logger.h"
@@ -17,17 +16,45 @@ ClientModel::~ClientModel()
 {
 }
 
-General *ClientModel::cardGeneral(char card)
+int ClientModel::cardToIndex(char card)
 {
   for(int i = 0; i < 4; i++)
-    if(generals[i].cardinal == card) return &generals[i];
+    if(generals[i].cardinal == card) return i;
+  return -1;
+}
+
+General *ClientModel::cardGeneral(char card)
+{
+  int i = cardToIndex(card);
+  if(i != -1) return &generals[i];
   return 0;
+}
+
+Network::Event *ClientModel::cardAction(char card)
+{
+  int i = cardToIndex(card);
+  if(i != -1) return &actions[i];
+  return 0;
+}
+
+int ClientModel::conToIndex(char con)
+{
+  for(int i = 0; i < 4; i++)
+    if(generals[i].connection == con) return i;
+  return -1;
 }
 
 General *ClientModel::conGeneral(char con)
 {
-  for(int i = 0; i < 4; i++)
-    if(generals[i].connection == con) return &generals[i];
+  int i = conToIndex(con);
+  if(i != -1) return &generals[i];
+  return 0;
+}
+
+Network::Event *ClientModel::conAction(char con)
+{
+  int i = conToIndex(con);
+  if(i != -1) return &actions[i];
   return 0;
 }
 
@@ -39,6 +66,7 @@ General *ClientModel::emptyGeneral()
 void ClientModel::tick()
 {
   Network::Event *e;
+  Network::Event *a;
   while((e = client->getEvent()))
   {
     switch(e->type)
@@ -64,10 +92,13 @@ void ClientModel::tick()
         playing = true;
         day = 's';
         break;
+      case Network::e_type_commit_action:
+        a = conAction(e->connection);
+        *a = *e; //lol
+        break;
       default:
         break;
     }
   }
-
 }
 
