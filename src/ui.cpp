@@ -6,8 +6,9 @@
 
 using namespace UI;
 
-#include "button.cpp"
+#include "box.cpp"
 #include "label.cpp"
+#include "button.cpp"
 #include "keyboard.cpp"
 #include "textbox.cpp"
 

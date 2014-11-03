@@ -1,6 +1,6 @@
 struct Button
 {
-  SDL_Rect rect;
+  Box box;
   bool query(const In &in);
   void draw(Graphics *g);
   Button();
