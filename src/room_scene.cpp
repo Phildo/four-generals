@@ -55,10 +55,30 @@ void RoomScene::enter()
 void RoomScene::touch(In &in)
 {
   if(backButton.query(in)) { }
-  if(nButton.query(in)) { client->broadcast('n', Network::e_type_assign_card); }
-  if(sButton.query(in)) { client->broadcast('s', Network::e_type_assign_card); }
-  if(wButton.query(in)) { client->broadcast('w', Network::e_type_assign_card); }
-  if(eButton.query(in)) { client->broadcast('e', Network::e_type_assign_card); }
+  if(nButton.query(in))
+  {
+    General *g = c_model->cardGeneral('n');
+    if(g && g->connection == client->connection) client->broadcast('n', Network::e_type_revoke_card);
+    else                                         client->broadcast('n', Network::e_type_assign_card);
+  }
+  if(eButton.query(in))
+  {
+    General *g = c_model->cardGeneral('e');
+    if(g && g->connection == client->connection) client->broadcast('e', Network::e_type_revoke_card);
+    else                                         client->broadcast('e', Network::e_type_assign_card);
+  }
+  if(sButton.query(in))
+  {
+    General *g = c_model->cardGeneral('s');
+    if(g && g->connection == client->connection) client->broadcast('s', Network::e_type_revoke_card);
+    else                                         client->broadcast('s', Network::e_type_assign_card);
+  }
+  if(wButton.query(in))
+  {
+    General *g = c_model->cardGeneral('w');
+    if(g && g->connection == client->connection) client->broadcast('w', Network::e_type_revoke_card);
+    else                                         client->broadcast('w', Network::e_type_assign_card);
+  }
   if(leaveSessButton.query(in)) { }
   if(beginGameButton.query(in))
   {

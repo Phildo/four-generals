@@ -41,7 +41,6 @@ void ServerModel::tick()
   Network::Event *e;
   while((e = server->getEvent()))
   {
-    fg_log("ServerModel  :         %s",e->human());
     switch(e->type)
     {
       case Network::e_type_ack: break; //should never reach model (handled entirely by server)
