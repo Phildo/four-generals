@@ -127,7 +127,11 @@ void * Server::fork()
         tmp_con_p = con_ptrs[i];
         con_ptrs[i] = con_ptrs[n_cons];
         con_ptrs[n_cons] = tmp_con_p;
-        recv_q.enqueue(Event(tmp_con_p->connection, '0', e_type_leave_con, 0)); //simulate receipt from now-nonexistant con
+
+        Event e;
+        e.connection = tmp_con_p->connection;
+        e.type = e_type_leave_con;
+        recv_q.enqueue(e); //simulate receipt from now-nonexistant con
 
         i--;
       }
@@ -147,14 +151,18 @@ void Server::dumpHistory(Connection *c)
 {
   for(int i = 0; i < history_i; i++)
   {
-    fg_log("Server: hist_dump(%d) %s",c->connection,history[i].serialize());
+    fg_log("Server:   hist_dump(%d) %s",c->connection,history[i].human());
     c->broadcast(history[i].connection, history[i].cardinal, history[i].type);
   }
 }
 
 void Server::broadcast(char con, char card, char t)
 {
-  history[history_i++] = Event(con, card, t, 0); //id doesn't matter- gets assigned by con
+  Event e;
+  e.connection = con;
+  e.cardinal = card;
+  e.type = t;
+  history[history_i++] = e; //id doesn't matter- gets assigned by con
   for(int i = 0; i < n_cons; i++)
   {
     fg_log("Server: broadcasting:");

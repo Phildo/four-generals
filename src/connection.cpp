@@ -68,7 +68,7 @@ void * Connection::fork()
         Event e(buff+(mess_num*e_ser_len));
         if(e.type == e_type_ack) ackReceived(e);
         else recv_q.enqueue(e);
-        fg_log("Connection(%c): rec(%d) %s",connection,len,buff+(mess_num*e_ser_len));
+        fg_log("Connection(%c): rec(%d) %s",connection,len,e.human());
         len-= e_ser_len;
         mess_num++;
       }
@@ -78,7 +78,7 @@ void * Connection::fork()
     {
       len = send(sock_fd, send_evt->serialize(), e_ser_len, 0);
       if(len <= 0) { fg_log("Connection: abort connection (failed write)"); keep_connection = false; }
-      fg_log("Connection(%c): sen(%d) %s",connection,len,send_evt->serialize());
+      fg_log("Connection(%c): sen(%d) %s",connection,len,send_evt->human());
       len = 0;
     }
   }
@@ -93,7 +93,11 @@ void * Connection::fork()
 
 void Connection::broadcast(char con, char card, char t)
 {
-  Event e(con, card, t, nextEventId());
+  Event e;
+  e.connection = con;
+  e.cardinal = card;
+  e.type = t;
+  e.id_i = nextEventId();
   send_q.enqueue(e);
 }
 

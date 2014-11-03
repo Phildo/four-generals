@@ -7,5 +7,7 @@
 #define FG_HALF_SIZE
 #endif
 
+#define FG_DEBUG
+
 #endif
 

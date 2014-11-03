@@ -4,34 +4,32 @@
 #include "logger.h"
 
 #include "stdlib.h"
+#include <cstring> //memcopy for simple serialization, memset for simple initialization
 
 using namespace Network;
 
-Event::Event()               : null('\0') {};
-Event::Event(const Event &e) : null('\0')
+Event::Event() //set to pseudo 'null'
 {
-  connection = e.connection;
-  cardinal = e.cardinal;
-  type = e.type;
-  for(int i = 0; i < FG_EVT_MAX_DEC_LEN; i++)
-    id_c[i] = e.id_c[i];
-  id_i = e.id_i;
+  memset(this, '0', sizeof(Event));
+  null = '\0';
+  id_i = 0;
+};
+Event::Event(char *c) //just memcopy that sucka
+{
+  memcpy(this, (void *)c, sizeof(Event));
+  null = '\0';
+  id_i = atoi(id_c);
 }
-Event & Event::operator=(const Event &e)
+Event::Event(char con, char card, char act, char t, char wo, char wen, char were, char ty, int id)
+: connection(con), cardinal(card), action(act), to(t), who(wo), when(wen), where(were), type(ty), id_c("00000"), id_i(id)
 {
-  connection = e.connection;
-  cardinal = e.cardinal;
-  type = e.type;
-  for(int i = 0; i < FG_EVT_MAX_DEC_LEN; i++)
-    id_c[i] = e.id_c[i];
-  id_i = e.id_i;
-  return *this;
-} //no need to set null
-Event::Event(char con, char card, char t, int id) : connection(con), cardinal(card), type(t), id_c("00000"), null('\0'), id_i(id) { id_c[5] = '0'; /*would be '\0' fron initialiazer*/ }
+  id_c[5] = '0'; /*would be '\0' fron initialiazer*/
+  null = '\0';
+}
 
 char *Event::serialize()
 {
-  //fill id_c with 6 digit char rep of id (ie '000012')
+  //fill id_c with FG_EVT_MAX_DEC_LEN digit char rep of id (ie '000012')
   int tmp_left = id_i;
   int tmp_this = 0;
   for(int i = FG_EVT_MAX_DEC_LEN-1; i > 0; i--)
@@ -44,13 +42,26 @@ char *Event::serialize()
 
   return (char *)&connection;
 }
-Event::Event(char *c) : null('\0')
+
+#ifdef FG_DEBUG
+char *Event::human()
 {
-  connection = c[0];
-  cardinal = c[1];
-  type = c[2];
-  for(int i = 0; i < FG_EVT_MAX_DEC_LEN; i++)
-    id_c[i] = c[3+i];
-  id_i = atoi(id_c);
+  switch(type)
+  {
+    case e_type_ack:           sprintf(event_type_buff,"ack");       break;
+    case e_type_assign_con:    sprintf(event_type_buff,"ass_con");   break;
+    case e_type_revoke_con:    sprintf(event_type_buff,"rev_con");   break;
+    case e_type_refuse_con:    sprintf(event_type_buff,"ref_con");   break;
+    case e_type_join_con:      sprintf(event_type_buff,"join_con");  break;
+    case e_type_leave_con:     sprintf(event_type_buff,"leave_con"); break;
+    case e_type_assign_card:   sprintf(event_type_buff,"ass_card");  break;
+    case e_type_revoke_card:   sprintf(event_type_buff,"rev_card");  break;
+    case e_type_begin_play:    sprintf(event_type_buff,"begin");     break;
+    case e_type_commit_action: sprintf(event_type_buff,"commit");    break;
+  }
+
+  sprintf(human_buff,"con:%c card:%c act:%c to:%c who:%c when:%c where:%c id:%d type:%s", connection, cardinal, action, to, who, when, where, id_i, event_type_buff);
+  return &human_buff[0];
 }
+#endif
 

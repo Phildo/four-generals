@@ -5,7 +5,7 @@
 
 namespace Network
 {
-  static const int e_ser_len = 10;
+  static const int e_ser_len = 8+FG_EVT_MAX_DEC_LEN+1; //oh god this is a terrible system
 
   static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)
 
@@ -20,33 +20,40 @@ namespace Network
   static const char e_type_revoke_card = 'h';
 
   static const char e_type_begin_play = 'i';
+  static const char e_type_commit_action = 'j';
 
   struct Event //all members chars for quick/simple serializability
   {
-    char connection;
-    char cardinal;
-    char type;
-    char id_c[FG_EVT_MAX_DEC_LEN]; //string val of id_i (ie "2415")
-    const char null;
+    //'0' = unassigned / N/A
+    /* 1 */ char connection; //IDENTIFIER '1'-'5' //'5' = invalid
+    /* 2 */ char cardinal;   //IDENTIFIER 'n|e|s|w'
+    /* 3 */ char action;     //'a' = attack, 'd' = defend, 'm' = messenger, 's' = sabotage
+    /* 4 */ char to;         //cardinal (for whom the message is intended)
+    /* 5 */ char who;        //cardinal (about whom the contents of the message apply)
+    /* 6 */ char when;       //'s|m|t|w|h|f|a'
+    /* 7 */ char where;      //cardinal (through which route messenger will take)
+    /* 8 */ char type;
+    /* 8+FG_EVT_MAX_DEC_LEN */ char id_c[FG_EVT_MAX_DEC_LEN]; //string val of id_i (ie "2415")
+    /* 8+FG_EVT_MAX_DEC_LEN+1 */ char null; //not const because then we can't use default copy
     int id_i;
 
-    //default constructor
     Event();
-
-    //copy constructor
-    Event(const Event &e);
-    Event &operator=(const Event &e);
+    Event(char con, char card, char act, char t, char wo, char wen, char were, char ty, int id);
+    Event(char *c);
 
     //test for equality is a lie for comparing events to acks and retrieving from circ_q
     bool operator==(const Event& e){ return connection == e.connection; }
     bool operator!=(const Event& e){ return !operator==(e); }
 
-    //custom constructor
-    Event(char con, char card, char t, int id);
-
     //serializability
     char *serialize();
-    Event(char *c);
+
+    //ONLY USE WHEN DEBUGGING (adds massive memory overhead)
+    #ifdef FG_DEBUG //should cause errors when disabling debug
+    char *human();
+    char human_buff[256];
+    char event_type_buff[256];
+    #endif
   };
 }
 

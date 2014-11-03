@@ -41,7 +41,7 @@ void ClientModel::tick()
   Network::Event *e;
   while((e = client->getEvent()))
   {
-    fg_log("ClientModel: %s",e->serialize());
+    fg_log("ClientModel  :         %s",e->human());
     switch(e->type)
     {
       case Network::e_type_ack: break;        //should never reach model (handled entirely by client)
