@@ -62,6 +62,7 @@ void ClientModel::tick()
         break;
       case Network::e_type_begin_play:
         playing = true;
+        day = 's';
         break;
       default:
         break;

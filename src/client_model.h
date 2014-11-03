@@ -15,7 +15,7 @@ class ClientModel
     General *emptyGeneral();
 
     bool playing; //dumb
-    int day;
+    char day;
 
     ClientModel(Network::Client *c);
     ~ClientModel();

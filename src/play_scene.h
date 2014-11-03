@@ -4,6 +4,7 @@
 #include "scene.h"
 #include "ui.h"
 #include "network.h"
+#include "event.h"
 
 class Graphics;
 class ServerModel;
@@ -16,21 +17,24 @@ class PlayScene : public Scene
 
     UI::Button backButton;
 
-    UI::Label sunLabel;
-    UI::Label monLabel;
-    UI::Label tueLabel;
-    UI::Label wedLabel;
-    UI::Label thuLabel;
-    UI::Label friLabel;
-    UI::Label satLabel;
+    UI::Label sunLabel; UI::Box sunBox;
+    UI::Label monLabel; UI::Box monBox;
+    UI::Label tueLabel; UI::Box tueBox;
+    UI::Label wedLabel; UI::Box wedBox;
+    UI::Label thuLabel; UI::Box thuBox;
+    UI::Label friLabel; UI::Box friBox;
+    UI::Label satLabel; UI::Box satBox;
 
     UI::Label nLabel; UI::Button nButton;
     UI::Label sLabel; UI::Button sButton;
     UI::Label wLabel; UI::Button wButton;
     UI::Label eLabel; UI::Button eButton;
+    UI::Box youBox;
 
-    UI::Label attackLabel; UI::Button attackButton;
-    UI::Label defendLabel; UI::Button defendButton;
+    Network::Event e; //populates with tentative event (holds state for what to show on screen)
+    UI::Label attackLabel;  UI::Button attackButton;
+    UI::Label messageLabel; UI::Button messageButton;
+    UI::Label defendLabel;  UI::Button defendButton;
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game

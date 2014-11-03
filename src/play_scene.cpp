@@ -27,16 +27,19 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
 #define pos(x) (30+((ww-60)/7)*x)+((ww-60)/7)/2-10
 
-  sunLabel = UI::Label(pos(0), 10, 20, "Su");
-  monLabel = UI::Label(pos(1), 10, 20, "Mo");
-  tueLabel = UI::Label(pos(2), 10, 20, "Tu");
-  wedLabel = UI::Label(pos(3), 10, 20, "We");
-  thuLabel = UI::Label(pos(4), 10, 20, "Th");
-  friLabel = UI::Label(pos(5), 10, 20, "Fr");
-  satLabel = UI::Label(pos(6), 10, 20, "Sa");
+  sunLabel = UI::Label(pos(0), 10, 20, "Su"); sunBox = UI::Box(pos(0), 10, 20, 20);
+  monLabel = UI::Label(pos(1), 10, 20, "Mo"); monBox = UI::Box(pos(1), 10, 20, 20);
+  tueLabel = UI::Label(pos(2), 10, 20, "Tu"); tueBox = UI::Box(pos(2), 10, 20, 20);
+  wedLabel = UI::Label(pos(3), 10, 20, "We"); wedBox = UI::Box(pos(3), 10, 20, 20);
+  thuLabel = UI::Label(pos(4), 10, 20, "Th"); thuBox = UI::Box(pos(4), 10, 20, 20);
+  friLabel = UI::Label(pos(5), 10, 20, "Fr"); friBox = UI::Box(pos(5), 10, 20, 20);
+  satLabel = UI::Label(pos(6), 10, 20, "Sa"); satBox = UI::Box(pos(6), 10, 20, 20);
 
-  attackLabel = UI::Label(       20, wh-30, 20, "attack"); attackButton = UI::Button(       20, wh-30, 100, 20);
-  defendLabel = UI::Label(ww-100-20, wh-30, 20, "defend"); defendButton = UI::Button(ww-100-20, wh-30, 100, 20);
+  attackLabel  = UI::Label(         20, wh-30, 20, "attack");  attackButton  = UI::Button(       20, wh-30, 100, 20);
+  messageLabel = UI::Label(ww  -100-20, wh-30, 20, "message"); messageButton = UI::Button(ww-100-20, wh-30, 100, 20);
+  defendLabel  = UI::Label(ww/2-50    , wh-30, 20, "defend");  defendButton  = UI::Button(ww/2-50  , wh-30, 100, 20);
+
+  youBox = UI::Box(ww/2-10, wh-80, 20, 20);
 }
 
 void PlayScene::enter()
@@ -65,6 +68,7 @@ void PlayScene::touch(In &in)
 {
   if(backButton.query(in)) { }
   if(attackButton.query(in)) { }
+  if(messageButton.query(in)) { }
   if(defendButton.query(in)) { }
 }
 
@@ -79,21 +83,23 @@ void PlayScene::draw()
 {
   backButton.draw(graphics);
 
-  sunLabel.draw(graphics);
-  monLabel.draw(graphics);
-  tueLabel.draw(graphics);
-  wedLabel.draw(graphics);
-  thuLabel.draw(graphics);
-  friLabel.draw(graphics);
-  satLabel.draw(graphics);
+  sunLabel.draw(graphics); if(c_model->day == 's') sunBox.draw(graphics);
+  monLabel.draw(graphics); if(c_model->day == 'm') monBox.draw(graphics);
+  tueLabel.draw(graphics); if(c_model->day == 't') tueBox.draw(graphics);
+  wedLabel.draw(graphics); if(c_model->day == 'w') wedBox.draw(graphics);
+  thuLabel.draw(graphics); if(c_model->day == 'h') thuBox.draw(graphics);
+  friLabel.draw(graphics); if(c_model->day == 'f') friBox.draw(graphics);
+  satLabel.draw(graphics); if(c_model->day == 'a') satBox.draw(graphics);
 
   nLabel.draw(graphics);
   sLabel.draw(graphics);
   wLabel.draw(graphics);
   eLabel.draw(graphics);
+  youBox.draw(graphics);
 
-  attackLabel.draw(graphics); attackButton.draw(graphics);
-  defendLabel.draw(graphics); defendButton.draw(graphics);
+  attackLabel.draw(graphics);  attackButton.draw(graphics);
+  messageLabel.draw(graphics); messageButton.draw(graphics);
+  defendLabel.draw(graphics);  defendButton.draw(graphics);
 }
 
 void PlayScene::leave()
