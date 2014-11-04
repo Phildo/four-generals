@@ -3,13 +3,20 @@
 
 #include <SDL.h>
 #include <signal.h>
+#include <stdio.h>
 
 //So lame
-void signal_callback_handler(int signum){ fg_log("Caught signal SIGPIPE %d\n",signum); }
+void signal_callback_handler(int signum)
+{
+  fg_log("Caught signal %d\n",signum);
+  fflush(stdout);
+  exit(1);
+}
 
 int main(int argc, char* argv[])
 {
-  signal(SIGPIPE, signal_callback_handler); //necessary for network
+  signal(SIGPIPE, signal_callback_handler);
+  signal(SIGSEGV, signal_callback_handler);
 
   SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
 
