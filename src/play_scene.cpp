@@ -44,6 +44,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   whenLabel    = UI::Label(ww/2-50, wh/2-10, 20, "when");
   whereLabel   = UI::Label(ww/2-50, wh/2-10, 20, "where");
   debreifLabel = UI::Label(ww/2-50, wh/2-10, 20, "debreif");
+  waitingLabel = UI::Label(ww/2-50, wh/2-10, 20, "waiting");
 
   confirmLabel = UI::Label(         20, wh-30, 20, "confirm"); confirmButton = UI::Button(       20, wh-30, 100, 20);
   cancelLabel  = UI::Label(ww/2-50    , wh-30, 20, "cancel");  cancelButton  = UI::Button(ww/2-50  , wh-30, 100, 20);
@@ -74,7 +75,7 @@ void PlayScene::enter()
 
   youBox = UI::Box(ww/2-10, wh-80, 20, 20);
 
-  e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;
+  e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;
 }
 
 void PlayScene::touch(In &in)
@@ -83,39 +84,16 @@ void PlayScene::touch(In &in)
 
   //oh god terrible tree traversal touch propagation
 
-  //choose action
-  if(e.action == '0')
+  if(c_model->conAction(client->connection)->type == '0') //hasn't had confirmation of action
   {
-    if(actionAttackButton.query(in))  { e.action = 'a'; }
-    if(actionMessageButton.query(in)) { e.action = 'm'; }
-    if(actionDefendButton.query(in))  { e.action = 'd'; }
-  }
-  else if(e.action == 'a')
-  {
-    //choose who
-    if(e.who == '0')
+    //choose action
+    if(e.action == '0')
     {
-      if(whoNButton.query(in)) e.who = 'n';
-      if(whoEButton.query(in)) e.who = 'e';
-      if(whoSButton.query(in)) e.who = 's';
-      if(whoWButton.query(in)) e.who = 'w';
+      if(actionAttackButton.query(in))  { e.action = 'a'; }
+      if(actionMessageButton.query(in)) { e.action = 'm'; }
+      if(actionDefendButton.query(in))  { e.action = 'd'; }
     }
-    else
-    {
-      //seek confirmation
-      if(confirmButton.query(in)) client->broadcast(e);
-      if(cancelButton.query(in)) { e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action; }
-    }
-  }
-  else if(e.action == 'm')
-  {
-    //choose what
-    if(e.what == '0')
-    {
-      if(whatAttackButton.query(in)) e.what = 'a';
-      if(whatDefendButton.query(in)) e.what = 'd';
-    }
-    else if(e.what == 'a')
+    else if(e.action == 'a')
     {
       //choose who
       if(e.who == '0')
@@ -126,6 +104,63 @@ void PlayScene::touch(In &in)
         if(whoWButton.query(in)) e.who = 'w';
       }
       else
+      {
+        //seek confirmation
+        if(confirmButton.query(in)) client->broadcast(e);
+        if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action; }
+      }
+    }
+    else if(e.action == 'm')
+    {
+      //choose what
+      if(e.what == '0')
+      {
+        if(whatAttackButton.query(in)) e.what = 'a';
+        if(whatDefendButton.query(in)) e.what = 'd';
+      }
+      else if(e.what == 'a')
+      {
+        //choose who
+        if(e.who == '0')
+        {
+          if(whoNButton.query(in)) e.who = 'n';
+          if(whoEButton.query(in)) e.who = 'e';
+          if(whoSButton.query(in)) e.who = 's';
+          if(whoWButton.query(in)) e.who = 'w';
+        }
+        else
+        {
+          //choose when
+          if(e.when == '0')
+          {
+            if(whenSunButton.query(in)) e.when = 's';
+            if(whenMonButton.query(in)) e.when = 'm';
+            if(whenTueButton.query(in)) e.when = 't';
+            if(whenWedButton.query(in)) e.when = 'w';
+            if(whenThuButton.query(in)) e.when = 'h';
+            if(whenFriButton.query(in)) e.when = 'f';
+            if(whenSatButton.query(in)) e.when = 'a';
+          }
+          else
+          {
+            //choose where
+            if(e.where == '0')
+            {
+              if(whereNButton.query(in)) e.where = 'n';
+              if(whereEButton.query(in)) e.where = 'e';
+              if(whereSButton.query(in)) e.where = 's';
+              if(whereWButton.query(in)) e.where = 'w';
+            }
+            else
+            {
+              //seek confirmation
+              if(confirmButton.query(in)) client->broadcast(e);
+              if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;  }
+            }
+          }
+        }
+      }
+      else if(e.what == 'd')
       {
         //choose when
         if(e.when == '0')
@@ -152,48 +187,17 @@ void PlayScene::touch(In &in)
           {
             //seek confirmation
             if(confirmButton.query(in)) client->broadcast(e);
-            if(cancelButton.query(in)) { e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;  }
+            if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;   }
           }
         }
       }
     }
-    else if(e.what == 'd')
+    else if(e.action == 'd')
     {
-      //choose when
-      if(e.when == '0')
-      {
-        if(whenSunButton.query(in)) e.when = 's';
-        if(whenMonButton.query(in)) e.when = 'm';
-        if(whenTueButton.query(in)) e.when = 't';
-        if(whenWedButton.query(in)) e.when = 'w';
-        if(whenThuButton.query(in)) e.when = 'h';
-        if(whenFriButton.query(in)) e.when = 'f';
-        if(whenSatButton.query(in)) e.when = 'a';
-      }
-      else
-      {
-        //choose where
-        if(e.where == '0')
-        {
-          if(whereNButton.query(in)) e.where = 'n';
-          if(whereEButton.query(in)) e.where = 'e';
-          if(whereSButton.query(in)) e.where = 's';
-          if(whereWButton.query(in)) e.where = 'w';
-        }
-        else
-        {
-          //seek confirmation
-          if(confirmButton.query(in)) client->broadcast(e);
-          if(cancelButton.query(in)) { e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;   }
-        }
-      }
+        //seek confirmation
+        if(confirmButton.query(in)) client->broadcast(e);
+        if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;    }
     }
-  }
-  else if(e.action == 'd')
-  {
-      //seek confirmation
-      if(confirmButton.query(in)) client->broadcast(e);
-      if(cancelButton.query(in)) { e.zero(); e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;    }
   }
 }
 
@@ -222,35 +226,53 @@ void PlayScene::draw()
   eLabel.draw(graphics);
   youBox.draw(graphics);
 
-  if(e.action == '0')
+  if(c_model->conAction(client->connection)->type == '0') //hasn't had confirmation of action
   {
-    actionAttackButton.draw(graphics);  actionAttackLabel.draw(graphics);
-    actionMessageButton.draw(graphics); actionMessageLabel.draw(graphics);
-    actionDefendButton.draw(graphics);  actionDefendLabel.draw(graphics);
-  }
-  else if(e.action == 'a')
-  {
-    if(e.who == '0')
-      whoLabel.draw(graphics);
-    else
+    if(e.action == '0')
     {
-      confirmButton.draw(graphics); confirmLabel.draw(graphics);
-      cancelButton.draw(graphics);  cancelLabel.draw(graphics);
+      actionAttackButton.draw(graphics);  actionAttackLabel.draw(graphics);
+      actionMessageButton.draw(graphics); actionMessageLabel.draw(graphics);
+      actionDefendButton.draw(graphics);  actionDefendLabel.draw(graphics);
     }
-  }
-  else if(e.action == 'm')
-  {
-    if(e.what == '0')
-    {
-      whatLabel.draw(graphics);
-      whatAttackButton.draw(graphics); whatAttackLabel.draw(graphics);
-      whatDefendButton.draw(graphics); whatDefendLabel.draw(graphics);
-    }
-    else if(e.what == 'a')
+    else if(e.action == 'a')
     {
       if(e.who == '0')
         whoLabel.draw(graphics);
       else
+      {
+        confirmButton.draw(graphics); confirmLabel.draw(graphics);
+        cancelButton.draw(graphics);  cancelLabel.draw(graphics);
+      }
+    }
+    else if(e.action == 'm')
+    {
+      if(e.what == '0')
+      {
+        whatLabel.draw(graphics);
+        whatAttackButton.draw(graphics); whatAttackLabel.draw(graphics);
+        whatDefendButton.draw(graphics); whatDefendLabel.draw(graphics);
+      }
+      else if(e.what == 'a')
+      {
+        if(e.who == '0')
+          whoLabel.draw(graphics);
+        else
+        {
+          if(e.when == '0')
+            whenLabel.draw(graphics);
+          else
+          {
+            if(e.where == '0')
+              whereLabel.draw(graphics);
+            else
+            {
+              confirmButton.draw(graphics); confirmLabel.draw(graphics);
+              cancelButton.draw(graphics);  cancelLabel.draw(graphics);
+            }
+          }
+        }
+      }
+      else if(e.what == 'd')
       {
         if(e.when == '0')
           whenLabel.draw(graphics);
@@ -266,27 +288,14 @@ void PlayScene::draw()
         }
       }
     }
-    else if(e.what == 'd')
+    else if(e.action == 'd')
     {
-      if(e.when == '0')
-        whenLabel.draw(graphics);
-      else
-      {
-        if(e.where == '0')
-          whereLabel.draw(graphics);
-        else
-        {
-          confirmButton.draw(graphics); confirmLabel.draw(graphics);
-          cancelButton.draw(graphics);  cancelLabel.draw(graphics);
-        }
-      }
+      confirmButton.draw(graphics); confirmLabel.draw(graphics);
+      cancelButton.draw(graphics);  cancelLabel.draw(graphics);
     }
   }
-  else if(e.action == 'd')
-  {
-    confirmButton.draw(graphics); confirmLabel.draw(graphics);
-    cancelButton.draw(graphics);  cancelLabel.draw(graphics);
-  }
+  else
+    waitingLabel.draw(graphics);
 }
 
 void PlayScene::leave()

@@ -46,6 +46,7 @@ class PlayScene : public Scene
     UI::Label cancelLabel;  UI::Button cancelButton;
 
     UI::Label debreifLabel;
+    UI::Label waitingLabel;
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game

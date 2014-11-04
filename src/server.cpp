@@ -150,10 +150,7 @@ void * Server::fork()
 void Server::dumpHistory(Connection *c)
 {
   for(int i = 0; i < history_i; i++)
-  {
-    fg_log("Server:   hist_dump(%d) %s",c->connection,history[i].human());
     c->broadcast(history[i].connection, history[i].cardinal, history[i].type);
-  }
 }
 
 void Server::broadcast(char con, char card, char t)
@@ -164,20 +161,14 @@ void Server::broadcast(char con, char card, char t)
   e.type = t;
   history[history_i++] = e; //id doesn't matter- gets assigned by con
   for(int i = 0; i < n_cons; i++)
-  {
-    fg_log("Server: broadcasting:");
     con_ptrs[i]->broadcast(con, card, t);
-  }
 }
 
 void Server::broadcast(Event e)
 {
   history[history_i++] = e; //id doesn't matter- gets assigned by con
   for(int i = 0; i < n_cons; i++)
-  {
-    fg_log("Server: broadcasting:");
     con_ptrs[i]->broadcast(e);
-  }
 }
 
 void Server::disconnect()
