@@ -55,6 +55,7 @@ class PlayScene : public Scene
     ClientModel *c_model;
     ClientModel **c_model_ptr; //Pointers to the client model pointer 'owned' by game
 
+    char known_day;
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
     ~PlayScene();
