@@ -209,6 +209,7 @@ int PlayScene::tick()
   c_model->tick();
   if(known_day != c_model->day)
   {
+    e.zero();
     e.connection = client->connection;
     e.cardinal = c_model->conGeneral(client->connection)->cardinal;
     e.type = Network::e_type_commit_action;

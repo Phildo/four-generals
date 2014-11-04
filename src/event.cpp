@@ -63,6 +63,8 @@ char *Event::human()
     case e_type_revoke_card:   sprintf(event_type_buff,"rev_card");  break;
     case e_type_begin_play:    sprintf(event_type_buff,"begin");     break;
     case e_type_commit_action: sprintf(event_type_buff,"commit");    break;
+    case e_type_set_day:       sprintf(event_type_buff,"set_day");   break;
+    default:                   sprintf(event_type_buff,"NO HUMAN READABLE EVENT TYPE FOUND"); break;
   }
 
   sprintf(human_buff,"con:%c card:%c act:%c to:%c what:%c who:%c when:%c where:%c id:%d type:%s", connection, cardinal, action, to, what, who, when, where, id_i, event_type_buff);
