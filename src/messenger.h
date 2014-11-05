@@ -1,6 +1,8 @@
 #ifndef _FG_MESSENGER_H_
 #define _FG_MESSENGER_H_
 
+#include "event.h"
+
 class Messenger
 {
   private:
@@ -16,6 +18,7 @@ class Messenger
     char where; //cardinal (through which route messenger will take)
 
     Messenger();
+    Messenger(Network::Event e);
     Messenger(char fro, char a, char t, char wat, char wo, char wen, char were);
 
     ~Messenger();

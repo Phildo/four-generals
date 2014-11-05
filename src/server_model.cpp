@@ -24,6 +24,15 @@ int ServerModel::cardToIndex(char card)
   return -1;
 }
 
+char ServerModel::cardToPartner(char card)
+{
+  if(card == 'n') return 's';
+  if(card == 'e') return 'w';
+  if(card == 's') return 'n';
+  if(card == 'w') return 'e';
+  return '0';
+}
+
 General *ServerModel::cardGeneral(char card)
 {
   int i = cardToIndex(card);
@@ -82,6 +91,7 @@ void ServerModel::tick()
   Network::Event *e;
   Network::Event *a;
   Network::Event event;
+  Messenger m;
   while((e = server->getEvent()))
   {
     switch(e->type)
@@ -140,6 +150,43 @@ void ServerModel::tick()
           //go to next day
 
           //process events
+          for(int i = 0; i < 4; i++)
+          {
+            char c;
+            if(i == 0) c = 'n';
+            if(i == 1) c = 'e';
+            if(i == 2) c = 's';
+            if(i == 3) c = 'w';
+            a = cardAction(c);
+            if(a->action == 'a')
+            {
+              if(cardAction(a->who)->action != 'd' &&
+                 cardAction(cardToPartner(c))->action == 'a')
+              {
+                //win
+              }
+              else if(cardAction(a->who)->action == 'd' &&
+                      cardAction(cardToPartner(c))->action != 'a')
+              {
+                //lose
+              }
+            } else if(a->action == 'm')
+            {
+              m = Messenger(*e);
+              messengers.add(m);
+            }
+          }
+
+          //update messengers
+          for(int i = 0; i < messengers.length(); i++)
+          {
+            if(messengers[i].at == messengers[i].to) //last
+              ; //display message
+            if(messengers[i].at == messengers[i].where) //middle
+              messengers[i].at = messengers[i].to; //allow sabotage
+            if(messengers[i].at == messengers[i].from) //first
+              messengers[i].at = messengers[i].where;
+          }
 
           cardAction('n')->zero();
           cardAction('e')->zero();

@@ -17,7 +17,6 @@ class vArray
     T* content;
 
     void expand();
-    void RA();
   public:
     vArray()               : len(0), a_size(VAR_ARRAY_DEFAULT_SIZE), content(new T[a_size]) {}
     vArray(int start_size) : len(0), a_size(start_size),             content(new T[a_size]) {}

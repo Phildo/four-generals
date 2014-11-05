@@ -2,8 +2,10 @@
 #define _FG_SERVER_MODEL_H_
 
 #include "general.h"
+#include "messenger.h"
 #include "network.h"
 #include "event.h"
+#include "array.h"
 
 class ServerModel
 {
@@ -12,8 +14,10 @@ class ServerModel
   public :
     General generals[4];
     Network::Event actions[4]; //nesw
+    Array<Messenger,16> messengers;
 
     int cardToIndex(char card);
+    char cardToPartner(char card);
     General *cardGeneral(char card);
     Network::Event *cardAction(char card);
 
