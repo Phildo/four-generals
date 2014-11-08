@@ -7,7 +7,7 @@ Messenger::Messenger()
   memset(this, '0', sizeof(Messenger));
 }
 
-Messenger::Messenger(Network::Event e)
+Messenger::Messenger(Event e)
 : from(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), where(e.where)
 {
 }

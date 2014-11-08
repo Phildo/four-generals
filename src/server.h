@@ -34,7 +34,7 @@ namespace Network
       Connection cons[FG_MAX_CONNECTIONS];
       Connection *con_ptrs[FG_MAX_CONNECTIONS];
 
-      Event history[1024]; //don't know best way to do this...
+      Event history[FG_EVT_HIST_SIZE]; //don't know best way to do this...
       int history_i;
     public:
       Server();

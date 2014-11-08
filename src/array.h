@@ -1,5 +1,5 @@
 /*
-Array - constant length array, with known "fill". written by Phil Dougherty
+Array - 'Dynamically' sized array within statically sized space. written by Phil Dougherty
 ultra-naive implementation. use at own idiocy.
 */
 

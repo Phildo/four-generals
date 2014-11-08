@@ -18,7 +18,7 @@ class Messenger
     char where; //cardinal (through which route messenger will take)
 
     Messenger();
-    Messenger(Network::Event e);
+    Messenger(Event e);
     Messenger(char fro, char a, char t, char wat, char wo, char wen, char were);
 
     ~Messenger();

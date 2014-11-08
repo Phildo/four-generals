@@ -6,8 +6,6 @@
 #include "stdlib.h"
 #include <cstring> //memcopy for simple serialization, memset for simple initialization
 
-using namespace Network;
-
 Event::Event() //set to pseudo 'null'
 {
   zero();

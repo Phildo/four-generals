@@ -31,7 +31,7 @@ class PlayScene : public Scene
     UI::Label wLabel; UI::Button wButton;
     UI::Box youBox;
 
-    Network::Event e; //populates with tentative event (holds state for what to show on screen)
+    Event e; //populates with tentative event (holds state for what to show on screen)
 
     UI::Label actionAttackLabel;  UI::Button actionAttackButton;
     UI::Label actionMessageLabel; UI::Button actionMessageButton;

@@ -58,26 +58,26 @@ void RoomScene::touch(In &in)
   if(nButton.query(in))
   {
     General *g = c_model->cardGeneral('n');
-    if(g && g->connection == client->connection) client->broadcast('n', Network::e_type_revoke_card);
-    else                                         client->broadcast('n', Network::e_type_assign_card);
+    if(g && g->connection == client->connection) client->broadcast('n', e_type_revoke_card);
+    else                                         client->broadcast('n', e_type_assign_card);
   }
   if(eButton.query(in))
   {
     General *g = c_model->cardGeneral('e');
-    if(g && g->connection == client->connection) client->broadcast('e', Network::e_type_revoke_card);
-    else                                         client->broadcast('e', Network::e_type_assign_card);
+    if(g && g->connection == client->connection) client->broadcast('e', e_type_revoke_card);
+    else                                         client->broadcast('e', e_type_assign_card);
   }
   if(sButton.query(in))
   {
     General *g = c_model->cardGeneral('s');
-    if(g && g->connection == client->connection) client->broadcast('s', Network::e_type_revoke_card);
-    else                                         client->broadcast('s', Network::e_type_assign_card);
+    if(g && g->connection == client->connection) client->broadcast('s', e_type_revoke_card);
+    else                                         client->broadcast('s', e_type_assign_card);
   }
   if(wButton.query(in))
   {
     General *g = c_model->cardGeneral('w');
-    if(g && g->connection == client->connection) client->broadcast('w', Network::e_type_revoke_card);
-    else                                         client->broadcast('w', Network::e_type_assign_card);
+    if(g && g->connection == client->connection) client->broadcast('w', e_type_revoke_card);
+    else                                         client->broadcast('w', e_type_assign_card);
   }
   if(leaveSessButton.query(in)) { }
   if(beginGameButton.query(in))
@@ -88,7 +88,7 @@ void RoomScene::touch(In &in)
        c_model->cardGeneral('e')
         )
     {
-      client->broadcast(c_model->conGeneral(client->connection)->cardinal, Network::e_type_begin_play);
+      client->broadcast(c_model->conGeneral(client->connection)->cardinal, e_type_begin_play);
     }
   }
 }

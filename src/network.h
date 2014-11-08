@@ -27,7 +27,8 @@ extern "C"
 #define FG_MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
 #define FG_ACCEPT_Q_SIZE 5 //recommended (also, can't be more... I don't think...)
 #define FG_BUFF_SIZE 256
-#define FG_EVT_Q_SIZE 1024
+#define FG_EVT_Q_SIZE 16
+#define FG_EVT_HIST_SIZE 1024
 #define FG_EVT_MAX_DEC_LEN 6
 
 namespace Network

@@ -77,7 +77,7 @@ void PlayScene::enter()
 
   youBox = UI::Box(ww/2-10, wh-80, 20, 20);
 
-  e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;
+  e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = e_type_commit_action;
 }
 
 void PlayScene::touch(In &in)
@@ -109,7 +109,7 @@ void PlayScene::touch(In &in)
       {
         //seek confirmation
         if(confirmButton.query(in)) client->broadcast(e);
-        if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action; }
+        if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = e_type_commit_action; }
       }
     }
     else if(e.action == 'm')
@@ -157,7 +157,7 @@ void PlayScene::touch(In &in)
             {
               //seek confirmation
               if(confirmButton.query(in)) client->broadcast(e);
-              if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;  }
+              if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = e_type_commit_action;  }
             }
           }
         }
@@ -189,7 +189,7 @@ void PlayScene::touch(In &in)
           {
             //seek confirmation
             if(confirmButton.query(in)) client->broadcast(e);
-            if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;   }
+            if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = e_type_commit_action;   }
           }
         }
       }
@@ -198,7 +198,7 @@ void PlayScene::touch(In &in)
     {
         //seek confirmation
         if(confirmButton.query(in)) client->broadcast(e);
-        if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = Network::e_type_commit_action;    }
+        if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = e_type_commit_action;    }
     }
   }
 }
@@ -212,7 +212,7 @@ int PlayScene::tick()
     e.zero();
     e.connection = client->connection;
     e.cardinal = c_model->conGeneral(client->connection)->cardinal;
-    e.type = Network::e_type_commit_action;
+    e.type = e_type_commit_action;
     known_day = c_model->day;
   }
   return 0;
