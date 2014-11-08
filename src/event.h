@@ -1,6 +1,10 @@
 #ifndef _FG_EVENT_H_
 #define _FG_EVENT_H_
 
+#include "defines.h"
+
+#define FG_EVT_MAX_DEC_LEN 6
+
 static const int e_ser_len = 9+FG_EVT_MAX_DEC_LEN+1; //oh god this is a terrible system
 
 static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)

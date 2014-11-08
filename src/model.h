@@ -22,6 +22,9 @@ class Model
     Event actions[4]; //actions for this turn
     Array<Messenger,16> messengers;
 
+    char connection(int i);
+    int iconnection(char c);
+
     char conToCard(char con);
     char cardToCon(char card);
 

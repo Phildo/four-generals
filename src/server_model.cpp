@@ -30,21 +30,21 @@ void ServerModel::tick()
       case e_type_revoke_con: break; //server->client only
       case e_type_refuse_con: break; //server->client only
       case e_type_join_con:
-        model.iconnection(e->connection) = e->connection;
+        model.connections[model.iconnection(e->connection)] = e->connection;
         server->broadcast(*e); //alert others of joined player
         break;
       case e_type_leave_con:
-        model.iconnection(e->connection) = '0';
+        model.connections[model.iconnection(e->connection)] = '0';
         server->broadcast(*e); //alert others of joined player
         break;
       case e_type_assign_card:
-        model.generals(model.compass.icardinal(e->cardinal)).connection = e->connection;
-        model.generals(model.compass.icardinal(e->cardinal)).cardinal   = e->cardinal;
+        model.generals[model.compass.icardinal(e->cardinal)].connection = e->connection;
+        model.generals[model.compass.icardinal(e->cardinal)].cardinal   = e->cardinal;
         server->broadcast(*e);
         break;
       case e_type_revoke_card:
-        model.generals(model.compass.icardinal(e->cardinal)).connection = '0';
-        model.generals(model.compass.icardinal(e->cardinal)).cardinal   = '0';
+        model.generals[model.compass.icardinal(e->cardinal)].connection = '0';
+        model.generals[model.compass.icardinal(e->cardinal)].cardinal   = '0';
         server->broadcast(*e);
         break;
       case e_type_begin_play:

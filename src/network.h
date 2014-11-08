@@ -29,14 +29,12 @@ extern "C"
 #define FG_BUFF_SIZE 256
 #define FG_EVT_Q_SIZE 16
 #define FG_EVT_HIST_SIZE 1024
-#define FG_EVT_MAX_DEC_LEN 6
 
 namespace Network
 {
   class Server;
   class Connection;
   class Client;
-  struct Event;
 
   extern bool host_priv;
   String getIP();

@@ -17,22 +17,24 @@ Model::Model()
 char Model::conToCard(char con)
 {
   for(int i = 0; i < 4; i++)
-    if(generals[i].connection == con) return generals[i].card;
+    if(generals[i].connection == con) return generals[i].cardinal;
+  return '0';
 }
 
 char Model::cardToCon(char card)
 {
   for(int i = 0; i < 4; i++)
     if(generals[i].cardinal == card) return generals[i].connection;
+  return '0';
 }
 
-char Connection:connection(int i)
+char Model::connection(int i)
 {
   if(i > 3 || i < 0) return '0';
-  return connection[i];
+  return connections[i];
 }
 
-int Connection:iconnection(char c)
+int Model::iconnection(char c)
 {
   switch(c)
   {

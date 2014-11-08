@@ -12,13 +12,13 @@ Week::Week()
   days[7] = '0';
 }
 
-char Week:day(int i)
+char Week::day(int i)
 {
   if(i > 6 || i < 0) return '0';
   return days[i];
 }
 
-int Week:iday(char c)
+int Week::iday(char c)
 {
   switch(c)
   {
@@ -33,7 +33,7 @@ int Week:iday(char c)
   return 7;
 }
 
-char Week:nextday(char c)
+char Week::nextday(char c)
 {
   int i = iday(c); if(i == 7) return '0';
   return day((i+1)%7);

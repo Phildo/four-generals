@@ -10,8 +10,16 @@ class ClientModel
   private :
     Network::Client *client;
   public :
+    Model model;
+    char connection;
+
     ClientModel(Network::Client *c);
     ~ClientModel();
+
+    bool imConnected();
+    bool imCardinal(char card);
+    bool cardinalConnected(char card);
+
     void tick();
 };
 

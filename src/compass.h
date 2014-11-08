@@ -5,7 +5,7 @@
 class Compass
 {
   private:
-    char cardinals[4];
+    char cardinals[5];
   public:
     Compass();
     char cardinal(int i);

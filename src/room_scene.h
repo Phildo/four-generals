@@ -33,10 +33,10 @@ class RoomScene : public Scene
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
-    ServerModel *s_model;
-    ServerModel **s_model_ptr; //Pointers to the server model pointer 'owned' by game
-    ClientModel *c_model;
-    ClientModel **c_model_ptr; //Pointers to the client model pointer 'owned' by game
+    ServerModel *s;
+    ServerModel **s_ptr; //Pointers to the server model pointer 'owned' by game
+    ClientModel *c;
+    ClientModel **c_ptr; //Pointers to the client model pointer 'owned' by game
 
     int SCENE_CHANGE_HACK;
   public:

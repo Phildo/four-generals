@@ -1,6 +1,6 @@
 #include "compass.h"
 
-Cardinal::Cardinal()
+Compass::Compass()
 {
   cardinals[0] = 'n';
   cardinals[1] = 'e';
@@ -9,15 +9,15 @@ Cardinal::Cardinal()
   cardinals[4] = '0';
 }
 
-char Cardinal::cardinal(int i)
+char Compass::cardinal(int i)
 {
   if(i > 3 || i < 0) return '0';
   return cardinals[i];
 }
 
-int Cardinal::icardinal(char c)
+int Compass::icardinal(char c)
 {
-  switch c
+  switch(c)
   {
     case 'n': return 0;
     case 'e': return 1;
@@ -27,25 +27,25 @@ int Cardinal::icardinal(char c)
   return 4;
 }
 
-char Cardinal::cwcardinal(char c)
+char Compass::cwcardinal(char c)
 {
   int i = icardinal(c); if(i == 4) return '0';
   return cardinal((icardinal(c)+1)%4);
 }
 
-char Cardinal::ccwcardinal(char c)
+char Compass::ccwcardinal(char c)
 {
   int i = icardinal(c); if(i == 4) return '0';
   return cardinal((icardinal(c)+3)%4); //+3%4 cross-language cycling (too lazy to check c's behavior)
 }
 
-char Cardinal::opcardinal(char c)
+char Compass::opcardinal(char c)
 {
   int i = icardinal(c); if(i == 4) return '0';
   return cardinal((icardinal(c)+2)%4);
 }
 
-bool Cardinal::test()
+bool Compass::test()
 {
   return
     cardinal(0) == 'n' &&

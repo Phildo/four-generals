@@ -54,6 +54,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
 void PlayScene::enter()
 {
+  /*
   client = *client_ptr;
   s_model = *s_model_ptr;
   c_model = *c_model_ptr;
@@ -78,10 +79,12 @@ void PlayScene::enter()
   youBox = UI::Box(ww/2-10, wh-80, 20, 20);
 
   e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = e_type_commit_action;
+  */
 }
 
 void PlayScene::touch(In &in)
 {
+  /*
   if(backButton.query(in)) { }
 
   //oh god terrible tree traversal touch propagation
@@ -201,10 +204,12 @@ void PlayScene::touch(In &in)
         if(cancelButton.query(in)) { e.zero(); e.connection = client->connection; e.cardinal = c_model->conGeneral(client->connection)->cardinal; e.type = e_type_commit_action;    }
     }
   }
+  */
 }
 
 int PlayScene::tick()
 {
+  /*
   if(s_model) s_model->tick();
   c_model->tick();
   if(known_day != c_model->day)
@@ -216,10 +221,13 @@ int PlayScene::tick()
     known_day = c_model->day;
   }
   return 0;
+  */
+  return 0;
 }
 
 void PlayScene::draw()
 {
+  /*
   backButton.draw(graphics);
 
   sunLabel.draw(graphics); if(c_model->day == 's') sunBox.draw(graphics);
@@ -306,6 +314,7 @@ void PlayScene::draw()
   }
   else
     waitingLabel.draw(graphics);
+  */
 }
 
 void PlayScene::leave()

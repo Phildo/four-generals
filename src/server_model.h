@@ -8,9 +8,9 @@
 class ServerModel
 {
   private :
-    Model model;
     Network::Server *server;
   public :
+    Model model;
     ServerModel(Network::Server *s);
     ~ServerModel();
     void tick();

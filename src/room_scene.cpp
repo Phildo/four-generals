@@ -14,11 +14,11 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   graphics = g;
 
   client_ptr = &c;
-  s_model_ptr = &sm;
-  c_model_ptr = &cm;
+  s_ptr = &sm;
+  c_ptr = &cm;
   client = 0;
-  s_model = 0;
-  c_model = 0;
+  s = 0;
+  c = 0;
 
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
@@ -48,8 +48,8 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 void RoomScene::enter()
 {
   client = *client_ptr;
-  s_model = *s_model_ptr;
-  c_model = *c_model_ptr;
+  s = *s_ptr;
+  c = *c_ptr;
 }
 
 void RoomScene::touch(In &in)
@@ -57,48 +57,19 @@ void RoomScene::touch(In &in)
   if(backButton.query(in)) { }
   if(nButton.query(in))
   {
-    General *g = c_model->cardGeneral('n');
-    if(g && g->connection == client->connection) client->broadcast('n', e_type_revoke_card);
-    else                                         client->broadcast('n', e_type_assign_card);
-  }
-  if(eButton.query(in))
-  {
-    General *g = c_model->cardGeneral('e');
-    if(g && g->connection == client->connection) client->broadcast('e', e_type_revoke_card);
-    else                                         client->broadcast('e', e_type_assign_card);
-  }
-  if(sButton.query(in))
-  {
-    General *g = c_model->cardGeneral('s');
-    if(g && g->connection == client->connection) client->broadcast('s', e_type_revoke_card);
-    else                                         client->broadcast('s', e_type_assign_card);
-  }
-  if(wButton.query(in))
-  {
-    General *g = c_model->cardGeneral('w');
-    if(g && g->connection == client->connection) client->broadcast('w', e_type_revoke_card);
-    else                                         client->broadcast('w', e_type_assign_card);
+    if(c->imCardinal('n')) client->broadcast('n', e_type_revoke_card);
+    else                   client->broadcast('n', e_type_assign_card);
   }
   if(leaveSessButton.query(in)) { }
-  if(beginGameButton.query(in))
-  {
-    if(c_model->cardGeneral('n') &&
-       c_model->cardGeneral('w') &&
-       c_model->cardGeneral('s') &&
-       c_model->cardGeneral('e')
-        )
-    {
-      client->broadcast(c_model->conGeneral(client->connection)->cardinal, e_type_begin_play);
-    }
-  }
+  //if(beginGameButton.query(in)) { client->broadcast(c->conGeneral(client->connection)->cardinal, e_type_begin_play); }
 }
 
 int RoomScene::tick()
 {
-  if(s_model) s_model->tick();
-  c_model->tick();
+  if(s) s->tick();
+  c->tick();
 
-  if(c_model->playing) SCENE_CHANGE_HACK = 1;
+  if(c->model.days != -1) SCENE_CHANGE_HACK = 1;
 
   int tmp = SCENE_CHANGE_HACK;
   SCENE_CHANGE_HACK = 0;
@@ -112,28 +83,28 @@ void RoomScene::draw()
   ipLabel.draw(graphics);
   portLabel.draw(graphics);
 
-  if(c_model->cardGeneral('n'))
+  if(c->cardinalConnected('n'))
   {
     nLabel.draw(graphics);
-    if(c_model->cardGeneral('n')->connection == client->connection)
+    if(c->imCardinal('n'))
       nBox.draw(graphics);
   }
-  if(c_model->cardGeneral('e'))
+  if(c->cardinalConnected('e'))
   {
     eLabel.draw(graphics);
-    if(c_model->cardGeneral('e')->connection == client->connection)
+    if(c->imCardinal('e'))
       eBox.draw(graphics);
   }
-  if(c_model->cardGeneral('s'))
+  if(c->cardinalConnected('s'))
   {
     sLabel.draw(graphics);
-    if(c_model->cardGeneral('s')->connection == client->connection)
+    if(c->imCardinal('s'))
       sBox.draw(graphics);
   }
-  if(c_model->cardGeneral('w'))
+  if(c->cardinalConnected('w'))
   {
     wLabel.draw(graphics);
-    if(c_model->cardGeneral('w')->connection == client->connection)
+    if(c->imCardinal('w'))
       wBox.draw(graphics);
   }
 
@@ -145,11 +116,11 @@ void RoomScene::draw()
   leaveSessLabel.draw(graphics);
   leaveSessButton.draw(graphics);
 
-  if(s_model &&
-     c_model->cardGeneral('n') &&
-     c_model->cardGeneral('w') &&
-     c_model->cardGeneral('s') &&
-     c_model->cardGeneral('e')
+  if(s &&
+     c->model.cardToCon('n') != '0' &&
+     c->model.cardToCon('e') != '0' &&
+     c->model.cardToCon('s') != '0' &&
+     c->model.cardToCon('w') != '0'
     )
   {
     beginGameLabel.draw(graphics);
@@ -172,4 +143,5 @@ RoomScene::~RoomScene()
 {
 
 }
+
 

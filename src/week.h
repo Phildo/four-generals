@@ -4,7 +4,7 @@
 class Week
 {
   private:
-    char days[7];
+    char days[8];
   public:
     Week();
     char day(int i);
