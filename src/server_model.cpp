@@ -170,7 +170,8 @@ void ServerModel::tick()
               {
                 //lose
               }
-            } else if(a->action == 'm')
+            }
+            else if(a->action == 'm')
             {
               m = Messenger(*e);
               messengers.add(m);
@@ -181,7 +182,7 @@ void ServerModel::tick()
           for(int i = 0; i < messengers.length(); i++)
           {
             if(messengers[i].at == messengers[i].to) //last
-              ; //display message
+              messengers.remove(i); i--; //display message
             if(messengers[i].at == messengers[i].where) //middle
               messengers[i].at = messengers[i].to; //allow sabotage
             if(messengers[i].at == messengers[i].from) //first

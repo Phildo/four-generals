@@ -9,8 +9,20 @@
 void signal_callback_handler(int signum)
 {
   fg_log("Caught signal %d\n",signum);
-  fflush(stdout);
-  exit(1);
+  switch(signum)
+  {
+    case SIGSEGV:
+      fflush(stdout);
+      exit(1);
+      break;
+    case SIGPIPE:
+      //do nothing
+      break;
+    default:
+      //also do nothing
+      break;
+  }
+
 }
 
 int main(int argc, char* argv[])
