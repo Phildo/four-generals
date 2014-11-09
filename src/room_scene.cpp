@@ -37,10 +37,20 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   beginGameLabel  = UI::Label( ww/2-100, wh/2+50, 20, "Begin Game!");
   beginGameButton = UI::Button(ww/2-100, wh/2+50, 200, 20);
 
-  nLabel = UI::Label(ww/2-10,      10, 20, "N");  nButton = UI::Button(ww/2-10,      10, 20, 20); nBox = UI::Box(ww/2-10-5,      10-5, 30, 30);
-  eLabel = UI::Label(ww  -30, wh/2-10, 20, "E");  eButton = UI::Button(ww  -30, wh/2-10, 20, 20); eBox = UI::Box(ww  -30-5, wh/2-10-5, 30, 30);
-  sLabel = UI::Label(ww/2-10, wh  -30, 20, "S");  sButton = UI::Button(ww/2-10, wh  -30, 20, 20); sBox = UI::Box(ww/2-10-5, wh  -30-5, 30, 30);
-  wLabel = UI::Label(     10, wh/2-10, 20, "W");  wButton = UI::Button(     10, wh/2-10, 20, 20); wBox = UI::Box(     10-5, wh/2-10-5, 30, 30);
+  cardLbls[cmp.icardinal('n')] = UI::Label(ww/2-10,      10, 20, "N");
+  cardLbls[cmp.icardinal('e')] = UI::Label(ww  -30, wh/2-10, 20, "E");
+  cardLbls[cmp.icardinal('s')] = UI::Label(ww/2-10, wh  -30, 20, "S");
+  cardLbls[cmp.icardinal('w')] = UI::Label(     10, wh/2-10, 20, "W");
+
+  cardBtns[cmp.icardinal('n')] = UI::Button(ww/2-10,      10, 20, 20);
+  cardBtns[cmp.icardinal('e')] = UI::Button(ww  -30, wh/2-10, 20, 20);
+  cardBtns[cmp.icardinal('s')] = UI::Button(ww/2-10, wh  -30, 20, 20);
+  cardBtns[cmp.icardinal('w')] = UI::Button(     10, wh/2-10, 20, 20);
+
+  cardBoxs[cmp.icardinal('n')] = UI::Box(ww/2-10-5,      10-5, 30, 30);
+  cardBoxs[cmp.icardinal('e')] = UI::Box(ww  -30-5, wh/2-10-5, 30, 30);
+  cardBoxs[cmp.icardinal('s')] = UI::Box(ww/2-10-5, wh  -30-5, 30, 30);
+  cardBoxs[cmp.icardinal('w')] = UI::Box(     10-5, wh/2-10-5, 30, 30);
 
   SCENE_CHANGE_HACK = 0;
 }
@@ -55,11 +65,18 @@ void RoomScene::enter()
 void RoomScene::touch(In &in)
 {
   if(backButton.query(in)) { }
-  if(nButton.query(in))
+
+  //check cardinal buttons
+  for(int i = 0; i < 4; i++)
   {
-    if(c->imCardinal('n')) client->broadcast('n', e_type_revoke_card);
-    else                   client->broadcast('n', e_type_assign_card);
+    if(cardBtns[i].query(in))
+    {
+      char card = cmp.cardinal(i);
+      if(c->imCardinal(card)) client->broadcast(card, e_type_revoke_card);
+      else                    client->broadcast(card, e_type_assign_card);
+    }
   }
+
   if(leaveSessButton.query(in)) { }
   //if(beginGameButton.query(in)) { client->broadcast(c->conGeneral(client->connection)->cardinal, e_type_begin_play); }
 }
@@ -83,35 +100,19 @@ void RoomScene::draw()
   ipLabel.draw(graphics);
   portLabel.draw(graphics);
 
-  if(c->cardinalConnected('n'))
+  //draw cardinals
+  for(int i = 0; i < 4; i++)
   {
-    nLabel.draw(graphics);
-    if(c->imCardinal('n'))
-      nBox.draw(graphics);
-  }
-  if(c->cardinalConnected('e'))
-  {
-    eLabel.draw(graphics);
-    if(c->imCardinal('e'))
-      eBox.draw(graphics);
-  }
-  if(c->cardinalConnected('s'))
-  {
-    sLabel.draw(graphics);
-    if(c->imCardinal('s'))
-      sBox.draw(graphics);
-  }
-  if(c->cardinalConnected('w'))
-  {
-    wLabel.draw(graphics);
-    if(c->imCardinal('w'))
-      wBox.draw(graphics);
-  }
+    char card = cmp.cardinal(i);
+    if(c->cardinalConnected(card))
+    {
+      cardLbls[i].draw(graphics);
+      if(c->imCardinal(card))
+        cardBoxs[i].draw(graphics);
+    }
 
-  nButton.draw(graphics);
-  sButton.draw(graphics);
-  wButton.draw(graphics);
-  eButton.draw(graphics);
+    cardBtns[i].draw(graphics);
+  }
 
   leaveSessLabel.draw(graphics);
   leaveSessButton.draw(graphics);

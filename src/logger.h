@@ -13,7 +13,7 @@
 
 #ifdef FG_PC
 #include <stdio.h>
-#define fg_log(t, ...) ({ printf(t, ##__VA_ARGS__); printf("\n"); })
+#define fg_log(t, ...) ({ printf(t, ##__VA_ARGS__); printf("\n"); fflush(stdout); })
 #endif
 
 #endif

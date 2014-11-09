@@ -5,6 +5,11 @@
 
 Model::Model()
 {
+  connections[0] = '0';
+  connections[1] = '0';
+  connections[2] = '0';
+  connections[3] = '0';
+  connections[4] = '0';
   days = -1;
 }
 

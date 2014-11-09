@@ -76,9 +76,9 @@ void * Client::fork()
     FD_SET(sock_fd, &sock_fds);
     tv.tv_sec = 0; tv.tv_usec = 250000;
 
-    fg_log("bsclientlogdebugging: selecting...");
+    //fg_log("bsclientlogdebugging: selecting...");
     retval = select(sock_fd+1, &sock_fds, NULL, NULL, &tv);
-    fg_log("bsclientlogdebugging: selected");
+    //fg_log("bsclientlogdebugging: selected");
 
     if(retval == -1) keep_connection = false;
     else if(retval && FD_ISSET(sock_fd, &sock_fds))

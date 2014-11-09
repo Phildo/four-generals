@@ -11,7 +11,6 @@ class ClientModel
     Network::Client *client;
   public :
     Model model;
-    char connection;
 
     ClientModel(Network::Client *c);
     ~ClientModel();

@@ -16,12 +16,12 @@ ClientModel::~ClientModel()
 
 bool ClientModel::imConnected()
 {
-  return connection != '0';
+  return client->connection != '0';
 }
 
 bool ClientModel::imCardinal(char card)
 {
-  return imConnected() && model.cardinalConnection('n') == connection;
+  return imConnected() && model.cardinalConnection(card) == client->connection;
 }
 
 bool ClientModel::cardinalConnected(char card)

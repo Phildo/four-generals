@@ -5,6 +5,8 @@
 #include "ui.h"
 #include "network.h"
 
+#include "compass.h"
+
 class Graphics;
 class ServerModel;
 class ClientModel;
@@ -12,6 +14,7 @@ class ClientModel;
 class RoomScene : public Scene
 {
   private:
+    Compass cmp;
     Graphics *graphics;
 
     UI::Button backButton;
@@ -20,10 +23,9 @@ class RoomScene : public Scene
     UI::Label ipLabel;
     UI::Label portLabel;
 
-    UI::Label nLabel; UI::Button nButton; UI::Box nBox;
-    UI::Label eLabel; UI::Button eButton; UI::Box eBox;
-    UI::Label sLabel; UI::Button sButton; UI::Box sBox;
-    UI::Label wLabel; UI::Button wButton; UI::Box wBox;
+    UI::Label  cardLbls[4];
+    UI::Button cardBtns[4];
+    UI::Box    cardBoxs[4];
 
     UI::Label leaveSessLabel;
     UI::Button leaveSessButton;
