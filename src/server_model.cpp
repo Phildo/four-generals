@@ -17,10 +17,8 @@ ServerModel::~ServerModel()
 void ServerModel::tick()
 {
   Event *e;
-  Event *a;
-  Event event;
-  Messenger m;
 
+  //server model's job- 1.verify 2.process 3.broadcast
   while((e = server->getEvent()))
   {
     switch(e->type)
@@ -30,28 +28,29 @@ void ServerModel::tick()
       case e_type_revoke_con: break; //server->client only
       case e_type_refuse_con: break; //server->client only
       case e_type_join_con:
-        model.connections[model.iconnection(e->connection)] = e->connection;
+        model.connectCon(e->connection);
         server->broadcast(*e); //alert others of joined player
         break;
       case e_type_leave_con:
-        model.connections[model.iconnection(e->connection)] = '0';
+        model.disconnectCon(e->connection);
         server->broadcast(*e); //alert others of joined player
         break;
       case e_type_assign_card:
-        model.generals[model.compass.icardinal(e->cardinal)].connection = e->connection;
-        model.generals[model.compass.icardinal(e->cardinal)].cardinal   = e->cardinal;
-        server->broadcast(*e);
+        if(!model.cardinalConnected(e->cardinal))
+        {
+          model.assignConCard(e->connection, e->cardinal);
+          server->broadcast(*e);
+        }
         break;
       case e_type_revoke_card:
-        model.generals[model.compass.icardinal(e->cardinal)].connection = '0';
-        model.generals[model.compass.icardinal(e->cardinal)].cardinal   = '0';
-        server->broadcast(*e);
+        if(model.cardinalConnected(e->cardinal) && model.cardinalGeneral(e->cardinal).connection == e->connection)
+        {
+          model.revokeCard(e->cardinal);
+          server->broadcast(*e);
+        }
         break;
       case e_type_begin_play:
-        if(model.generals[0].connection != '0' &&
-           model.generals[1].connection != '0' &&
-           model.generals[2].connection != '0' &&
-           model.generals[3].connection != '0')
+        if(model.rolesAssigned())
         {
           model.days = 0;
           server->broadcast(*e);

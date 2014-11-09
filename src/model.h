@@ -17,10 +17,17 @@ class Model
     Compass compass;
     Week week;
 
+    //in connection order
     char connections[5]; //connections[0] should be '1' for here, '0' for not
-    General generals[4];
-    Event actions[4]; //actions for this turn
+
+    //in cardinal order
+    General generals[5];
+    Event actions[5]; //actions for this turn
+
+    //unordered
     Array<Messenger,16> messengers;
+
+    int days;
 
     char connection(int i);
     int iconnection(char c);
@@ -28,7 +35,22 @@ class Model
     char conToCard(char con);
     char cardToCon(char card);
 
-    int days;
+    void connectCon(char con);
+    void disconnectCon(char con);
+    void assignConCard(char con, char card);
+    void revokeCard(char card);
+
+    //clarity
+    char& conConnection(char con);
+    char& cardinalConnection(char card);
+    General& cardinalGeneral(char card);
+    General& connectionGeneral(char con);
+    Event& generalAction(General g);
+    Event& cardinalAction(char card);
+    Event& connectionAction(char con);
+    bool cardinalConnected(char card);
+    bool connectionConnected(char con);
+    bool rolesAssigned();
 
     Model();
     ~Model();

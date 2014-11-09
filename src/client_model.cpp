@@ -26,13 +26,12 @@ bool ClientModel::imCardinal(char card)
 
 bool ClientModel::cardinalConnected(char card)
 {
-  return model.cardToCon('n') != '0';
+  return model.cardinalGeneral(card).connection != '0';
 }
 
 void ClientModel::tick()
 {
   Event *e;
-  Event *a;
 
   while((e = client->getEvent()))
   {
@@ -43,18 +42,16 @@ void ClientModel::tick()
       case e_type_revoke_con: break; //should never reach model (handled entirely by client)
       case e_type_refuse_con: break; //should never reach model (handled entirely by client)
       case e_type_join_con:
-        model.connections[model.iconnection(e->connection)] = e->connection;
+        model.connectCon(e->connection);
         break;
       case e_type_leave_con:
-        model.connections[model.iconnection(e->connection)] = '0';
+        model.disconnectCon(e->connection);
         break;
       case e_type_assign_card:
-        model.generals[model.compass.icardinal(e->cardinal)].connection = e->connection;
-        model.generals[model.compass.icardinal(e->cardinal)].cardinal   = e->cardinal;
+        model.assignConCard(e->connection, e->cardinal);
         break;
       case e_type_revoke_card:
-        model.generals[model.compass.icardinal(e->cardinal)].connection = '0';
-        model.generals[model.compass.icardinal(e->cardinal)].cardinal   = '0';
+        model.revokeCard(e->cardinal);
         break;
       case e_type_begin_play:
         model.days = 0;
