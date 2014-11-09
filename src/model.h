@@ -3,6 +3,7 @@
 
 #include "compass.h"
 #include "week.h"
+#include "conids.h"
 
 #include "general.h"
 #include "messenger.h"
@@ -16,9 +17,10 @@ class Model
   public :
     Compass compass;
     Week week;
+    ConIds conids;
 
     //in connection order
-    char connections[5]; //connections[0] should be '1' for here, '0' for not
+    char connections[5];
 
     //in cardinal order
     General generals[5];
@@ -28,9 +30,6 @@ class Model
     Array<Messenger,16> messengers;
 
     int days;
-
-    char connection(int i);
-    int iconnection(char c);
 
     void connectCon(char con);
     void disconnectCon(char con);

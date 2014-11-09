@@ -5,12 +5,6 @@
 
 Model::Model()
 {
-  connections[0] = '0';
-  connections[1] = '0';
-  connections[2] = '0';
-  connections[3] = '0';
-  connections[4] = '0';
-
   days = -1;
 }
 
@@ -37,29 +31,11 @@ void Model::revokeCard(char card)
   cardinalGeneral(card).cardinal   = '0'; //else won't be able to find it here
 }
 
-char Model::connection(int i)
-{
-  if(i > 3 || i < 0) return '0';
-  return connections[i];
-}
-
-int Model::iconnection(char c)
-{
-  switch(c)
-  {
-    case '1' : return 0;
-    case '2' : return 1;
-    case '3' : return 2;
-    case '4' : return 3;
-  }
-  return 4;
-}
-
 //clarity
 
 char& Model::connectionConnection(char con)
 {
-  return connections[iconnection(con)];
+  return connections[conids.iconid(con)];
 }
 
 char& Model::cardinalConnection(char card)
