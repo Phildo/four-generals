@@ -21,7 +21,7 @@ bool ClientModel::imConnected()
 
 bool ClientModel::imCardinal(char card)
 {
-  return imConnected() && model.cardToCon('n') == connection;
+  return imConnected() && model.cardinalConnection('n') == connection;
 }
 
 bool ClientModel::cardinalConnected(char card)

@@ -116,12 +116,7 @@ void RoomScene::draw()
   leaveSessLabel.draw(graphics);
   leaveSessButton.draw(graphics);
 
-  if(s &&
-     c->model.cardToCon('n') != '0' &&
-     c->model.cardToCon('e') != '0' &&
-     c->model.cardToCon('s') != '0' &&
-     c->model.cardToCon('w') != '0'
-    )
+  if(s && c->model.rolesAssigned())
   {
     beginGameLabel.draw(graphics);
     beginGameButton.draw(graphics);

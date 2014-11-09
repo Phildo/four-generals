@@ -32,17 +32,15 @@ class Model
     char connection(int i);
     int iconnection(char c);
 
-    char conToCard(char con);
-    char cardToCon(char card);
-
     void connectCon(char con);
     void disconnectCon(char con);
     void assignConCard(char con, char card);
     void revokeCard(char card);
 
     //clarity
-    char& conConnection(char con);
+    char& connectionConnection(char con);
     char& cardinalConnection(char card);
+    char connectionCardinal(char con);
     General& cardinalGeneral(char card);
     General& connectionGeneral(char con);
     Event& generalAction(General g);

@@ -14,28 +14,14 @@ Model::Model()
   days = -1;
 }
 
-char Model::conToCard(char con)
-{
-  for(int i = 0; i < 4; i++)
-    if(generals[i].connection == con) return generals[i].cardinal;
-  return '0';
-}
-
-char Model::cardToCon(char card)
-{
-  for(int i = 0; i < 4; i++)
-    if(generals[i].cardinal == card) return generals[i].connection;
-  return '0';
-}
-
 void Model::connectCon(char con)
 {
-  conConnection(con) = con;
+  connectionConnection(con) = con;
 }
 
 void Model::disconnectCon(char con)
 {
-  conConnection(con) = '0';
+  connectionConnection(con) = '0';
 }
 
 void Model::assignConCard(char con, char card)
@@ -71,14 +57,23 @@ int Model::iconnection(char c)
 
 //clarity
 
-char& Model::conConnection(char con)
+char& Model::connectionConnection(char con)
 {
   return connections[iconnection(con)];
 }
 
 char& Model::cardinalConnection(char card)
 {
-  return connections[iconnection(cardinalGeneral(card).connection)];
+  for(int i = 0; i < 4; i++)
+    if(generals[i].cardinal == card) return connectionConnection(generals[i].connection);
+  return connectionConnection('0');
+}
+
+char Model::connectionCardinal(char con)
+{
+  for(int i = 0; i < 4; i++)
+    if(generals[i].connection == con) return generals[i].cardinal;
+  return '0';
 }
 
 General& Model::cardinalGeneral(char card)
@@ -115,7 +110,7 @@ bool Model::cardinalConnected(char card)
 
 bool Model::connectionConnected(char con)
 {
-  return conConnection(con) != '0';
+  return connectionConnection(con) != '0';
 }
 
 bool Model::rolesAssigned()
