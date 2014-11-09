@@ -19,6 +19,11 @@ bool ClientModel::imConnected()
   return client->connection != '0';
 }
 
+bool ClientModel::myCardinal()
+{
+  return model.connectionCardinal(client->connection);
+}
+
 bool ClientModel::imCardinal(char card)
 {
   return imConnected() && model.cardinalConnection(card) == client->connection;

@@ -78,7 +78,8 @@ void RoomScene::touch(In &in)
   }
 
   if(leaveSessButton.query(in)) { }
-  //if(beginGameButton.query(in)) { client->broadcast(c->conGeneral(client->connection)->cardinal, e_type_begin_play); }
+  if(s && c->model.rolesAssigned() && beginGameButton.query(in))
+    client->broadcast(c->myCardinal(), e_type_begin_play);
 }
 
 int RoomScene::tick()

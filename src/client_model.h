@@ -16,6 +16,7 @@ class ClientModel
     ~ClientModel();
 
     bool imConnected();
+    bool myCardinal();
     bool imCardinal(char card);
     bool cardinalConnected(char card);
 
