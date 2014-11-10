@@ -94,7 +94,7 @@ void * Client::fork()
         else if(e.type == e_type_ack)                                       ackReceived(e);
         else                                                                recv_q.enqueue(e);
 
-        fg_log("Client    (%c): rec(%d) %s",connection,len,e.human());
+        fg_log("Client    (%c): rec(%d) %s",connection,len,e.debug());
         len -= e_ser_len;
         mess_num++;
       }
@@ -104,7 +104,7 @@ void * Client::fork()
     {
       len = send(sock_fd, send_evt->serialize(), e_ser_len, 0);
       if(len <= 0) { fg_log("Client: abort connection (failed write)"); keep_connection = false; }
-      fg_log("Client    (%c): sen(%d) %s",connection,len,send_evt->human());
+      fg_log("Client    (%c): sen(%d) %s",connection,len,send_evt->debug());
       len = 0;
     }
   }

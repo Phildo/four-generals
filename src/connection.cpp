@@ -70,7 +70,7 @@ void * Connection::fork()
         Event e(buff+(mess_num*e_ser_len));
         if(e.type == e_type_ack) ackReceived(e);
         else recv_q.enqueue(e);
-        fg_log("Connection(%c): rec(%d) %s",connection,len,e.human());
+        fg_log("Connection(%c): rec(%d) %s",connection,len,e.debug());
         len-= e_ser_len;
         mess_num++;
       }
@@ -80,7 +80,7 @@ void * Connection::fork()
     {
       len = send(sock_fd, send_evt->serialize(), e_ser_len, 0);
       if(len <= 0) { fg_log("Connection: abort connection (failed write)"); keep_connection = false; }
-      fg_log("Connection(%c): sen(%d) %s",connection,len,send_evt->human());
+      fg_log("Connection(%c): sen(%d) %s",connection,len,send_evt->debug());
       len = 0;
     }
   }

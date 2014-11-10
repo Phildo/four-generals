@@ -46,8 +46,41 @@ char *Event::serialize()
   return (char *)&connection;
 }
 
+char *Event::humanAction()
+{
+  if(action == '0') sprintf(h_action_buff,"");
+  if(action == 'a')
+  {
+    if(who == '0') sprintf(h_action_buff,"Attacking (who)...");
+    else           sprintf(h_action_buff,"Attacking %c...",who);
+  }
+  if(action == 'd')
+  {
+    sprintf(h_action_buff,"Defending...");
+  }
+  if(action == 'm')
+  {
+    if(what == '0')     sprintf(h_action_buff,"Sending Messenger: \"(Attack/Defend)...\"");
+    else if(what == 'a')
+    {
+      if       (who == '0') sprintf(h_action_buff,"Sending Messenger: \"Attack (who)...\"");
+      else if (when == '0') sprintf(h_action_buff,"Sending Messenger: \"Attack %c on (when)...\"",who);
+      else if(where == '0') sprintf(h_action_buff,"Sending Messenger: \"Attack %c on %c\" to the (where)...",who,when);
+      else                  sprintf(h_action_buff,"Sending Messenger: \"Attack %c on %c\" to the %c...",who,when,where);
+    }
+    else if(what == 'd')
+    {
+      if      (when == '0') sprintf(h_action_buff,"Sending Messenger: \"Defend on (when)...\"");
+      else if(where == '0') sprintf(h_action_buff,"Sending Messenger: \"Defend on %c\" to the (where)...",when);
+      else                  sprintf(h_action_buff,"Sending Messenger: \"Defend on %c\" to the %c...",when,where);
+    }
+  }
+
+  return &h_action_buff[0];
+}
+
 #ifdef FG_DEBUG
-char *Event::human()
+char *Event::debug()
 {
   switch(type)
   {
@@ -62,11 +95,11 @@ char *Event::human()
     case e_type_begin_play:     sprintf(event_type_buff,"begin");      break;
     case e_type_commit_action:  sprintf(event_type_buff,"commit");     break;
     case e_type_commit_actions: sprintf(event_type_buff,"commit_all"); break;
-    default:                    sprintf(event_type_buff,"NO HUMAN READABLE EVENT TYPE FOUND"); break;
+    default:                    sprintf(event_type_buff,"NO DEBUG READABLE EVENT TYPE FOUND"); break;
   }
 
-  sprintf(human_buff,"con:%c card:%c act:%c to:%c what:%c who:%c when:%c where:%c id:%d type:%s", connection, cardinal, action, to, what, who, when, where, id_i, event_type_buff);
-  return &human_buff[0];
+  sprintf(debug_buff,"con:%c card:%c act:%c to:%c what:%c who:%c when:%c where:%c id:%d type:%s", connection, cardinal, action, to, what, who, when, where, id_i, event_type_buff);
+  return &debug_buff[0];
 }
 #endif
 

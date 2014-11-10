@@ -205,6 +205,14 @@ void PlayScene::drawConfirmation()
   cancelButton.draw(graphics);  cancelLabel.draw(graphics);
 }
 
+void PlayScene::drawDebreif()
+{
+  int ww = graphics->winWidth();
+  int wh = graphics->winHeight();
+  debreifLabel = UI::Label(ww/2-130, wh/2-30, 15, e.humanAction());
+  debreifLabel.draw(graphics);
+}
+
 void PlayScene::drawWaiting()
 {
   waitingLabel.draw(graphics);
@@ -275,6 +283,7 @@ void PlayScene::draw()
 
   if(!c->iHaveAction())
   {
+    drawDebreif();
     if(e.action == '0') drawAction();
     else if(e.action == 'a') //attack
     {

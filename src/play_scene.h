@@ -63,6 +63,7 @@ class PlayScene : public Scene
     void drawWhen();
     void drawWhere();
     void drawConfirmation();
+    void drawDebreif();
     void drawWaiting();
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);

@@ -51,10 +51,13 @@ struct Event //all members chars for quick/simple serializability
   //serializability
   char *serialize();
 
+  char *humanAction();
+  char h_action_buff[256];
+
   //ONLY USE WHEN DEBUGGING (adds massive memory overhead)
   #ifdef FG_DEBUG //should cause errors when disabling debug
-  char *human();
-  char human_buff[256];
+  char *debug();
+  char debug_buff[256];
   char event_type_buff[256];
   #endif
 };
