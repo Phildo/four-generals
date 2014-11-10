@@ -9,6 +9,8 @@
 
 #include "logger.h"
 
+#include "compass.h"
+
 RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;

@@ -1,10 +1,6 @@
 #ifndef _FG_MODEL_H_
 #define _FG_MODEL_H_
 
-#include "compass.h"
-#include "week.h"
-#include "conids.h"
-
 #include "general.h"
 #include "messenger.h"
 #include "event.h"

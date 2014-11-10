@@ -3,6 +3,10 @@
 #include "defines.h"
 #include "logger.h"
 
+#include "compass.h"
+#include "week.h"
+#include "conids.h"
+
 Model::Model()
 {
   connections[0] = '0';

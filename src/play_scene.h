@@ -6,9 +6,6 @@
 #include "network.h"
 #include "event.h"
 
-#include "compass.h"
-#include "week.h"
-
 class Graphics;
 class ServerModel;
 class ClientModel;

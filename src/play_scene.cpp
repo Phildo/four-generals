@@ -9,6 +9,9 @@
 
 #include "logger.h"
 
+#include "compass.h"
+#include "week.h"
+
 PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;

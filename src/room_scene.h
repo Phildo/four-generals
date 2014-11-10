@@ -5,8 +5,6 @@
 #include "ui.h"
 #include "network.h"
 
-#include "compass.h"
-
 class Graphics;
 class ServerModel;
 class ClientModel;

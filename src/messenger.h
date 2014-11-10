@@ -21,6 +21,8 @@ class Messenger
     Messenger(Event e);
     Messenger(char fro, char a, char t, char wat, char wo, char wen, char were);
 
+    void advance();
+
     ~Messenger();
 };
 
