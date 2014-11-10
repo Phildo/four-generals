@@ -23,3 +23,6 @@ run4:
 debug:
 	$(CC) $(DEBUG) $(CFLAGS) $(LFLAGS) $(SOURCES) -o $(BINDIR)/pc.out && $(DEBUGGER) $(BINDIR)/pc.out
 
+debug4:
+	./debug4.sh
+

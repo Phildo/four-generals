@@ -136,7 +136,7 @@ void PlayScene::zeroE()
 void PlayScene::chooseAction(In &in)
 {
   if(actionAttackButton.query(in))  e.action = 'a';
-  if(actionMessageButton.query(in)) e.action = 'm';
+  if(actionMessageButton.query(in)) { e.action = 'm'; e.to = Compass::opcardinal(e.cardinal); } //auto assign 'to'
   if(actionDefendButton.query(in))  e.action = 'd';
 }
 

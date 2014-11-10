@@ -105,6 +105,9 @@ prun4: pdefine
 pdebug: pdefine
 	cd $(PC_DIR); amake debug;
 
+pdebug4: pdefine
+	cd $(PC_DIR); amake debug4;
+
 #
 # testing
 #
