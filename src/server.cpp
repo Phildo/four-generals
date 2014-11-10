@@ -164,9 +164,9 @@ void Server::broadcast(char con, char card, char t)
     con_ptrs[i]->broadcast(con, card, t);
 }
 
-void Server::broadcast(Event e)
+void Server::broadcast(Event *e)
 {
-  history[history_i++] = e; //id doesn't matter- gets assigned by con
+  history[history_i++] = *e; //copy- id doesn't matter- gets assigned by con
   for(int i = 0; i < n_cons; i++)
     con_ptrs[i]->broadcast(e);
 }

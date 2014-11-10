@@ -125,12 +125,12 @@ void Client::broadcast(char card, char t)
   e.cardinal = card;
   e.type = t;
   e.id_i = nextEventId();
-  broadcast(e);
+  broadcast(&e);
 }
 
-void Client::broadcast(Event e)
+void Client::broadcast(Event *e)
 {
-  send_q.enqueue(e);
+  send_q.enqueue(*e); //copy
 }
 
 int Client::nextEventId()

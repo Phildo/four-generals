@@ -21,8 +21,7 @@ static const char e_type_revoke_card = 'h';
 
 static const char e_type_begin_play = 'i';
 static const char e_type_commit_action = 'j';
-
-static const char e_type_set_day = 'k';
+static const char e_type_commit_actions = 'k';
 
 struct Event //all members chars for quick/simple serializability
 {

@@ -43,7 +43,7 @@ namespace Network
 
       void connect(const String &_ip, int _port);
       void broadcast(char card, char t);
-      void broadcast(Event e);
+      void broadcast(Event *e);
       void disconnect();
       bool healthy();
       bool transitioning();

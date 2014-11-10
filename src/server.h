@@ -43,7 +43,7 @@ namespace Network
       void connect(int _port);
       void dumpHistory(Connection *c);
       void broadcast(char con, char card, char t);
-      void broadcast(Event e);
+      void broadcast(Event *e);
       void disconnect();
       bool healthy();
       bool transitioning();

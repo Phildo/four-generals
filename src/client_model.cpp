@@ -67,19 +67,10 @@ void ClientModel::tick()
         model.days = 0;
         break;
       case e_type_commit_action:
-        /*
-        a = conAction(e->connection);
-        *a = *e; //lol
-        */
+        model.assignConAction(e->connection, *e);
         break;
-      case e_type_set_day:
-        /*
-        cardAction('n')->zero();
-        cardAction('e')->zero();
-        cardAction('s')->zero();
-        cardAction('w')->zero();
-        day = e->when;
-        */
+      case e_type_commit_actions:
+        model.commitActions(); //also increases day
         break;
       default:
         break;

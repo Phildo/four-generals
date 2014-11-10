@@ -35,6 +35,8 @@ class Model
     void disconnectCon(char con);
     void assignConCard(char con, char card);
     void revokeCard(char card);
+    void assignConAction(char con, Event e);
+    void commitActions();
 
     //clarity
     char& connectionConnection(char con);
@@ -50,6 +52,7 @@ class Model
     bool cardinalHasAction(char card);
     bool connectionHasAction(char con);
     bool rolesAssigned();
+    bool actionsAssigned();
 
     char currentDay();
 

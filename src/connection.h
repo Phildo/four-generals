@@ -49,7 +49,7 @@ namespace Network
 
       void connect();
       void broadcast(char con, char card, char t); //has con argument- can talk about other cons
-      void broadcast(Event e);
+      void broadcast(Event *e);
       void disconnect();
       bool healthy();
       bool transitioning();

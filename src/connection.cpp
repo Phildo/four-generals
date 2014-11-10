@@ -103,10 +103,11 @@ void Connection::broadcast(char con, char card, char t)
   send_q.enqueue(e);
 }
 
-void Connection::broadcast(Event e)
+void Connection::broadcast(Event *e)
 {
-  e.id_i = nextEventId(); //hijack event Id
-  send_q.enqueue(e);
+  Event ev = *e; //copy
+  ev.id_i = nextEventId(); //hijack event Id
+  send_q.enqueue(ev);
 }
 
 int Connection::nextEventId()

@@ -36,6 +36,58 @@ void Model::revokeCard(char card)
   cardinalGeneral(card).cardinal   = '0'; //else won't be able to find it here
 }
 
+void Model::assignConAction(char con, Event e)
+{
+  connectionAction(con) = e; //copy
+}
+
+void Model::commitActions()
+{
+  for(int i = 0; i < 4; i++)
+  {
+    char card = compass.cardinal(i);
+    Event a = cardinalAction(card);
+    if(a.action == 'a')
+    {
+      if(cardinalAction(a.who).action != 'd' && //attackee isn't defending
+         cardinalAction(compass.opcardinal(card)).action == 'a' && //partner is attacking
+         cardinalAction(compass.opcardinal(card)).who == a.who) //the same person as you
+      {
+        //win
+      }
+      else if(cardinalAction(a.who).action == 'd' && //attackee is defending
+            !(cardinalAction(compass.opcardinal(card)).action == 'a' && //and partner isn't attacking
+              cardinalAction(compass.opcardinal(card)).who == a.who)) //the same person as you
+      {
+        //lose
+      }
+    }
+    else if(a.action == 'm')
+    {
+      //m = Messenger(*e);
+      //messengers.add(m);
+    }
+  }
+
+  //update messengers
+  for(int i = 0; i < messengers.length(); i++)
+  {
+    if(messengers[i].at == messengers[i].to) //last
+      messengers.remove(i); i--; //display message
+    if(messengers[i].at == messengers[i].where) //middle
+      messengers[i].at = messengers[i].to; //allow sabotage
+    if(messengers[i].at == messengers[i].from) //first
+      messengers[i].at = messengers[i].where;
+  }
+
+  cardinalAction('n').zero();
+  cardinalAction('e').zero();
+  cardinalAction('s').zero();
+  cardinalAction('w').zero();
+
+  days++;
+}
+
 //clarity
 
 char& Model::connectionConnection(char con)
@@ -81,7 +133,7 @@ Event& Model::cardinalAction(char card)
 
 Event& Model::connectionAction(char con)
 {
-  return cardinalAction(cardinalConnection(con));
+  return cardinalAction(connectionCardinal(con));
 }
 
 bool Model::cardinalConnected(char card)
@@ -111,6 +163,15 @@ bool Model::rolesAssigned()
     cardinalConnected('e') &&
     cardinalConnected('s') &&
     cardinalConnected('w');
+}
+
+bool Model::actionsAssigned()
+{
+  return
+    cardinalHasAction('n') &&
+    cardinalHasAction('e') &&
+    cardinalHasAction('s') &&
+    cardinalHasAction('w');
 }
 
 char Model::currentDay()
