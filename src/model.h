@@ -47,7 +47,11 @@ class Model
     Event& connectionAction(char con);
     bool cardinalConnected(char card);
     bool connectionConnected(char con);
+    bool cardinalHasAction(char card);
+    bool connectionHasAction(char con);
     bool rolesAssigned();
+
+    char currentDay();
 
     Model();
     ~Model();

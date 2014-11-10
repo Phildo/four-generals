@@ -16,9 +16,10 @@ class ClientModel
     ~ClientModel();
 
     bool imConnected();
-    bool myCardinal();
+    char myConnection();
+    char myCardinal();
     bool imCardinal(char card);
-    bool cardinalConnected(char card);
+    bool iHaveAction();
 
     void tick();
 };

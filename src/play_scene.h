@@ -6,6 +6,9 @@
 #include "network.h"
 #include "event.h"
 
+#include "compass.h"
+#include "week.h"
+
 class Graphics;
 class ServerModel;
 class ClientModel;
@@ -13,34 +16,27 @@ class ClientModel;
 class PlayScene : public Scene
 {
   private:
+    Compass cmp;
+    Week wk;
     Graphics *graphics;
 
     UI::Button backButton;
 
-    UI::Label sunLabel; UI::Box sunBox;
-    UI::Label monLabel; UI::Box monBox;
-    UI::Label tueLabel; UI::Box tueBox;
-    UI::Label wedLabel; UI::Box wedBox;
-    UI::Label thuLabel; UI::Box thuBox;
-    UI::Label friLabel; UI::Box friBox;
-    UI::Label satLabel; UI::Box satBox;
+    UI::Label dayLbls[7];
+    UI::Box   dayBoxs[7];
 
-    UI::Label nLabel; UI::Button nButton;
-    UI::Label eLabel; UI::Button eButton;
-    UI::Label sLabel; UI::Button sButton;
-    UI::Label wLabel; UI::Button wButton;
+    UI::Label cardLbls[4];
+    UI::Button cardBtns[4];
     UI::Box youBox;
-
-    Event e; //populates with tentative event (holds state for what to show on screen)
 
     UI::Label actionAttackLabel;  UI::Button actionAttackButton;
     UI::Label actionMessageLabel; UI::Button actionMessageButton;
     UI::Label actionDefendLabel;  UI::Button actionDefendButton;
 
     UI::Label whatLabel;  UI::Button whatAttackButton; UI::Label whatAttackLabel; UI::Button whatDefendButton; UI::Label whatDefendLabel;
-    UI::Label whoLabel;   UI::Button whoNButton; UI::Button whoEButton; UI::Button whoSButton; UI::Button whoWButton;
-    UI::Label whenLabel;  UI::Button whenSunButton; UI::Button whenMonButton; UI::Button whenTueButton; UI::Button whenWedButton; UI::Button whenThuButton;UI::Button whenFriButton;UI::Button whenSatButton;
-    UI::Label whereLabel; UI::Button whereNButton; UI::Button whereEButton; UI::Button whereSButton; UI::Button whereWButton;
+    UI::Label whoLabel;   UI::Button whoBtns[4];
+    UI::Label whenLabel;  UI::Button whenBtns[7];
+    UI::Label whereLabel; UI::Button whereBtns[4];
 
     UI::Label confirmLabel; UI::Button confirmButton;
     UI::Label cancelLabel;  UI::Button cancelButton;
@@ -50,12 +46,29 @@ class PlayScene : public Scene
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
-    ServerModel *s_model;
-    ServerModel **s_model_ptr; //Pointers to the server model pointer 'owned' by game
-    ClientModel *c_model;
-    ClientModel **c_model_ptr; //Pointers to the client model pointer 'owned' by game
+    ServerModel *s;
+    ServerModel **s_ptr; //Pointers to the server model pointer 'owned' by game
+    ClientModel *c;
+    ClientModel **c_ptr; //Pointers to the client model pointer 'owned' by game
 
     char known_day;
+
+    Event e; //populates with tentative event (holds state for what to show on screen)
+    void zeroE();
+    void chooseAction(In &in);
+    void chooseWhat(In &in);
+    void chooseWho(In &in);
+    void chooseWhen(In &in);
+    void chooseWhere(In &in);
+    void seekConfirmation(In &in);
+
+    void drawAction();
+    void drawWhat();
+    void drawWho();
+    void drawWhen();
+    void drawWhere();
+    void drawConfirmation();
+    void drawWaiting();
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
     ~PlayScene();

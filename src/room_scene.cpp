@@ -105,7 +105,7 @@ void RoomScene::draw()
   for(int i = 0; i < 4; i++)
   {
     char card = cmp.cardinal(i);
-    if(c->cardinalConnected(card))
+    if(c->model.cardinalConnected(card))
     {
       cardLbls[i].draw(graphics);
       if(c->imCardinal(card))

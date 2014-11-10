@@ -94,6 +94,16 @@ bool Model::connectionConnected(char con)
   return connectionConnection(con) != '0';
 }
 
+bool Model::cardinalHasAction(char card)
+{
+  return cardinalAction(card).type != '0';
+}
+
+bool Model::connectionHasAction(char con)
+{
+  return connectionAction(con).type != '0';
+}
+
 bool Model::rolesAssigned()
 {
   return
@@ -101,6 +111,11 @@ bool Model::rolesAssigned()
     cardinalConnected('e') &&
     cardinalConnected('s') &&
     cardinalConnected('w');
+}
+
+char Model::currentDay()
+{
+  return week.day((days+7)%7); //+7 for obvious cross-lang modulus behavior
 }
 
 Model::~Model()

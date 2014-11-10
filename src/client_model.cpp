@@ -19,7 +19,12 @@ bool ClientModel::imConnected()
   return client->connection != '0';
 }
 
-bool ClientModel::myCardinal()
+char ClientModel::myConnection()
+{
+  return client->connection;
+}
+
+char ClientModel::myCardinal()
 {
   return model.connectionCardinal(client->connection);
 }
@@ -29,9 +34,9 @@ bool ClientModel::imCardinal(char card)
   return imConnected() && model.cardinalConnection(card) == client->connection;
 }
 
-bool ClientModel::cardinalConnected(char card)
+bool ClientModel::iHaveAction()
 {
-  return model.cardinalGeneral(card).connection != '0';
+  return imConnected() && model.connectionHasAction(client->connection);
 }
 
 void ClientModel::tick()
