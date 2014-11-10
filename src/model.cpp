@@ -133,6 +133,19 @@ Event& Model::connectionAction(char con)
   return cardinalAction(connectionCardinal(con));
 }
 
+Messenger& Model::cardinalMessage(char card)
+{
+  for(int i = 0; i < messengers.length(); i++)
+    if(messengers[i].to == card &&
+       messengers[i].at == card) return messengers[i];
+  return nullMessenger;
+}
+
+Messenger& Model::connectionMessage(char con)
+{
+  return cardinalMessage(connectionCardinal(con));
+}
+
 bool Model::cardinalConnected(char card)
 {
   return cardinalGeneral(card).connection != '0';
@@ -151,6 +164,19 @@ bool Model::cardinalHasAction(char card)
 bool Model::connectionHasAction(char con)
 {
   return connectionAction(con).type != '0';
+}
+
+bool Model::cardinalHasMessage(char card)
+{
+  for(int i = 0; i < messengers.length(); i++)
+    if(messengers[i].to == card &&
+       messengers[i].at == card) return true;
+  return false;
+}
+
+bool Model::connectionHasMessage(char con)
+{
+  return cardinalHasMessage(connectionCardinal(con));
 }
 
 bool Model::rolesAssigned()

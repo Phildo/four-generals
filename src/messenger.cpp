@@ -1,5 +1,7 @@
 #include "messenger.h"
 
+#include "logger.h"
+
 #include <cstring> //memset for simple initialization
 
 Messenger::Messenger()
@@ -26,6 +28,25 @@ bool Messenger::advance()
     return true;
   }
   return false;
+}
+
+char *Messenger::message()
+{
+  if(what == '0') sprintf(message_buff,"ALAK SJVAWIA JLWKFJALWKDFJ X");
+  if(what == 'a')
+  {
+    if(who == '0' && when == '0') sprintf(message_buff,"Attack ASLDKFJI ALSEIFJ on LKAJ IOAJWLDKFJA!");
+    else if(who == '0')           sprintf(message_buff,"Attack JIJOJLKW DFKJ  on %c!",when);
+    else if(when == '0')          sprintf(message_buff,"Attack %c on AKJLIJ LAKWJF!",who);
+    else                          sprintf(message_buff,"Attack %c on %c!",who,when);
+  }
+  if(what == 'd')
+  {
+    if(when == '0') sprintf(message_buff,"Defend on AKJLIJ LAKWJF!");
+    else            sprintf(message_buff,"Defend on %c!",when);
+  }
+
+  return &message_buff[0];
 }
 
 Messenger::~Messenger()

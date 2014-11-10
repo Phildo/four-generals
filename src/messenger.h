@@ -23,6 +23,9 @@ class Messenger
 
     bool advance();
 
+    char *message();
+    char message_buff[256];
+
     ~Messenger();
 };
 

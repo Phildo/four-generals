@@ -20,6 +20,7 @@ class Model
 
     //unordered
     Array<Messenger,16> messengers;
+    Messenger nullMessenger; //equivalent to 5th member of other arrays
 
     int days;
 
@@ -39,10 +40,14 @@ class Model
     Event& generalAction(General g);
     Event& cardinalAction(char card);
     Event& connectionAction(char con);
+    Messenger& cardinalMessage(char card);
+    Messenger& connectionMessage(char con);
     bool cardinalConnected(char card);
     bool connectionConnected(char con);
     bool cardinalHasAction(char card);
     bool connectionHasAction(char con);
+    bool cardinalHasMessage(char card);
+    bool connectionHasMessage(char con);
     bool rolesAssigned();
     bool actionsAssigned();
 

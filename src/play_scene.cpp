@@ -62,6 +62,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   whoLabel     = UI::Label(ww/2-50, wh/2-10, 20, "who");
   whenLabel    = UI::Label(ww/2-50, wh/2-10, 20, "when");
   whereLabel   = UI::Label(ww/2-50, wh/2-10, 20, "where");
+  messageLabel = UI::Label(ww/2-50, wh/2-10, 20, "message");
   debreifLabel = UI::Label(ww/2-50, wh/2-10, 20, "debreif");
   waitingLabel = UI::Label(ww/2-50, wh/2-10, 20, "waiting");
 
@@ -216,6 +217,11 @@ void PlayScene::drawDebreif()
 void PlayScene::drawWaiting()
 {
   waitingLabel.draw(graphics);
+}
+
+void PlayScene::drawMessage()
+{
+  messageLabel.draw(graphics);
 }
 
 void PlayScene::touch(In &in)

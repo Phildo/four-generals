@@ -36,6 +36,7 @@ class PlayScene : public Scene
     UI::Label confirmLabel; UI::Button confirmButton;
     UI::Label cancelLabel;  UI::Button cancelButton;
 
+    UI::Label messageLabel;
     UI::Label debreifLabel;
     UI::Label waitingLabel;
 
@@ -63,6 +64,7 @@ class PlayScene : public Scene
     void drawWhen();
     void drawWhere();
     void drawConfirmation();
+    void drawMessage();
     void drawDebreif();
     void drawWaiting();
   public:
