@@ -20,6 +20,8 @@ class ClientModel
     char myCardinal();
     bool imCardinal(char card);
     bool iHaveAction();
+    bool iHaveMessage();
+    Messenger& myMessage();
 
     void tick();
 };

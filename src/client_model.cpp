@@ -39,6 +39,16 @@ bool ClientModel::iHaveAction()
   return imConnected() && model.connectionHasAction(client->connection);
 }
 
+bool ClientModel::iHaveMessage()
+{
+  return imConnected() && model.connectionHasMessage(client->connection);
+}
+
+Messenger& ClientModel::myMessage()
+{
+  return model.connectionMessage(client->connection);
+}
+
 void ClientModel::tick()
 {
   Event *e;

@@ -221,6 +221,9 @@ void PlayScene::drawWaiting()
 
 void PlayScene::drawMessage()
 {
+  int ww = graphics->winWidth();
+  int wh = graphics->winHeight();
+  messageLabel = UI::Label(ww/2-130, wh/2+10, 15, c->myMessage().message());
   messageLabel.draw(graphics);
 }
 
@@ -287,6 +290,8 @@ void PlayScene::draw()
     cardLbls[i].draw(graphics);
   youBox.draw(graphics);
 
+  if(c->iHaveMessage())
+    drawMessage();
   if(!c->iHaveAction())
   {
     drawDebreif();
