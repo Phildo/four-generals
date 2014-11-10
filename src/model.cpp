@@ -68,21 +68,14 @@ void Model::commitActions()
     }
     else if(a.action == 'm')
     {
-      //m = Messenger(*e);
-      //messengers.add(m);
+      Messenger m(a);
+      messengers.add(m);
     }
   }
 
   //update messengers
   for(int i = 0; i < messengers.length(); i++)
-  {
-    if(messengers[i].at == messengers[i].to) //last
-      messengers.remove(i); i--; //display message
-    if(messengers[i].at == messengers[i].where) //middle
-      messengers[i].at = messengers[i].to; //allow sabotage
-    if(messengers[i].at == messengers[i].from) //first
-      messengers[i].at = messengers[i].where;
-  }
+    if(!messengers[i].advance()) { messengers.remove(i); i--; }
 
   cardinalAction('n').zero();
   cardinalAction('e').zero();

@@ -17,13 +17,15 @@ Messenger::Messenger(char fro, char a, char t, char wat, char wo, char wen, char
 {
 }
 
-void Messenger::advance()
+bool Messenger::advance()
 {
   if(at != to)
   {
     if(at != where) at = where;
     else at = to;
+    return true;
   }
+  return false;
 }
 
 Messenger::~Messenger()
