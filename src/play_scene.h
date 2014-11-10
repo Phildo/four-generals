@@ -16,8 +16,6 @@ class ClientModel;
 class PlayScene : public Scene
 {
   private:
-    Compass cmp;
-    Week wk;
     Graphics *graphics;
 
     UI::Button backButton;

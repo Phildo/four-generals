@@ -15,10 +15,6 @@ class Model
 {
   private :
   public :
-    Compass compass;
-    Week week;
-    ConIds conids;
-
     //in connection order
     char connections[5];
 

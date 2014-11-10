@@ -1,14 +1,5 @@
 #include "conids.h"
 
-ConIds::ConIds()
-{
-  conids[0] = '1';
-  conids[1] = '2';
-  conids[2] = '3';
-  conids[3] = '4';
-  conids[4] = '0';
-}
-
 char ConIds::conid(int i)
 {
   if(i > 3 || i < 0) return '0';

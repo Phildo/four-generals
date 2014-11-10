@@ -1,14 +1,5 @@
 #include "compass.h"
 
-Compass::Compass()
-{
-  cardinals[0] = 'n';
-  cardinals[1] = 'e';
-  cardinals[2] = 's';
-  cardinals[3] = 'w';
-  cardinals[4] = '0';
-}
-
 char Compass::cardinal(int i)
 {
   if(i > 3 || i < 0) return '0';

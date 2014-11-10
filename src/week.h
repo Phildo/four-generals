@@ -1,17 +1,14 @@
 #ifndef _FG_WEEK_H_
 #define _FG_WEEK_H_
 
-class Week
+namespace Week
 {
-  private:
-    char days[8];
-  public:
-    Week();
-    char day(int i);
-    int iday(char c);
-    char nextday(char c);
-    bool test();
-};
+  static const char days[8] = {'s','m','t','w','h','f','a','0'};
+  char day(int i);
+  int iday(char c);
+  char nextday(char c);
+  bool test();
+}
 
 #endif
 

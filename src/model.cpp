@@ -45,19 +45,19 @@ void Model::commitActions()
 {
   for(int i = 0; i < 4; i++)
   {
-    char card = compass.cardinal(i);
+    char card = Compass::cardinal(i);
     Event a = cardinalAction(card);
     if(a.action == 'a')
     {
       if(cardinalAction(a.who).action != 'd' && //attackee isn't defending
-         cardinalAction(compass.opcardinal(card)).action == 'a' && //partner is attacking
-         cardinalAction(compass.opcardinal(card)).who == a.who) //the same person as you
+         cardinalAction(Compass::opcardinal(card)).action == 'a' && //partner is attacking
+         cardinalAction(Compass::opcardinal(card)).who == a.who) //the same person as you
       {
         //win
       }
       else if(cardinalAction(a.who).action == 'd' && //attackee is defending
-            !(cardinalAction(compass.opcardinal(card)).action == 'a' && //and partner isn't attacking
-              cardinalAction(compass.opcardinal(card)).who == a.who)) //the same person as you
+            !(cardinalAction(Compass::opcardinal(card)).action == 'a' && //and partner isn't attacking
+              cardinalAction(Compass::opcardinal(card)).who == a.who)) //the same person as you
       {
         //lose
       }
@@ -92,7 +92,7 @@ void Model::commitActions()
 
 char& Model::connectionConnection(char con)
 {
-  return connections[conids.iconid(con)];
+  return connections[ConIds::iconid(con)];
 }
 
 char& Model::cardinalConnection(char card)
@@ -111,7 +111,7 @@ char Model::connectionCardinal(char con)
 
 General& Model::cardinalGeneral(char card)
 {
-  return generals[compass.icardinal(card)];
+  return generals[Compass::icardinal(card)];
 }
 
 General& Model::connectionGeneral(char con)
@@ -123,12 +123,12 @@ General& Model::connectionGeneral(char con)
 
 Event& Model::generalAction(General g)
 {
-  return actions[compass.icardinal(g.cardinal)];
+  return actions[Compass::icardinal(g.cardinal)];
 }
 
 Event& Model::cardinalAction(char card)
 {
-  return actions[compass.icardinal(card)];
+  return actions[Compass::icardinal(card)];
 }
 
 Event& Model::connectionAction(char con)
@@ -176,7 +176,7 @@ bool Model::actionsAssigned()
 
 char Model::currentDay()
 {
-  return week.day((days+7)%7); //+7 for obvious cross-lang modulus behavior
+  return Week::day((days+7)%7); //+7 for obvious cross-lang modulus behavior
 }
 
 Model::~Model()

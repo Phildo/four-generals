@@ -14,7 +14,6 @@ class ClientModel;
 class RoomScene : public Scene
 {
   private:
-    Compass cmp;
     Graphics *graphics;
 
     UI::Button backButton;

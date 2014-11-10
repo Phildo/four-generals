@@ -27,29 +27,29 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
 #define pos(x) (30+((ww-60)/7)*x)+((ww-60)/7)/2-10
 
-  dayLbls[wk.iday('s')] = UI::Label(pos(0), 10, 20, "Su");
-  dayLbls[wk.iday('m')] = UI::Label(pos(1), 10, 20, "Mo");
-  dayLbls[wk.iday('t')] = UI::Label(pos(2), 10, 20, "Tu");
-  dayLbls[wk.iday('w')] = UI::Label(pos(3), 10, 20, "We");
-  dayLbls[wk.iday('h')] = UI::Label(pos(4), 10, 20, "Th");
-  dayLbls[wk.iday('f')] = UI::Label(pos(5), 10, 20, "Fr");
-  dayLbls[wk.iday('a')] = UI::Label(pos(6), 10, 20, "Sa");
+  dayLbls[Week::iday('s')] = UI::Label(pos(0), 10, 20, "Su");
+  dayLbls[Week::iday('m')] = UI::Label(pos(1), 10, 20, "Mo");
+  dayLbls[Week::iday('t')] = UI::Label(pos(2), 10, 20, "Tu");
+  dayLbls[Week::iday('w')] = UI::Label(pos(3), 10, 20, "We");
+  dayLbls[Week::iday('h')] = UI::Label(pos(4), 10, 20, "Th");
+  dayLbls[Week::iday('f')] = UI::Label(pos(5), 10, 20, "Fr");
+  dayLbls[Week::iday('a')] = UI::Label(pos(6), 10, 20, "Sa");
 
-  dayBoxs[wk.iday('s')] = UI::Box(pos(0), 10, 20, 20);
-  dayBoxs[wk.iday('m')] = UI::Box(pos(1), 10, 20, 20);
-  dayBoxs[wk.iday('t')] = UI::Box(pos(2), 10, 20, 20);
-  dayBoxs[wk.iday('w')] = UI::Box(pos(3), 10, 20, 20);
-  dayBoxs[wk.iday('h')] = UI::Box(pos(4), 10, 20, 20);
-  dayBoxs[wk.iday('f')] = UI::Box(pos(5), 10, 20, 20);
-  dayBoxs[wk.iday('a')] = UI::Box(pos(6), 10, 20, 20);
+  dayBoxs[Week::iday('s')] = UI::Box(pos(0), 10, 20, 20);
+  dayBoxs[Week::iday('m')] = UI::Box(pos(1), 10, 20, 20);
+  dayBoxs[Week::iday('t')] = UI::Box(pos(2), 10, 20, 20);
+  dayBoxs[Week::iday('w')] = UI::Box(pos(3), 10, 20, 20);
+  dayBoxs[Week::iday('h')] = UI::Box(pos(4), 10, 20, 20);
+  dayBoxs[Week::iday('f')] = UI::Box(pos(5), 10, 20, 20);
+  dayBoxs[Week::iday('a')] = UI::Box(pos(6), 10, 20, 20);
 
-  whenBtns[wk.iday('s')] = UI::Button(pos(0), 10, 20, 20);
-  whenBtns[wk.iday('m')] = UI::Button(pos(1), 10, 20, 20);
-  whenBtns[wk.iday('t')] = UI::Button(pos(2), 10, 20, 20);
-  whenBtns[wk.iday('w')] = UI::Button(pos(3), 10, 20, 20);
-  whenBtns[wk.iday('h')] = UI::Button(pos(4), 10, 20, 20);
-  whenBtns[wk.iday('f')] = UI::Button(pos(5), 10, 20, 20);
-  whenBtns[wk.iday('a')] = UI::Button(pos(6), 10, 20, 20);
+  whenBtns[Week::iday('s')] = UI::Button(pos(0), 10, 20, 20);
+  whenBtns[Week::iday('m')] = UI::Button(pos(1), 10, 20, 20);
+  whenBtns[Week::iday('t')] = UI::Button(pos(2), 10, 20, 20);
+  whenBtns[Week::iday('w')] = UI::Button(pos(3), 10, 20, 20);
+  whenBtns[Week::iday('h')] = UI::Button(pos(4), 10, 20, 20);
+  whenBtns[Week::iday('f')] = UI::Button(pos(5), 10, 20, 20);
+  whenBtns[Week::iday('a')] = UI::Button(pos(6), 10, 20, 20);
 
   actionAttackLabel  = UI::Label(         20, wh-30, 20, "attack");  actionAttackButton  = UI::Button(       20, wh-30, 100, 20); whatAttackButton = UI::Button(       20, wh-30, 100, 20); whatAttackLabel = UI::Label(       20, wh-30, 20, "attack");
   actionMessageLabel = UI::Label(ww  -100-20, wh-30, 20, "message"); actionMessageButton = UI::Button(ww-100-20, wh-30, 100, 20);
@@ -88,31 +88,31 @@ void PlayScene::enter()
 
   //bottom (you)
   card = c->myCardinal();
-  icard = cmp.icardinal(card);
+  icard = Compass::icardinal(card);
   scard[0] = card;
   cardLbls[icard]  = UI::Label( xs[2],ys[2], 20, scard);
   whoBtns[icard]   = UI::Button(xs[2],ys[2], 20, 20);
   whereBtns[icard] = UI::Button(xs[2],ys[2], 20, 20);
 
   //left (clockwise)
-  card = cmp.cwcardinal(card);
-  icard = cmp.icardinal(card);
+  card = Compass::cwcardinal(card);
+  icard = Compass::icardinal(card);
   scard[0] = card;
   cardLbls[icard]  = UI::Label( xs[3],ys[3], 20, scard);
   whoBtns[icard]   = UI::Button(xs[3],ys[3], 20, 20);
   whereBtns[icard] = UI::Button(xs[3],ys[3], 20, 20);
 
   //top (clockwise)
-  card = cmp.cwcardinal(card);
-  icard = cmp.icardinal(card);
+  card = Compass::cwcardinal(card);
+  icard = Compass::icardinal(card);
   scard[0] = card;
   cardLbls[icard]  = UI::Label( xs[0],ys[0], 20, scard);
   whoBtns[icard]   = UI::Button(xs[0],ys[0], 20, 20);
   whereBtns[icard] = UI::Button(xs[0],ys[0], 20, 20);
 
   //top (clockwise)
-  card = cmp.cwcardinal(card);
-  icard = cmp.icardinal(card);
+  card = Compass::cwcardinal(card);
+  icard = Compass::icardinal(card);
   scard[0] = card;
   cardLbls[icard]  = UI::Label( xs[1],ys[1], 20, scard);
   whoBtns[icard]   = UI::Button(xs[1],ys[1], 20, 20);
@@ -146,19 +146,19 @@ void PlayScene::chooseWhat(In &in)
 void PlayScene::chooseWho(In &in)
 {
   for(int i = 0; i < 4; i++)
-    if(whoBtns[i].query(in)) e.who = cmp.cardinal(i);
+    if(whoBtns[i].query(in)) e.who = Compass::cardinal(i);
 }
 
 void PlayScene::chooseWhen(In &in)
 {
   for(int i = 0; i < 7; i++)
-    if(whenBtns[i].query(in)) e.when = wk.day(i);
+    if(whenBtns[i].query(in)) e.when = Week::day(i);
 }
 
 void PlayScene::chooseWhere(In &in)
 {
   for(int i = 0; i < 4; i++)
-    if(whereBtns[i].query(in)) e.where = cmp.cardinal(i);
+    if(whereBtns[i].query(in)) e.where = Compass::cardinal(i);
 }
 
 void PlayScene::seekConfirmation(In &in)
@@ -262,7 +262,7 @@ void PlayScene::draw()
   for(int i = 0; i < 7; i++)
   {
     dayLbls[i].draw(graphics);
-    if(c->model.currentDay() == wk.day(i))
+    if(c->model.currentDay() == Week::day(i))
       dayBoxs[i].draw(graphics);
   }
 

@@ -1,17 +1,5 @@
 #include "week.h"
 
-Week::Week()
-{
-  days[0] = 's';
-  days[1] = 'm';
-  days[2] = 't';
-  days[3] = 'w';
-  days[4] = 'h';
-  days[5] = 'f';
-  days[6] = 'a';
-  days[7] = '0';
-}
-
 char Week::day(int i)
 {
   if(i > 6 || i < 0) return '0';
