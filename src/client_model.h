@@ -22,6 +22,8 @@ class ClientModel
     bool iHaveAction();
     bool iHaveMessage();
     Messenger& myMessage();
+    bool iHaveIntruder();
+    Messenger& myIntruder();
 
     void tick();
 };

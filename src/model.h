@@ -42,12 +42,16 @@ class Model
     Event& connectionAction(char con);
     Messenger& cardinalMessage(char card);
     Messenger& connectionMessage(char con);
+    Messenger& cardinalIntruder(char card);
+    Messenger& connectionIntruder(char con);
     bool cardinalConnected(char card);
     bool connectionConnected(char con);
     bool cardinalHasAction(char card);
     bool connectionHasAction(char con);
     bool cardinalHasMessage(char card);
     bool connectionHasMessage(char con);
+    bool cardinalHasIntruder(char card);
+    bool connectionHasIntruder(char con);
     bool rolesAssigned();
     bool actionsAssigned();
 

@@ -49,6 +49,16 @@ Messenger& ClientModel::myMessage()
   return model.connectionMessage(client->connection);
 }
 
+bool ClientModel::iHaveIntruder()
+{
+  return imConnected() && model.connectionHasIntruder(client->connection);
+}
+
+Messenger& ClientModel::myIntruder()
+{
+  return model.connectionIntruder(client->connection);
+}
+
 void ClientModel::tick()
 {
   Event *e;
