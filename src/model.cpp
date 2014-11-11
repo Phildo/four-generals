@@ -15,6 +15,8 @@ Model::Model()
   connections[3] = '0';
   connections[4] = '0';
   days = -1;
+  winning_card = '0';
+  losing_card = '0';
 }
 
 void Model::connectCon(char con)
@@ -57,13 +59,15 @@ void Model::commitActions()
          cardinalAction(Compass::opcardinal(card)).action == 'a' && //partner is attacking
          cardinalAction(Compass::opcardinal(card)).who == a.who) //the same person as you
       {
-        //win
+        winning_card = card;
+        losing_card = a.who;
       }
       else if(cardinalAction(a.who).action == 'd' && //attackee is defending
             !(cardinalAction(Compass::opcardinal(card)).action == 'a' && //and partner isn't attacking
               cardinalAction(Compass::opcardinal(card)).who == a.who)) //the same person as you
       {
-        //lose
+        losing_card = card;
+        winning_card = a.who;
       }
     }
     else if(a.action == 'm')
@@ -205,6 +209,26 @@ bool Model::cardinalHasIntruder(char card)
 bool Model::connectionHasIntruder(char con)
 {
   return cardinalHasIntruder(connectionCardinal(con));
+}
+
+bool Model::cardinalWin(char card)
+{
+  return (card == winning_card || Compass::opcardinal(card) == winning_card);
+}
+
+bool Model::connectionWin(char con)
+{
+  return cardinalWin(connectionCardinal(con));
+}
+
+bool Model::cardinalLose(char card)
+{
+  return (card == losing_card || Compass::opcardinal(card) == losing_card);
+}
+
+bool Model::connectionLose(char con)
+{
+  return cardinalLose(connectionCardinal(con));
 }
 
 bool Model::rolesAssigned()

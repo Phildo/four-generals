@@ -39,6 +39,8 @@ class PlayScene : public Scene
     UI::Label messageLabel;
     UI::Label debreifLabel;
     UI::Label waitingLabel;
+    UI::Label winLabel;
+    UI::Label loseLabel;
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
@@ -67,6 +69,8 @@ class PlayScene : public Scene
     void drawMessage();
     void drawDebreif();
     void drawWaiting();
+    void drawWin();
+    void drawLose();
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
     ~PlayScene();

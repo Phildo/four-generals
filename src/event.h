@@ -63,7 +63,9 @@ struct Event //all members chars for quick/simple serializability
   char event_type_buff[256];
   #endif
 
-  private: int hackatoi(const char *c);
+  private:
+    void hackitoa(int i, char *c);
+    int hackatoi(const char *c);
 };
 
 #endif

@@ -39,18 +39,9 @@ void Event::zero()
 
 char *Event::serialize()
 {
-  //fill id_c with FG_EVT_ID_MAX_DEC_STR_LEN digit char rep of id (ie '000012')
-  int tmp_left = id_i;
-  int tmp_this = 0;
-  for(int i = FG_EVT_ID_MAX_DEC_STR_LEN-1; i > 0; i--)
-  {
-    tmp_this = tmp_left%10;
-    id_c[i] = '0'+tmp_this;
-    tmp_left -= tmp_this; //prob don't need to do because of truncation in division
-    tmp_left /= 10;
-  }
-
-  return (char *)&connection;
+  hackitoa(messenger_id_i,messenger_id_c);
+  hackitoa(id_i,id_c);
+  return (char *)&connection; //holy hacks on hacks on hacks
 }
 
 char *Event::humanAction()
@@ -110,7 +101,21 @@ char *Event::debug()
 }
 #endif
 
+
 //yuck
+void Event::hackitoa(int i, char *c)
+{
+  //fill id_c with FG_EVT_ID_MAX_DEC_STR_LEN digit char rep of id (ie '000012')
+  int d = 0;
+  for(int j = FG_EVT_ID_MAX_DEC_STR_LEN-1; j > 0; j--)
+  {
+    d = i%10;
+    c[j] = '0'+d;
+    i -= d; //prob don't need to do because of truncation in division
+    i /= 10;
+  }
+}
+
 int Event::hackatoi(const char *c)
 {
   int r = 0;

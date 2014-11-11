@@ -65,6 +65,8 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   messageLabel = UI::Label(ww/2-50, wh/2-10, 20, "message");
   debreifLabel = UI::Label(ww/2-50, wh/2-10, 20, "debreif");
   waitingLabel = UI::Label(ww/2-50, wh/2-10, 20, "waiting");
+  winLabel     = UI::Label(ww/2-50, wh/2-10, 20, "WIN");
+  loseLabel    = UI::Label(ww/2-50, wh/2-10, 20, "LOSE");
 
   confirmLabel = UI::Label(         20, wh-30, 20, "confirm"); confirmButton = UI::Button(       20, wh-30, 100, 20);
   cancelLabel  = UI::Label(ww/2-50    , wh-30, 20, "cancel");  cancelButton  = UI::Button(ww/2-50  , wh-30, 100, 20);
@@ -227,39 +229,52 @@ void PlayScene::drawMessage()
   messageLabel.draw(graphics);
 }
 
+void PlayScene::drawWin()
+{
+  winLabel.draw(graphics);
+}
+
+void PlayScene::drawLose()
+{
+  loseLabel.draw(graphics);
+}
+
 void PlayScene::touch(In &in)
 {
   if(backButton.query(in)) { }
 
   //oh god terrible tree traversal touch propagation
 
-  if(!c->iHaveAction())
+  if(!c->iWin() && !c->iLose())
   {
-    if(e.action == '0') chooseAction(in);
-    else if(e.action == 'a') //attack
+    if(!c->iHaveAction())
     {
-      if(e.who == '0') chooseWho(in);
-      else seekConfirmation(in);
-    }
-    else if(e.action == 'm') //message
-    {
-      if(e.what == '0') chooseWhat(in);
-      else if(e.what == 'a') //message attack
+      if(e.action == '0') chooseAction(in);
+      else if(e.action == 'a') //attack
       {
         if(e.who == '0') chooseWho(in);
-        else if(e.when == '0') chooseWhen(in);
-        else if(e.where == '0') chooseWhere(in);
         else seekConfirmation(in);
       }
-      else if(e.what == 'd') //message defend
+      else if(e.action == 'm') //message
       {
-        if(e.when == '0') chooseWhen(in);
-        else if(e.where == '0') chooseWhere(in);
-        else seekConfirmation(in);
+        if(e.what == '0') chooseWhat(in);
+        else if(e.what == 'a') //message attack
+        {
+          if(e.who == '0') chooseWho(in);
+          else if(e.when == '0') chooseWhen(in);
+          else if(e.where == '0') chooseWhere(in);
+          else seekConfirmation(in);
+        }
+        else if(e.what == 'd') //message defend
+        {
+          if(e.when == '0') chooseWhen(in);
+          else if(e.where == '0') chooseWhere(in);
+          else seekConfirmation(in);
+        }
       }
+      else if(e.action == 'd') //defend
+        seekConfirmation(in);
     }
-    else if(e.action == 'd') //defend
-      seekConfirmation(in);
   }
 }
 
@@ -290,37 +305,48 @@ void PlayScene::draw()
     cardLbls[i].draw(graphics);
   youBox.draw(graphics);
 
-  if(c->iHaveMessage())
-    drawMessage();
-  if(!c->iHaveAction())
+  if(c->iWin())
   {
-    drawDebreif();
-    if(e.action == '0') drawAction();
-    else if(e.action == 'a') //attack
+    drawWin();
+  }
+  else if(c->iLose())
+  {
+    drawLose();
+  }
+  else
+  {
+    if(c->iHaveMessage())
+      drawMessage();
+    if(!c->iHaveAction())
     {
-      if(e.who == '0') drawWho();
-      else drawConfirmation();
-    }
-    else if(e.action == 'm') //message
-    {
-      if(e.what == '0') drawWhat();
-      else if(e.what == 'a') //message attack
+      drawDebreif();
+      if(e.action == '0') drawAction();
+      else if(e.action == 'a') //attack
       {
         if(e.who == '0') drawWho();
-        else if(e.when == '0') drawWhen();
-        else if(e.where == '0') drawWhere();
         else drawConfirmation();
       }
-      else if(e.what == 'd') //message defend
+      else if(e.action == 'm') //message
       {
-        if(e.when == '0') drawWhen();
-        else if(e.where == '0') drawWhere();
-        else drawConfirmation();
+        if(e.what == '0') drawWhat();
+        else if(e.what == 'a') //message attack
+        {
+          if(e.who == '0') drawWho();
+          else if(e.when == '0') drawWhen();
+          else if(e.where == '0') drawWhere();
+          else drawConfirmation();
+        }
+        else if(e.what == 'd') //message defend
+        {
+          if(e.when == '0') drawWhen();
+          else if(e.where == '0') drawWhere();
+          else drawConfirmation();
+        }
       }
+      else if(e.action == 'd') drawConfirmation();
     }
-    else if(e.action == 'd') drawConfirmation();
+    else drawWaiting(); //wait
   }
-  else drawWaiting(); //wait
 }
 
 void PlayScene::leave()

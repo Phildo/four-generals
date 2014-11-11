@@ -8,6 +8,7 @@
 ServerModel::ServerModel(Network::Server *s)
 {
   server = s;
+  messenger_id = 0;
 }
 
 ServerModel::~ServerModel()
@@ -59,6 +60,8 @@ void ServerModel::tick()
       case e_type_commit_action:
         if(!model.connectionHasAction(e->connection))
         {
+          //inject assignment of messenger id here
+          if(e->action == 'm') e->messenger_id_i = nextMessId();
           model.assignConAction(e->connection, *e);
           server->broadcast(e);
         }
@@ -73,5 +76,11 @@ void ServerModel::tick()
       default: break;
     }
   }
+}
+
+int ServerModel::nextMessId()
+{
+  messenger_id++;
+  return messenger_id;
 }
 

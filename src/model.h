@@ -23,6 +23,8 @@ class Model
     Messenger nullMessenger; //equivalent to 5th member of other arrays
 
     int days;
+    char winning_card;
+    char losing_card;
 
     void connectCon(char con);
     void disconnectCon(char con);
@@ -52,6 +54,10 @@ class Model
     bool connectionHasMessage(char con);
     bool cardinalHasIntruder(char card);
     bool connectionHasIntruder(char con);
+    bool cardinalWin(char card);
+    bool connectionWin(char con);
+    bool cardinalLose(char card);
+    bool connectionLose(char con);
     bool rolesAssigned();
     bool actionsAssigned();
 

@@ -59,6 +59,16 @@ Messenger& ClientModel::myIntruder()
   return model.connectionIntruder(client->connection);
 }
 
+bool ClientModel::iWin()
+{
+  return model.connectionWin(client->connection);
+}
+
+bool ClientModel::iLose()
+{
+  return model.connectionLose(client->connection);
+}
+
 void ClientModel::tick()
 {
   Event *e;

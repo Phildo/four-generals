@@ -24,6 +24,8 @@ class ClientModel
     Messenger& myMessage();
     bool iHaveIntruder();
     Messenger& myIntruder();
+    bool iWin();
+    bool iLose();
 
     void tick();
 };

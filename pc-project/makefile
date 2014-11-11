@@ -26,3 +26,5 @@ debug:
 debug4:
 	./debug4.sh
 
+kill:
+	killAll pc.out

@@ -38,6 +38,9 @@ run: prun
 debug: pdebug
 	
 
+kill: pkill
+	
+
 
 #
 # android
@@ -60,6 +63,9 @@ arun: adefine
 adebug: adefine
 	cd $(ANDROID_DIR); amake debug;
 
+akill:
+	cd $(ANDROID_DIR); amake kill;
+
 #
 # ios
 #
@@ -80,6 +86,10 @@ irun: idefine
 
 idebug: idefine
 	cd $(IOS_DIR); amake debug;
+
+ikill:
+	cd $(IOS_DIR); amake kill;
+
 
 #
 # pc
@@ -107,6 +117,10 @@ pdebug: pdefine
 
 pdebug4: pdefine
 	cd $(PC_DIR); amake debug4;
+
+pkill:
+	cd $(PC_DIR); amake kill;
+
 
 #
 # testing

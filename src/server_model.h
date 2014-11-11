@@ -11,9 +11,11 @@ class ServerModel
     Network::Server *server;
   public :
     Model model;
+    int messenger_id; //needs to take authority in assigning ids
     ServerModel(Network::Server *s);
     ~ServerModel();
     void tick();
+    int nextMessId();
 };
 
 #endif
