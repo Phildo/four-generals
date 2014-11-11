@@ -10,12 +10,12 @@ Messenger::Messenger()
 }
 
 Messenger::Messenger(Event e)
-: from(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), where(e.where)
+: from(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), where(e.where), id(e.messenger_id_i)
 {
 }
 
-Messenger::Messenger(char fro, char a, char t, char wat, char wo, char wen, char were)
-: from(fro), at(a), to(t), what(wat), who(wo), when(wen), where(were)
+Messenger::Messenger(char fro, char a, char t, char wat, char wo, char wen, char were, int i)
+: from(fro), at(a), to(t), what(wat), who(wo), when(wen), where(were), id(i)
 {
 }
 

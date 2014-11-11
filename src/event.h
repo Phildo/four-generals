@@ -3,9 +3,9 @@
 
 #include "defines.h"
 
-#define FG_EVT_MAX_DEC_LEN 6
+#define FG_EVT_ID_MAX_DEC_STR_LEN 6
 
-static const int e_ser_len = 9+FG_EVT_MAX_DEC_LEN+1; //oh god this is a terrible system
+static const int e_ser_len = 9+(2*FG_EVT_ID_MAX_DEC_STR_LEN)+1; //oh god this is a terrible system
 
 static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)
 
@@ -35,12 +35,14 @@ struct Event //all members chars for quick/simple serializability
   /* 7 */ char when;       //corresponds to messenger members
   /* 8 */ char where;      //corresponds to messenger members
   /* 9 */ char type;       //listed above
-  /* 9+FG_EVT_MAX_DEC_LEN */ char id_c[FG_EVT_MAX_DEC_LEN]; //string val of id_i (ie "2415")
-  /* 9+FG_EVT_MAX_DEC_LEN+1 */ char null; //not const because then we can't use default copy
+  /* 9+(1*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char messenger_id_c[FG_EVT_ID_MAX_DEC_STR_LEN]; //string val of messenger_id_i (ie "2415")
+  /* 9+(2*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char id_c[FG_EVT_ID_MAX_DEC_STR_LEN];           //string val of id_i (ie "2415")
+  /* 9+(2*FG_EVT_ID_MAX_DEC_STR_LEN)+1 */ char null; //not const because then we can't use default copy
+  int messenger_id_i;
   int id_i;
 
   Event();
-  Event(char con, char card, char act, char t, char wat, char wo, char wen, char were, char ty, int id);
+  Event(char con, char card, char act, char t, char wat, char wo, char wen, char were, char ty, int m_id, int id);
   Event(char *c);
   void zero();
 
@@ -60,6 +62,8 @@ struct Event //all members chars for quick/simple serializability
   char debug_buff[256];
   char event_type_buff[256];
   #endif
+
+  private: int hackatoi(const char *c);
 };
 
 #endif

@@ -10,6 +10,8 @@ SDL_Rect Sprite::border_bl() { return rect(100,20,10,10); }
 SDL_Rect Sprite::border_b()  { return rect(110,20,10,10); }
 SDL_Rect Sprite::border_br() { return rect(120,20,10,10); }
 
+SDL_Rect Sprite::messenger() { return rect(130,0,10,10); }
+
 bool mapPop = false;
 SDL_Rect alphamap[78];
 SDL_Rect Sprite::alpha(char a)

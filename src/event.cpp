@@ -14,12 +14,18 @@ Event::Event(char *c) //just memcopy that sucka
 {
   memcpy(this, (void *)c, sizeof(Event));
   null = '\0';
-  id_i = atoi(id_c);
+  messenger_id_i = hackatoi(&messenger_id_c[0]);
+  id_i = hackatoi(&id_c[0]);
 }
-Event::Event(char con, char card, char act, char t, char wat, char wo, char wen, char were, char ty, int id)
-: connection(con), cardinal(card), action(act), to(t), what(wat), who(wo), when(wen), where(were), type(ty), id_c("00000"), id_i(id)
+Event::Event(char con, char card, char act, char t, char wat, char wo, char wen, char were, char ty, int m_id, int id)
+: connection(con), cardinal(card), action(act), to(t), what(wat), who(wo), when(wen), where(were), type(ty), messenger_id_i(m_id), id_i(id)
 {
-  id_c[5] = '0'; /*would be '\0' fron initialiazer*/
+  id_c[0] = '0'; messenger_id_c[0] = '0';
+  id_c[1] = '0'; messenger_id_c[1] = '0';
+  id_c[2] = '0'; messenger_id_c[2] = '0';
+  id_c[3] = '0'; messenger_id_c[3] = '0';
+  id_c[4] = '0'; messenger_id_c[4] = '0';
+  id_c[5] = '0'; messenger_id_c[5] = '0';
   null = '\0';
 }
 
@@ -27,15 +33,16 @@ void Event::zero()
 {
   memset(this, '0', sizeof(Event));
   null = '\0';
+  messenger_id_i = 0;
   id_i = 0;
 }
 
 char *Event::serialize()
 {
-  //fill id_c with FG_EVT_MAX_DEC_LEN digit char rep of id (ie '000012')
+  //fill id_c with FG_EVT_ID_MAX_DEC_STR_LEN digit char rep of id (ie '000012')
   int tmp_left = id_i;
   int tmp_this = 0;
-  for(int i = FG_EVT_MAX_DEC_LEN-1; i > 0; i--)
+  for(int i = FG_EVT_ID_MAX_DEC_STR_LEN-1; i > 0; i--)
   {
     tmp_this = tmp_left%10;
     id_c[i] = '0'+tmp_this;
@@ -98,8 +105,22 @@ char *Event::debug()
     default:                    sprintf(event_type_buff,"NO DEBUG READABLE EVENT TYPE FOUND"); break;
   }
 
-  sprintf(debug_buff,"con:%c card:%c act:%c to:%c what:%c who:%c when:%c where:%c id:%d type:%s", connection, cardinal, action, to, what, who, when, where, id_i, event_type_buff);
+  sprintf(debug_buff,"con:%c card:%c act:%c to:%c what:%c who:%c when:%c where:%c mid:%d id:%d type:%s", connection, cardinal, action, to, what, who, when, where, messenger_id_i, id_i, event_type_buff);
   return &debug_buff[0];
 }
 #endif
+
+//yuck
+int Event::hackatoi(const char *c)
+{
+  int r = 0;
+  int p;
+  for(int i = 0; i < FG_EVT_ID_MAX_DEC_STR_LEN; i++)
+  {
+    p = ((int)(*(c+(FG_EVT_ID_MAX_DEC_STR_LEN-1-i))-'0'));
+    for(int j = 0; j < i; j++) p*=10;
+    r += p;
+  }
+  return r;
+}
 

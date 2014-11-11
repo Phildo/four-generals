@@ -14,6 +14,8 @@ namespace Sprite
   SDL_Rect border_b();
   SDL_Rect border_br();
 
+  SDL_Rect messenger();
+
   SDL_Rect alpha(char a);
   SDL_Rect alpha_a();
   SDL_Rect alpha_b();

@@ -17,9 +17,11 @@ class Messenger
     char when;  //'s|m|t|w|h|f|a'
     char where; //cardinal (through which route messenger will take)
 
+    int id;
+
     Messenger();
     Messenger(Event e);
-    Messenger(char fro, char a, char t, char wat, char wo, char wen, char were);
+    Messenger(char fro, char a, char t, char wat, char wo, char wen, char were, int i);
 
     bool advance();
 
