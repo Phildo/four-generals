@@ -62,12 +62,32 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   actionDefendButton   = UI::Button(space(ww,30,100,4,2), wh-30, 100, 20);
   actionSabotageButton = UI::Button(space(ww,30,100,4,3), wh-30, 100, 20);
 
+  howBlockButton    = UI::Button(space(ww,30,100,3,0), wh-30, 100, 20);
+  howReadButton     = UI::Button(space(ww,30,100,3,1), wh-30, 100, 20);
+  howSabotageButton = UI::Button(space(ww,30,100,3,2), wh-30, 100, 20);
+
+  howBlockLabel    = UI::Label(space(ww,30,100,3,0), wh-30, 20, "Block");
+  howReadLabel     = UI::Label(space(ww,30,100,3,1), wh-30, 20, "Read");
+  howSabotageLabel = UI::Label(space(ww,30,100,3,2), wh-30, 20, "Sabotage");
+
+  whichWhatButton  = UI::Button(space(ww,30,100,4,0), wh-30, 100, 20);
+  whichWhoButton   = UI::Button(space(ww,30,100,4,1), wh-30, 100, 20);
+  whichWhenButton  = UI::Button(space(ww,30,100,4,2), wh-30, 100, 20);
+  whichWhereButton = UI::Button(space(ww,30,100,4,3), wh-30, 100, 20);
+
+  whichWhatLabel   = UI::Label(space(ww,30,100,4,0), wh-30, 20, "What");
+  whichWhoLabel    = UI::Label(space(ww,30,100,4,1), wh-30, 20, "Who");
+  whichWhenLabel   = UI::Label(space(ww,30,100,4,2), wh-30, 20, "When");
+  whichWhereLabel  = UI::Label(space(ww,30,100,4,3), wh-30, 20, "Where");
+
   whatAttackButton = UI::Button(space(ww,30,100,2,0), wh-30, 100, 20);
   whatDefendButton = UI::Button(space(ww,30,100,2,1), wh-30, 100, 20);
 
   whatAttackLabel = UI::Label(space(ww,30,100,2,0), wh-30, 20, "attack");
   whatDefendLabel = UI::Label(space(ww,30,100,2,1), wh-30, 20, "defend");
 
+  howLabel     = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "how");
+  whichLabel   = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "which");
   whatLabel    = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "what");
   whoLabel     = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "who");
   whenLabel    = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "when");
@@ -82,7 +102,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   cancelLabel  = UI::Label(space(ww,30,100,2,1), wh-30, 20, "cancel");
 
   confirmButton = UI::Button(space(ww,30,100,2,0), wh-30, 100, 20);
-  cancelButton  = UI::Button(space(ww,30,100,2,0), wh-30, 100, 20);
+  cancelButton  = UI::Button(space(ww,30,100,2,1), wh-30, 100, 20);
 
   known_day = '0';
 }
@@ -157,6 +177,21 @@ void PlayScene::chooseAction(In &in)
   if(actionSabotageButton.query(in))  e.action = 's';
 }
 
+void PlayScene::chooseHow(In &in)
+{
+  if(howBlockButton.query(in))    e.how = 'b';
+  if(howReadButton.query(in))     e.how = 'r';
+  if(howSabotageButton.query(in)) e.how = 's';
+}
+
+void PlayScene::chooseWhich(In &in)
+{
+  if(whichWhatButton.query(in))  e.which = 'a';
+  if(whichWhoButton.query(in))   e.which = 'o';
+  if(whichWhenButton.query(in))  e.which = 'e';
+  if(whichWhereButton.query(in)) e.which = 'r';
+}
+
 void PlayScene::chooseWhat(In &in)
 {
   if(whatAttackButton.query(in)) e.what = 'a';
@@ -193,6 +228,23 @@ void PlayScene::drawAction()
   actionMessageButton.draw(graphics);  actionMessageLabel.draw(graphics);
   actionDefendButton.draw(graphics);   actionDefendLabel.draw(graphics);
   actionSabotageButton.draw(graphics); actionSabotageLabel.draw(graphics);
+}
+
+void PlayScene::drawHow()
+{
+  howLabel.draw(graphics);
+  howBlockButton.draw(graphics);    howBlockLabel.draw(graphics);
+  howReadButton.draw(graphics);     howReadLabel.draw(graphics);
+  howSabotageButton.draw(graphics); howSabotageLabel.draw(graphics);
+}
+
+void PlayScene::drawWhich()
+{
+  whichLabel.draw(graphics);
+  whichWhatButton.draw(graphics);  whichWhatLabel.draw(graphics);
+  whichWhoButton.draw(graphics);   whichWhoLabel.draw(graphics);
+  whichWhenButton.draw(graphics);  whichWhenLabel.draw(graphics);
+  whichWhereButton.draw(graphics); whichWhereLabel.draw(graphics);
 }
 
 void PlayScene::drawWhat()
@@ -287,13 +339,38 @@ void PlayScene::touch(In &in)
           else seekConfirmation(in);
         }
       }
-      else if(e.action == 's') //sabotage
-      {
-        if(e.who == '0') chooseWho(in);
-        else seekConfirmation(in);
-      }
       else if(e.action == 'd') //defend
         seekConfirmation(in);
+      else if(e.action == 's') //sabotage
+      {
+        if(e.how == '0') chooseHow(in);
+        else if(e.how == 'b') seekConfirmation(in);
+        else if(e.how == 'r') seekConfirmation(in);
+        else if(e.how == 's')
+        {
+          if(e.which == '0') chooseWhich(in);
+          else if(e.which == 'a')
+          {
+            if(e.what == '0') chooseWhat(in);
+            else seekConfirmation(in);
+          }
+          else if(e.which == 'o')
+          {
+            if(e.who == '0') chooseWho(in);
+            else seekConfirmation(in);
+          }
+          else if(e.which == 'e')
+          {
+            if(e.when == '0') chooseWhen(in);
+            else seekConfirmation(in);
+          }
+          else if(e.which == 'r')
+          {
+            if(e.where == '0') chooseWhere(in);
+            else seekConfirmation(in);
+          }
+        }
+      }
     }
   }
 }
@@ -363,7 +440,38 @@ void PlayScene::draw()
           else drawConfirmation();
         }
       }
-      else if(e.action == 'd') drawConfirmation();
+      else if(e.action == 'd') //defend
+        drawConfirmation();
+      else if(e.action == 's') //sabotage
+      {
+        if(e.how == '0') drawHow();
+        else if(e.how == 'b') drawConfirmation();
+        else if(e.how == 'r') drawConfirmation();
+        else if(e.how == 's')
+        {
+          if(e.which == '0') drawWhich();
+          else if(e.which == 'a')
+          {
+            if(e.what == '0') drawWhat();
+            else drawConfirmation();
+          }
+          else if(e.which == 'o')
+          {
+            if(e.who == '0') drawWho();
+            else drawConfirmation();
+          }
+          else if(e.which == 'e')
+          {
+            if(e.when == '0') drawWhen();
+            else drawConfirmation();
+          }
+          else if(e.which == 'r')
+          {
+            if(e.where == '0') drawWhere();
+            else drawConfirmation();
+          }
+        }
+      }
     }
     else drawWaiting(); //wait
   }

@@ -29,6 +29,8 @@ class PlayScene : public Scene
     UI::Label actionDefendLabel;   UI::Button actionDefendButton;
     UI::Label actionSabotageLabel; UI::Button actionSabotageButton;
 
+    UI::Label howLabel;   UI::Button howBlockButton; UI::Label howBlockLabel; UI::Button howReadButton; UI::Label howReadLabel; UI::Button howSabotageButton; UI::Label howSabotageLabel;
+    UI::Label whichLabel; UI::Button whichWhatButton; UI::Label whichWhatLabel; UI::Button whichWhoButton; UI::Label whichWhoLabel; UI::Button whichWhenButton; UI::Label whichWhenLabel; UI::Button whichWhereButton; UI::Label whichWhereLabel;
     UI::Label whatLabel;  UI::Button whatAttackButton; UI::Label whatAttackLabel; UI::Button whatDefendButton; UI::Label whatDefendLabel;
     UI::Label whoLabel;   UI::Button whoBtns[4];
     UI::Label whenLabel;  UI::Button whenBtns[7];
@@ -55,6 +57,8 @@ class PlayScene : public Scene
     Event e; //populates with tentative event (holds state for what to show on screen)
     void zeroE();
     void chooseAction(In &in);
+    void chooseHow(In &in);
+    void chooseWhich(In &in);
     void chooseWhat(In &in);
     void chooseWho(In &in);
     void chooseWhen(In &in);
@@ -62,6 +66,8 @@ class PlayScene : public Scene
     void seekConfirmation(In &in);
 
     void drawAction();
+    void drawHow();
+    void drawWhich();
     void drawWhat();
     void drawWho();
     void drawWhen();
