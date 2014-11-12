@@ -28,48 +28,61 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   backButton = UI::Button(10,10,20,20);
 
-#define pos(x) (30+((ww-60)/7)*x)+((ww-60)/7)/2-10
+  dayLbls[Week::iday('s')] = UI::Label(space(ww,30,20,7,0), 10, 20, "Su");
+  dayLbls[Week::iday('m')] = UI::Label(space(ww,30,20,7,1), 10, 20, "Mo");
+  dayLbls[Week::iday('t')] = UI::Label(space(ww,30,20,7,2), 10, 20, "Tu");
+  dayLbls[Week::iday('w')] = UI::Label(space(ww,30,20,7,3), 10, 20, "We");
+  dayLbls[Week::iday('h')] = UI::Label(space(ww,30,20,7,4), 10, 20, "Th");
+  dayLbls[Week::iday('f')] = UI::Label(space(ww,30,20,7,5), 10, 20, "Fr");
+  dayLbls[Week::iday('a')] = UI::Label(space(ww,30,20,7,6), 10, 20, "Sa");
 
-  dayLbls[Week::iday('s')] = UI::Label(pos(0), 10, 20, "Su");
-  dayLbls[Week::iday('m')] = UI::Label(pos(1), 10, 20, "Mo");
-  dayLbls[Week::iday('t')] = UI::Label(pos(2), 10, 20, "Tu");
-  dayLbls[Week::iday('w')] = UI::Label(pos(3), 10, 20, "We");
-  dayLbls[Week::iday('h')] = UI::Label(pos(4), 10, 20, "Th");
-  dayLbls[Week::iday('f')] = UI::Label(pos(5), 10, 20, "Fr");
-  dayLbls[Week::iday('a')] = UI::Label(pos(6), 10, 20, "Sa");
+  dayBoxs[Week::iday('s')] = UI::Box(space(ww,30,20,7,0), 10, 20, 20);
+  dayBoxs[Week::iday('m')] = UI::Box(space(ww,30,20,7,1), 10, 20, 20);
+  dayBoxs[Week::iday('t')] = UI::Box(space(ww,30,20,7,2), 10, 20, 20);
+  dayBoxs[Week::iday('w')] = UI::Box(space(ww,30,20,7,3), 10, 20, 20);
+  dayBoxs[Week::iday('h')] = UI::Box(space(ww,30,20,7,4), 10, 20, 20);
+  dayBoxs[Week::iday('f')] = UI::Box(space(ww,30,20,7,5), 10, 20, 20);
+  dayBoxs[Week::iday('a')] = UI::Box(space(ww,30,20,7,6), 10, 20, 20);
 
-  dayBoxs[Week::iday('s')] = UI::Box(pos(0), 10, 20, 20);
-  dayBoxs[Week::iday('m')] = UI::Box(pos(1), 10, 20, 20);
-  dayBoxs[Week::iday('t')] = UI::Box(pos(2), 10, 20, 20);
-  dayBoxs[Week::iday('w')] = UI::Box(pos(3), 10, 20, 20);
-  dayBoxs[Week::iday('h')] = UI::Box(pos(4), 10, 20, 20);
-  dayBoxs[Week::iday('f')] = UI::Box(pos(5), 10, 20, 20);
-  dayBoxs[Week::iday('a')] = UI::Box(pos(6), 10, 20, 20);
+  whenBtns[Week::iday('s')] = UI::Button(space(ww,30,20,7,0), 10, 20, 20);
+  whenBtns[Week::iday('m')] = UI::Button(space(ww,30,20,7,1), 10, 20, 20);
+  whenBtns[Week::iday('t')] = UI::Button(space(ww,30,20,7,2), 10, 20, 20);
+  whenBtns[Week::iday('w')] = UI::Button(space(ww,30,20,7,3), 10, 20, 20);
+  whenBtns[Week::iday('h')] = UI::Button(space(ww,30,20,7,4), 10, 20, 20);
+  whenBtns[Week::iday('f')] = UI::Button(space(ww,30,20,7,5), 10, 20, 20);
+  whenBtns[Week::iday('a')] = UI::Button(space(ww,30,20,7,6), 10, 20, 20);
 
-  whenBtns[Week::iday('s')] = UI::Button(pos(0), 10, 20, 20);
-  whenBtns[Week::iday('m')] = UI::Button(pos(1), 10, 20, 20);
-  whenBtns[Week::iday('t')] = UI::Button(pos(2), 10, 20, 20);
-  whenBtns[Week::iday('w')] = UI::Button(pos(3), 10, 20, 20);
-  whenBtns[Week::iday('h')] = UI::Button(pos(4), 10, 20, 20);
-  whenBtns[Week::iday('f')] = UI::Button(pos(5), 10, 20, 20);
-  whenBtns[Week::iday('a')] = UI::Button(pos(6), 10, 20, 20);
+  actionAttackLabel   = UI::Label(space(ww,30,100,4,0), wh-30, 20, "attack");
+  actionMessageLabel  = UI::Label(space(ww,30,100,4,1), wh-30, 20, "message");
+  actionDefendLabel   = UI::Label(space(ww,30,100,4,2), wh-30, 20, "defend");
+  actionSabotageLabel = UI::Label(space(ww,30,100,4,3), wh-30, 20, "sabotage");
 
-  actionAttackLabel  = UI::Label(         20, wh-30, 20, "attack");  actionAttackButton  = UI::Button(       20, wh-30, 100, 20); whatAttackButton = UI::Button(       20, wh-30, 100, 20); whatAttackLabel = UI::Label(       20, wh-30, 20, "attack");
-  actionMessageLabel = UI::Label(ww  -100-20, wh-30, 20, "message"); actionMessageButton = UI::Button(ww-100-20, wh-30, 100, 20);
-  actionDefendLabel  = UI::Label(ww/2-50    , wh-30, 20, "defend");  actionDefendButton  = UI::Button(ww/2-50  , wh-30, 100, 20); whatDefendButton = UI::Button(ww/2-50  , wh-30, 100, 20); whatDefendLabel = UI::Label(ww/2-50  , wh-30, 20, "defend");
+  actionAttackButton   = UI::Button(space(ww,30,100,4,0), wh-30, 100, 20);
+  actionMessageButton  = UI::Button(space(ww,30,100,4,1), wh-30, 100, 20);
+  actionDefendButton   = UI::Button(space(ww,30,100,4,2), wh-30, 100, 20);
+  actionSabotageButton = UI::Button(space(ww,30,100,4,3), wh-30, 100, 20);
 
-  whatLabel    = UI::Label(ww/2-50, wh/2-10, 20, "what");
-  whoLabel     = UI::Label(ww/2-50, wh/2-10, 20, "who");
-  whenLabel    = UI::Label(ww/2-50, wh/2-10, 20, "when");
-  whereLabel   = UI::Label(ww/2-50, wh/2-10, 20, "where");
-  messageLabel = UI::Label(ww/2-50, wh/2-10, 20, "message");
-  debreifLabel = UI::Label(ww/2-50, wh/2-10, 20, "debreif");
-  waitingLabel = UI::Label(ww/2-50, wh/2-10, 20, "waiting");
-  winLabel     = UI::Label(ww/2-50, wh/2-10, 20, "WIN");
-  loseLabel    = UI::Label(ww/2-50, wh/2-10, 20, "LOSE");
+  whatAttackButton = UI::Button(space(ww,30,100,2,0), wh-30, 100, 20);
+  whatDefendButton = UI::Button(space(ww,30,100,2,1), wh-30, 100, 20);
 
-  confirmLabel = UI::Label(         20, wh-30, 20, "confirm"); confirmButton = UI::Button(       20, wh-30, 100, 20);
-  cancelLabel  = UI::Label(ww/2-50    , wh-30, 20, "cancel");  cancelButton  = UI::Button(ww/2-50  , wh-30, 100, 20);
+  whatAttackLabel = UI::Label(space(ww,30,100,2,0), wh-30, 20, "attack");
+  whatDefendLabel = UI::Label(space(ww,30,100,2,1), wh-30, 20, "defend");
+
+  whatLabel    = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "what");
+  whoLabel     = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "who");
+  whenLabel    = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "when");
+  whereLabel   = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "where");
+  messageLabel = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "message");
+  debreifLabel = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "debreif");
+  waitingLabel = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "waiting");
+  winLabel     = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "WIN");
+  loseLabel    = UI::Label(space(ww,0,100,1,0), wh/2-10, 20, "LOSE");
+
+  confirmLabel = UI::Label(space(ww,30,100,2,0), wh-30, 20, "confirm");
+  cancelLabel  = UI::Label(space(ww,30,100,2,1), wh-30, 20, "cancel");
+
+  confirmButton = UI::Button(space(ww,30,100,2,0), wh-30, 100, 20);
+  cancelButton  = UI::Button(space(ww,30,100,2,0), wh-30, 100, 20);
 
   known_day = '0';
 }

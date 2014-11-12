@@ -4,6 +4,10 @@
 #include <SDL.h>
 #include "string.h"
 
+//convenient bro
+// total (l)ength, (p)adding, (u)nit length, total (n)umber of members, (i)ndex
+#define space(l,p,u,n,i) ((p+((l-(2*p))/n)*i)+(((l-(2*p))/n)/2)-u)
+
 struct In;
 class Graphics;
 

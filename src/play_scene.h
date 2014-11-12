@@ -24,9 +24,10 @@ class PlayScene : public Scene
     UI::Button cardBtns[4];
     UI::Box youBox;
 
-    UI::Label actionAttackLabel;  UI::Button actionAttackButton;
-    UI::Label actionMessageLabel; UI::Button actionMessageButton;
-    UI::Label actionDefendLabel;  UI::Button actionDefendButton;
+    UI::Label actionAttackLabel;   UI::Button actionAttackButton;
+    UI::Label actionMessageLabel;  UI::Button actionMessageButton;
+    UI::Label actionDefendLabel;   UI::Button actionDefendButton;
+    UI::Label actionSabotageLabel; UI::Button actionSabotageButton;
 
     UI::Label whatLabel;  UI::Button whatAttackButton; UI::Label whatAttackLabel; UI::Button whatDefendButton; UI::Label whatDefendLabel;
     UI::Label whoLabel;   UI::Button whoBtns[4];
