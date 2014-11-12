@@ -151,9 +151,10 @@ void PlayScene::zeroE()
 
 void PlayScene::chooseAction(In &in)
 {
-  if(actionAttackButton.query(in))  e.action = 'a';
+  if(actionAttackButton.query(in))    e.action = 'a';
   if(actionMessageButton.query(in)) { e.action = 'm'; e.to = Compass::opcardinal(e.cardinal); } //auto assign 'to'
-  if(actionDefendButton.query(in))  e.action = 'd';
+  if(actionDefendButton.query(in))    e.action = 'd';
+  if(actionSabotageButton.query(in))  e.action = 's';
 }
 
 void PlayScene::chooseWhat(In &in)
@@ -188,9 +189,10 @@ void PlayScene::seekConfirmation(In &in)
 
 void PlayScene::drawAction()
 {
-  actionAttackButton.draw(graphics);  actionAttackLabel.draw(graphics);
-  actionMessageButton.draw(graphics); actionMessageLabel.draw(graphics);
-  actionDefendButton.draw(graphics);  actionDefendLabel.draw(graphics);
+  actionAttackButton.draw(graphics);   actionAttackLabel.draw(graphics);
+  actionMessageButton.draw(graphics);  actionMessageLabel.draw(graphics);
+  actionDefendButton.draw(graphics);   actionDefendLabel.draw(graphics);
+  actionSabotageButton.draw(graphics); actionSabotageLabel.draw(graphics);
 }
 
 void PlayScene::drawWhat()
@@ -284,6 +286,11 @@ void PlayScene::touch(In &in)
           else if(e.where == '0') chooseWhere(in);
           else seekConfirmation(in);
         }
+      }
+      else if(e.action == 's') //sabotage
+      {
+        if(e.who == '0') chooseWho(in);
+        else seekConfirmation(in);
       }
       else if(e.action == 'd') //defend
         seekConfirmation(in);

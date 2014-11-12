@@ -5,7 +5,7 @@
 
 #define FG_EVT_ID_MAX_DEC_STR_LEN 6
 
-static const int e_ser_len = 9+(2*FG_EVT_ID_MAX_DEC_STR_LEN)+1; //oh god this is a terrible system
+static const int e_ser_len = 13+(3*FG_EVT_ID_MAX_DEC_STR_LEN)+1; //oh god this is a terrible system
 
 static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)
 
@@ -26,23 +26,27 @@ static const char e_type_commit_actions = 'k';
 struct Event //all members chars for quick/simple serializability
 {
   //'0' = unassigned / N/A
-  /* 1 */ char connection; //IDENTIFIER '1'-'5' //'5' = invalid
-  /* 2 */ char cardinal;   //IDENTIFIER 'n|e|s|w'
-  /* 3 */ char action;     //'a' = attack, 'd' = defend, 'm' = messenger, 's' = sabotage
-  /* 4 */ char to;         //cardinal (for whom the message is intended)
-  /* 5 */ char what;       //corresponds to messenger members
-  /* 6 */ char who;        //corresponds to messenger members
-  /* 7 */ char when;       //corresponds to messenger members
-  /* 8 */ char where;      //corresponds to messenger members
-  /* 9 */ char type;       //listed above
-  /* 9+(1*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char messenger_id_c[FG_EVT_ID_MAX_DEC_STR_LEN]; //string val of messenger_id_i (ie "2415")
-  /* 9+(2*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char id_c[FG_EVT_ID_MAX_DEC_STR_LEN];           //string val of id_i (ie "2415")
-  /* 9+(2*FG_EVT_ID_MAX_DEC_STR_LEN)+1 */ char null; //not const because then we can't use default copy
+  /* 1  */ char connection; //IDENTIFIER '1'-'5' //'5' = invalid
+  /* 2  */ char cardinal;   //IDENTIFIER 'n|e|s|w'
+  /* 3  */ char action;     //'a' = attack, 'd' = defend, 'm' = messenger, 's' = sabotage
+  /* 4  */ char how;        //corresponds to sabotage members
+  /* 5  */ char which;      //corresponds to sabotage members
+  /* 6  */ char to;         //cardinal (for whom the message is intended)
+  /* 7  */ char what;       //corresponds to messenger members
+  /* 8  */ char who;        //corresponds to messenger members
+  /* 9  */ char when;       //corresponds to messenger members
+  /* 10 */ char where;      //corresponds to messenger members
+  /* 11 */ char type;       //listed above
+  /* 11+(1*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char sabotage_id_c[FG_EVT_ID_MAX_DEC_STR_LEN];  //string val of sabotage_id_i  (ie "2415")
+  /* 11+(2*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char messenger_id_c[FG_EVT_ID_MAX_DEC_STR_LEN]; //string val of messenger_id_i (ie "2415")
+  /* 11+(3*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char id_c[FG_EVT_ID_MAX_DEC_STR_LEN];           //string val of id_i           (ie "2415")
+  /* 11+(3*FG_EVT_ID_MAX_DEC_STR_LEN)+1 */ char null; //not const because then we can't use default copy
+  int sabotage_id_i;
   int messenger_id_i;
   int id_i;
 
   Event();
-  Event(char con, char card, char act, char t, char wat, char wo, char wen, char were, char ty, int m_id, int id);
+  Event(char con, char card, char act, char ow, char wich, char t, char wat, char wo, char wen, char were, char ty, int s_id, int m_id, int id);
   Event(char *c);
   void zero();
 

@@ -7,6 +7,7 @@
 Messenger::Messenger()
 {
   memset(this, '0', sizeof(Messenger));
+  id = 0;
 }
 
 Messenger::Messenger(Event e)
