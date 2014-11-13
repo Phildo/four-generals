@@ -7,6 +7,7 @@ class Sabotage
 {
   private:
   public:
+    char cardinal; //'owner' of sabotage
     char how;   //'b' = block, 'r' = read, 's' = sabotage
     char which; //'a' = what, 'o' = who, 'e' = when, 'r' = where
     char what;  //corresponds to messenger
@@ -18,7 +19,7 @@ class Sabotage
 
     Sabotage();
     Sabotage(Event e);
-    Sabotage(char h, char i, char wat, char wo, char wen, char were, int i);
+    Sabotage(char c, char ow, char wich, char wat, char wo, char wen, char were, int i);
 
     ~Sabotage();
 };

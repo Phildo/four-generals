@@ -9,6 +9,7 @@ ServerModel::ServerModel(Network::Server *s)
 {
   server = s;
   messenger_id = 0;
+  sabotage_id = 0;
 }
 
 ServerModel::~ServerModel()
@@ -62,6 +63,7 @@ void ServerModel::tick()
         {
           //inject assignment of messenger id here
           if(e->action == 'm') e->messenger_id_i = nextMessId();
+          if(e->action == 's') e->sabotage_id_i = nextSabId();
           model.assignConAction(e->connection, *e);
           server->broadcast(e);
         }
@@ -82,5 +84,11 @@ int ServerModel::nextMessId()
 {
   messenger_id++;
   return messenger_id;
+}
+
+int ServerModel::nextSabId()
+{
+  sabotage_id++;
+  return sabotage_id;
 }
 

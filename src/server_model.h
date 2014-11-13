@@ -12,10 +12,12 @@ class ServerModel
   public :
     Model model;
     int messenger_id; //needs to take authority in assigning ids
+    int sabotage_id;  //needs to take authority in assigning ids
     ServerModel(Network::Server *s);
     ~ServerModel();
     void tick();
     int nextMessId();
+    int nextSabId();
 };
 
 #endif

@@ -3,6 +3,7 @@
 
 #include "general.h"
 #include "messenger.h"
+#include "sabotage.h"
 #include "event.h"
 
 #include "array.h"
@@ -21,6 +22,10 @@ class Model
     //unordered
     Array<Messenger,16> messengers;
     Messenger nullMessenger; //equivalent to 5th member of other arrays
+
+    //unordered
+    Array<Sabotage,16> sabotages;
+    Sabotage nullSabotage; //equivalent to 5th member of other arrays
 
     int days;
     char winning_card;
@@ -46,6 +51,8 @@ class Model
     Messenger& connectionMessage(char con);
     Messenger& cardinalIntruder(char card);
     Messenger& connectionIntruder(char con);
+    Sabotage& cardinalSabotage(char card);
+    Sabotage& connectionSabotage(char con);
     bool cardinalConnected(char card);
     bool connectionConnected(char con);
     bool cardinalHasAction(char card);

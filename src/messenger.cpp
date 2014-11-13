@@ -20,6 +20,11 @@ Messenger::Messenger(char fro, char a, char t, char wat, char wo, char wen, char
 {
 }
 
+bool Messenger::operator==(Messenger m)
+{
+  return m.id == id;
+}
+
 bool Messenger::advance()
 {
   if(at != to)
@@ -29,6 +34,19 @@ bool Messenger::advance()
     return true;
   }
   return false;
+}
+
+bool Messenger::sabotage(Sabotage s)
+{
+  if(s.how == 's')
+  {
+    if(s.which == 'a') what  = s.what;
+    if(s.which == 'o') who   = s.who;
+    if(s.which == 'e') when  = s.when;
+    if(s.which == 'r') where = s.where;
+  }
+  if(s.how == 'b') return false;
+  return true;
 }
 
 char *Messenger::message()

@@ -23,7 +23,9 @@ class Array
     int length() const { return len; };
     void add(T t);
     void insert(int index, T t);
+    int indexOf(T t);
     void remove(int index);
+    void remove(T t);
     void removeAll();
 };
 
@@ -46,11 +48,26 @@ void Array<T,N>::insert(int index, T t)
 }
 
 template <typename T, unsigned int N>
+int Array<T,N>::indexOf(T t)
+{
+  for(int i = 0; i < length(); i++)
+    if(t == operator[](i)) return i;
+  return -1;
+}
+
+template <typename T, unsigned int N>
 void Array<T,N>::remove(int index) //definitely should implement with memcopy or something?
 {
   for(int i = index; i < len; i++)
     content[i] = content[i+1];
   len--;
+}
+
+template <typename T, unsigned int N>
+void Array<T,N>::remove(T t)
+{
+  int i = indexOf(t);
+  if(i != -1) remove(i);
 }
 
 template <typename T, unsigned int N>

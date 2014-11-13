@@ -75,11 +75,25 @@ void Model::commitActions()
       Messenger m(a);
       messengers.add(m);
     }
+    else if(a.action == 's')
+    {
+      Sabotage s(a);
+      sabotages.add(s);
+    }
   }
 
   //update messengers
   for(int i = 0; i < messengers.length(); i++)
     if(!messengers[i].advance()) { messengers.remove(i); i--; }
+
+  //update sabotages
+  for(int i = 0; i < sabotages.length(); i++)
+  {
+    if(cardinalHasIntruder(sabotages[i].cardinal) && !(cardinalIntruder(sabotages[i].cardinal).sabotage(sabotages[i])))
+    {
+      messengers.remove(cardinalIntruder(sabotages[i].cardinal));
+    }
+  }
 
   cardinalAction('n').zero();
   cardinalAction('e').zero();
@@ -162,6 +176,18 @@ Messenger& Model::cardinalIntruder(char card)
 Messenger& Model::connectionIntruder(char con)
 {
   return cardinalIntruder(connectionCardinal(con));
+}
+
+Sabotage& Model::cardinalSabotage(char card)
+{
+  for(int i = 0; i < sabotages.length(); i++)
+    if(sabotages[i].cardinal == card) return sabotages[i];
+  return nullSabotage;
+}
+
+Sabotage& Model::connectionSabotage(char con)
+{
+  return cardinalSabotage(connectionCardinal(con));
 }
 
 bool Model::cardinalConnected(char card)
