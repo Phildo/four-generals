@@ -46,7 +46,7 @@ kill: pkill
 # android
 #
 adefine:
-	sed -i.bak -E -e 's/$(IOS_DEF)|$(PC_DEF)/$(ANDROID_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
+	sed -i.bak -E -e 's/define $(IOS_DEF)|define $(PC_DEF)/define $(ANDROID_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
 
 avmake:
 	vim $(ANDROID_DIR)/makefile
@@ -70,7 +70,7 @@ akill:
 # ios
 #
 idefine:
-	sed -i.bak -E -e 's/$(ANDROID_DEF)|$(PC_DEF)/$(IOS_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
+	sed -i.bak -E -e 's/define $(ANDROID_DEF)|define $(PC_DEF)/define $(IOS_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
 
 ivmake:
 	vim $(IOS_DIR)/makefile
@@ -95,7 +95,7 @@ ikill:
 # pc
 #
 pdefine:
-	sed -i.bak -E -e 's/$(IOS_DEF)|$(ANDROID_DEF)/$(PC_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
+	sed -i.bak -E -e 's/define $(IOS_DEF)|define $(ANDROID_DEF)/define $(PC_DEF)/g' $(SRC_DIR)/defines.h && rm $(SRC_DIR)/defines.h.bak
 
 pvmake:
 	vim $(PC_DIR)/makefile
