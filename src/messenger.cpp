@@ -2,6 +2,7 @@
 
 #include "logger.h"
 
+#include <stdio.h> //sprintf
 #include <cstring> //memset for simple initialization
 
 Messenger::Messenger()

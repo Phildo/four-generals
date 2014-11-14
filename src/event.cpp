@@ -4,6 +4,7 @@
 #include "logger.h"
 
 #include "stdlib.h"
+#include <stdio.h> //spsrintf
 #include <cstring> //memcopy for simple serialization, memset for simple initialization
 
 Event::Event() //set to pseudo 'null'
