@@ -86,14 +86,13 @@ void Model::commitActions()
   for(int i = 0; i < messengers.length(); i++)
     if(!messengers[i].advance()) { messengers.remove(i); i--; }
 
-  //update sabotages
+  //apply sabotages
   for(int i = 0; i < sabotages.length(); i++)
   {
     if(cardinalHasIntruder(sabotages[i].cardinal) && !(cardinalIntruder(sabotages[i].cardinal).sabotage(sabotages[i])))
-    {
       messengers.remove(cardinalIntruder(sabotages[i].cardinal));
-    }
   }
+  sabotages.removeAll();
 
   cardinalAction('n').zero();
   cardinalAction('e').zero();

@@ -59,6 +59,16 @@ Messenger& ClientModel::myIntruder()
   return model.connectionIntruder(client->connection);
 }
 
+bool ClientModel::iHaveSabotage()
+{
+  return imConnected() && iHaveIntruder() && myIntruder().sabotaged == 'r';
+}
+
+Messenger& ClientModel::mySabotage()
+{
+  return myIntruder();
+}
+
 bool ClientModel::iWin()
 {
   return model.connectionWin(client->connection);

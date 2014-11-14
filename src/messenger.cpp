@@ -8,6 +8,7 @@ Messenger::Messenger()
 {
   memset(this, '0', sizeof(Messenger));
   id = 0;
+  sabotaged = '0';
 }
 
 Messenger::Messenger(Event e)
@@ -38,6 +39,7 @@ bool Messenger::advance()
 
 bool Messenger::sabotage(Sabotage s)
 {
+  sabotaged = s.how;
   if(s.how == 's')
   {
     if(s.which == 'a') what  = s.what;

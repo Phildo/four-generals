@@ -296,6 +296,14 @@ void PlayScene::drawMessage()
   messageLabel.draw(graphics);
 }
 
+void PlayScene::drawSabotage()
+{
+  int ww = graphics->winWidth();
+  int wh = graphics->winHeight();
+  sabotageLabel = UI::Label(ww/2-130, wh/2+30, 15, c->mySabotage().message());
+  sabotageLabel.draw(graphics);
+}
+
 void PlayScene::drawWin()
 {
   winLabel.draw(graphics);
@@ -414,6 +422,8 @@ void PlayScene::draw()
   {
     if(c->iHaveMessage())
       drawMessage();
+    if(c->iHaveSabotage())
+      drawSabotage();
     if(!c->iHaveAction())
     {
       drawDebreif();

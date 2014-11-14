@@ -24,6 +24,8 @@ class ClientModel
     Messenger& myMessage();
     bool iHaveIntruder();
     Messenger& myIntruder();
+    bool iHaveSabotage();
+    Messenger& mySabotage();
     bool iWin();
     bool iLose();
 

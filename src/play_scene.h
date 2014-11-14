@@ -40,6 +40,7 @@ class PlayScene : public Scene
     UI::Label cancelLabel;  UI::Button cancelButton;
 
     UI::Label messageLabel;
+    UI::Label sabotageLabel;
     UI::Label debreifLabel;
     UI::Label waitingLabel;
     UI::Label winLabel;
@@ -74,6 +75,7 @@ class PlayScene : public Scene
     void drawWhere();
     void drawConfirmation();
     void drawMessage();
+    void drawSabotage();
     void drawDebreif();
     void drawWaiting();
     void drawWin();
