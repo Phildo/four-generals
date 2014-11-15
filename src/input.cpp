@@ -16,13 +16,14 @@ bool Input::poll(In &in, bool &put, bool &quit)
   if(SDL_PollEvent(&event))
   {
     if(event.type == SDL_QUIT) quit = true;
+    #ifdef FG_PC
     else if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
     {
       put = true;
       in.x = event.button.x;
       in.y = event.button.y;
     }
-    #ifdef FG_ANDROID
+    #elif defined FG_ANDROID
     else if(event.type == SDL_FINGERDOWN)
     {
       put = true;
