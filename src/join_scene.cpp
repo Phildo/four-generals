@@ -19,17 +19,14 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 
   joinGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Join Game");
 
-  ipLabel = UI::Label(ww/2-100,wh/2-80,20,"");
+  ipInput = UI::TextBox(ww/2-100,wh/2-80,130,20);
   portLabel = UI::Label(ww/2+30,wh/2-80,20,"8080");
 
   joinSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Join Session");
   sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
 
   keyboard = UI::Keyboard(0,wh-100,ww,100);
-
-  String s = Network::getIP();
-  for(input_len = 0; *(s.ptr()+input_len) != '\0'; input_len++)
-    input[input_len] = *(s.ptr()+input_len);
+  ipInput.setText(Network::getIP());
 
   client_ptr = &c;
   c_model_ptr = &cm;
@@ -52,7 +49,7 @@ void JoinScene::touch(In &in)
   if(sessionButton.query(in))
   {
     if(!client) { client = new Network::Client(); *client_ptr = client; }
-    if(!client->healthy()) client->connect(String(input,input_len),8080);
+    if(!client->healthy()) client->connect(ipInput.getText(),8080);
   }
 }
 
@@ -67,8 +64,8 @@ int JoinScene::tick()
   else
   {
     char c = keyboard.poll();
-    if(c == '<' && input_len > 0) input_len--;
-    else if(c != 0 && c != '<') { input[input_len] = c; input_len++; }
+    if(c == '<') ipInput.backspace();
+    else if(c != 0) ipInput.input(c);
   }
 
   int tmp = SCENE_CHANGE_HACK;
@@ -81,8 +78,7 @@ void JoinScene::draw()
   backButton.draw(graphics);
   joinGameLabel.draw(graphics);
 
-  ipLabel.text = String(&input[0],input_len);
-  ipLabel.draw(graphics);
+  ipInput.draw(graphics);
 
   portLabel.draw(graphics);
 

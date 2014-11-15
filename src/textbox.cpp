@@ -1,48 +1,54 @@
-Textbox::Textbox() {}
-Textbox::Textbox(SDL_Rect r)
+TextBox::TextBox() {}
+TextBox::TextBox(SDL_Rect r)
 {
-  textLen = 0;
+  txt_len = 0;
   rect = r;
-  label = Label(rect, text, 0);
+  label = Label(rect, txt, 0);
 }
-Textbox::Textbox(int x, int y, int w, int h)
+TextBox::TextBox(int x, int y, int w, int h)
 {
-  textLen = 0;
+  txt_len = 0;
   rect.x = x;
   rect.y = y;
   rect.w = w;
   rect.h = h;
-  label = Label(rect, text, 0);
+  label = Label(rect, txt, 0);
 }
 
-void Textbox::getString(char *&c)
+void TextBox::setText(String t)
 {
-  text[textLen] = '\0';
-  strcpy(c, text);
+  txt_len = t.len();
+  strcpy(&txt[0], t.ptr());
+  label.text = String(txt, txt_len);
 }
 
-void Textbox::input(char c)
+String TextBox::getText()
 {
-  if(textLen >= FG_MAX_TEXTBOX_LEN) return; //ignore input
-  text[textLen] = c;
-  textLen++;
-  label = Label(rect, text, textLen); //ouch- copy every time
+  return String(txt, txt_len);
 }
 
-void Textbox::backspace()
+void TextBox::input(char c)
 {
-  if(textLen == 0) return;
-  textLen--;
-  label = Label(rect, text, textLen); //ouch- copy every time
+  if(txt_len >= FG_MAX_TEXTBOX_LEN-1) return; //ignore input (save one for '\0')
+  txt[txt_len] = c;
+  txt_len++;
+  label.text = String(txt, txt_len);
 }
 
-void Textbox::clear()
+void TextBox::backspace()
 {
-  textLen = 0;
-  label = Label(rect, "\0", 0); //ouch- copy every time
+  if(txt_len == 0) return;
+  txt_len--;
+  label.text = String(txt, txt_len);
 }
 
-void Textbox::draw(Graphics *g)
+void TextBox::clear()
+{
+  txt_len = 0;
+  label.text = String(txt, txt_len);
+}
+
+void TextBox::draw(Graphics *g)
 {
   SDL_Rect tmp;
 

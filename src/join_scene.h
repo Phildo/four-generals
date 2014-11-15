@@ -17,13 +17,12 @@ class JoinScene : public Scene
     UI::Button backButton;
 
     UI::Label joinGameLabel;
-    UI::Label ipLabel;
     UI::Label portLabel;
 
     UI::Label joinSessLabel;
     UI::Button sessionButton;
 
-    char input[50]; int input_len;
+    UI::TextBox ipInput;
     UI::Keyboard keyboard;
 
     Network::Client *client;

@@ -9,6 +9,7 @@ using namespace UI;
 #include "box.cpp"
 #include "label.cpp"
 #include "button.cpp"
+#include "textbutton.cpp"
 #include "keyboard.cpp"
 #include "textbox.cpp"
 

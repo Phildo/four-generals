@@ -1,17 +1,18 @@
 
-struct Textbox
+struct TextBox
 {
   #define FG_MAX_TEXTBOX_LEN 256
-  int textLen;
-  char text[FG_MAX_TEXTBOX_LEN+1]; //+1 for null
+  int txt_len;
+  char txt[FG_MAX_TEXTBOX_LEN+1]; //+1 for null
   Label label;
 
   SDL_Rect rect;
 
-  Textbox();
-  Textbox(SDL_Rect r);
-  Textbox(int x, int y, int w, int h);
-  void getString(char *&c);
+  TextBox();
+  TextBox(SDL_Rect r);
+  TextBox(int x, int y, int w, int h);
+  void setText(String s);
+  String getText();
   void input(char c);
   void backspace();
   void clear();
