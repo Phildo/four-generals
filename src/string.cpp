@@ -1,6 +1,6 @@
 #include "string.h"
 
-String::String() : local("\0"), handle(0), length(0) { }
+String::String() : local(""), handle(&local[0]), length(0) { }
 
 String::String(const String &other) //copy
 {
