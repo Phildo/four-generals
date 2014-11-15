@@ -18,7 +18,7 @@ String Network::getIP()
   String ip;
 
   r = getifaddrs(&ap);
-  for(cur = ap; cur != NULL; cur = cur->ifa_next)
+  for(cur = ap; cur != NULL && cur->ifa_addr != NULL; cur = cur->ifa_next)
   {
     r = cur->ifa_addr->sa_family;
 
