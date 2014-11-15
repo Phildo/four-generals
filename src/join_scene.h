@@ -23,6 +23,9 @@ class JoinScene : public Scene
     UI::Label joinSessLabel;
     UI::Button sessionButton;
 
+    char input[50]; int input_len;
+    UI::Keyboard keyboard;
+
     Network::Client *client;
     Network::Client **client_ptr; //Pointer to the client pointer 'owned' by game
     ClientModel *c_model;
