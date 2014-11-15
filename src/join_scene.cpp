@@ -19,6 +19,7 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 
   joinGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Join Game");
 
+  ipLabel = UI::Label(ww/2-100,wh/2-80,20,"");
   portLabel = UI::Label(ww/2+30,wh/2-80,20,"8080");
 
   joinSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Join Session");
@@ -77,13 +78,10 @@ int JoinScene::tick()
 
 void JoinScene::draw()
 {
-  int ww = graphics->winWidth();
-  int wh = graphics->winHeight();
-
   backButton.draw(graphics);
   joinGameLabel.draw(graphics);
 
-  ipLabel = UI::Label(ww/2-100,wh/2-80,20,&input[0],input_len);
+  ipLabel.text = String(&input[0],input_len);
   ipLabel.draw(graphics);
 
   portLabel.draw(graphics);
