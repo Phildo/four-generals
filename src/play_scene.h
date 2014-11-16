@@ -39,10 +39,10 @@ class PlayScene : public Scene
     UI::TextButton confirmButton;
     UI::TextButton cancelButton;
 
-    UI::Label messageLabel;
-    UI::Label sabotageLabel;
     UI::Label debreifLabel;
     UI::Label waitingLabel;
+    UI::Label messageLabel;
+    UI::Label sabotageLabel;
     UI::Label winLabel;
     UI::Label loseLabel;
 

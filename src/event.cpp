@@ -77,10 +77,10 @@ char *Event::humanAction()
   }
   else if(action == 's')
   {
-    if(how == '0')     sprintf(h_action_buff,"Sabotaging: \"(Block/Read/Sabotage)...\"");
+    if(how == '0')      sprintf(h_action_buff,"Sabotaging: \"(Block/Read/Sabotage)...\"");
     else if(how == 'b') sprintf(h_action_buff,"Sabotaging: \"Block...\"");
     else if(how == 'r') sprintf(h_action_buff,"Sabotaging: \"Read...\"");
-    else if(how == 's') sprintf(h_action_buff,"Sabotaging: \"Read...\"");
+    else if(how == 's')
     {
       if(which == '0') sprintf(h_action_buff,"Sabotaging: \"Sabotage (what)...\"");
       else if(which == 'a')

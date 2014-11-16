@@ -26,7 +26,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
-  backButton = UI::Button(10,10,20,20);
+  backButton = UI::Button(20,20,40,40);
 
   dayLbls[Week::iday('s')] = UI::Label(space(ww,60,40,7,0), 20, 40, "Su");
   dayLbls[Week::iday('m')] = UI::Label(space(ww,60,40,7,1), 20, 40, "Mo");
@@ -69,17 +69,18 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   whatAttackButton = UI::TextButton(space(ww,60,200,2,0), wh-60, 200, 40, "attack");
   whatDefendButton = UI::TextButton(space(ww,60,200,2,1), wh-60, 200, 40, "defend");
 
-  howLabel     = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "how");
-  whichLabel   = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "which");
-  whatLabel    = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "what");
-  whoLabel     = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "who");
-  whenLabel    = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "when");
-  whereLabel   = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "where");
-  messageLabel = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "message");
-  debreifLabel = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "debreif");
-  waitingLabel = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "waiting");
-  winLabel     = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "WIN");
-  loseLabel    = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "LOSE");
+  howLabel      = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "how");
+  whichLabel    = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "which");
+  whatLabel     = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "what");
+  whoLabel      = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "who");
+  whenLabel     = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "when");
+  whereLabel    = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "where");
+  debreifLabel  = UI::Label(space(ww,0,600,1,0), wh/2-20, 30, "debreif");
+  waitingLabel  = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "waiting");
+  messageLabel  = UI::Label(space(ww,0,600,1,0), wh/2+20, 30, "message");
+  sabotageLabel = UI::Label(space(ww,0,600,1,0), wh/2+50, 30, "sabotage");
+  winLabel      = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "WIN");
+  loseLabel     = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "LOSE");
 
   confirmButton = UI::TextButton(space(ww,30,200,2,0), wh-60, 200, 40, "confirm");
   cancelButton  = UI::TextButton(space(ww,30,200,2,1), wh-60, 200, 40, "cancel");
