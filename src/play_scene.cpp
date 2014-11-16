@@ -410,6 +410,8 @@ int PlayScene::tick()
 
       Particle p;
       p.type = P_TYPE_MESSENGER;
+      p.mess.w = 40;
+      p.mess.h = 40;
       p.mess.begin_card = m.was;
       p.mess.end_card = m.at;
       pos = whoBoxForCardinal(m.was);

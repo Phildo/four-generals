@@ -18,6 +18,8 @@ struct Particle
   {
     struct
     {
+      int w;
+      int h;
       char begin_card;
       char end_card;
       float start_x;

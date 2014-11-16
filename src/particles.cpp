@@ -52,8 +52,8 @@ void drawParticle(Particle& p, Graphics *g)
       SDL_Rect tmp;
       tmp.x = p.mess.x;
       tmp.y = p.mess.y;
-      tmp.w = Sprite::messenger().w;
-      tmp.h = Sprite::messenger().h;
+      tmp.w = p.mess.w;
+      tmp.h = p.mess.h;
       g->draw(Sprite::messenger(),tmp);
     break;
     case P_TYPE_COUNT: break; //nothing

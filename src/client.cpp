@@ -47,7 +47,7 @@ void * Client::fork()
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
   serv_host = gethostbyname(serv_ip.ptr());
-  if(serv_host == NULL) { fg_log("Client: abort connect (can't find server)"); keep_connection = false; connecting = false; }
+  if(serv_host == NULL) { fg_log("Client: abort connect (can't find server)"); keep_connection = false; connecting = false; return 0; }
 
   bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
   serv_sock_addr.sin_family = AF_INET;
