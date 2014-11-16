@@ -194,7 +194,14 @@ void PlayScene::chooseWhen(In &in)
 void PlayScene::chooseWhere(In &in)
 {
   for(int i = 0; i < 4; i++)
-    if(whereBtns[i].query(in)) e.where = Compass::cardinal(i);
+  {
+    if(whereBtns[i].query(in))
+    {
+      if(Compass::cardinal(i) == Compass::cwcardinal( c->myCardinal()) ||
+         Compass::cardinal(i) == Compass::ccwcardinal(c->myCardinal()))
+        e.where = Compass::cardinal(i);
+    }
+  }
 }
 
 void PlayScene::seekConfirmation(In &in)
