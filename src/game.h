@@ -1,8 +1,6 @@
 #ifndef _FG_GAME_H_
 #define _FG_GAME_H_
 
-#include "var_array.h"
-
 class Graphics;
 class Input;
 namespace Network

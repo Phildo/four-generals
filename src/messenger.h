@@ -10,6 +10,7 @@ class Messenger
   public:
     //location
     char from;
+    char was;
     char at;
     char to;
 

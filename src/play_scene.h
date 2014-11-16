@@ -3,6 +3,7 @@
 
 #include "scene.h"
 #include "ui.h"
+#include "particles.h"
 #include "network.h"
 #include "event.h"
 
@@ -14,6 +15,7 @@ class PlayScene : public Scene
 {
   private:
     Graphics *graphics;
+    ParticleSys psys;
 
     UI::Button backButton;
 
@@ -54,6 +56,10 @@ class PlayScene : public Scene
     ClientModel **c_ptr; //Pointers to the client model pointer 'owned' by game
 
     char known_day;
+
+    //yuck
+    SDL_Rect whoBoxForCardinal(char c);
+    SDL_Rect whoBoxForPosition(char c);
 
     Event e; //populates with tentative event (holds state for what to show on screen)
     void zeroE();

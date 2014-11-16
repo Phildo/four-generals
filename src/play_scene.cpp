@@ -88,57 +88,88 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   known_day = '0';
 }
 
-void PlayScene::enter()
+SDL_Rect PlayScene::whoBoxForCardinal(char card)
 {
-  client = *client_ptr;
-  s = *s_ptr;
-  c = *c_ptr;
+  char me = c->myCardinal();
+  while(me != 's')
+  {
+    me   = Compass::cwcardinal(me);
+    card = Compass::cwcardinal(card);
+  }
+  return whoBoxForPosition(card);
+}
 
-  //need to wait until c_model is obtained
+SDL_Rect PlayScene::whoBoxForPosition(char c)
+{
+  int i = Compass::icardinal(c);
+
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
   //(clockwise) top     right  bottom(you) left
   int xs[] = {ww/2-20,   ww-60, ww/2-20,      20};
   int ys[] = {    120, wh/2-20,  wh-160, wh/2-20};
-  char scard[2]; scard[1] = '\0'; //holder to pass string to labels
 
+  SDL_Rect tmp;
+  tmp.x = xs[i];
+  tmp.y = ys[i];
+  tmp.w = 40;
+  tmp.h = 40;
+
+  return tmp;
+}
+
+void PlayScene::enter()
+{
+  //need to wait until c_model is obtained
+
+  client = *client_ptr;
+  s = *s_ptr;
+  c = *c_ptr;
+  SDL_Rect rect;
+
+  char scard[2]; scard[1] = '\0'; //holder to pass string to labels
   int icard;
   char card;
 
   //bottom (you)
   card = c->myCardinal();
   icard = Compass::icardinal(card);
+  rect = whoBoxForPosition('s');
   scard[0] = card;
-  cardLbls[icard]  = UI::Label( xs[2],ys[2], 40, scard);
-  whoBtns[icard]   = UI::Button(xs[2],ys[2], 40, 40);
-  whereBtns[icard] = UI::Button(xs[2],ys[2], 40, 40);
+  cardLbls[icard]  = UI::Label(rect, scard);
+  whoBtns[icard]   = UI::Button(rect);
+  whereBtns[icard] = UI::Button(rect);
 
   //left (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
+  rect = whoBoxForPosition('w');
   scard[0] = card;
-  cardLbls[icard]  = UI::Label( xs[3],ys[3], 40, scard);
-  whoBtns[icard]   = UI::Button(xs[3],ys[3], 40, 40);
-  whereBtns[icard] = UI::Button(xs[3],ys[3], 40, 40);
+  cardLbls[icard]  = UI::Label(rect,scard);
+  whoBtns[icard]   = UI::Button(rect);
+  whereBtns[icard] = UI::Button(rect);
 
   //top (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
+  rect = whoBoxForPosition('n');
   scard[0] = card;
-  cardLbls[icard]  = UI::Label( xs[0],ys[0], 40, scard);
-  whoBtns[icard]   = UI::Button(xs[0],ys[0], 40, 40);
-  whereBtns[icard] = UI::Button(xs[0],ys[0], 40, 40);
+  cardLbls[icard]  = UI::Label(rect,scard);
+  whoBtns[icard]   = UI::Button(rect);
+  whereBtns[icard] = UI::Button(rect);
 
   //top (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
+  rect = whoBoxForPosition('e');
   scard[0] = card;
-  cardLbls[icard]  = UI::Label( xs[1],ys[1], 40, scard);
-  whoBtns[icard]   = UI::Button(xs[1],ys[1], 40, 40);
-  whereBtns[icard] = UI::Button(xs[1],ys[1], 40, 40);
+  cardLbls[icard]  = UI::Label(rect,scard);
+  whoBtns[icard]   = UI::Button(rect);
+  whereBtns[icard] = UI::Button(rect);
 
-  youBox = UI::Box(ww/2-20, wh-160, 40, 40);
+  rect = whoBoxForPosition('s');
+  youBox = UI::Box(rect);
   zeroE();
 }
 
@@ -367,10 +398,32 @@ void PlayScene::touch(In &in)
 
 int PlayScene::tick()
 {
+  psys.tick(0.01f);
   if(s) s->tick();
   c->tick();
   if(known_day != c->model.currentDay())
   {
+    for(int i = 0; i < c->model.messengers.len(); i++)
+    {
+      Messenger m = c->model.messengers[i];
+      SDL_Rect pos;
+
+      Particle p;
+      p.type = P_TYPE_MESSENGER;
+      p.mess.begin_card = m.was;
+      p.mess.end_card = m.at;
+      pos = whoBoxForCardinal(m.was);
+      p.mess.start_x = pos.x;
+      p.mess.start_y = pos.y;
+      p.mess.y       = pos.x;
+      p.mess.x       = pos.y;
+      pos = whoBoxForCardinal(m.at);
+      p.mess.end_x   = pos.x;
+      p.mess.end_y   = pos.y;
+      p.mess.t = 0.0f;
+
+      psys.registerP(p);
+    }
     zeroE();
     known_day = c->model.currentDay();
   }
@@ -379,6 +432,7 @@ int PlayScene::tick()
 
 void PlayScene::draw()
 {
+  psys.draw(graphics);
   backButton.draw(graphics);
 
   for(int i = 0; i < 7; i++)

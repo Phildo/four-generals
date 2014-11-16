@@ -13,12 +13,12 @@ Messenger::Messenger()
 }
 
 Messenger::Messenger(Event e)
-: from(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), where(e.where), id(e.messenger_id_i)
+: from(e.cardinal), was(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), where(e.where), id(e.messenger_id_i)
 {
 }
 
 Messenger::Messenger(char fro, char a, char t, char wat, char wo, char wen, char were, int i)
-: from(fro), at(a), to(t), what(wat), who(wo), when(wen), where(were), id(i)
+: from(fro), was(a), at(a), to(t), what(wat), who(wo), when(wen), where(were), id(i)
 {
 }
 
@@ -29,6 +29,7 @@ bool Messenger::operator==(Messenger m)
 
 bool Messenger::advance()
 {
+  was = at;
   if(at != to)
   {
     if(at != where) at = where;

@@ -83,11 +83,11 @@ void Model::commitActions()
   }
 
   //update messengers
-  for(int i = 0; i < messengers.length(); i++)
+  for(int i = 0; i < messengers.len(); i++)
     if(!messengers[i].advance()) { messengers.remove(i); i--; }
 
   //apply sabotages
-  for(int i = 0; i < sabotages.length(); i++)
+  for(int i = 0; i < sabotages.len(); i++)
   {
     if(cardinalHasIntruder(sabotages[i].cardinal) && !(cardinalIntruder(sabotages[i].cardinal).sabotage(sabotages[i])))
       messengers.remove(cardinalIntruder(sabotages[i].cardinal));
@@ -152,7 +152,7 @@ Event& Model::connectionAction(char con)
 
 Messenger& Model::cardinalMessage(char card)
 {
-  for(int i = 0; i < messengers.length(); i++)
+  for(int i = 0; i < messengers.len(); i++)
     if(messengers[i].to == card &&
        messengers[i].at == card) return messengers[i];
   return nullMessenger;
@@ -165,7 +165,7 @@ Messenger& Model::connectionMessage(char con)
 
 Messenger& Model::cardinalIntruder(char card)
 {
-  for(int i = 0; i < messengers.length(); i++)
+  for(int i = 0; i < messengers.len(); i++)
     if(messengers[i].from != card &&
        messengers[i].to   != card &&
        messengers[i].at   == card) return messengers[i];
@@ -179,7 +179,7 @@ Messenger& Model::connectionIntruder(char con)
 
 Sabotage& Model::cardinalSabotage(char card)
 {
-  for(int i = 0; i < sabotages.length(); i++)
+  for(int i = 0; i < sabotages.len(); i++)
     if(sabotages[i].cardinal == card) return sabotages[i];
   return nullSabotage;
 }
@@ -211,7 +211,7 @@ bool Model::connectionHasAction(char con)
 
 bool Model::cardinalHasMessage(char card)
 {
-  for(int i = 0; i < messengers.length(); i++)
+  for(int i = 0; i < messengers.len(); i++)
     if(messengers[i].to == card &&
        messengers[i].at == card) return true;
   return false;
@@ -224,7 +224,7 @@ bool Model::connectionHasMessage(char con)
 
 bool Model::cardinalHasIntruder(char card)
 {
-  for(int i = 0; i < messengers.length(); i++)
+  for(int i = 0; i < messengers.len(); i++)
     if(messengers[i].from != card &&
        messengers[i].to   != card &&
        messengers[i].at   == card) return true;
