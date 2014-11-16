@@ -123,7 +123,7 @@ char *Event::debug()
     default:                    sprintf(event_type_buff,"NO DEBUG READABLE EVENT TYPE FOUND"); break;
   }
 
-  sprintf(debug_buff,"con:%c card:%c act:%c how:%c which:%c to:%c what:%c who:%c when:%c where:%c mid:%d id:%d type:%s", connection, cardinal, action, how, which, to, what, who, when, where, messenger_id_i, id_i, event_type_buff);
+  sprintf(debug_buff,"con:%c card:%c act:%c how:%c which:%c to:%c what:%c who:%c when:%c where:%c mid:%d id:%d type:%c type:%s", connection, cardinal, action, how, which, to, what, who, when, where, messenger_id_i, id_i, type, event_type_buff);
   return &debug_buff[0];
 }
 #endif
