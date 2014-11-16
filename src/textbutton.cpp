@@ -1,12 +1,12 @@
 TextButton::TextButton() { }
-TextButton::TextButton(SDL_Rect r)                                 : box(r)                         {}
-TextButton::TextButton(int x, int y, int w, int h)                 : box(x,y,w,h)                   {}
-TextButton::TextButton(SDL_Rect r, Label l)                        : box(r),       label(l)         {}
-TextButton::TextButton(int x, int y, int w, int h, Label l)        : box(x,y,w,h), label(l)         {}
-TextButton::TextButton(SDL_Rect r, char *t)                        : box(r),       label(r,t)       {}
-TextButton::TextButton(int x, int y, int w, int h, char *t)        : box(x,y,w,h), label(x,y,h,t)   {}
-TextButton::TextButton(SDL_Rect r, char *t, int l)                 : box(r),       label(r,t,l)     {}
-TextButton::TextButton(int x, int y, int w, int h, char *t, int l) : box(x,y,w,h), label(x,y,h,t,l) {}
+TextButton::TextButton(SDL_Rect r)                                       : box(r)                         {}
+TextButton::TextButton(int x, int y, int w, int h)                       : box(x,y,w,h)                   {}
+TextButton::TextButton(SDL_Rect r, Label l)                              : box(r),       label(l)         {}
+TextButton::TextButton(int x, int y, int w, int h, Label l)              : box(x,y,w,h), label(l)         {}
+TextButton::TextButton(SDL_Rect r, const char *t)                        : box(r),       label(r,t)       {}
+TextButton::TextButton(int x, int y, int w, int h, const char *t)        : box(x,y,w,h), label(x,y,h,t)   {}
+TextButton::TextButton(SDL_Rect r, const char *t, int l)                 : box(r),       label(r,t,l)     {}
+TextButton::TextButton(int x, int y, int w, int h, const char *t, int l) : box(x,y,w,h), label(x,y,h,t,l) {}
 
 bool TextButton::query(const In &in)
 {
@@ -17,4 +17,5 @@ bool TextButton::query(const In &in)
 void TextButton::draw(Graphics *g)
 {
   box.draw(g);
+  label.draw(g);
 }

@@ -20,8 +20,7 @@ class HostScene : public Scene
     UI::Label ipLabel;
     UI::Label portLabel;
 
-    UI::Label startSessLabel;
-    UI::Button sessionButton;
+    UI::TextButton sessionButton;
 
     Network::Server *server;
     Network::Server **serverPtr; //Pointers to the server pointer 'owned' by game

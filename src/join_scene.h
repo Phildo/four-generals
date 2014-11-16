@@ -19,8 +19,7 @@ class JoinScene : public Scene
     UI::Label joinGameLabel;
     UI::Label portLabel;
 
-    UI::Label joinSessLabel;
-    UI::Button sessionButton;
+    UI::TextButton sessionButton;
 
     UI::TextBox ipInput;
     UI::Keyboard keyboard;

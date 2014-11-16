@@ -26,16 +26,15 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, Se
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
-  backButton = UI::Button(10,10,20,20);
+  backButton = UI::Button(10,10,40,40);
 
-  hostGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Host Game");
+  hostGameLabel = UI::Label(ww/2-200,wh/2-200,40,"Host Game");
 
-  ipLabel = UI::Label(ww/2-100,wh/2-80,20,Network::getIP().ptr());
+  ipLabel = UI::Label(ww/2-200,wh/2-160,40,Network::getIP().ptr());
 
-  portLabel = UI::Label(ww/2+30,wh/2-80,20,"8080");
+  portLabel = UI::Label(ww/2+60,wh/2-160,40,"8080");
 
-  startSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Start Session");
-  sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
+  sessionButton  = UI::TextButton(ww/2-200, wh/2-100, 400, 40, "Start Session");
 
   SCENE_CHANGE_HACK = 0;
 }
@@ -92,7 +91,6 @@ void HostScene::draw()
   ipLabel.draw(graphics);
   portLabel.draw(graphics);
 
-  startSessLabel.draw(graphics);
   sessionButton.draw(graphics);
 }
 

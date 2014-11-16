@@ -15,17 +15,16 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
-  backButton = UI::Button(10,10,20,20);
+  backButton = UI::Button(20,20,40,40);
 
-  joinGameLabel = UI::Label(ww/2-100,wh/2-100,20,"Join Game");
+  joinGameLabel = UI::Label(ww/2-200,wh/2-200,40,"Join Game");
 
-  ipInput = UI::TextBox(ww/2-100,wh/2-80,130,20);
-  portLabel = UI::Label(ww/2+30,wh/2-80,20,"8080");
+  ipInput = UI::TextBox(ww/2-200,wh/2-160,260,40);
+  portLabel = UI::Label(ww/2+60,wh/2-160,40,"8080");
 
-  joinSessLabel = UI::Label(ww/2-100, wh/2-50, 20, "Join Session");
-  sessionButton  = UI::Button(ww/2-100, wh/2-50, 200, 20);
+  sessionButton  = UI::TextButton(ww/2-200, wh/2-100, 400, 40,"Join Session");
 
-  keyboard = UI::Keyboard(0,wh-100,ww,100);
+  keyboard = UI::Keyboard(0,wh-200,ww,200);
   ipInput.setText(Network::getIP());
 
   client_ptr = &c;
@@ -82,7 +81,6 @@ void JoinScene::draw()
 
   portLabel.draw(graphics);
 
-  joinSessLabel.draw(graphics);
   sessionButton.draw(graphics);
 
   keyboard.draw(graphics);

@@ -10,9 +10,9 @@ class IntroScene : public Scene
   private:
     Graphics *graphics;
 
-    UI::Label hostLabel; UI::Button hostButton;
-    UI::Label joinLabel; UI::Button joinButton;
-    UI::Label howLabel;  UI::Button howButton;
+    UI::TextButton hostButton;
+    UI::TextButton joinButton;
+    UI::TextButton howButton;
 
     int SCENE_CHANGE_HACK;
   public:

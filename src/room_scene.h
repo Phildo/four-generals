@@ -24,11 +24,8 @@ class RoomScene : public Scene
     UI::Button cardBtns[4];
     UI::Box    cardBoxs[4];
 
-    UI::Label leaveSessLabel;
-    UI::Button leaveSessButton;
-
-    UI::Label beginGameLabel;
-    UI::Button beginGameButton;
+    UI::TextButton leaveSessButton;
+    UI::TextButton beginGameButton;
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game

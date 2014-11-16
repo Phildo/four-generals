@@ -9,14 +9,9 @@ IntroScene::IntroScene(Graphics *g)
 {
   graphics = g;
 
-  hostLabel  = UI::Label( g->winWidth()-225,25,    20,"Host",5);
-  hostButton = UI::Button(g->winWidth()-225,25,200,20);
-
-  joinLabel  = UI::Label( g->winWidth()-225,55,    20,"Join",5);
-  joinButton = UI::Button(g->winWidth()-225,55,200,20);
-
-  howLabel  = UI::Label( g->winWidth()-225,85,    20,"How to Play",12);
-  howButton = UI::Button(g->winWidth()-225,85,200,20);
+  hostButton = UI::TextButton(g->winWidth()-450,50,400,40,"Host");
+  joinButton = UI::TextButton(g->winWidth()-450,110,400,40,"Join");
+  howButton = UI::TextButton(g->winWidth()-450,170,400,40,"How to Play");
 
   SCENE_CHANGE_HACK = 0;
 }
@@ -42,13 +37,8 @@ int IntroScene::tick()
 
 void IntroScene::draw()
 {
-  hostLabel.draw(graphics);
   hostButton.draw(graphics);
-
-  joinLabel.draw(graphics);
   joinButton.draw(graphics);
-
-  howLabel.draw(graphics);
   howButton.draw(graphics);
 }
 
