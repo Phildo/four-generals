@@ -30,6 +30,7 @@ bool Messenger::operator==(Messenger m)
 bool Messenger::advance()
 {
   was = at;
+  if(sabotaged == 'b') return false;
   if(at != to)
   {
     if(at != where) at = where;
@@ -39,7 +40,7 @@ bool Messenger::advance()
   return false;
 }
 
-bool Messenger::sabotage(Sabotage s)
+void Messenger::sabotage(Sabotage s)
 {
   sabotaged = s.how;
   if(s.how == 's')
@@ -49,8 +50,6 @@ bool Messenger::sabotage(Sabotage s)
     if(s.which == 'e') when  = s.when;
     if(s.which == 'r') where = s.where;
   }
-  if(s.how == 'b') return false;
-  return true;
 }
 
 char *Messenger::message()

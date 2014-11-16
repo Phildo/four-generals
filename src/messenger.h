@@ -29,7 +29,7 @@ class Messenger
     bool operator==(Messenger m);
 
     bool advance();
-    bool sabotage(Sabotage s); //returns whether messenger survives
+    void sabotage(Sabotage s); //returns whether messenger survives
 
     char *message();
     char message_buff[256];

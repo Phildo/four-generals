@@ -89,8 +89,8 @@ void Model::commitActions()
   //apply sabotages
   for(int i = 0; i < sabotages.len(); i++)
   {
-    if(cardinalHasIntruder(sabotages[i].cardinal) && !(cardinalIntruder(sabotages[i].cardinal).sabotage(sabotages[i])))
-      messengers.remove(cardinalIntruder(sabotages[i].cardinal));
+    if(cardinalHasIntruder(sabotages[i].cardinal))
+      cardinalIntruder(sabotages[i].cardinal).sabotage(sabotages[i]);
   }
   sabotages.removeAll();
 
