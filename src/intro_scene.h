@@ -10,6 +10,7 @@ class IntroScene : public Scene
   private:
     Graphics *graphics;
 
+    UI::Box border;
     UI::TextButton hostButton;
     UI::TextButton joinButton;
     UI::TextButton howButton;

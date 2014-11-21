@@ -9,6 +9,7 @@ IntroScene::IntroScene(Graphics *g)
 {
   graphics = g;
 
+  border = UI::Box(0,0,g->winWidth(),g->winHeight());
   hostButton = UI::TextButton(g->winWidth()-450,50,400,40,"Host");
   joinButton = UI::TextButton(g->winWidth()-450,110,400,40,"Join");
   howButton = UI::TextButton(g->winWidth()-450,170,400,40,"How to Play");
@@ -37,6 +38,7 @@ int IntroScene::tick()
 
 void IntroScene::draw()
 {
+  border.draw(graphics);
   hostButton.draw(graphics);
   joinButton.draw(graphics);
   howButton.draw(graphics);

@@ -15,8 +15,6 @@ class Input
 {
   private:
     Graphics *graphics;
-    int winWidth;
-    int winHeight;
 
     SDL_Event event;
   public:

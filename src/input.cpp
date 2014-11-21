@@ -5,8 +5,6 @@
 Input::Input(Graphics *g)
 {
   graphics = g;
-  winWidth = g->winWidth();
-  winHeight = g->winHeight();
 }
 
 bool Input::poll(In &in, bool &put, bool &quit)
@@ -21,11 +19,11 @@ bool Input::poll(In &in, bool &put, bool &quit)
     {
       put = true;
       #ifdef FG_HALF_SIZE
-      in.x = event.button.x*2;
-      in.y = event.button.y*2;
+      in.x = (event.button.x-graphics->offsetX())*2;
+      in.y = (event.button.y-graphics->offsetY())*2;
       #else
-      in.x = event.button.x;
-      in.y = event.button.y;
+      in.x = event.button.x-graphics->offsetX();
+      in.y = event.button.y-graphics->offsetY();
       #endif
     }
     #elif defined FG_ANDROID
@@ -33,11 +31,11 @@ bool Input::poll(In &in, bool &put, bool &quit)
     {
       put = true;
       #ifdef FG_HALF_SIZE
-      in.x = event.tfinger.x*winWidth*2;
-      in.y = event.tfinger.y*winHeight*2;
+      in.x = ((event.tfinger.x*graphics->trueWinWidth())-graphics->offsetX())*2;
+      in.y = ((event.tfinger.y*graphics->trueWinHeight())-graphics->offsetY())*2;
       #else
-      in.x = event.tfinger.x*winWidth;
-      in.y = event.tfinger.y*winHeight;
+      in.x = (event.tfinger.x*graphics->trueWinWidth())-graphics->offsetX();
+      in.y = (event.tfinger.y*graphics->trueWinHeight())-graphics->offsetY();
       #endif
     }
     #endif
