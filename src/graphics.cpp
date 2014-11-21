@@ -10,7 +10,7 @@ Graphics::Graphics()
   #ifdef FG_ANDROID
   window = SDL_CreateWindow(NULL, 0, 0, 0, 0, 0);
   #elif defined FG_PC
-    #ifdef FG_HALF_WIDTH
+    #ifdef FG_HALF_SIZE
     window = SDL_CreateWindow(NULL, 0, 0, FG_FAKE_WIDTH/2, FG_FAKE_HEIGHT/2, 0);
     #else
     window = SDL_CreateWindow(NULL, 0, 0, FG_FAKE_WIDTH, FG_FAKE_HEIGHT, 0);
