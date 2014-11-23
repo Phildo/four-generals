@@ -1,25 +1,27 @@
 #include "network.h"
 
-#include "defines.h"
 #include "logger.h"
 #include <cstring>
 
 using namespace Network;
 
-enum ConnectionState
-{
-  CONNECTION_STATE_DISCONNECTED,
-  CONNECTION_STATE_CONNECTING,
-  CONNECTION_STATE_CONNECTED,
-  CONNECTION_STATE_DISCONNECTING,
-  CONNECTION_STATE_STALE,
-  CONNECTION_STATE_COUNT
-};
-
 struct Load
 {
   char data[FG_LOAD_BUFF_SIZE];
-}
+  char con_id;
+};
+
+struct Connection
+{
+  private:
+  public:
+    Connection() : sock_addr_len(sizeof(sock_addr)), sock_fd(-1) {}
+
+    char con_id;
+    int sock_fd;
+    socklen_t sock_addr_len; //sizeof addr
+    struct sockaddr_in sock_addr;
+};
 
 String getIP()
 {

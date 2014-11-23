@@ -2,8 +2,8 @@
 #define _FG_SERVER_H
 
 #include "network.h"
-#include "connection.h"
 #include "circ_q.h"
+#include "id_store.h"
 
 namespace Network
 {
@@ -17,6 +17,9 @@ namespace Network
       ServThreadHandle handle;
       pthread_t thread;
 
+      int sock_fd;
+      struct sockaddr_in sock_addr;
+
       String ip;
       int port;
       ConnectionState con_state;
@@ -24,6 +27,16 @@ namespace Network
       int n_cons;
       Connection cons[FG_MAX_CONNECTIONS];
       Connection *con_ptrs[FG_MAX_CONNECTIONS];
+
+      circQ<Load, FG_LOAD_Q_SIZE> recv_q;
+      circQ<Load, FG_LOAD_Q_SIZE> send_q;
+      IdStore<FG_MAX_CONNECTIONS> con_id_store;
+
+      void tick();
+      void acceptConnection();
+      void closeConnection();
+      bool receiveLoad(Connection *con, Load *l);
+      bool sendLoad(Connection *con, Load *l);
     public:
       Server();
       ~Server();
