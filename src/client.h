@@ -2,8 +2,8 @@
 #define _FG_CLIENT_H
 
 #include "network.h"
-#include "event.h"
 #include "circ_q.h"
+#include "id_store.h"
 
 namespace Network
 {
@@ -17,39 +17,31 @@ namespace Network
       CliThreadHandle handle;
       pthread_t thread;
 
-      bool keep_connection;
-      bool connecting;
-      bool connected;
-
-      int evt_id_inc;
-      int nextEventId();
-      void enqueueAckWait(Event e);
-      void ackReceived(Event e);
-
-      circQ<Event, FG_EVT_Q_SIZE> recv_q;
-      circQ<Event, FG_EVT_Q_SIZE> send_q;
-      circQ<Event, FG_EVT_Q_SIZE> ack_q;
+      int sock_fd;
+      struct sockaddr_in serv_sock_addr; //client's serv addr
+      struct hostent *serv_host; //client's reference to server
 
       String ip;
       String serv_ip;
       int port;
+      ConnectionState con_state;
 
-      char buff[FG_BUFF_SIZE];
+      circQ<Load, FG_LOAD_Q_SIZE> recv_q;
+      circQ<Load, FG_LOAD_Q_SIZE> send_q;
+
+      void tick();
+      bool receiveLoad(Load *l);
+      bool sendLoad(Load *l);
     public:
-      char connection; //'1' thru '1'+(FG_MAX_CONNECTIONS-1) or '0' for none
+      char con_id;
 
       Client();
       ~Client();
 
       void connect(const String &_ip, int _port);
-      void broadcast(char card, char t);
-      void broadcast(Event *e);
+      void broadcast(const Load &l);
+      bool read(Load &l);
       void disconnect();
-      bool healthy();
-      bool transitioning();
-      bool stale();
-
-      Event *getEvent(); //aka dequeue
 
       void *fork();
   };

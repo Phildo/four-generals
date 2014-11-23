@@ -26,17 +26,42 @@ extern "C"
 
 #define FG_MAX_CONNECTIONS 5 //hold 5th to inform it of its rejection
 #define FG_ACCEPT_Q_SIZE 5 //recommended (also, can't be more... I don't think...)
-#define FG_BUFF_SIZE 256
-#define FG_EVT_Q_SIZE 16
-#define FG_EVT_HIST_SIZE 1024
+#define FG_LOAD_BUFF_SIZE 256
+#define FG_LOAD_Q_SIZE 32
 
 namespace Network
 {
+  enum ConnectionState
+  {
+    CONNECTION_STATE_DISCONNECTED,
+    CONNECTION_STATE_CONNECTING,
+    CONNECTION_STATE_CONNECTED,
+    CONNECTION_STATE_DISCONNECTING,
+    CONNECTION_STATE_STALE,
+    CONNECTION_STATE_COUNT
+  };
+
+  struct Load
+  {
+    char data[FG_LOAD_BUFF_SIZE];
+    char con_id;
+  };
+
+  struct Connection
+  {
+    private:
+    public:
+      Connection() : sock_addr_len(sizeof(sock_addr)), sock_fd(-1) {}
+
+      char con_id;
+      int sock_fd;
+      socklen_t sock_addr_len; //sizeof addr
+      struct sockaddr_in sock_addr;
+  };
+
   class Server;
-  class Connection;
   class Client;
 
-  extern bool host_priv;
   String getIP();
 }
 

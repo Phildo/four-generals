@@ -1,12 +1,9 @@
 #include "network.h"
 
-#include "defines.h"
 #include "logger.h"
 #include <cstring>
 
 using namespace Network;
-
-bool host_priv = true;
 
 String Network::getIP()
 {
