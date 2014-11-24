@@ -212,6 +212,13 @@ void Server::disconnect()
   con_state = CONNECTION_STATE_DISCONNECTED;
 }
 
+bool Server::hasConnection(char con_id)
+{
+  for(int i = 0; i < n_cons; i++)
+    if(con_ptrs[i]->con_id == con_id) return true;
+  return false;
+}
+
 Server::~Server()
 {
   if(con_state != CONNECTION_STATE_DISCONNECTED) disconnect();

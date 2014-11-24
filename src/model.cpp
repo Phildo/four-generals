@@ -26,6 +26,7 @@ void Model::connectCon(char con)
 
 void Model::disconnectCon(char con)
 {
+  revokeCard(connectionGeneral(con).cardinal);
   connectionConnection(con) = '0';
 }
 

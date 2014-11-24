@@ -39,6 +39,19 @@ void ServerModel::tick()
 {
   Network::Load l;
 
+  for(int i = 1; i <= 5; i++)
+  {
+    //report any disconnections
+    if(model.connectionConnection('0'+i) != '0' && !server->hasConnection(i))
+    {
+      Event e;
+      e.connection = '0'+i;
+      e.type = e_type_leave_con;
+      model.disconnectCon(e.connection);
+      sendEvent(e);
+    }
+  }
+
   //server model's job- 1.verify 2.process 3.broadcast
   while(server->read(l))
   {

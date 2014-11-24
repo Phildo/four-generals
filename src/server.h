@@ -48,6 +48,8 @@ namespace Network
       bool read(Load &l);
       void disconnect();
 
+      bool hasConnection(char con_id);
+
       void *fork();
   };
 }
