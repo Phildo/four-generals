@@ -98,12 +98,26 @@ void Server::tick()
     }
 
     Load *l_p;
+    //dump individual send queue
+    while((l_p = individual_send_q.next()))
+    {
+      for(int i = 0; i < n_cons; i++)
+      {
+        if(con_ptrs[i]->con_id == l_p->con_id)
+        {
+          int ret;
+          ret = sendLoad(con_ptrs[i], l_p);
+          if(ret > 0) ; //do nothing- already dequeued
+          else closeConnection(con_ptrs[i--]);
+        }
+      }
+    }
+    //dump global send queue
     while((l_p = send_q.next()))
     {
       for(int i = 0; i < n_cons; i++)
       {
         int ret;
-        fg_log("Server: writing to connection %d", con_ptrs[i]->con_id);
         ret = sendLoad(con_ptrs[i], l_p);
         if(ret > 0) ; //do nothing- already dequeued
         else closeConnection(con_ptrs[i--]);
@@ -175,6 +189,11 @@ int Server::sendLoad(Connection *con, Load *l)
 void Server::broadcast(const Load &l)
 {
   send_q.enqueue(l);
+}
+
+void Server::individualBroadcast(const Load &l)
+{
+  individual_send_q.enqueue(l);
 }
 
 bool Server::read(Load &l)

@@ -22,6 +22,15 @@ void ClientModel::sendEvent(const Event &e)
   client->broadcast(l);
 }
 
+void ClientModel::requestJoin()
+{
+  Event e;
+  e.connection = myConnection();
+  e.type = e_type_join_con;
+
+  sendEvent(e);
+}
+
 void ClientModel::requestCardinal(char card)
 {
   Event e;
@@ -128,15 +137,10 @@ void ClientModel::tick()
 {
   Network::Load l;
 
-  if(imConnected())
+  if(imConnected() && last_known_con == '0')
   {
-    model.connectCon(myConnection());
+    requestJoin();
     last_known_con = myConnection();
-  }
-  else if(last_known_con != '0')
-  {
-    model.disconnectCon(last_known_con);
-    last_known_con = '0';
   }
 
   while(client->read(l))

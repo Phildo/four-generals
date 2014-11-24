@@ -18,6 +18,7 @@ class ClientModel
     ClientModel(Network::Client *c);
     ~ClientModel();
 
+    void requestJoin();
     void requestCardinal(char card);
     void requestRevokeCardinal();
     void requestBeginPlay();

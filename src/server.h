@@ -29,6 +29,7 @@ namespace Network
 
       circQ<Load, FG_LOAD_Q_SIZE> recv_q;
       circQ<Load, FG_LOAD_Q_SIZE> send_q;
+      circQ<Load, FG_LOAD_Q_SIZE> individual_send_q;
       IdStore<FG_MAX_CONNECTIONS> con_id_store;
 
       void tick();
@@ -43,6 +44,7 @@ namespace Network
 
       void connect(int _port);
       void broadcast(const Load &l);
+      void individualBroadcast(const Load &l);
       bool read(Load &l);
       void disconnect();
 

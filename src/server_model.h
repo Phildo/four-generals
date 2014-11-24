@@ -12,6 +12,10 @@ class ServerModel
     Network::Server *server;
     IdStore<256> mess_id_store;
     IdStore<256> sabo_id_store;
+
+    Event history[256]; int hist_i;
+    void sendEvent(const Event &e);
+    void dumpHistory(char con);
   public :
     Model model;
     ServerModel(Network::Server *s);
