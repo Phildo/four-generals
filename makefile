@@ -125,18 +125,9 @@ pkill:
 #
 # testing
 #
-tvmake:
-	vim $(TEST_DIR)/makefile
+tserver: pdefine
+	cd $(TEST_DIR); amake server;
 
-tbuild: pdefine
-	cd $(TEST_DIR); amake build;
-
-tinstall: pdefine
-	cd $(TEST_DIR); amake install;
-
-trun: pdefine
-	cd $(TEST_DIR); amake run;
-
-tdebug: pdefine
-	cd $(TEST_DIR); amake debug;
+tclient: pdefine
+	cd $(TEST_DIR); amake client;
 

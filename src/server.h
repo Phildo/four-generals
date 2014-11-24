@@ -35,8 +35,8 @@ namespace Network
       void tick();
       void acceptConnection();
       void closeConnection(Connection *con);
-      bool receiveLoad(Connection *con, Load *l);
-      bool sendLoad(Connection *con, Load *l);
+      int receiveLoad(Connection *con, Load *l);
+      int sendLoad(Connection *con, Load *l);
     public:
       Server();
       ~Server();

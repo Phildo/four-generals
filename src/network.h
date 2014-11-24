@@ -51,7 +51,7 @@ namespace Network
   {
     private:
     public:
-      Connection() : sock_addr_len(sizeof(sock_addr)), sock_fd(-1) {}
+      Connection() : sock_fd(-1), sock_addr_len(sizeof(sock_addr)) {}
 
       char con_id;
       int sock_fd;

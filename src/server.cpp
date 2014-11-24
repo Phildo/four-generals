@@ -16,6 +16,7 @@ Server::Server()
   ip = Network::getIP();
   port = 8080;
 
+  con_id_store.getId(); //reserve ID 0 so that all connections have > 0 ids
   n_cons = 0;
   for(int i = 0; i < FG_MAX_CONNECTIONS; i++) con_ptrs[i] = &cons[i];
 
@@ -49,6 +50,7 @@ void * Server::fork()
     while(con_state == CONNECTION_STATE_CONNECTED)
       tick();
   }
+  fg_log("Server: disconnecting");
   con_state = CONNECTION_STATE_DISCONNECTING;
 
   recv_q.empty();
@@ -81,7 +83,7 @@ void Server::tick()
 
   retval = select(biggest_fd+1, &sock_fds, NULL, NULL, &tv);
   if(retval == -1) con_state = CONNECTION_STATE_DISCONNECTING;
-  else if(retval)
+  else
   {
     if(FD_ISSET(sock_fd, &sock_fds))
       acceptConnection();
@@ -89,11 +91,10 @@ void Server::tick()
     Load l;
     for(int i = 0; i < n_cons; i++)
     {
-      if(FD_ISSET(con_ptrs[i]->sock_fd, &sock_fds))
-      {
-        if(receiveLoad(con_ptrs[i], &l)) recv_q.enqueue(l);
-        else closeConnection(con_ptrs[i--]);
-      }
+      int ret;
+      ret = receiveLoad(con_ptrs[i], &l);
+      if(ret > 0) recv_q.enqueue(l);
+      if(ret == 0 || (FD_ISSET(con_ptrs[i]->sock_fd, &sock_fds) && ret < 0)) closeConnection(con_ptrs[i--]);
     }
 
     Load *l_p;
@@ -101,7 +102,10 @@ void Server::tick()
     {
       for(int i = 0; i < n_cons; i++)
       {
-        if(sendLoad(con_ptrs[i], l_p)) ; //do nothing- already dequeued
+        int ret;
+        fg_log("Server: writing to connection %d", con_ptrs[i]->con_id);
+        ret = sendLoad(con_ptrs[i], l_p);
+        if(ret > 0) ; //do nothing- already dequeued
         else closeConnection(con_ptrs[i--]);
       }
     }
@@ -115,7 +119,11 @@ void Server::acceptConnection()
   if(con->sock_fd >= 0)
   {
     con->con_id = con_id_store.getId();
+    fg_log("Server: accepting connection %d", con->con_id);
     n_cons++;
+
+    int fd_flags = fcntl(con->sock_fd, F_GETFL);
+    fcntl(con->sock_fd, F_SETFL,fd_flags|O_NONBLOCK);
 
     if(n_cons >= FG_MAX_CONNECTIONS)
     {
@@ -131,6 +139,7 @@ void Server::closeConnection(Connection *con)
   for(i = 0; i < n_cons; i++)
     if(con_ptrs[i] == con) break;
 
+  fg_log("Server: closing connection %d", con->con_id);
   con_id_store.retireId(con->con_id);
   close(con->sock_fd);
 
@@ -139,19 +148,21 @@ void Server::closeConnection(Connection *con)
   n_cons--;
 }
 
-bool Server::receiveLoad(Connection *con, Load *l)
+int Server::receiveLoad(Connection *con, Load *l)
 {
   int len;
   l->con_id = con->con_id;
   len = recv(con->sock_fd, l->data, FG_LOAD_BUFF_SIZE, 0);
-  return (len > 0);
+  if(len > 0) fg_log("Server: received %s",l->data);
+  return len;
 }
 
-bool Server::sendLoad(Connection *con, Load *l)
+int Server::sendLoad(Connection *con, Load *l)
 {
   int len;
   len = send(con->sock_fd, l->data, FG_LOAD_BUFF_SIZE, 0);
-  return (len > 0);
+  if(len > 0) fg_log("Server: sent %s",l->data);
+  return len;
 }
 
 void Server::broadcast(const Load &l)

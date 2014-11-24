@@ -43,13 +43,14 @@ void * Client::fork()
     bcopy((char *)serv_host->h_addr, (char *)&serv_sock_addr.sin_addr.s_addr, serv_host->h_length);
     serv_sock_addr.sin_port = htons(port);
 
-    if(::connect(sock_fd,(struct sockaddr *)&serv_sock_addr, sizeof(serv_sock_addr)) > 0)
+    if(::connect(sock_fd,(struct sockaddr *)&serv_sock_addr, sizeof(serv_sock_addr)) >= 0)
     {
       con_state = CONNECTION_STATE_CONNECTED;
       while(con_state == CONNECTION_STATE_CONNECTED)
         tick();
     }
   }
+  fg_log("Client: disconnecting");
   con_state = CONNECTION_STATE_DISCONNECTING;
 
   recv_q.empty();
@@ -77,6 +78,7 @@ void Client::tick()
   else if(retval && FD_ISSET(sock_fd, &sock_fds))
   {
     Load l;
+    fg_log("Client: reading");
     if(receiveLoad(&l)) recv_q.enqueue(l);
     else con_state = CONNECTION_STATE_DISCONNECTING;
   }
@@ -84,6 +86,7 @@ void Client::tick()
   Load *l_p;
   while((l_p = send_q.next()))
   {
+    fg_log("Client: sending");
     if(sendLoad(l_p)) ; //do nothing- already dequeued
     else con_state = CONNECTION_STATE_DISCONNECTING;
   }
@@ -93,6 +96,7 @@ bool Client::receiveLoad(Load *l)
 {
   int len;
   len = recv(sock_fd, l->data, FG_LOAD_BUFF_SIZE, 0);
+  if(len > 0) fg_log("Client: received %s",l->data);
   return (len > 0);
 }
 
@@ -100,6 +104,7 @@ bool Client::sendLoad(Load *l)
 {
   int len;
   len = send(sock_fd, l->data, FG_LOAD_BUFF_SIZE, 0);
+  if(len > 0) fg_log("Client: sent %s",l->data);
   return (len > 0);
 }
 
