@@ -24,7 +24,6 @@ namespace Network
       String ip;
       String serv_ip;
       int port;
-      ConnectionState con_state;
 
       circQ<Load, FG_LOAD_Q_SIZE> recv_q;
       circQ<Load, FG_LOAD_Q_SIZE> send_q;
@@ -33,6 +32,7 @@ namespace Network
       bool receiveLoad(Load *l);
       bool sendLoad(Load *l);
     public:
+      ConnectionState con_state;
       char con_id;
 
       Client();

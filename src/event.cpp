@@ -109,10 +109,6 @@ char *Event::debug()
 {
   switch(type)
   {
-    case e_type_ack:            sprintf(event_type_buff,"ack");        break;
-    case e_type_assign_con:     sprintf(event_type_buff,"ass_con");    break;
-    case e_type_revoke_con:     sprintf(event_type_buff,"rev_con");    break;
-    case e_type_refuse_con:     sprintf(event_type_buff,"ref_con");    break;
     case e_type_join_con:       sprintf(event_type_buff,"join_con");   break;
     case e_type_leave_con:      sprintf(event_type_buff,"leave_con");  break;
     case e_type_assign_card:    sprintf(event_type_buff,"ass_card");   break;

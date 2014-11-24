@@ -7,12 +7,6 @@
 
 static const int e_ser_len = 13+(3*FG_EVT_ID_MAX_DEC_STR_LEN)+1; //oh god this is a terrible system
 
-static const char e_type_ack         = 'a'; //handled entirely at network level (never reaches models)
-
-static const char e_type_assign_con  = 'b'; //server->client only
-static const char e_type_revoke_con  = 'c'; //server->client only
-static const char e_type_refuse_con  = 'd'; //server->client only
-
 static const char e_type_join_con    = 'e';
 static const char e_type_leave_con   = 'f';
 

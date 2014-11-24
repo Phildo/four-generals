@@ -12,6 +12,7 @@ void * Network::cliThreadHandoff(void * arg)  { return ((CliThreadHandle*) arg)-
 Client::Client()
 {
   con_state = CONNECTION_STATE_DISCONNECTED;
+  con_id = 0;
   sock_fd = -1;
   ip = getIP();
   port = 8080;
@@ -57,6 +58,7 @@ void * Client::fork()
   send_q.empty();
 
   close(sock_fd);
+  con_id = 0;
   con_state = CONNECTION_STATE_STALE;
   return 0;
 }
@@ -79,7 +81,29 @@ void Client::tick()
   {
     Load l;
     fg_log("Client: reading");
-    if(receiveLoad(&l)) recv_q.enqueue(l);
+    if(receiveLoad(&l))
+    {
+      if(con_id == 0 && //this is the silliest thing...
+        l.data[ 0] == 'F' &&
+        l.data[ 1] == 'G' &&
+        l.data[ 2] == '_' &&
+        l.data[ 3] == 'H' &&
+        l.data[ 4] == 'A' &&
+        l.data[ 5] == 'N' &&
+        l.data[ 6] == 'D' &&
+        l.data[ 7] == 'S' &&
+        l.data[ 8] == 'H' &&
+        l.data[ 9] == 'A' &&
+        l.data[10] == 'K' &&
+        l.data[11] == 'E' &&
+        l.data[12] == ':'
+      )
+      {
+        con_id = Network::intVal(&l.data[13],3);
+        if(con_id == 0) con_state = CONNECTION_STATE_DISCONNECTING;
+      }
+      else recv_q.enqueue(l);
+    }
     else con_state = CONNECTION_STATE_DISCONNECTING;
   }
 

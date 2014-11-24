@@ -125,10 +125,17 @@ void Server::acceptConnection()
     int fd_flags = fcntl(con->sock_fd, F_GETFL);
     fcntl(con->sock_fd, F_SETFL,fd_flags|O_NONBLOCK);
 
+    Load l;
     if(n_cons >= FG_MAX_CONNECTIONS)
     {
-      //con->broadcast('getoutahere');
+      sprintf(l.data,"FG_HANDSHAKE:%s",Network::decimalRep(0,3).ptr()); //FG_HANDSHAKE:000 means gtfo
+      sendLoad(con, &l);
       closeConnection(con);
+    }
+    else
+    {
+      sprintf(l.data,"FG_HANDSHAKE:%s",Network::decimalRep(con->con_id,3).ptr());
+      sendLoad(con, &l);
     }
   }
 }

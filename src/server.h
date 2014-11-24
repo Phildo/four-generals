@@ -22,7 +22,6 @@ namespace Network
 
       String ip;
       int port;
-      ConnectionState con_state;
 
       int n_cons;
       Connection cons[FG_MAX_CONNECTIONS];
@@ -38,6 +37,7 @@ namespace Network
       int receiveLoad(Connection *con, Load *l);
       int sendLoad(Connection *con, Load *l);
     public:
+      ConnectionState con_state;
       Server();
       ~Server();
 

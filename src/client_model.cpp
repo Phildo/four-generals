@@ -87,10 +87,6 @@ void ClientModel::tick()
   {
     switch(e->type)
     {
-      case e_type_ack: break;        //should never reach model (handled entirely by client)
-      case e_type_assign_con: break; //should never reach model (handled entirely by client)
-      case e_type_revoke_con: break; //should never reach model (handled entirely by client)
-      case e_type_refuse_con: break; //should never reach model (handled entirely by client)
       case e_type_join_con:
         model.connectCon(e->connection);
         break;

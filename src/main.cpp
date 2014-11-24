@@ -16,6 +16,7 @@ void signal_callback_handler(int signum)
       exit(1);
       break;
     case SIGPIPE:
+      fflush(stdout);
       //do nothing
       break;
     default:
