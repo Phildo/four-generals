@@ -160,7 +160,7 @@ int Server::receiveLoad(Connection *con, Load *l)
   int len;
   l->con_id = con->con_id;
   len = recv(con->sock_fd, l->data, FG_LOAD_BUFF_SIZE, 0);
-  if(len > 0) fg_log("Server: received %s",l->data);
+  if(len > 0) fg_log("Server: recv %s",l->data);
   return len;
 }
 

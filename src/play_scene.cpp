@@ -237,7 +237,7 @@ void PlayScene::chooseWhere(In &in)
 
 void PlayScene::seekConfirmation(In &in)
 {
-  if(confirmButton.query(in)) client->broadcast(&e);
+  if(confirmButton.query(in)) c->commitAction(e);
   if(cancelButton.query(in)) zeroE();
 }
 

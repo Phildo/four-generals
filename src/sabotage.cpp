@@ -11,7 +11,7 @@ Sabotage::Sabotage()
 }
 
 Sabotage::Sabotage(Event e)
-: cardinal(e.cardinal), how(e.how), which(e.which), what(e.what), who(e.who), when(e.when), where(e.where), id(e.sabotage_id_i)
+: cardinal(e.cardinal), how(e.how), which(e.which), what(e.what), who(e.who), when(e.when), where(e.where), id(e.sabotage_id)
 {
 }
 

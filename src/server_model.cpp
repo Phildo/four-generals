@@ -8,8 +8,6 @@
 ServerModel::ServerModel(Network::Server *s)
 {
   server = s;
-  messenger_id = 0;
-  sabotage_id = 0;
 }
 
 ServerModel::~ServerModel()
@@ -18,77 +16,63 @@ ServerModel::~ServerModel()
 
 void ServerModel::tick()
 {
-  Event *e;
+  Network::Load l;
 
   //server model's job- 1.verify 2.process 3.broadcast
-  while((e = server->getEvent()))
+  while(server->read(l))
   {
-    switch(e->type)
+    Event e(l.data);
+    switch(e.type)
     {
-      case e_type_ack: break; //should never reach model (handled entirely by server)
-      case e_type_assign_con: break; //server->client only
-      case e_type_revoke_con: break; //server->client only
-      case e_type_refuse_con: break; //server->client only
       case e_type_join_con:
-        model.connectCon(e->connection);
-        server->broadcast(e); //alert others of joined player
+        model.connectCon(e.connection);
+        server->broadcast(l); //alert others of joined player
         break;
       case e_type_leave_con:
-        model.disconnectCon(e->connection);
-        server->broadcast(e); //alert others of joined player
+        model.disconnectCon(e.connection);
+        server->broadcast(l); //alert others of joined player
         break;
       case e_type_assign_card:
-        if(!model.cardinalConnected(e->cardinal))
+        if(!model.cardinalConnected(e.cardinal))
         {
-          model.assignConCard(e->connection, e->cardinal);
-          server->broadcast(e);
+          model.assignConCard(e.connection, e.cardinal);
+          server->broadcast(l);
         }
         break;
       case e_type_revoke_card:
-        if(model.cardinalConnected(e->cardinal) && model.cardinalGeneral(e->cardinal).connection == e->connection)
+        if(model.cardinalConnected(e.cardinal) && model.cardinalGeneral(e.cardinal).connection == e.connection)
         {
-          model.revokeCard(e->cardinal);
-          server->broadcast(e);
+          model.revokeCard(e.cardinal);
+          server->broadcast(l);
         }
         break;
       case e_type_begin_play:
         if(model.rolesAssigned())
         {
           model.days = 0;
-          server->broadcast(e);
+          server->broadcast(l);
         }
         break;
       case e_type_commit_action:
-        if(!model.connectionHasAction(e->connection))
+        if(!model.connectionHasAction(e.connection))
         {
           //inject assignment of messenger id here
-          if(e->action == 'm') e->messenger_id_i = nextMessId();
-          if(e->action == 's') e->sabotage_id_i = nextSabId();
-          model.assignConAction(e->connection, *e);
-          server->broadcast(e);
+          if(e.action == 'm') e.messenger_id = mess_id_store.getId();
+          if(e.action == 's') e.sabotage_id  = sabo_id_store.getId();
+          model.assignConAction(e.connection, e);
+          server->broadcast(l);
         }
         if(model.actionsAssigned())
         {
           model.commitActions(); //also increases day
-          e->type = e_type_commit_actions; //give goahead for mass commit
-          server->broadcast(e);
+          e.type = e_type_commit_actions; //give goahead for mass commit
+          e.serialize(l.data);
+          server->broadcast(l);
         }
         break;
       case e_type_commit_actions: break; //server->client only
       default: break;
     }
   }
-}
-
-int ServerModel::nextMessId()
-{
-  messenger_id++;
-  return messenger_id;
-}
-
-int ServerModel::nextSabId()
-{
-  sabotage_id++;
-  return sabotage_id;
 }
 

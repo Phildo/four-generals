@@ -56,7 +56,7 @@ int Network::intVal(char *s, int digs)
 {
   int r = 0;
   int d;
-  for(int i = digs-1; i >= 0; i--)
+  for(int i = 0; i < digs; i++)
   {
     d = ((int)(s[i]-'0'));
     r *= 10;

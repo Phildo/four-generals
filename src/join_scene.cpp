@@ -48,13 +48,13 @@ void JoinScene::touch(In &in)
   if(sessionButton.query(in))
   {
     if(!client) { client = new Network::Client(); *client_ptr = client; }
-    if(!client->healthy()) client->connect(ipInput.getText(),8080);
+    if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(ipInput.getText(),8080);
   }
 }
 
 int JoinScene::tick()
 {
-  if(client && client->healthy())
+  if(client && client->con_state == Network::CONNECTION_STATE_CONNECTED)
   {
     c_model = new ClientModel(client);
     *c_model_ptr = c_model;
@@ -97,7 +97,7 @@ void JoinScene::pass()
 void JoinScene::pop()
 {
   if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
-  if(client) { if(client->healthy()) client->disconnect(); delete client; client = 0; *client_ptr = 0; }
+  if(client) { if(client->con_state == Network::CONNECTION_STATE_CONNECTED) client->disconnect(); delete client; client = 0; *client_ptr = 0; }
 }
 
 

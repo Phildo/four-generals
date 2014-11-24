@@ -13,7 +13,7 @@ Messenger::Messenger()
 }
 
 Messenger::Messenger(Event e)
-: from(e.cardinal), was(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), where(e.where), id(e.messenger_id_i)
+: from(e.cardinal), was(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), where(e.where), id(e.messenger_id)
 {
 }
 

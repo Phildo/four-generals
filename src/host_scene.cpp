@@ -56,27 +56,37 @@ void HostScene::touch(In &in)
   if(sessionButton.query(in))
   {
     if(!server) { server = new Network::Server(); *serverPtr = server; }
-    if(!server->healthy()) server->connect(8080);
+    if(server->con_state == Network::CONNECTION_STATE_DISCONNECTED) server->connect(8080);
   }
 }
 
 int HostScene::tick()
 {
-  if(server && server->healthy())
+  if(server)
   {
-    if(!s_model)
+    if(server->con_state == Network::CONNECTION_STATE_CONNECTED)
     {
-      s_model = new ServerModel(server);
-      *s_model_ptr = s_model;
+      if(!s_model)
+      {
+        s_model = new ServerModel(server);
+        *s_model_ptr = s_model;
+      }
+      if(!client) { client = new Network::Client(); *clientPtr = client; }
+      if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(String("localhost"),8080);
     }
-    if(!client) { client = new Network::Client(); *clientPtr = client; }
-    if(!client->healthy()) client->connect(String("localhost"),8080);
+    if(server->con_state == Network::CONNECTION_STATE_STALE)
+      server->disconnect();
   }
-  if(client && client->healthy()) 
+  if(client)
   {
-    c_model = new ClientModel(client);
-    *c_model_ptr = c_model;
-    SCENE_CHANGE_HACK = 2;
+    if(client->con_state == Network::CONNECTION_STATE_CONNECTED)
+    {
+      c_model = new ClientModel(client);
+      *c_model_ptr = c_model;
+      SCENE_CHANGE_HACK = 2;
+    }
+    if(client->con_state == Network::CONNECTION_STATE_STALE)
+      client->disconnect();
   }
 
   int tmp = SCENE_CHANGE_HACK;
@@ -106,8 +116,8 @@ void HostScene::pop()
 {
   if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
   if(s_model) { delete s_model; s_model = 0; *s_model_ptr = 0; }
-  if(client) { if(client->healthy()) client->disconnect(); delete client; client = 0; *clientPtr = 0; }
-  if(server) { if(server->healthy()) server->disconnect(); delete server; server = 0; *serverPtr = 0; }
+  if(client) { if(client->con_state == Network::CONNECTION_STATE_CONNECTED) client->disconnect(); delete client; client = 0; *clientPtr = 0; }
+  if(server) { if(server->con_state == Network::CONNECTION_STATE_CONNECTED) server->disconnect(); delete server; server = 0; *serverPtr = 0; }
 }
 
 HostScene::~HostScene()

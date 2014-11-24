@@ -9,11 +9,19 @@ class ClientModel
 {
   private :
     Network::Client *client;
+
+    char last_known_con; //hack to be aware of disconnect
+    void sendEvent(const Event &e);
   public :
     Model model;
 
     ClientModel(Network::Client *c);
     ~ClientModel();
+
+    void requestCardinal(char card);
+    void requestRevokeCardinal();
+    void requestBeginPlay();
+    void commitAction(Event e);
 
     bool imConnected();
     char myConnection();

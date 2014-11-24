@@ -80,7 +80,6 @@ void Client::tick()
   else if(retval && FD_ISSET(sock_fd, &sock_fds))
   {
     Load l;
-    fg_log("Client: reading");
     if(receiveLoad(&l))
     {
       if(con_id == 0 && //this is the silliest thing...
@@ -110,7 +109,6 @@ void Client::tick()
   Load *l_p;
   while((l_p = send_q.next()))
   {
-    fg_log("Client: sending");
     if(sendLoad(l_p)) ; //do nothing- already dequeued
     else con_state = CONNECTION_STATE_DISCONNECTING;
   }
@@ -120,7 +118,7 @@ bool Client::receiveLoad(Load *l)
 {
   int len;
   len = recv(sock_fd, l->data, FG_LOAD_BUFF_SIZE, 0);
-  if(len > 0) fg_log("Client: received %s",l->data);
+  if(len > 0) fg_log("Client: recv %s",l->data);
   return (len > 0);
 }
 

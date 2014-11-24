@@ -2,48 +2,81 @@
 
 #include "defines.h"
 #include "logger.h"
+#include "network.h" //serialization string<->int conversions
 
 #include "stdlib.h"
-#include <stdio.h> //spsrintf
-#include <cstring> //memcopy for simple serialization, memset for simple initialization
+#include <stdio.h> //sprintf
 
 Event::Event() //set to pseudo 'null'
 {
   zero();
 };
-Event::Event(char *c) //just memcopy that sucka
+Event::Event(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
 {
-  memcpy(this, (void *)c, sizeof(Event));
-  null = '\0';
-  messenger_id_i = hackatoi(&messenger_id_c[0]);
-  id_i = hackatoi(&id_c[0]);
-}
-Event::Event(char con, char card, char act, char ow, char wich, char t, char wat, char wo, char wen, char were, char ty, int s_id, int m_id, int id)
-: connection(con), cardinal(card), action(act), how(ow), which(wich), to(t), what(wat), who(wo), when(wen), where(were), type(ty), sabotage_id_i(s_id), messenger_id_i(m_id), id_i(id)
-{
-  for(int i = 0; i < FG_EVT_ID_MAX_DEC_STR_LEN; i++)
-  {
-    id_c[i]           = '0';
-    sabotage_id_c[i]  = '0';
-    messenger_id_c[i] = '0';
-  }
-  null = '\0';
+  connection = c[0];
+  cardinal   = c[1];
+  action     = c[2];
+  how        = c[3];
+  which      = c[4];
+  to         = c[5];
+  what       = c[6];
+  who        = c[7];
+  when       = c[8];
+  where      = c[9];
+  type       = c[10];
+  sabotage_id  = Network::intVal(&c[11],3);
+  messenger_id = Network::intVal(&c[14],3);
+  evt_id       = Network::intVal(&c[17],6);
 }
 
 void Event::zero()
 {
-  memset(this, '0', sizeof(Event));
-  null = '\0';
-  sabotage_id_i = 0;
-  messenger_id_i = 0;
-  id_i = 0;
+  connection = '0';
+  cardinal   = '0';
+  action     = '0';
+  how        = '0';
+  which      = '0';
+  to         = '0';
+  what       = '0';
+  who        = '0';
+  when       = '0';
+  where      = '0';
+  type       = '0';
+  sabotage_id  = 0;
+  messenger_id = 0;
+  evt_id       = 0;
 }
 
-char *Event::serialize()
+void Event::serialize(char *c) const
 {
-  hackitoa(messenger_id_i,messenger_id_c);
-  hackitoa(id_i,id_c);
-  return (char *)&connection; //holy hacks on hacks on hacks
+  String s;
+  c[0] = connection;
+  c[1] = cardinal;
+  c[2] = action;
+  c[3] = how;
+  c[4] = which;
+  c[5] = to;
+  c[6] = what;
+  c[7] = who;
+  c[8] = when;
+  c[9] = where;
+  c[10] = type;
+  s = Network::decimalRep(sabotage_id,3);
+  c[11] = *(s.ptr()+0);
+  c[12] = *(s.ptr()+1);
+  c[13] = *(s.ptr()+2);
+  s = Network::decimalRep(messenger_id,3);
+  c[14] = *(s.ptr()+0);
+  c[15] = *(s.ptr()+1);
+  c[16] = *(s.ptr()+2);
+  s = Network::decimalRep(evt_id,6);
+  c[17] = *(s.ptr()+0);
+  c[18] = *(s.ptr()+1);
+  c[19] = *(s.ptr()+2);
+  c[20] = *(s.ptr()+3);
+  c[21] = *(s.ptr()+4);
+  c[22] = *(s.ptr()+5);
+  c[23] = '\0'; //for good measure
 }
 
 char *Event::humanAction()
@@ -119,36 +152,8 @@ char *Event::debug()
     default:                    sprintf(event_type_buff,"NO DEBUG READABLE EVENT TYPE FOUND"); break;
   }
 
-  sprintf(debug_buff,"con:%c card:%c act:%c how:%c which:%c to:%c what:%c who:%c when:%c where:%c mid:%d id:%d type:%c type:%s", connection, cardinal, action, how, which, to, what, who, when, where, messenger_id_i, id_i, type, event_type_buff);
+  sprintf(debug_buff,"con:%c card:%c act:%c how:%c which:%c to:%c what:%c who:%c when:%c where:%c mid:%d id:%d type:%c type:%s", connection, cardinal, action, how, which, to, what, who, when, where, messenger_id, evt_id, type, event_type_buff);
   return &debug_buff[0];
 }
 #endif
-
-
-//yuck
-void Event::hackitoa(int i, char *c)
-{
-  //fill id_c with FG_EVT_ID_MAX_DEC_STR_LEN digit char rep of id (ie '000012')
-  int d = 0;
-  for(int j = FG_EVT_ID_MAX_DEC_STR_LEN-1; j > 0; j--)
-  {
-    d = i%10;
-    c[j] = '0'+d;
-    i -= d; //prob don't need to do because of truncation in division
-    i /= 10;
-  }
-}
-
-int Event::hackatoi(const char *c)
-{
-  int r = 0;
-  int p;
-  for(int i = 0; i < FG_EVT_ID_MAX_DEC_STR_LEN; i++)
-  {
-    p = ((int)(*(c+(FG_EVT_ID_MAX_DEC_STR_LEN-1-i))-'0'));
-    for(int j = 0; j < i; j++) p*=10;
-    r += p;
-  }
-  return r;
-}
 

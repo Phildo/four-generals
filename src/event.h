@@ -3,10 +3,6 @@
 
 #include "defines.h"
 
-#define FG_EVT_ID_MAX_DEC_STR_LEN 6
-
-static const int e_ser_len = 13+(3*FG_EVT_ID_MAX_DEC_STR_LEN)+1; //oh god this is a terrible system
-
 static const char e_type_join_con    = 'e';
 static const char e_type_leave_con   = 'f';
 
@@ -19,8 +15,8 @@ static const char e_type_commit_actions = 'k';
 
 struct Event //all members chars for quick/simple serializability
 {
-  //'0' = unassigned / N/A
-  /* 1  */ char connection; //IDENTIFIER '1'-'5' //'5' = invalid
+  //anything w/ value '0' = unassigned / N/A
+  /* 1  */ char connection; //IDENTIFIER '1'-'5'
   /* 2  */ char cardinal;   //IDENTIFIER 'n|e|s|w'
   /* 3  */ char action;     //'a' = attack, 'd' = defend, 'm' = messenger, 's' = sabotage
   /* 4  */ char how;        //corresponds to sabotage members
@@ -31,28 +27,23 @@ struct Event //all members chars for quick/simple serializability
   /* 9  */ char when;       //corresponds to messenger members
   /* 10 */ char where;      //corresponds to messenger members
   /* 11 */ char type;       //listed above
-  /* 11+(1*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char sabotage_id_c[FG_EVT_ID_MAX_DEC_STR_LEN];  //string val of sabotage_id_i  (ie "2415")
-  /* 11+(2*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char messenger_id_c[FG_EVT_ID_MAX_DEC_STR_LEN]; //string val of messenger_id_i (ie "2415")
-  /* 11+(3*FG_EVT_ID_MAX_DEC_STR_LEN)   */ char id_c[FG_EVT_ID_MAX_DEC_STR_LEN];           //string val of id_i           (ie "2415")
-  /* 11+(3*FG_EVT_ID_MAX_DEC_STR_LEN)+1 */ char null; //not const because then we can't use default copy
-  int sabotage_id_i;
-  int messenger_id_i;
-  int id_i;
+  int sabotage_id;
+  int messenger_id;
+  int evt_id;
 
   Event();
-  Event(char con, char card, char act, char ow, char wich, char t, char wat, char wo, char wen, char were, char ty, int s_id, int m_id, int id);
   Event(char *c);
   void zero();
+
+  //serializability
+  void serialize(char *c) const;
+
+  char *humanAction();
+  char h_action_buff[256];
 
   //test for equality is a lie for comparing events to acks and retrieving from circ_q
   bool operator==(const Event& e){ return connection == e.connection; }
   bool operator!=(const Event& e){ return !operator==(e); }
-
-  //serializability
-  char *serialize();
-
-  char *humanAction();
-  char h_action_buff[256];
 
   //ONLY USE WHEN DEBUGGING (adds massive memory overhead)
   #ifdef FG_DEBUG //should cause errors when disabling debug
@@ -60,10 +51,6 @@ struct Event //all members chars for quick/simple serializability
   char debug_buff[256];
   char event_type_buff[256];
   #endif
-
-  private:
-    void hackitoa(int i, char *c);
-    int hackatoi(const char *c);
 };
 
 #endif

@@ -71,14 +71,14 @@ void RoomScene::touch(In &in)
     if(cardBtns[i].query(in))
     {
       char card = Compass::cardinal(i);
-      if(c->imCardinal(card)) client->broadcast(card, e_type_revoke_card);
-      else                    client->broadcast(card, e_type_assign_card);
+      if(c->imCardinal(card)) c->requestRevokeCardinal();
+      else                    c->requestCardinal(card);
     }
   }
 
   if(leaveSessButton.query(in)) { }
   if(s && c->model.rolesAssigned() && beginGameButton.query(in))
-    client->broadcast(c->myCardinal(), e_type_begin_play);
+    c->requestBeginPlay();
 }
 
 int RoomScene::tick()
