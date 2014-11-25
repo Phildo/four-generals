@@ -9,6 +9,10 @@ SDL_Rect Sprite::border_r()  { return rect(120,10,10,10); }
 SDL_Rect Sprite::border_bl() { return rect(100,20,10,10); }
 SDL_Rect Sprite::border_b()  { return rect(110,20,10,10); }
 SDL_Rect Sprite::border_br() { return rect(120,20,10,10); }
+SDL_Rect Sprite::rborder_tl() { return rect(100,30,15,15); }
+SDL_Rect Sprite::rborder_tr() { return rect(115,30,15,15); }
+SDL_Rect Sprite::rborder_bl() { return rect(100,45,15,15); }
+SDL_Rect Sprite::rborder_br() { return rect(115,45,15,15); }
 
 SDL_Rect Sprite::messenger() { return rect(130,0,10,10); }
 

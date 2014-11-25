@@ -13,6 +13,10 @@ namespace Sprite
   SDL_Rect border_bl();
   SDL_Rect border_b();
   SDL_Rect border_br();
+  SDL_Rect rborder_tl();
+  SDL_Rect rborder_tr();
+  SDL_Rect rborder_bl();
+  SDL_Rect rborder_br();
 
   SDL_Rect messenger();
 
