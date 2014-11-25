@@ -17,6 +17,7 @@ namespace Sprite
   SDL_Rect rborder_tr();
   SDL_Rect rborder_bl();
   SDL_Rect rborder_br();
+  SDL_Rect circle();
 
   SDL_Rect messenger();
 

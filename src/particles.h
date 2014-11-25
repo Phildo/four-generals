@@ -8,6 +8,7 @@ class Graphics;
 enum P_Type
 {
   P_TYPE_MESSENGER,
+  P_TYPE_DEFEND,
   P_TYPE_COUNT
 };
 
@@ -30,6 +31,18 @@ struct Particle
       float end_y;
       float t;
     } mess;
+    struct
+    {
+      int x; //center
+      int y; //center
+      int start_w;
+      int start_h;
+      int w;
+      int h;
+      int end_w;
+      int end_h;
+      float t;
+    } defend;
     struct
     {
       float x;

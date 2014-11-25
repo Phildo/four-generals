@@ -426,6 +426,28 @@ int PlayScene::tick()
 
       psys.registerP(p);
     }
+    for(int i = 0; i < 4; i++)
+    {
+      char card = Compass::cardinal(i);
+      if(c->model.cardinalPrevAction(card).action == 'd')
+      {
+        SDL_Rect pos;
+
+        Particle p;
+        p.type = P_TYPE_DEFEND;
+        pos = whoBoxForCardinal(card);
+        p.defend.y       = pos.y+pos.h/2;
+        p.defend.x       = pos.x+pos.w/2;
+        p.defend.start_w = pos.w;
+        p.defend.start_h = pos.h;
+        p.defend.w       = pos.w;
+        p.defend.h       = pos.h;
+        p.defend.end_w   = pos.w*2;
+        p.defend.end_h   = pos.h*2;
+
+        psys.registerP(p);
+      }
+    }
     zeroE();
     known_day = c->model.currentDay();
   }

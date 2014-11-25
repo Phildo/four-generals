@@ -13,6 +13,7 @@ SDL_Rect Sprite::rborder_tl() { return rect(100,30,15,15); }
 SDL_Rect Sprite::rborder_tr() { return rect(115,30,15,15); }
 SDL_Rect Sprite::rborder_bl() { return rect(100,45,15,15); }
 SDL_Rect Sprite::rborder_br() { return rect(115,45,15,15); }
+SDL_Rect Sprite::circle()     { return rect(100,30,30,30); }
 
 SDL_Rect Sprite::messenger() { return rect(130,0,10,10); }
 

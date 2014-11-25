@@ -18,6 +18,7 @@ class Model
     //in cardinal order
     General generals[5];
     Event actions[5]; //actions for this turn
+    Event prev_actions[5]; //actions for prev turn
 
     //unordered
     Array<Messenger,16> messengers;
@@ -47,6 +48,9 @@ class Model
     Event& generalAction(General g);
     Event& cardinalAction(char card);
     Event& connectionAction(char con);
+    Event& generalPrevAction(General g);
+    Event& cardinalPrevAction(char card);
+    Event& connectionPrevAction(char con);
     Messenger& cardinalMessage(char card);
     Messenger& connectionMessage(char con);
     Messenger& cardinalIntruder(char card);

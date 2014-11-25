@@ -54,11 +54,16 @@ void JoinScene::touch(In &in)
 
 int JoinScene::tick()
 {
-  if(client && client->con_state == Network::CONNECTION_STATE_CONNECTED)
+  if(client)
   {
-    c_model = new ClientModel(client);
-    *c_model_ptr = c_model;
-    SCENE_CHANGE_HACK = 1;
+    if(client->con_state == Network::CONNECTION_STATE_CONNECTED)
+    {
+      c_model = new ClientModel(client);
+      *c_model_ptr = c_model;
+      SCENE_CHANGE_HACK = 1;
+    }
+    if(client->con_state == Network::CONNECTION_STATE_STALE)
+      client->disconnect();
   }
   else
   {

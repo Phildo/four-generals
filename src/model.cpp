@@ -95,6 +95,10 @@ void Model::commitActions()
   }
   sabotages.removeAll();
 
+  //save actions as 'previous' for further analysis if necessary
+  for(int i = 0; i < 5; i++)
+    prev_actions[i] = actions[i];
+
   cardinalAction('n').zero();
   cardinalAction('e').zero();
   cardinalAction('s').zero();
@@ -150,6 +154,22 @@ Event& Model::connectionAction(char con)
 {
   return cardinalAction(connectionCardinal(con));
 }
+
+Event& Model::generalPrevAction(General g)
+{
+  return prev_actions[Compass::icardinal(g.cardinal)];
+}
+
+Event& Model::cardinalPrevAction(char card)
+{
+  return prev_actions[Compass::icardinal(card)];
+}
+
+Event& Model::connectionPrevAction(char con)
+{
+  return cardinalPrevAction(connectionCardinal(con));
+}
+
 
 Messenger& Model::cardinalMessage(char card)
 {
