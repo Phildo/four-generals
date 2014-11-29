@@ -9,6 +9,7 @@ enum P_Type
 {
   P_TYPE_MESSENGER,
   P_TYPE_DEFEND,
+  P_TYPE_ATTACK,
   P_TYPE_COUNT
 };
 
@@ -43,6 +44,22 @@ struct Particle
       int end_h;
       float t;
     } defend;
+    struct
+    {
+      int w;
+      int h;
+      char begin_card;
+      char end_card;
+      float start_x;
+      float start_y;
+      float x;
+      float y;
+      float end_x;
+      float end_y;
+      int anim_frames;
+      float t_per_frame;
+      float t;
+    } attack;
     struct
     {
       float x;

@@ -447,6 +447,29 @@ int PlayScene::tick()
 
         psys.registerP(p);
       }
+      if(c->model.cardinalPrevAction(card).action == 'a')
+      {
+        Messenger m = c->model.messengers[i];
+        SDL_Rect pos;
+
+        Particle p;
+        p.type = P_TYPE_ATTACK;
+        p.attack.w = 40;
+        p.attack.h = 40;
+        p.attack.begin_card = card;
+        p.attack.end_card = c->model.cardinalPrevAction(card).who;
+        pos = whoBoxForCardinal(p.attack.begin_card);
+        p.attack.start_x = pos.x;
+        p.attack.start_y = pos.y;
+        p.attack.y       = pos.x;
+        p.attack.x       = pos.y;
+        pos = whoBoxForCardinal(p.attack.end_card);
+        p.attack.end_x   = pos.x;
+        p.attack.end_y   = pos.y;
+        p.attack.t = 0.0f;
+
+        psys.registerP(p);
+      }
     }
     zeroE();
     known_day = c->model.currentDay();
