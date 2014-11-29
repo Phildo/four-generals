@@ -20,6 +20,11 @@ SDL_Rect Sprite::stick_horiz() { return rect(130,20,10,10); }
 SDL_Rect Sprite::stick_vert()  { return rect(130,30,10,10); }
 SDL_Rect Sprite::stick_fs()    { return rect(130,40,10,10); }
 
+SDL_Rect Sprite::n_general() { return rect(140,0,64,64); }
+SDL_Rect Sprite::e_general() { return rect(204,0,64,64); }
+SDL_Rect Sprite::s_general() { return rect(268,0,64,64); }
+SDL_Rect Sprite::w_general() { return rect(332,0,64,64); }
+
 bool mapPop = false;
 SDL_Rect alphamap[78];
 SDL_Rect Sprite::alpha(char a)

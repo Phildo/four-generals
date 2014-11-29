@@ -1,5 +1,6 @@
 #include "play_scene.h"
 #include "graphics.h"
+#include "sprite.h"
 #include "network.h"
 #include "client.h"
 #include "server_model.h"
@@ -136,8 +137,15 @@ void PlayScene::enter()
   card = c->myCardinal();
   icard = Compass::icardinal(card);
   rect = whoBoxForPosition('s');
+  rect.x-=40;
+  rect.y-=40;
+  rect.w+=80;
+  rect.h+=80;
   scard[0] = card;
-  cardLbls[icard]  = UI::Label(rect, scard);
+  if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
+  if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
+  if(card == 's') cardImgs[icard]  = UI::Image(Sprite::s_general(), rect);
+  if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -145,8 +153,15 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = whoBoxForPosition('w');
+  rect.x-=40;
+  rect.y-=40;
+  rect.w+=80;
+  rect.h+=80;
   scard[0] = card;
-  cardLbls[icard]  = UI::Label(rect,scard);
+  if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
+  if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
+  if(card == 's') cardImgs[icard]  = UI::Image(Sprite::s_general(), rect);
+  if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -154,8 +169,15 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = whoBoxForPosition('n');
+  rect.x-=40;
+  rect.y-=40;
+  rect.w+=80;
+  rect.h+=80;
   scard[0] = card;
-  cardLbls[icard]  = UI::Label(rect,scard);
+  if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
+  if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
+  if(card == 's') cardImgs[icard]  = UI::Image(Sprite::s_general(), rect);
+  if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -163,8 +185,15 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = whoBoxForPosition('e');
+  rect.x-=40;
+  rect.y-=40;
+  rect.w+=80;
+  rect.h+=80;
   scard[0] = card;
-  cardLbls[icard]  = UI::Label(rect,scard);
+  if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
+  if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
+  if(card == 's') cardImgs[icard]  = UI::Image(Sprite::s_general(), rect);
+  if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -490,7 +519,7 @@ void PlayScene::draw()
   }
 
   for(int i = 0; i < 4; i++)
-    cardLbls[i].draw(graphics);
+    cardImgs[i].draw(graphics);
   youBox.draw(graphics);
 
   if(c->iWin())

@@ -24,6 +24,11 @@ namespace Sprite
   SDL_Rect stick_horiz();
   SDL_Rect stick_vert();
 
+  SDL_Rect n_general();
+  SDL_Rect e_general();
+  SDL_Rect s_general();
+  SDL_Rect w_general();
+
   SDL_Rect alpha(char a);
   SDL_Rect alpha_a();
   SDL_Rect alpha_b();

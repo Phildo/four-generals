@@ -22,7 +22,7 @@ class PlayScene : public Scene
     UI::Label dayLbls[7];
     UI::Box   dayBoxs[7];
 
-    UI::Label cardLbls[4];
+    UI::Image cardImgs[4];
     UI::Button cardBtns[4];
     UI::Box youBox;
 

@@ -6,6 +6,7 @@
 
 using namespace UI;
 
+#include "image.cpp"
 #include "box.cpp"
 #include "label.cpp"
 #include "button.cpp"

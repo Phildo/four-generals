@@ -14,6 +14,7 @@ class Graphics;
 
 namespace UI
 {
+  #include "image.h"
   #include "box.h"
   #include "label.h"
   #include "button.h"
