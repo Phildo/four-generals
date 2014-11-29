@@ -80,7 +80,7 @@ void Server::tick()
     FD_SET(con_ptrs[i]->sock_fd, &sock_fds);
     if(biggest_fd > con_ptrs[i]->sock_fd) biggest_fd = con_ptrs[i]->sock_fd;
   }
-  tv.tv_sec = 0; tv.tv_usec = 250000;
+  tv.tv_sec = 0; tv.tv_usec = FG_US_PER_TICK;
 
   retval = select(biggest_fd+1, &sock_fds, NULL, NULL, &tv);
   if(retval == -1) con_state = CONNECTION_STATE_DISCONNECTING;
