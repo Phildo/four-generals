@@ -4,6 +4,7 @@
 #include "logger.h"
 
 #include <strings.h>
+#include <stdio.h> //sprintf
 
 using namespace Network;
 
