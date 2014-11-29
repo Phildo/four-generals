@@ -14,8 +14,11 @@ SDL_Rect Sprite::rborder_tr() { return rect(115,30,15,15); }
 SDL_Rect Sprite::rborder_bl() { return rect(100,45,15,15); }
 SDL_Rect Sprite::rborder_br() { return rect(115,45,15,15); }
 SDL_Rect Sprite::circle()     { return rect(100,30,30,30); }
-
 SDL_Rect Sprite::messenger() { return rect(130,0,10,10); }
+SDL_Rect Sprite::stick_bs()    { return rect(130,10,10,10); }
+SDL_Rect Sprite::stick_horiz() { return rect(130,20,10,10); }
+SDL_Rect Sprite::stick_vert()  { return rect(130,30,10,10); }
+SDL_Rect Sprite::stick_fs()    { return rect(130,40,10,10); }
 
 bool mapPop = false;
 SDL_Rect alphamap[78];

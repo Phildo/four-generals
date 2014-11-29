@@ -18,8 +18,11 @@ namespace Sprite
   SDL_Rect rborder_bl();
   SDL_Rect rborder_br();
   SDL_Rect circle();
-
   SDL_Rect messenger();
+  SDL_Rect stick_bs();
+  SDL_Rect stick_fs();
+  SDL_Rect stick_horiz();
+  SDL_Rect stick_vert();
 
   SDL_Rect alpha(char a);
   SDL_Rect alpha_a();
