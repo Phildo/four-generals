@@ -22,7 +22,7 @@ String Network::getIP()
     if(r == AF_INET)
     {
       r = getnameinfo(cur->ifa_addr, sizeof(struct sockaddr_in), host, NI_MAXHOST, NULL, 0, NI_NUMERICHOST);
-      if(strcmp(cur->ifa_name, "en0") == 0) ip = String(host, strlen(host));
+      if(strcmp(cur->ifa_name, "en0") == 0 || strcmp(cur->ifa_name, "eth0") == 0) ip = String(host, strlen(host));
     }
   }
 
