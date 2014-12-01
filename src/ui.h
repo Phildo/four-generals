@@ -21,6 +21,7 @@ namespace UI
   #include "textbutton.h"
   #include "keyboard.h"
   #include "textbox.h"
+  #include "list.h"
 }
 
 #endif
