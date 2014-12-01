@@ -20,9 +20,9 @@ class RoomScene : public Scene
     UI::Label ipLabel;
     UI::Label portLabel;
 
-    UI::Label  cardLbls[4];
     UI::Button cardBtns[4];
-    UI::Box    cardBoxs[4];
+    UI::Image  cardImgs[4];
+    UI::Label  cardLbls[4];
 
     UI::TextButton leaveSessButton;
     UI::TextButton beginGameButton;
@@ -35,6 +35,7 @@ class RoomScene : public Scene
     ClientModel **c_ptr; //Pointers to the client model pointer 'owned' by game
 
     int SCENE_CHANGE_HACK;
+    SDL_Rect whoBoxForPosition(char c);
   public:
     RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
     ~RoomScene();

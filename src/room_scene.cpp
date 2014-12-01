@@ -1,5 +1,6 @@
 #include "room_scene.h"
 #include "graphics.h"
+#include "sprite.h"
 #include "network.h"
 #include "client.h"
 #include "server_model.h"
@@ -27,31 +28,52 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   backButton = UI::Button(20,20,40,40);
 
-  inRoomLabel = UI::Label(ww/2-200,wh/2-200,40,"In Room");
+  inRoomLabel = UI::Label(ww/2-250, wh/2-80,40,"In Room");
+  ipLabel     = UI::Label(ww/2-250, wh/2-30,40,Network::getIP().ptr());
+  portLabel   = UI::Label(ww/2+100, wh/2-30,40,"8080");
 
-  ipLabel = UI::Label(ww/2-200,wh/2-160,40,Network::getIP().ptr());
+  leaveSessButton = UI::TextButton(ww/2-250, wh/2+20, 500, 40, "Leave Session");
+  beginGameButton = UI::TextButton(ww/2-250, wh/2+70, 500, 40, "Begin Game!");
 
-  portLabel = UI::Label(ww/2+60,wh/2-160,40,"8080");
+  cardBtns[Compass::icardinal('n')] = UI::Button(whoBoxForPosition('n'));
+  cardBtns[Compass::icardinal('e')] = UI::Button(whoBoxForPosition('e'));
+  cardBtns[Compass::icardinal('s')] = UI::Button(whoBoxForPosition('s'));
+  cardBtns[Compass::icardinal('w')] = UI::Button(whoBoxForPosition('w'));
 
-  leaveSessButton = UI::TextButton(ww/2-200, wh/2-100, 400, 40, "Leave Session");
-  beginGameButton = UI::TextButton(ww/2-200, wh/2+100, 400, 40, "Begin Game!");
+  cardImgs[Compass::icardinal('n')] = UI::Image(Sprite::n_general(), whoBoxForPosition('n'));
+  cardImgs[Compass::icardinal('e')] = UI::Image(Sprite::e_general(), whoBoxForPosition('e'));
+  cardImgs[Compass::icardinal('s')] = UI::Image(Sprite::s_general(), whoBoxForPosition('s'));
+  cardImgs[Compass::icardinal('w')] = UI::Image(Sprite::w_general(), whoBoxForPosition('w'));
 
-  cardLbls[Compass::icardinal('n')] = UI::Label(ww/2-20,      20, 40, "N");
-  cardLbls[Compass::icardinal('e')] = UI::Label(ww  -60, wh/2-20, 40, "E");
-  cardLbls[Compass::icardinal('s')] = UI::Label(ww/2-20, wh  -60, 40, "S");
-  cardLbls[Compass::icardinal('w')] = UI::Label(     20, wh/2-20, 40, "W");
-
-  cardBtns[Compass::icardinal('n')] = UI::Button(ww/2-20,      20, 40, 40);
-  cardBtns[Compass::icardinal('e')] = UI::Button(ww  -60, wh/2-20, 40, 40);
-  cardBtns[Compass::icardinal('s')] = UI::Button(ww/2-20, wh  -60, 40, 40);
-  cardBtns[Compass::icardinal('w')] = UI::Button(     20, wh/2-20, 40, 40);
-
-  cardBoxs[Compass::icardinal('n')] = UI::Box(ww/2-20-10,      20-10, 60, 60);
-  cardBoxs[Compass::icardinal('e')] = UI::Box(ww  -60-10, wh/2-20-10, 60, 60);
-  cardBoxs[Compass::icardinal('s')] = UI::Box(ww/2-20-10, wh  -60-10, 60, 60);
-  cardBoxs[Compass::icardinal('w')] = UI::Box(     20-10, wh/2-20-10, 60, 60);
+  cardLbls[Compass::icardinal('n')] = UI::Label(whoBoxForPosition('n'), "N");
+  cardLbls[Compass::icardinal('e')] = UI::Label(whoBoxForPosition('e'), "E");
+  cardLbls[Compass::icardinal('s')] = UI::Label(whoBoxForPosition('s'), "S");
+  cardLbls[Compass::icardinal('w')] = UI::Label(whoBoxForPosition('w'), "W");
 
   SCENE_CHANGE_HACK = 0;
+}
+
+SDL_Rect RoomScene::whoBoxForPosition(char c)
+{
+  int i = Compass::icardinal(c);
+
+  int ww = graphics->winWidth();
+  int wh = graphics->winHeight();
+
+  int bw = 120;
+  int bh = 120;
+
+  //(clockwise) top     right  bottom(you) left
+  int xs[] = {ww/2-bw/2,  ww-bw-20, ww/2-bw/2,        20};
+  int ys[] = {       20, wh/2-bh/2,  wh-bh-20, wh/2-bh/2};
+
+  SDL_Rect tmp;
+  tmp.x = xs[i];
+  tmp.y = ys[i];
+  tmp.w = bw;
+  tmp.h = bh;
+
+  return tmp;
 }
 
 void RoomScene::enter()
@@ -103,15 +125,15 @@ void RoomScene::draw()
   //draw cardinals
   for(int i = 0; i < 4; i++)
   {
+    cardBtns[i].draw(graphics);
     char card = Compass::cardinal(i);
     if(c->model.cardinalConnected(card))
     {
-      cardLbls[i].draw(graphics);
       if(c->imCardinal(card))
-        cardBoxs[i].draw(graphics);
+        cardImgs[i].draw(graphics);
+      cardLbls[i].draw(graphics);
     }
 
-    cardBtns[i].draw(graphics);
   }
 
   leaveSessButton.draw(graphics);
