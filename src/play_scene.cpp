@@ -107,15 +107,18 @@ SDL_Rect PlayScene::whoBoxForPosition(char c)
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
+  int bw = 120;
+  int bh = 120;
+
   //(clockwise) top     right  bottom(you) left
-  int xs[] = {ww/2-20,   ww-60, ww/2-20,      20};
-  int ys[] = {    120, wh/2-20,  wh-160, wh/2-20};
+  int xs[] = {ww/2-bw/2,  ww-bw-20, ww/2-bw/2,        20};
+  int ys[] = {      120, wh/2-bh/2,  wh-bh-80, wh/2-bh/2};
 
   SDL_Rect tmp;
   tmp.x = xs[i];
   tmp.y = ys[i];
-  tmp.w = 40;
-  tmp.h = 40;
+  tmp.w = bw;
+  tmp.h = bh;
 
   return tmp;
 }
@@ -137,10 +140,6 @@ void PlayScene::enter()
   card = c->myCardinal();
   icard = Compass::icardinal(card);
   rect = whoBoxForPosition('s');
-  rect.x-=40;
-  rect.y-=40;
-  rect.w+=80;
-  rect.h+=80;
   scard[0] = card;
   if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
   if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
@@ -153,10 +152,6 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = whoBoxForPosition('w');
-  rect.x-=40;
-  rect.y-=40;
-  rect.w+=80;
-  rect.h+=80;
   scard[0] = card;
   if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
   if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
@@ -169,10 +164,6 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = whoBoxForPosition('n');
-  rect.x-=40;
-  rect.y-=40;
-  rect.w+=80;
-  rect.h+=80;
   scard[0] = card;
   if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
   if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
@@ -185,10 +176,6 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = whoBoxForPosition('e');
-  rect.x-=40;
-  rect.y-=40;
-  rect.w+=80;
-  rect.h+=80;
   scard[0] = card;
   if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
   if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
