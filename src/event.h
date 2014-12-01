@@ -13,20 +13,22 @@ static const char e_type_begin_play = 'i';
 static const char e_type_commit_action = 'j';
 static const char e_type_commit_actions = 'k';
 
+static const char e_type_reset_game = 'l';
+
 struct Event //all members chars for quick/simple serializability
 {
   //anything w/ value '0' = unassigned / N/A
-  /* 1  */ char connection; //IDENTIFIER '1'-'5'
-  /* 2  */ char cardinal;   //IDENTIFIER 'n|e|s|w'
-  /* 3  */ char action;     //'a' = attack, 'd' = defend, 'm' = messenger, 's' = sabotage
-  /* 4  */ char how;        //corresponds to sabotage members
-  /* 5  */ char which;      //corresponds to sabotage members
-  /* 6  */ char to;         //cardinal (for whom the message is intended)
-  /* 7  */ char what;       //corresponds to messenger members
-  /* 8  */ char who;        //corresponds to messenger members
-  /* 9  */ char when;       //corresponds to messenger members
-  /* 10 */ char where;      //corresponds to messenger members
-  /* 11 */ char type;       //listed above
+  char connection; //IDENTIFIER '1'-'5'
+  char cardinal;   //IDENTIFIER 'n|e|s|w'
+  char action;     //'a' = attack, 'd' = defend, 'm' = messenger, 's' = sabotage
+  char how;        //corresponds to sabotage members
+  char which;      //corresponds to sabotage members
+  char to;         //cardinal (for whom the message is intended)
+  char what;       //corresponds to messenger members
+  char who;        //corresponds to messenger members
+  char when;       //corresponds to messenger members
+  char where;      //corresponds to messenger members
+  char type;       //listed above
   int sabotage_id;
   int messenger_id;
   int evt_id;
@@ -47,8 +49,7 @@ struct Event //all members chars for quick/simple serializability
 
   //ONLY USE WHEN DEBUGGING (adds massive memory overhead)
   #ifdef FG_DEBUG //should cause errors when disabling debug
-  char *debug();
-  char debug_buff[256];
+  void debug(char *buff);
   char event_type_buff[256];
   #endif
 };

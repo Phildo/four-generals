@@ -14,9 +14,7 @@ Model::Model()
   connections[2] = '0';
   connections[3] = '0';
   connections[4] = '0';
-  days = -1;
-  winning_card = '0';
-  losing_card = '0';
+  zero();
 }
 
 void Model::connectCon(char con)
@@ -99,10 +97,7 @@ void Model::commitActions()
   for(int i = 0; i < 5; i++)
     prev_actions[i] = actions[i];
 
-  cardinalAction('n').zero();
-  cardinalAction('e').zero();
-  cardinalAction('s').zero();
-  cardinalAction('w').zero();
+  zeroActions();
 
   days++;
 }
@@ -298,6 +293,39 @@ bool Model::actionsAssigned()
 char Model::currentDay()
 {
   return Week::day((days+7)%7); //+7 for obvious cross-lang modulus behavior
+}
+
+void Model::zeroActions()
+{
+  for(int i = 0; i < 5; i++)
+    actions[i].zero();
+}
+
+void Model::zeroPrevActions()
+{
+  for(int i = 0; i < 5; i++)
+    prev_actions[i].zero();
+}
+
+void Model::zeroMessengers()
+{
+  messengers.removeAll();
+}
+
+void Model::zeroSabotages()
+{
+  sabotages.removeAll();
+}
+
+void Model::zero() //'resets' gam
+{
+  zeroActions();
+  zeroPrevActions();
+  zeroMessengers();
+  zeroSabotages();
+  days = -1;
+  winning_card = '0';
+  losing_card = '0';
 }
 
 Model::~Model()

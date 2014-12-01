@@ -105,6 +105,10 @@ void ServerModel::tick()
         }
         break;
       case e_type_commit_actions: break; //server->client only
+      case e_type_reset_game:
+        model.zero();
+        sendEvent(e);
+        break;
       default: break;
     }
   }

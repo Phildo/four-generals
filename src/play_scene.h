@@ -40,6 +40,7 @@ class PlayScene : public Scene
 
     UI::TextButton confirmButton;
     UI::TextButton cancelButton;
+    UI::TextButton resetButton;
 
     UI::Label debreifLabel;
     UI::Label waitingLabel;

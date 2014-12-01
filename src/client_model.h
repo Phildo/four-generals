@@ -23,6 +23,7 @@ class ClientModel
     void requestRevokeCardinal();
     void requestBeginPlay();
     void commitAction(Event e);
+    void requestReset();
 
     bool imConnected();
     char myConnection();

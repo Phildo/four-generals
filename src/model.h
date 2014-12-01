@@ -74,6 +74,12 @@ class Model
 
     char currentDay();
 
+    void zeroActions();
+    void zeroPrevActions();
+    void zeroMessengers();
+    void zeroSabotages();
+    void zero(); //'resets' game
+
     Model();
     ~Model();
 };

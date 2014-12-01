@@ -66,6 +66,17 @@ void ClientModel::commitAction(Event e)
   sendEvent(e);
 }
 
+void ClientModel::requestReset()
+{
+  Event e;
+  e.connection = myConnection();
+  e.cardinal = myCardinal();
+  e.type = e_type_reset_game;
+
+  sendEvent(e);
+}
+
+
 
 
 bool ClientModel::imConnected()
@@ -168,6 +179,9 @@ void ClientModel::tick()
         break;
       case e_type_commit_actions:
         model.commitActions(); //also increases day
+        break;
+      case e_type_reset_game:
+        model.zero();
         break;
       default:
         break;

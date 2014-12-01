@@ -85,7 +85,6 @@ void drawParticle(Particle& p, Graphics *g)
       tmp.w = p.attack.w;
       tmp.h = p.attack.h;
       f = ((int)(p.attack.t/p.attack.t_per_frame) % (p.attack.anim_frames));
-      fg_log("attack anim frame:%d",f);
       if(f == 0) g->draw(Sprite::stick_bs(),tmp);
       if(f == 1) g->draw(Sprite::stick_vert(),tmp);
       if(f == 2) g->draw(Sprite::stick_fs(),tmp);

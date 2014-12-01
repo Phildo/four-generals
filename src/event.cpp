@@ -138,7 +138,7 @@ char *Event::humanAction()
 }
 
 #ifdef FG_DEBUG
-char *Event::debug()
+void Event::debug(char *buff)
 {
   switch(type)
   {
@@ -149,11 +149,11 @@ char *Event::debug()
     case e_type_begin_play:     sprintf(event_type_buff,"begin");      break;
     case e_type_commit_action:  sprintf(event_type_buff,"commit");     break;
     case e_type_commit_actions: sprintf(event_type_buff,"commit_all"); break;
+    case e_type_reset_game:     sprintf(event_type_buff,"reset_game"); break;
     default:                    sprintf(event_type_buff,"NO DEBUG READABLE EVENT TYPE FOUND"); break;
   }
 
-  sprintf(debug_buff,"con:%c card:%c act:%c how:%c which:%c to:%c what:%c who:%c when:%c where:%c mid:%d id:%d type:%c type:%s", connection, cardinal, action, how, which, to, what, who, when, where, messenger_id, evt_id, type, event_type_buff);
-  return &debug_buff[0];
+  sprintf(buff,"con:%c card:%c act:%c how:%c which:%c to:%c what:%c who:%c when:%c where:%c mid:%d id:%d type:%c type:%s", connection, cardinal, action, how, which, to, what, who, when, where, messenger_id, evt_id, type, event_type_buff);
 }
 #endif
 

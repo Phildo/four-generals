@@ -85,6 +85,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   confirmButton = UI::TextButton(space(ww,30,200,2,0), wh-60, 200, 40, "confirm");
   cancelButton  = UI::TextButton(space(ww,30,200,2,1), wh-60, 200, 40, "cancel");
+  resetButton   = UI::TextButton(space(ww,30,200,1,0), wh-60, 200, 40, "reset game");
 
   known_day = '0';
 }
@@ -336,11 +337,13 @@ void PlayScene::drawSabotage()
 void PlayScene::drawWin()
 {
   winLabel.draw(graphics);
+  if(s) resetButton.draw(graphics);
 }
 
 void PlayScene::drawLose()
 {
   loseLabel.draw(graphics);
+  if(s) resetButton.draw(graphics);
 }
 
 void PlayScene::touch(In &in)
@@ -410,6 +413,10 @@ void PlayScene::touch(In &in)
       }
     }
   }
+  else if(s && resetButton.query(in))
+  {
+    c->requestReset();
+  }
 }
 
 int PlayScene::tick()
@@ -419,6 +426,9 @@ int PlayScene::tick()
   c->tick();
   if(known_day != c->model.currentDay())
   {
+    if(c->model.days == -1)
+      return -1; //game was reset- go back to room
+
     for(int i = 0; i < c->model.messengers.len(); i++)
     {
       Messenger m = c->model.messengers[i];
