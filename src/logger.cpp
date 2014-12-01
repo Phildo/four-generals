@@ -34,3 +34,8 @@ char *MemLog::logAt(int i)
   return logs+(((log_i-log_c+FG_MAX_NUM_LOGS+i)%FG_MAX_NUM_LOGS)*FG_MAX_LOG_LEN);
 }
 
+int MemLog::logLen()
+{
+  return log_i;
+}
+

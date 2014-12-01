@@ -42,6 +42,7 @@ class MemLog
     static MemLog *inst();
     void log(char *buff);
     char *logAt(int i);
+    int logLen();
 };
 
 #endif

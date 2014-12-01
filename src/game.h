@@ -1,6 +1,8 @@
 #ifndef _FG_GAME_H_
 #define _FG_GAME_H_
 
+#include "ui.h"
+
 class Graphics;
 class Input;
 namespace Network
@@ -25,6 +27,8 @@ class Game
     ClientModel* c_model;
     Scene* scenes[FG_NUM_SCENES];
 
+    bool debug_toggle;
+    UI::Button debugBtn;
   public:
     Game();
     ~Game();

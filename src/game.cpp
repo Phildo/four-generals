@@ -7,6 +7,8 @@
 #include "client_model.h"
 #include "scene.h"
 
+#include "debug_list.h"
+
 #include "intro_scene.h"
 #include "host_scene.h"
 #include "join_scene.h"
@@ -25,6 +27,9 @@ Game::Game()
 {
   graphics = new Graphics();
   input = new Input(graphics);
+
+  DebugList::inst()->init(graphics);
+
   //save allocation until necessary
   server = 0;
   client = 0;
@@ -35,6 +40,9 @@ Game::Game()
   scenes[2] = new JoinScene(graphics, client, c_model);
   scenes[3] = new RoomScene(graphics, client, s_model, c_model);
   scenes[4] = new PlayScene(graphics, client, s_model, c_model);
+
+  debug_toggle = false;
+  debugBtn = UI::Button(graphics->winWidth()-40,graphics->winHeight()-40,40,40);
 }
 
 void Game::run()
@@ -47,9 +55,16 @@ void Game::run()
   while(!q)
   {
     while(!q && input->poll(in, p, q))
-      if(p) scenes[scene]->touch(in);
+    {
+      if(p)
+      {
+        scenes[scene]->touch(in);
+        if(debugBtn.query(in)) debug_toggle = !debug_toggle;
+      }
+    }
 
     int tmp = scenes[scene]->tick(); //should decouple from drawing
+    DebugList::inst()->tick();
     if(tmp != 0) scenes[scene]->leave();
     if(tmp >  0) scenes[scene]->pass();
     if(tmp <  0) scenes[scene]->pop();
@@ -58,6 +73,7 @@ void Game::run()
 
     graphics->clear();
     scenes[scene]->draw();
+    if(debug_toggle) DebugList::inst()->draw(graphics);
     graphics->flip();
 
     SDL_Delay(30);
