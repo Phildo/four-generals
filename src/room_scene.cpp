@@ -70,18 +70,17 @@ SDL_Rect RoomScene::whoBoxForPosition(char c)
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
-  int bw = 120;
-  int bh = 120;
-
-  //(clockwise) top     right  bottom(you) left
-  int xs[] = {ww/2-bw/2,  ww-bw-20, ww/2-bw/2,        20};
-  int ys[] = {       20, wh/2-bh/2,  wh-bh-20, wh/2-bh/2};
+  //(clockwise)    top          right      bottom(you)     left
+  int ws[] = {          60,           80,          160,           80};
+  int hs[] = {          60,           80,          160,           80};
+  int xs[] = {ww/2-ws[0]/2,  ww-ws[1]-20, ww/2-ws[2]/2,           20};
+  int ys[] = {          20, wh/2-hs[1]/2,  wh-hs[2]-20, wh/2-hs[3]/2};
 
   SDL_Rect tmp;
   tmp.x = xs[i];
   tmp.y = ys[i];
-  tmp.w = bw;
-  tmp.h = bh;
+  tmp.w = ws[i];
+  tmp.h = hs[i];
 
   return tmp;
 }
