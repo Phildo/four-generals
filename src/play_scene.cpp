@@ -432,7 +432,8 @@ int PlayScene::tick()
     for(int i = 0; i < c->model.messengers.len(); i++)
     {
       Messenger m = c->model.messengers[i];
-      SDL_Rect pos;
+      SDL_Rect spos;
+      SDL_Rect epos;
 
       Particle p;
       p.type = P_TYPE_MESSENGER;
@@ -440,15 +441,11 @@ int PlayScene::tick()
       p.mess.h = 40;
       p.mess.begin_card = m.was;
       p.mess.end_card = m.at;
-      pos = whoBoxForCardinal(m.was);
-      p.mess.start_x = pos.x;
-      p.mess.start_y = pos.y;
-      p.mess.y       = pos.x;
-      p.mess.x       = pos.y;
-      pos = whoBoxForCardinal(m.at);
-      p.mess.end_x   = pos.x;
-      p.mess.end_y   = pos.y;
-      p.mess.t = 0.0f;
+
+      spos = whoBoxForCardinal(m.was);
+      epos = whoBoxForCardinal(m.at);
+      p.mess.x.set(spos.x,epos.x);
+      p.mess.y.set(spos.y,epos.y);
 
       psys.registerP(p);
     }
@@ -462,21 +459,18 @@ int PlayScene::tick()
         Particle p;
         p.type = P_TYPE_DEFEND;
         pos = whoBoxForCardinal(card);
-        p.defend.y       = pos.y+pos.h/2;
-        p.defend.x       = pos.x+pos.w/2;
-        p.defend.start_w = pos.w;
-        p.defend.start_h = pos.h;
-        p.defend.w       = pos.w;
-        p.defend.h       = pos.h;
-        p.defend.end_w   = pos.w*2;
-        p.defend.end_h   = pos.h*2;
+        p.defend.y = pos.y+pos.h/2; //center
+        p.defend.x = pos.x+pos.w/2; //center
+        p.defend.w.set(pos.w,pos.w*2);
+        p.defend.h.set(pos.h,pos.h*2);
 
         psys.registerP(p);
       }
       if(c->model.cardinalPrevAction(card).action == 'a')
       {
         Messenger m = c->model.messengers[i];
-        SDL_Rect pos;
+        SDL_Rect spos;
+        SDL_Rect epos;
 
         Particle p;
         p.type = P_TYPE_ATTACK;
@@ -484,15 +478,12 @@ int PlayScene::tick()
         p.attack.h = 40;
         p.attack.begin_card = card;
         p.attack.end_card = c->model.cardinalPrevAction(card).who;
-        pos = whoBoxForCardinal(p.attack.begin_card);
-        p.attack.start_x = pos.x;
-        p.attack.start_y = pos.y;
-        p.attack.y       = pos.x;
-        p.attack.x       = pos.y;
-        pos = whoBoxForCardinal(p.attack.end_card);
-        p.attack.end_x   = pos.x;
-        p.attack.end_y   = pos.y;
-        p.attack.t = 0.0f;
+
+        spos = whoBoxForCardinal(p.attack.begin_card);
+        epos = whoBoxForCardinal(p.attack.end_card);
+        p.attack.x.set(spos.x,epos.x);
+        p.attack.y.set(spos.y,epos.y);
+        p.attack.anim.set(0,1);
 
         psys.registerP(p);
       }

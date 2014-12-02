@@ -2,6 +2,7 @@
 #define _FG_PARTICLES_H_
 
 #include "array.h"
+#include "tween.h"
 
 class Graphics;
 
@@ -15,56 +16,40 @@ enum P_Type
 
 struct Particle
 {
+  Particle() {};
   P_Type type;
   union
   {
     struct
     {
+      Tween x;
+      Tween y;
       int w;
       int h;
       char begin_card;
       char end_card;
-      float start_x;
-      float start_y;
-      float x;
-      float y;
-      float end_x;
-      float end_y;
-      float t;
     } mess;
     struct
     {
+      Tween w;
+      Tween h;
       int x; //center
       int y; //center
-      int start_w;
-      int start_h;
-      int w;
-      int h;
-      int end_w;
-      int end_h;
-      float t;
     } defend;
     struct
     {
+      Tween x;
+      Tween y;
+      Tween anim;
       int w;
       int h;
       char begin_card;
       char end_card;
-      float start_x;
-      float start_y;
-      float x;
-      float y;
-      float end_x;
-      float end_y;
-      int anim_frames;
-      float t_per_frame;
-      float t;
     } attack;
     struct
     {
-      float x;
-      float y;
-      float t;
+      Tween x;
+      Tween y;
     } part;
   };
 };
