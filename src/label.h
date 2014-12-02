@@ -1,6 +1,6 @@
 struct Label
 {
-  SDL_Rect rect; //really only uses its x,y
+  SDL_Rect rect; //really only uses its x,y,h
   String text;
   static const int n_w = 18; //native_width
   static const int n_h = 31; //native_height

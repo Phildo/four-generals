@@ -3,6 +3,7 @@
 
 #include "scene.h"
 #include "ui.h"
+#include "tween_rect.h"
 #include "network.h"
 
 class Graphics;
@@ -20,12 +21,16 @@ class RoomScene : public Scene
     UI::Label ipLabel;
     UI::Label portLabel;
 
-    UI::Button cardBtns[4];
-    UI::Image  cardImgs[4];
-    UI::Label  cardLbls[4];
-
     UI::TextButton leaveSessButton;
     UI::TextButton beginGameButton;
+    UI::Button chooseBtn;
+    UI::Button cwBtn;
+    UI::Button ccwBtn;
+
+    int cardCWOffset;
+    TweenRect cardRects[4];
+    UI::Image  cardImgs[4];
+    UI::Label  cardLbls[4];
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
