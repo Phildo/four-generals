@@ -43,6 +43,7 @@ Game::Game()
 
   debug_toggle = false;
   debugBtn = UI::Button(graphics->winWidth()-40,graphics->winHeight()-40,40,40);
+  border = UI::Box(0,0,graphics->winWidth(),graphics->winHeight());
 }
 
 void Game::run()
@@ -73,6 +74,8 @@ void Game::run()
 
     graphics->clear();
     scenes[scene]->draw();
+    debugBtn.draw(graphics);
+    border.draw(graphics);
     if(debug_toggle) DebugList::inst()->draw(graphics);
     graphics->flip();
 

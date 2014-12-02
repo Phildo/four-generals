@@ -29,6 +29,7 @@ class Game
 
     bool debug_toggle;
     UI::Button debugBtn;
+    UI::Box border;
   public:
     Game();
     ~Game();
