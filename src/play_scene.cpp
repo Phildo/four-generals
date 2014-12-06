@@ -444,8 +444,8 @@ int PlayScene::tick()
 
       spos = whoBoxForCardinal(m.was);
       epos = whoBoxForCardinal(m.at);
-      p.mess.x.set(spos.x,epos.x);
-      p.mess.y.set(spos.y,epos.y);
+      p.mess.x.set(spos.x,epos.x,0.f);
+      p.mess.y.set(spos.y,epos.y,0.f);
 
       psys.registerP(p);
     }
@@ -461,8 +461,8 @@ int PlayScene::tick()
         pos = whoBoxForCardinal(card);
         p.defend.y = pos.y+pos.h/2; //center
         p.defend.x = pos.x+pos.w/2; //center
-        p.defend.w.set(pos.w,pos.w*2);
-        p.defend.h.set(pos.h,pos.h*2);
+        p.defend.w.set(pos.w,pos.w*2,0.f);
+        p.defend.h.set(pos.h,pos.h*2,0.f);
 
         psys.registerP(p);
       }
@@ -481,8 +481,8 @@ int PlayScene::tick()
 
         spos = whoBoxForCardinal(p.attack.begin_card);
         epos = whoBoxForCardinal(p.attack.end_card);
-        p.attack.x.set(spos.x,epos.x);
-        p.attack.y.set(spos.y,epos.y);
+        p.attack.x.set(spos.x,epos.x,0.f);
+        p.attack.y.set(spos.y,epos.y,0.f);
         p.attack.anim.set(0,1);
 
         psys.registerP(p);

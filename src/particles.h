@@ -16,10 +16,11 @@ enum P_Type
 
 struct Particle
 {
-  Particle() {};
+  Particle() { for(int i = 0; i < 256; i++) data[i] = '\0'; };
   P_Type type;
   union
   {
+    char data[256]; //for the sole purpose of easily zeroing
     struct
     {
       Tween x;
@@ -69,3 +70,4 @@ class ParticleSys
 };
 
 #endif
+
