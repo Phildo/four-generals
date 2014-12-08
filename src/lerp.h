@@ -1,7 +1,7 @@
-#ifndef _FG_TWEEN_H_
-#define _FG_TWEEN_H_
+#ifndef _FG_LERP_H_
+#define _FG_LERP_H_
 
-class Tween
+class Lerp
 {
   private:
   public:
@@ -9,8 +9,8 @@ class Tween
     float e;
     float t;
 
-    Tween() : s(0.f), e(0.f), t(0.f) {};
-    Tween(float _s, float _e): s(_s), e(_e), t(0.f) {};
+    Lerp() : s(0.f), e(0.f), t(0.f) {};
+    Lerp(float _s, float _e): s(_s), e(_e), t(0.f) {};
     float v();
     float v(float _t);
     void set(float _s, float _e);

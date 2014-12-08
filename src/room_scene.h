@@ -3,7 +3,7 @@
 
 #include "scene.h"
 #include "ui.h"
-#include "tween_rect.h"
+#include "lerp_rect.h"
 #include "network.h"
 
 class Graphics;
@@ -28,7 +28,7 @@ class RoomScene : public Scene
     UI::Button ccwBtn;
 
     int cardCWOffset;
-    TweenRect cardRects[4];
+    LerpRect cardRects[4];
     UI::Image  cardImgs[4];
     UI::Label  cardLbls[4];
 

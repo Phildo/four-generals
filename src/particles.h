@@ -2,7 +2,7 @@
 #define _FG_PARTICLES_H_
 
 #include "array.h"
-#include "tween.h"
+#include "lerp.h"
 
 class Graphics;
 
@@ -23,8 +23,8 @@ struct Particle
     char data[256]; //for the sole purpose of easily zeroing
     struct
     {
-      Tween x;
-      Tween y;
+      Lerp x;
+      Lerp y;
       int w;
       int h;
       char begin_card;
@@ -32,16 +32,16 @@ struct Particle
     } mess;
     struct
     {
-      Tween w;
-      Tween h;
+      Lerp w;
+      Lerp h;
       int x; //center
       int y; //center
     } defend;
     struct
     {
-      Tween x;
-      Tween y;
-      Tween anim;
+      Lerp x;
+      Lerp y;
+      Lerp anim;
       int w;
       int h;
       char begin_card;
@@ -49,8 +49,8 @@ struct Particle
     } attack;
     struct
     {
-      Tween x;
-      Tween y;
+      Lerp x;
+      Lerp y;
     } part;
   };
 };
