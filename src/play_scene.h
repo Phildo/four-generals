@@ -20,11 +20,11 @@ class PlayScene : public Scene
     UI::Button backButton;
 
     UI::Label dayLbls[7];
-    UI::Box   dayBoxs[7];
+    UI::Image sun;
 
     UI::Image cardImgs[4];
+    UI::Image cardIcons[4];
     UI::Button cardBtns[4];
-    UI::Box youBox;
 
     UI::TextButton actionAttackButton;
     UI::TextButton actionMessageButton;

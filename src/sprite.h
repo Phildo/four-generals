@@ -24,6 +24,14 @@ namespace Sprite
   SDL_Rect stick_horiz();
   SDL_Rect stick_vert();
 
+  SDL_Rect force_field();
+  SDL_Rect shield_full();
+  SDL_Rect shield_broken();
+  SDL_Rect sword();
+  SDL_Rect red_x();
+  SDL_Rect envelope();
+  SDL_Rect sun();
+
   SDL_Rect n_general();
   SDL_Rect e_general();
   SDL_Rect s_general();

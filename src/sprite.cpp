@@ -20,6 +20,14 @@ SDL_Rect Sprite::stick_horiz() { return rect(130,20,10,10); }
 SDL_Rect Sprite::stick_vert()  { return rect(130,30,10,10); }
 SDL_Rect Sprite::stick_fs()    { return rect(130,40,10,10); }
 
+SDL_Rect Sprite::force_field()   { return rect(0,  200,64,64); }
+SDL_Rect Sprite::shield_full()   { return rect(64, 200,64,64); }
+SDL_Rect Sprite::shield_broken() { return rect(128,200,64,64); }
+SDL_Rect Sprite::sword()         { return rect(192,200,64,64); }
+SDL_Rect Sprite::red_x()         { return rect(256,200,64,64); }
+SDL_Rect Sprite::envelope()      { return rect(320,200,64,64); }
+SDL_Rect Sprite::sun()           { return rect(384,200,64,64); }
+
 SDL_Rect Sprite::n_general() { return rect(140,0,64,64); }
 SDL_Rect Sprite::e_general() { return rect(204,0,64,64); }
 SDL_Rect Sprite::s_general() { return rect(268,0,64,64); }

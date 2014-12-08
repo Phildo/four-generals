@@ -37,14 +37,6 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   dayLbls[Week::iday('f')] = UI::Label(space(ww,60,40,7,5), 20, 40, "Fr");
   dayLbls[Week::iday('a')] = UI::Label(space(ww,60,40,7,6), 20, 40, "Sa");
 
-  dayBoxs[Week::iday('s')] = UI::Box(space(ww,60,40,7,0), 20, 40, 40);
-  dayBoxs[Week::iday('m')] = UI::Box(space(ww,60,40,7,1), 20, 40, 40);
-  dayBoxs[Week::iday('t')] = UI::Box(space(ww,60,40,7,2), 20, 40, 40);
-  dayBoxs[Week::iday('w')] = UI::Box(space(ww,60,40,7,3), 20, 40, 40);
-  dayBoxs[Week::iday('h')] = UI::Box(space(ww,60,40,7,4), 20, 40, 40);
-  dayBoxs[Week::iday('f')] = UI::Box(space(ww,60,40,7,5), 20, 40, 40);
-  dayBoxs[Week::iday('a')] = UI::Box(space(ww,60,40,7,6), 20, 40, 40);
-
   whenBtns[Week::iday('s')] = UI::Button(space(ww,60,40,7,0), 20, 40, 40);
   whenBtns[Week::iday('m')] = UI::Button(space(ww,60,40,7,1), 20, 40, 40);
   whenBtns[Week::iday('t')] = UI::Button(space(ww,60,40,7,2), 20, 40, 40);
@@ -185,8 +177,9 @@ void PlayScene::enter()
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
-  rect = whoBoxForPosition('s');
-  youBox = UI::Box(rect);
+  for(int i = 0; i < 4; i++)
+    cardIcons[i] = UI::Image(Sprite::force_field(), 0,0,0,0);
+
   zeroE();
 }
 
@@ -488,8 +481,29 @@ int PlayScene::tick()
         psys.registerP(p);
       }
     }
+
+
+    for(int i = 0; i < 4; i++)
+    {
+      char card = Compass::cardinal(i);
+      SDL_Rect pos = whoBoxForCardinal(card);
+      pos.x = pos.x+(pos.w/2)+(pos.w/4);
+      pos.y = pos.y-(pos.h/4);
+      pos.w = pos.w/2;
+      pos.h = pos.h/2;
+      if(c->model.cardinalPrevAction(card).action == 'd')
+        cardIcons[i] = UI::Image(Sprite::force_field(), pos);
+      if(c->model.cardinalPrevAction(card).action == 'a')
+        cardIcons[i] = UI::Image(Sprite::sword(), pos);
+      if(c->model.cardinalPrevAction(card).action == 'm')
+        cardIcons[i] = UI::Image(Sprite::envelope(), pos);
+      if(c->model.cardinalPrevAction(card).action == 's')
+        cardIcons[i] = UI::Image(Sprite::red_x(), pos);
+    }
+
     zeroE();
     known_day = c->model.currentDay();
+    sun = UI::Image(Sprite::sun(), space(graphics->winWidth(),60,68,7,Week::iday(known_day)), 0, 68, 68);
   }
   return 0;
 }
@@ -499,16 +513,9 @@ void PlayScene::draw()
   psys.draw(graphics);
   backButton.draw(graphics);
 
+  sun.draw(graphics);
   for(int i = 0; i < 7; i++)
-  {
     dayLbls[i].draw(graphics);
-    if(c->model.currentDay() == Week::day(i))
-      dayBoxs[i].draw(graphics);
-  }
-
-  for(int i = 0; i < 4; i++)
-    cardImgs[i].draw(graphics);
-  youBox.draw(graphics);
 
   if(c->iWin())
   {
@@ -585,6 +592,13 @@ void PlayScene::draw()
     }
     else drawWaiting(); //wait
   }
+
+  for(int i = 0; i < 4; i++)
+  {
+    cardImgs[i].draw(graphics);
+    cardIcons[i].draw(graphics);
+  }
+
 }
 
 void PlayScene::leave()
