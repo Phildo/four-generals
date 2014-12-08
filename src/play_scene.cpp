@@ -6,12 +6,12 @@
 #include "server_model.h"
 #include "client_model.h"
 
-#include <SDL.h>
-
 #include "logger.h"
 
 #include "compass.h"
 #include "week.h"
+
+#include "SDL.h"
 
 PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {

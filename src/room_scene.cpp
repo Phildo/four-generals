@@ -6,11 +6,11 @@
 #include "server_model.h"
 #include "client_model.h"
 
-#include <SDL.h>
-
 #include "logger.h"
 
 #include "compass.h"
+
+#include "SDL.h"
 
 RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {

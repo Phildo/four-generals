@@ -2,7 +2,7 @@
 #define _FG_TWEEN_RECT_H_
 
 #include "tween.h"
-#include <SDL.h>
+#include "SDL.h"
 
 class TweenRect
 {

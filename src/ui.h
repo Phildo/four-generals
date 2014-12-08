@@ -1,8 +1,9 @@
 #ifndef _FG_UI_H_
 #define _FG_UI_H_
 
-#include <SDL.h>
 #include "string.h"
+
+#include "SDL.h"
 
 //convenient bro
 // total (l)ength, (p)adding, (u)nit length, total (n)umber of members, (i)ndex

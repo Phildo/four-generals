@@ -6,9 +6,9 @@
 #include "server_model.h"
 #include "client_model.h"
 
-#include <SDL.h>
-
 #include "logger.h"
+
+#include "SDL.h"
 
 HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, ServerModel *&sm, ClientModel *&cm)
 {

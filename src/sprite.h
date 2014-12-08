@@ -1,7 +1,7 @@
 #ifndef _FG_SPRITE_H_
 #define _FG_SPRITE_H_
 
-#include <SDL.h>
+#include "SDL.h"
 
 namespace Sprite
 {

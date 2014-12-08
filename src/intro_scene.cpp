@@ -1,9 +1,9 @@
 #include "intro_scene.h"
 #include "graphics.h"
 
-#include <SDL.h>
-
 #include "logger.h"
+
+#include "SDL.h"
 
 IntroScene::IntroScene(Graphics *g)
 {

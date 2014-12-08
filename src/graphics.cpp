@@ -24,12 +24,12 @@ Graphics::Graphics()
 
   //load tex
   #ifdef FG_ANDROID
-  SDL_Surface* surf = SDL_LoadBMP("tex.bmp");
+  // load sample.png into image
+  SDL_Surface *surf = IMG_Load("tex.png");
   #elif defined FG_PC
-  SDL_Surface* surf = SDL_LoadBMP("../assets/tex.bmp");
+  SDL_Surface *surf = IMG_Load("../assets/tex.png");
   #endif
 
-  SDL_SetColorKey(surf, SDL_TRUE, SDL_MapRGB(surf->format,0xFF,0x00,0xFF));
   tex = SDL_CreateTextureFromSurface(renderer, surf);
   SDL_FreeSurface(surf);
 }

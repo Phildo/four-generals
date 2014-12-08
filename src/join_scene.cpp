@@ -4,9 +4,9 @@
 #include "client.h"
 #include "client_model.h"
 
-#include <SDL.h>
-
 #include "logger.h"
+
+#include "SDL.h"
 
 JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 {
