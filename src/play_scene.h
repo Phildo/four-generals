@@ -17,10 +17,8 @@ class PlayScene : public Scene
     Graphics *graphics;
     ParticleSys psys;
 
-    UI::Button backButton;
-
-    UI::Label dayLbls[7];
     UI::Image sun;
+    UI::Label dayLbls[7];
 
     UI::Image cardImgs[4];
     UI::Image cardIcons[4];
@@ -58,10 +56,6 @@ class PlayScene : public Scene
 
     char known_day;
 
-    //yuck
-    SDL_Rect whoBoxForCardinal(char c);
-    SDL_Rect whoBoxForPosition(char c);
-
     Event e; //populates with tentative event (holds state for what to show on screen)
     void zeroE();
     void chooseAction(In &in);
@@ -87,6 +81,11 @@ class PlayScene : public Scene
     void drawWaiting();
     void drawWin();
     void drawLose();
+
+    SDL_Rect rectForPosition(char c);
+    SDL_Rect rectForCardinal(char c);
+    SDL_Rect rectForDay(char d);
+
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
     ~PlayScene();

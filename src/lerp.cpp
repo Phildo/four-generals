@@ -2,13 +2,13 @@
 
 float Lerp::v()
 {
-  return s+(e-s)*t;
+  return lerp(s, e, t);
 }
 
 float Lerp::v(float _t)
 {
-  if(_t > 1.0f) _t = 1.0f; else if(_t < 0.0f) _t = 0.0f; //clamp
-  return s+(e-s)*_t;
+  t = clamp(_t);
+  return v();
 }
 
 void Lerp::set(float _s, float _e)
@@ -21,17 +21,28 @@ void Lerp::set(float _s, float _e, float _t)
 {
   s = _s;
   e = _e;
-  t = _t;
+  t = clamp(_t);
 }
 
 void Lerp::tick(float d)
 {
-  t += d;
-  if(t > 1.0f) t = 1.0f;
+  t = clamp(t+d);
 }
 
 void Lerp::reset()
 {
   t = 0.f;
+}
+
+float Lerp::clamp(float v)
+{
+  if(v > 1.0f) v = 1.0f;
+  else if(v < 0.0f) v = 0.0f;
+  return v;
+}
+
+float Lerp::lerp(float s, float e, float t)
+{
+  return s+(e-s)*t;
 }
 

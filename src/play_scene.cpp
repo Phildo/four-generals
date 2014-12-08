@@ -27,27 +27,20 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
-  backButton = UI::Button(20,20,40,40);
+  dayLbls[Week::iday('s')] = UI::Label(rectForDay('s'), "Su");
+  dayLbls[Week::iday('m')] = UI::Label(rectForDay('m'), "Mo");
+  dayLbls[Week::iday('t')] = UI::Label(rectForDay('t'), "Tu");
+  dayLbls[Week::iday('w')] = UI::Label(rectForDay('w'), "We");
+  dayLbls[Week::iday('h')] = UI::Label(rectForDay('h'), "Th");
+  dayLbls[Week::iday('f')] = UI::Label(rectForDay('f'), "Fr");
+  dayLbls[Week::iday('a')] = UI::Label(rectForDay('a'), "Sa");
 
-  dayLbls[Week::iday('s')] = UI::Label(space(ww,60,40,7,0), 20, 40, "Su");
-  dayLbls[Week::iday('m')] = UI::Label(space(ww,60,40,7,1), 20, 40, "Mo");
-  dayLbls[Week::iday('t')] = UI::Label(space(ww,60,40,7,2), 20, 40, "Tu");
-  dayLbls[Week::iday('w')] = UI::Label(space(ww,60,40,7,3), 20, 40, "We");
-  dayLbls[Week::iday('h')] = UI::Label(space(ww,60,40,7,4), 20, 40, "Th");
-  dayLbls[Week::iday('f')] = UI::Label(space(ww,60,40,7,5), 20, 40, "Fr");
-  dayLbls[Week::iday('a')] = UI::Label(space(ww,60,40,7,6), 20, 40, "Sa");
-
-  whenBtns[Week::iday('s')] = UI::Button(space(ww,60,40,7,0), 20, 40, 40);
-  whenBtns[Week::iday('m')] = UI::Button(space(ww,60,40,7,1), 20, 40, 40);
-  whenBtns[Week::iday('t')] = UI::Button(space(ww,60,40,7,2), 20, 40, 40);
-  whenBtns[Week::iday('w')] = UI::Button(space(ww,60,40,7,3), 20, 40, 40);
-  whenBtns[Week::iday('h')] = UI::Button(space(ww,60,40,7,4), 20, 40, 40);
-  whenBtns[Week::iday('f')] = UI::Button(space(ww,60,40,7,5), 20, 40, 40);
-  whenBtns[Week::iday('a')] = UI::Button(space(ww,60,40,7,6), 20, 40, 40);
+  for(int i = 0; i < 7; i++)
+    whenBtns[i] = UI::Button(rectForDay(Week::day(i)));
 
   actionAttackButton   = UI::TextButton(space(ww,60,200,4,0), wh-60, 200, 40, "attack");
-  actionMessageButton  = UI::TextButton(space(ww,60,200,4,1), wh-60, 200, 40, "message");
-  actionDefendButton   = UI::TextButton(space(ww,60,200,4,2), wh-60, 200, 40, "defend");
+  actionDefendButton   = UI::TextButton(space(ww,60,200,4,1), wh-60, 200, 40, "defend");
+  actionMessageButton  = UI::TextButton(space(ww,60,200,4,2), wh-60, 200, 40, "message");
   actionSabotageButton = UI::TextButton(space(ww,60,200,4,3), wh-60, 200, 40, "sabotage");
 
   howBlockButton    = UI::TextButton(space(ww,60,200,3,0), wh-60, 200, 40, "Block");
@@ -82,40 +75,6 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   known_day = '0';
 }
 
-SDL_Rect PlayScene::whoBoxForCardinal(char card)
-{
-  char me = c->myCardinal();
-  while(me != 's')
-  {
-    me   = Compass::cwcardinal(me);
-    card = Compass::cwcardinal(card);
-  }
-  return whoBoxForPosition(card);
-}
-
-SDL_Rect PlayScene::whoBoxForPosition(char c)
-{
-  int i = Compass::icardinal(c);
-
-  int ww = graphics->winWidth();
-  int wh = graphics->winHeight();
-
-  int bw = 120;
-  int bh = 120;
-
-  //(clockwise) top     right  bottom(you) left
-  int xs[] = {ww/2-bw/2,  ww-bw-20, ww/2-bw/2,        20};
-  int ys[] = {      120, wh/2-bh/2,  wh-bh-80, wh/2-bh/2};
-
-  SDL_Rect tmp;
-  tmp.x = xs[i];
-  tmp.y = ys[i];
-  tmp.w = bw;
-  tmp.h = bh;
-
-  return tmp;
-}
-
 void PlayScene::enter()
 {
   //need to wait until c_model is obtained
@@ -132,7 +91,7 @@ void PlayScene::enter()
   //bottom (you)
   card = c->myCardinal();
   icard = Compass::icardinal(card);
-  rect = whoBoxForPosition('s');
+  rect = rectForPosition('s');
   scard[0] = card;
   if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
   if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
@@ -144,7 +103,7 @@ void PlayScene::enter()
   //left (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
-  rect = whoBoxForPosition('w');
+  rect = rectForPosition('w');
   scard[0] = card;
   if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
   if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
@@ -156,7 +115,7 @@ void PlayScene::enter()
   //top (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
-  rect = whoBoxForPosition('n');
+  rect = rectForPosition('n');
   scard[0] = card;
   if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
   if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
@@ -168,7 +127,7 @@ void PlayScene::enter()
   //top (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
-  rect = whoBoxForPosition('e');
+  rect = rectForPosition('e');
   scard[0] = card;
   if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
   if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
@@ -194,8 +153,8 @@ void PlayScene::zeroE()
 void PlayScene::chooseAction(In &in)
 {
   if(actionAttackButton.query(in))    e.action = 'a';
-  if(actionMessageButton.query(in)) { e.action = 'm'; e.to = Compass::opcardinal(e.cardinal); } //auto assign 'to'
   if(actionDefendButton.query(in))    e.action = 'd';
+  if(actionMessageButton.query(in)) { e.action = 'm'; e.to = Compass::opcardinal(e.cardinal); } //auto assign 'to'
   if(actionSabotageButton.query(in))  e.action = 's';
 }
 
@@ -254,8 +213,8 @@ void PlayScene::seekConfirmation(In &in)
 void PlayScene::drawAction()
 {
   actionAttackButton.draw(graphics);
-  actionMessageButton.draw(graphics);
   actionDefendButton.draw(graphics);
+  actionMessageButton.draw(graphics);
   actionSabotageButton.draw(graphics);
 }
 
@@ -341,8 +300,6 @@ void PlayScene::drawLose()
 
 void PlayScene::touch(In &in)
 {
-  if(backButton.query(in)) { }
-
   //oh god terrible tree traversal touch propagation
 
   if(!c->iWin() && !c->iLose())
@@ -435,8 +392,8 @@ int PlayScene::tick()
       p.mess.begin_card = m.was;
       p.mess.end_card = m.at;
 
-      spos = whoBoxForCardinal(m.was);
-      epos = whoBoxForCardinal(m.at);
+      spos = rectForCardinal(m.was);
+      epos = rectForCardinal(m.at);
       p.mess.x.set(spos.x,epos.x,0.f);
       p.mess.y.set(spos.y,epos.y,0.f);
 
@@ -451,7 +408,7 @@ int PlayScene::tick()
 
         Particle p;
         p.type = P_TYPE_DEFEND;
-        pos = whoBoxForCardinal(card);
+        pos = rectForCardinal(card);
         p.defend.y = pos.y+pos.h/2; //center
         p.defend.x = pos.x+pos.w/2; //center
         p.defend.w.set(pos.w,pos.w*2,0.f);
@@ -472,8 +429,8 @@ int PlayScene::tick()
         p.attack.begin_card = card;
         p.attack.end_card = c->model.cardinalPrevAction(card).who;
 
-        spos = whoBoxForCardinal(p.attack.begin_card);
-        epos = whoBoxForCardinal(p.attack.end_card);
+        spos = rectForCardinal(p.attack.begin_card);
+        epos = rectForCardinal(p.attack.end_card);
         p.attack.x.set(spos.x,epos.x,0.f);
         p.attack.y.set(spos.y,epos.y,0.f);
         p.attack.anim.set(0,1);
@@ -486,7 +443,7 @@ int PlayScene::tick()
     for(int i = 0; i < 4; i++)
     {
       char card = Compass::cardinal(i);
-      SDL_Rect pos = whoBoxForCardinal(card);
+      SDL_Rect pos = rectForCardinal(card);
       pos.x = pos.x+(pos.w/2)+(pos.w/4);
       pos.y = pos.y-(pos.h/4);
       pos.w = pos.w/2;
@@ -511,7 +468,6 @@ int PlayScene::tick()
 void PlayScene::draw()
 {
   psys.draw(graphics);
-  backButton.draw(graphics);
 
   sun.draw(graphics);
   for(int i = 0; i < 7; i++)
@@ -616,4 +572,51 @@ PlayScene::~PlayScene()
 {
 
 }
+
+
+
+SDL_Rect PlayScene::rectForPosition(char c)
+{
+  int i = Compass::icardinal(c);
+
+  int ww = graphics->winWidth();
+  int wh = graphics->winHeight();
+  int bw = 120;
+  int bh = 120;
+
+  //(clockwise)        top      right    bottom(you)   left
+  int posRectX[] = {ww/2-bw/2,  ww-bw-20, ww/2-bw/2,        20};
+  int posRectY[] = {      120, wh/2-bh/2,  wh-bh-80, wh/2-bh/2};
+
+  SDL_Rect tmp;
+  tmp.x = posRectX[i];
+  tmp.y = posRectY[i];
+  tmp.w = bw;
+  tmp.h = bh;
+
+  return tmp;
+}
+
+SDL_Rect PlayScene::rectForCardinal(char card)
+{
+  char me = c->myCardinal();
+  while(me != 's')
+  {
+    me   = Compass::cwcardinal(me);
+    card = Compass::cwcardinal(card);
+  }
+  return rectForPosition(card);
+}
+
+SDL_Rect PlayScene::rectForDay(char d)
+{
+  int ww = graphics->winWidth();
+  SDL_Rect tmp;
+  tmp.x = space(ww,60,40,7,Week::iday(d));
+  tmp.y = 20;
+  tmp.w = 40;
+  tmp.h = 40;
+  return tmp;
+}
+
 

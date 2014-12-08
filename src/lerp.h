@@ -17,6 +17,10 @@ class Lerp
     void set(float _s, float _e, float _t);
     void tick(float d);
     void reset();
+
+    //static funcs. helpers. whatever.
+    static float clamp(float v);
+    static float lerp(float s, float e, float t);
 };
 
 #endif
