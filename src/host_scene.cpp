@@ -28,13 +28,11 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, Se
 
   backButton = UI::Button(10,10,40,40);
 
-  hostGameLabel = UI::Label(ww/2-200,wh/2-200,40,"Host Game");
+  hostGameLabel = UI::Label(ww/2-250, wh/2-170,40,"Host Game");
+  ipLabel     = UI::Label(ww/2-250, wh/2-120,40,Network::getIP().ptr());
+  portLabel   = UI::Label(ww/2+150, wh/2-120,40,"8080");
 
-  ipLabel = UI::Label(ww/2-200,wh/2-160,40,Network::getIP().ptr());
-
-  portLabel = UI::Label(ww/2+60,wh/2-160,40,"8080");
-
-  sessionButton  = UI::TextButton(ww/2-200, wh/2-100, 400, 40, "Start Session");
+  sessionButton = UI::TextButton(ww/2-250, wh/2-70, 500, 40, "Start Session");
 
   SCENE_CHANGE_HACK = 0;
 }

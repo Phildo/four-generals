@@ -28,12 +28,12 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   backButton = UI::Button(20,20,40,40);
 
-  inRoomLabel = UI::Label(ww/2-250, wh/2-80,40,"In Room");
-  ipLabel     = UI::Label(ww/2-250, wh/2-30,40,Network::getIP().ptr());
-  portLabel   = UI::Label(ww/2+100, wh/2-30,40,"8080");
+  inRoomLabel = UI::Label(ww/2-250, wh/2-170,40,"In Room");
+  ipLabel     = UI::Label(ww/2-250, wh/2-120,40,Network::getIP().ptr());
+  portLabel   = UI::Label(ww/2+150, wh/2-120,40,"8080");
 
-  leaveSessButton = UI::TextButton(ww/2-250, wh/2+20, 500, 40, "Leave Session");
-  beginGameButton = UI::TextButton(ww/2-250, wh/2+70, 500, 40, "Begin Game!");
+  leaveSessButton = UI::TextButton(ww/2-250, wh/2-70, 500, 40, "Leave Session");
+  beginGameButton = UI::TextButton(ww/2-250, wh/2-20, 500, 40, "Begin Game!");
 
   SDL_Rect r = whoBoxForPosition('s');
   chooseBtn = UI::Button(r);

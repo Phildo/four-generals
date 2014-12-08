@@ -17,12 +17,12 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 
   backButton = UI::Button(20,20,40,40);
 
-  joinGameLabel = UI::Label(ww/2-200,wh/2-200,40,"Join Game");
 
-  ipInput = UI::TextBox(ww/2-200,wh/2-160,260,40);
-  portLabel = UI::Label(ww/2+60,wh/2-160,40,"8080");
+  joinGameLabel = UI::Label(ww/2-250, wh/2-170,40,"Join Game");
+  ipInput     = UI::TextBox(ww/2-250, wh/2-120,400,40);
+  portLabel   = UI::Label(ww/2+150, wh/2-120,40,"8080");
 
-  sessionButton  = UI::TextButton(ww/2-200, wh/2-100, 400, 40,"Join Session");
+  sessionButton = UI::TextButton(ww/2-250, wh/2-70, 500, 40, "Join Session");
 
   keyboard = UI::Keyboard(0,wh-200,ww,200);
   ipInput.setText(Network::getIP());
