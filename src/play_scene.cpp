@@ -27,17 +27,44 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
-  dayLbls[Week::iday('s')] = UI::Label(rectForDay('s'), "Su");
-  dayLbls[Week::iday('m')] = UI::Label(rectForDay('m'), "Mo");
-  dayLbls[Week::iday('t')] = UI::Label(rectForDay('t'), "Tu");
-  dayLbls[Week::iday('w')] = UI::Label(rectForDay('w'), "We");
-  dayLbls[Week::iday('h')] = UI::Label(rectForDay('h'), "Th");
-  dayLbls[Week::iday('f')] = UI::Label(rectForDay('f'), "Fr");
-  dayLbls[Week::iday('a')] = UI::Label(rectForDay('a'), "Sa");
-  sun = UI::Image(Sprite::sun(), rectForDay('s'));
+  //(clockwise)           top                right              bottom(you)          left
+  int posRectW[] = {               120,                120,                120,                120};
+  int posRectH[] = {               120,                120,                120,                120};
+  int posRectX[] = {ww/2-posRectW[0]/2,  ww-posRectW[1]-20, ww/2-posRectW[2]/2,                 20};
+  int posRectY[] = {               120, wh/2-posRectH[1]/2,  wh-posRectH[2]-80, wh/2-posRectH[3]/2};
+
+  for(int i = 0; i < 4; i++)
+  {
+    positionRects[i].x = posRectX[i];
+    positionRects[i].y = posRectY[i];
+    positionRects[i].w = posRectW[i];
+    positionRects[i].h = posRectH[i];
+  }
 
   for(int i = 0; i < 7; i++)
-    whenBtns[i] = UI::Button(rectForDay(Week::day(i)));
+  {
+    dayRects[i].x = space(ww,60,40,7,i);
+    dayRects[i].y = 20;
+    dayRects[i].w = 40;
+    dayRects[i].h = 40;
+
+    sunRects[i].x = space(ww,50,60,7,i);
+    sunRects[i].y = 10;
+    sunRects[i].w = 60;
+    sunRects[i].h = 60;
+  }
+
+  dayLbls[0] = UI::Label(dayRects[0], "Su");
+  dayLbls[1] = UI::Label(dayRects[1], "Mo");
+  dayLbls[2] = UI::Label(dayRects[2], "Tu");
+  dayLbls[3] = UI::Label(dayRects[3], "We");
+  dayLbls[4] = UI::Label(dayRects[4], "Th");
+  dayLbls[5] = UI::Label(dayRects[5], "Fr");
+  dayLbls[6] = UI::Label(dayRects[6], "Sa");
+  sun = UI::Image(Sprite::sun(), sunRects[0]);
+
+  for(int i = 0; i < 7; i++)
+    whenBtns[i] = UI::Button(dayRects[i]);
 
   actionAttackButton   = UI::TextButton(space(ww,60,200,4,0), wh-60, 200, 40, "attack");
   actionDefendButton   = UI::TextButton(space(ww,60,200,4,1), wh-60, 200, 40, "defend");
@@ -75,14 +102,6 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   messengerImg = UI::Image(Sprite::messenger(),0,0,0,0);
   swordImg = UI::Image(Sprite::sword(),0,0,0,0);
-  for(int i = 0; i < 4; i++)
-  {
-    for(int j = 0; j < 4; j++)
-    {
-      animTraverseRect[(i*4)+j] = LerpRect(rectForPosition(Compass::cardinal(i)), rectForPosition(Compass::cardinal(j)));
-    }
-    animExpandRect[i] = LerpRect(rectForPosition(Compass::cardinal(i)),rectForPosition(Compass::cardinal(i)));
-  }
 
   known_day = '0';
   anim_day = 0.0f;
@@ -506,7 +525,6 @@ int PlayScene::tick()
 
     zeroE();
     known_day = c->model.currentDay();
-    sun = UI::Image(Sprite::sun(), rectForDay('s'));
   }
   return 0;
 }
@@ -663,24 +681,7 @@ PlayScene::~PlayScene()
 
 SDL_Rect PlayScene::rectForPosition(char c)
 {
-  int i = Compass::icardinal(c);
-
-  int ww = graphics->winWidth();
-  int wh = graphics->winHeight();
-  int bw = 120;
-  int bh = 120;
-
-  //(clockwise)        top      right    bottom(you)   left
-  int posRectX[] = {ww/2-bw/2,  ww-bw-20, ww/2-bw/2,        20};
-  int posRectY[] = {      120, wh/2-bh/2,  wh-bh-80, wh/2-bh/2};
-
-  SDL_Rect tmp;
-  tmp.x = posRectX[i];
-  tmp.y = posRectY[i];
-  tmp.w = bw;
-  tmp.h = bh;
-
-  return tmp;
+  return positionRects[Compass::icardinal(c)];
 }
 
 SDL_Rect PlayScene::rectForCardinal(char card)
@@ -696,36 +697,23 @@ SDL_Rect PlayScene::rectForCardinal(char card)
 
 SDL_Rect PlayScene::rectForDay(char d)
 {
-  int ww = graphics->winWidth();
-  SDL_Rect tmp;
-  tmp.x = space(ww,60,40,7,Week::iday(d));
-  tmp.y = 20;
-  tmp.w = 40;
-  tmp.h = 40;
-  return tmp;
+  return dayRects[Week::iday(d)];
+}
+
+SDL_Rect PlayScene::rectForSun(char d)
+{
+  return sunRects[Week::iday(d)];
 }
 
 SDL_Rect PlayScene::rectForTraversal(char fcard, char tcard, float t)
 {
-  char me = c->myCardinal();
-  while(me != 's')
-  {
-    me   = Compass::cwcardinal(me);
-    fcard = Compass::cwcardinal(fcard);
-    tcard = Compass::cwcardinal(tcard);
-  }
-  return animTraverseRect[(Compass::icardinal(fcard)*4)+Compass::icardinal(tcard)].v(t);
+  return LerpRect::lerp(rectForCardinal(fcard), rectForCardinal(tcard), t);
 }
 
 SDL_Rect PlayScene::rectForExpansion(char card, float t)
 {
-  char me = c->myCardinal();
-  while(me != 's')
-  {
-    me   = Compass::cwcardinal(me);
-    card = Compass::cwcardinal(card);
-  }
-  return animExpandRect[Compass::icardinal(card)].v(t);
+  SDL_Rect tmp;
+  return tmp;
 }
 
 SDL_Rect PlayScene::rectForTransition(char fd, char td, float t)

@@ -93,12 +93,7 @@ void Model::commitActions()
   }
   sabotages.removeAll();
 
-  //save actions as 'previous' for further analysis if necessary
-  for(int i = 0; i < 5; i++)
-    prev_actions[i] = actions[i];
-
-  zeroActions();
-
+  zeroTomorrowsActions();
   days++;
 }
 
@@ -137,12 +132,14 @@ General& Model::connectionGeneral(char con)
 
 Event& Model::generalAction(General g)
 {
-  return actions[Compass::icardinal(g.cardinal)];
+  if(days < 0 || days >= FG_MAX_ACTION_HIST) return actions[FG_MAX_ACTION_HIST*4];
+  return actions[(days*4)+Compass::icardinal(g.cardinal)];
 }
 
 Event& Model::cardinalAction(char card)
 {
-  return actions[Compass::icardinal(card)];
+  if(days < 0 || days >= FG_MAX_ACTION_HIST) return actions[FG_MAX_ACTION_HIST*4];
+  return actions[(days*4)+Compass::icardinal(card)];
 }
 
 Event& Model::connectionAction(char con)
@@ -152,12 +149,14 @@ Event& Model::connectionAction(char con)
 
 Event& Model::generalPrevAction(General g)
 {
-  return prev_actions[Compass::icardinal(g.cardinal)];
+  if(days < 1 || days >= FG_MAX_ACTION_HIST-1) return actions[FG_MAX_ACTION_HIST*4];
+  return actions[((days-1)*4)+Compass::icardinal(g.cardinal)];
 }
 
 Event& Model::cardinalPrevAction(char card)
 {
-  return prev_actions[Compass::icardinal(card)];
+  if(days < 1 || days >= FG_MAX_ACTION_HIST-1) return actions[FG_MAX_ACTION_HIST*4];
+  return actions[((days-1)*4)+Compass::icardinal(card)];
 }
 
 Event& Model::connectionPrevAction(char con)
@@ -295,16 +294,18 @@ char Model::currentDay()
   return Week::day((days+7)%7); //+7 for obvious cross-lang modulus behavior
 }
 
-void Model::zeroActions()
+void Model::zeroCurrentActions()
 {
+  if(days < 0 || days >= FG_MAX_ACTION_HIST) return;
   for(int i = 0; i < 5; i++)
-    actions[i].zero();
+    actions[(days*4)+i].zero();
 }
 
-void Model::zeroPrevActions()
+void Model::zeroTomorrowsActions()
 {
+  if(days < -1 || days >= (FG_MAX_ACTION_HIST-1)) return;
   for(int i = 0; i < 5; i++)
-    prev_actions[i].zero();
+    actions[((days+1)*4)+i].zero();
 }
 
 void Model::zeroMessengers()
@@ -319,11 +320,10 @@ void Model::zeroSabotages()
 
 void Model::zero() //'resets' gam
 {
-  zeroActions();
-  zeroPrevActions();
+  days = -1;
   zeroMessengers();
   zeroSabotages();
-  days = -1;
+  zeroTomorrowsActions();
   winning_card = '0';
   losing_card = '0';
 }

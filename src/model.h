@@ -8,6 +8,8 @@
 
 #include "array.h"
 
+#define FG_MAX_ACTION_HIST 32
+
 class Model
 {
   private :
@@ -17,8 +19,7 @@ class Model
 
     //in cardinal order
     General generals[5];
-    Event actions[5]; //actions for this turn
-    Event prev_actions[5]; //actions for prev turn
+    Event actions[4*FG_MAX_ACTION_HIST+1]; //2d array [(day*4)+general]
 
     //unordered
     Array<Messenger,16> messengers;
@@ -74,8 +75,8 @@ class Model
 
     char currentDay();
 
-    void zeroActions();
-    void zeroPrevActions();
+    void zeroCurrentActions();
+    void zeroTomorrowsActions();
     void zeroMessengers();
     void zeroSabotages();
     void zero(); //'resets' game

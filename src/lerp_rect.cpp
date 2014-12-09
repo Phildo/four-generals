@@ -72,3 +72,23 @@ void LerpRect::reset()
   h.reset();
 }
 
+SDL_Rect LerpRect::lerp(SDL_Rect s, SDL_Rect e, float t)
+{
+  SDL_Rect tmp;
+  tmp.x = Lerp::lerp(s.x,e.x,t);
+  tmp.y = Lerp::lerp(s.y,e.y,t);
+  tmp.w = Lerp::lerp(s.w,e.w,t);
+  tmp.h = Lerp::lerp(s.h,e.h,t);
+  return tmp;
+}
+
+SDL_Rect LerpRect::lerp(float sx, float sy, float sw, float sh, float ex, float ey, float ew, float eh, float t)
+{
+  SDL_Rect tmp;
+  tmp.x = Lerp::lerp(sx,ex,t);
+  tmp.y = Lerp::lerp(sy,ey,t);
+  tmp.w = Lerp::lerp(sw,ew,t);
+  tmp.h = Lerp::lerp(sh,eh,t);
+  return tmp;
+}
+

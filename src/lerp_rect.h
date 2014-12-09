@@ -24,6 +24,10 @@ class LerpRect
     void set(float sx, float sy, float sw, float sh, float ex, float ey, float ew, float eh, float t);
     void tick(float d);
     void reset();
+
+    //static funcs. helpers. whatever.
+    static SDL_Rect lerp(SDL_Rect s, SDL_Rect e, float t);
+    static SDL_Rect lerp(float sx, float sy, float sw, float sh, float ex, float ey, float ew, float eh, float t);
 };
 
 #endif

@@ -28,8 +28,6 @@ class PlayScene : public Scene
 
     UI::Image messengerImg;
     UI::Image swordImg;
-    LerpRect animTraverseRect[4*4]; //2d array (from*4)+to
-    LerpRect animExpandRect[4];
 
     UI::TextButton actionAttackButton;
     UI::TextButton actionMessageButton;
@@ -94,9 +92,14 @@ class PlayScene : public Scene
     SDL_Rect rectForPosition(char c);
     SDL_Rect rectForCardinal(char c);
     SDL_Rect rectForDay(char d);
+    SDL_Rect rectForSun(char d);
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);
     SDL_Rect rectForTransition(char fd, char td, float t);
+
+    SDL_Rect positionRects[4];
+    SDL_Rect dayRects[7];
+    SDL_Rect sunRects[7];
 
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
