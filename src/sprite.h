@@ -116,6 +116,8 @@ namespace Sprite
   SDL_Rect alpha_paren_r();
   SDL_Rect alpha_back();
   SDL_Rect alpha_NOPE();
+
+  SDL_Rect null();
 };
 
 #endif

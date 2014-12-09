@@ -21,7 +21,8 @@ class PlayScene : public Scene
     UI::Label dayLbls[7];
 
     UI::Image cardImgs[4];
-    UI::Image cardIcons[4];
+    UI::Image cardHealth[4];
+    UI::Image cardActIcons[4];
     UI::Button cardBtns[4];
 
     UI::TextButton actionAttackButton;

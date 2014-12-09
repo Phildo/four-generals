@@ -226,3 +226,5 @@ SDL_Rect Sprite::alpha_paren_r() { return rect(414,162,18,31); }
 SDL_Rect Sprite::alpha_back() { return rect(432,162,18,31); }
 SDL_Rect Sprite::alpha_NOPE() { return rect(450,162,18,31); }
 
+SDL_Rect Sprite::null() { return rect(0,0,0,0); }
+

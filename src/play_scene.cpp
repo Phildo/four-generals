@@ -99,6 +99,13 @@ void PlayScene::enter()
   if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
+  rect.x = rect.x+rect.w/2+rect.w/4;
+  rect.y = rect.y-rect.h/4;
+  rect.w = rect.w/2;
+  rect.h = rect.h/2;
+  cardHealth[icard]   = UI::Image(Sprite::null(), rect);
+  rect.y = rect.y+2*rect.h;
+  cardActIcons[icard] = UI::Image(Sprite::null(), rect);
 
   //left (clockwise)
   card = Compass::cwcardinal(card);
@@ -111,6 +118,13 @@ void PlayScene::enter()
   if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
+  rect.x = rect.x+rect.w/2+rect.w/4;
+  rect.y = rect.y-rect.h/4;
+  rect.w = rect.w/2;
+  rect.h = rect.h/2;
+  cardHealth[icard]   = UI::Image(Sprite::null(), rect);
+  rect.y = rect.y+2*rect.h;
+  cardActIcons[icard] = UI::Image(Sprite::null(), rect);
 
   //top (clockwise)
   card = Compass::cwcardinal(card);
@@ -123,6 +137,13 @@ void PlayScene::enter()
   if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
+  rect.x = rect.x+rect.w/2+rect.w/4;
+  rect.y = rect.y-rect.h/4;
+  rect.w = rect.w/2;
+  rect.h = rect.h/2;
+  cardHealth[icard]   = UI::Image(Sprite::null(), rect);
+  rect.y = rect.y+2*rect.h;
+  cardActIcons[icard] = UI::Image(Sprite::null(), rect);
 
   //top (clockwise)
   card = Compass::cwcardinal(card);
@@ -135,9 +156,13 @@ void PlayScene::enter()
   if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
-
-  for(int i = 0; i < 4; i++)
-    cardIcons[i] = UI::Image(Sprite::force_field(), 0,0,0,0);
+  rect.x = rect.x+rect.w/2+rect.w/4;
+  rect.y = rect.y-rect.h/4;
+  rect.w = rect.w/2;
+  rect.h = rect.h/2;
+  cardHealth[icard]   = UI::Image(Sprite::null(), rect);
+  rect.y = rect.y+2*rect.h;
+  cardActIcons[icard] = UI::Image(Sprite::null(), rect);
 
   zeroE();
 }
@@ -449,13 +474,14 @@ int PlayScene::tick()
       pos.w = pos.w/2;
       pos.h = pos.h/2;
       if(c->model.cardinalPrevAction(card).action == 'd')
-        cardIcons[i] = UI::Image(Sprite::force_field(), pos);
+        cardActIcons[i].sprite = Sprite::force_field();
       if(c->model.cardinalPrevAction(card).action == 'a')
-        cardIcons[i] = UI::Image(Sprite::sword(), pos);
+        cardActIcons[i].sprite = Sprite::sword();
       if(c->model.cardinalPrevAction(card).action == 'm')
-        cardIcons[i] = UI::Image(Sprite::envelope(), pos);
+        cardActIcons[i].sprite = Sprite::envelope();
       if(c->model.cardinalPrevAction(card).action == 's')
-        cardIcons[i] = UI::Image(Sprite::red_x(), pos);
+        cardActIcons[i].sprite = Sprite::red_x();
+      cardHealth[i].sprite = Sprite::shield_full();
     }
 
     zeroE();
@@ -552,7 +578,8 @@ void PlayScene::draw()
   for(int i = 0; i < 4; i++)
   {
     cardImgs[i].draw(graphics);
-    cardIcons[i].draw(graphics);
+    cardHealth[i].draw(graphics);
+    cardActIcons[i].draw(graphics);
   }
 
 }
