@@ -25,7 +25,6 @@ void signal_callback_handler(int signum)
       //also do nothing
       break;
   }
-
 }
 
 int main(int argc, char* argv[])

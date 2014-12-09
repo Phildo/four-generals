@@ -34,6 +34,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   dayLbls[Week::iday('h')] = UI::Label(rectForDay('h'), "Th");
   dayLbls[Week::iday('f')] = UI::Label(rectForDay('f'), "Fr");
   dayLbls[Week::iday('a')] = UI::Label(rectForDay('a'), "Sa");
+  sun = UI::Image(Sprite::sun(), rectForDay('s'));
 
   for(int i = 0; i < 7; i++)
     whenBtns[i] = UI::Button(rectForDay(Week::day(i)));
@@ -72,7 +73,20 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   cancelButton  = UI::TextButton(space(ww,30,200,2,1), wh-60, 200, 40, "cancel");
   resetButton   = UI::TextButton(space(ww,30,200,1,0), wh-60, 200, 40, "reset game");
 
+  messengerImg = UI::Image(Sprite::messenger(),0,0,0,0);
+  swordImg = UI::Image(Sprite::sword(),0,0,0,0);
+  for(int i = 0; i < 4; i++)
+  {
+    for(int j = 0; j < 4; j++)
+    {
+      animTraverseRect[(i*4)+j] = LerpRect(rectForPosition(Compass::cardinal(i)), rectForPosition(Compass::cardinal(j)));
+    }
+    animExpandRect[i] = LerpRect(rectForPosition(Compass::cardinal(i)),rectForPosition(Compass::cardinal(i)));
+  }
+
   known_day = '0';
+  anim_day = 0.0f;
+  shown_day = 0.0f;
 }
 
 void PlayScene::enter()
@@ -93,10 +107,10 @@ void PlayScene::enter()
   icard = Compass::icardinal(card);
   rect = rectForPosition('s');
   scard[0] = card;
-  if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
-  if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
-  if(card == 's') cardImgs[icard]  = UI::Image(Sprite::s_general(), rect);
-  if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
+  if(card == 'n') cardImgs[icard] = UI::Image(Sprite::n_general(), rect);
+  if(card == 'e') cardImgs[icard] = UI::Image(Sprite::e_general(), rect);
+  if(card == 's') cardImgs[icard] = UI::Image(Sprite::s_general(), rect);
+  if(card == 'w') cardImgs[icard] = UI::Image(Sprite::w_general(), rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
   rect.x = rect.x+rect.w/2+rect.w/4;
@@ -396,14 +410,19 @@ void PlayScene::touch(In &in)
 
 int PlayScene::tick()
 {
-  psys.tick(0.01f);
   if(s) s->tick();
   c->tick();
+
+  psys.tick(0.01f);
+  if(anim_day < c->model.days) anim_day += 0.01f;
+  if(anim_day > c->model.days) anim_day = (float)c->model.days;
+  shown_day = anim_day;
   if(known_day != c->model.currentDay())
   {
     if(c->model.days == -1)
       return -1; //game was reset- go back to room
 
+/*
     for(int i = 0; i < c->model.messengers.len(); i++)
     {
       Messenger m = c->model.messengers[i];
@@ -463,6 +482,7 @@ int PlayScene::tick()
         psys.registerP(p);
       }
     }
+    */
 
 
     for(int i = 0; i < 4; i++)
@@ -486,7 +506,7 @@ int PlayScene::tick()
 
     zeroE();
     known_day = c->model.currentDay();
-    sun = UI::Image(Sprite::sun(), space(graphics->winWidth(),60,68,7,Week::iday(known_day)), 0, 68, 68);
+    sun = UI::Image(Sprite::sun(), rectForDay('s'));
   }
   return 0;
 }
@@ -495,6 +515,45 @@ void PlayScene::draw()
 {
   psys.draw(graphics);
 
+  float t = 1.f-((float)c->model.days-shown_day);
+  if(t < 0.9)
+  {
+    for(int i = 0; i < c->model.messengers.len(); i++)
+    {
+      Messenger m = c->model.messengers[i];
+      messengerImg.rect = rectForTraversal(m.was, m.at,t);
+      messengerImg.draw(graphics);
+    }
+
+    for(int i = 0; i < 4; i++)
+    {
+      char card = Compass::cardinal(i);
+      if(c->model.cardinalPrevAction(card).action == 'a')
+      {
+        Messenger m = c->model.messengers[i];
+        swordImg.rect = rectForTraversal(card,c->model.cardinalPrevAction(card).who,t);
+        swordImg.draw(graphics);
+      }
+
+      /*
+      if(c->model.cardinalPrevAction(card).action == 'd')
+      {
+        SDL_Rect pos;
+
+        Particle p;
+        p.type = P_TYPE_DEFEND;
+        pos = rectForCardinal(card);
+        p.defend.y = pos.y+pos.h/2; //center
+        p.defend.x = pos.x+pos.w/2; //center
+        p.defend.w.set(pos.w,pos.w*2,0.f);
+        p.defend.h.set(pos.h,pos.h*2,0.f);
+
+        psys.registerP(p);
+      }
+      */
+    }
+  }
+  sun.rect = rectForTransition(Week::day((c->model.days-1)%7), known_day, t);
   sun.draw(graphics);
   for(int i = 0; i < 7; i++)
     dayLbls[i].draw(graphics);
@@ -646,4 +705,32 @@ SDL_Rect PlayScene::rectForDay(char d)
   return tmp;
 }
 
+SDL_Rect PlayScene::rectForTraversal(char fcard, char tcard, float t)
+{
+  char me = c->myCardinal();
+  while(me != 's')
+  {
+    me   = Compass::cwcardinal(me);
+    fcard = Compass::cwcardinal(fcard);
+    tcard = Compass::cwcardinal(tcard);
+  }
+  return animTraverseRect[(Compass::icardinal(fcard)*4)+Compass::icardinal(tcard)].v(t);
+}
+
+SDL_Rect PlayScene::rectForExpansion(char card, float t)
+{
+  char me = c->myCardinal();
+  while(me != 's')
+  {
+    me   = Compass::cwcardinal(me);
+    card = Compass::cwcardinal(card);
+  }
+  return animExpandRect[Compass::icardinal(card)].v(t);
+}
+
+SDL_Rect PlayScene::rectForTransition(char fd, char td, float t)
+{
+  LerpRect x(rectForDay(fd),rectForDay(td));
+  return x.v(t);
+}
 

@@ -4,6 +4,7 @@
 #include "scene.h"
 #include "ui.h"
 #include "particles.h"
+#include "lerp_rect.h"
 #include "network.h"
 #include "event.h"
 
@@ -24,6 +25,11 @@ class PlayScene : public Scene
     UI::Image cardHealth[4];
     UI::Image cardActIcons[4];
     UI::Button cardBtns[4];
+
+    UI::Image messengerImg;
+    UI::Image swordImg;
+    LerpRect animTraverseRect[4*4]; //2d array (from*4)+to
+    LerpRect animExpandRect[4];
 
     UI::TextButton actionAttackButton;
     UI::TextButton actionMessageButton;
@@ -56,6 +62,8 @@ class PlayScene : public Scene
     ClientModel **c_ptr; //Pointers to the client model pointer 'owned' by game
 
     char known_day;
+    float anim_day;
+    float shown_day;
 
     Event e; //populates with tentative event (holds state for what to show on screen)
     void zeroE();
@@ -86,6 +94,9 @@ class PlayScene : public Scene
     SDL_Rect rectForPosition(char c);
     SDL_Rect rectForCardinal(char c);
     SDL_Rect rectForDay(char d);
+    SDL_Rect rectForTraversal(char fcard, char tcard, float t);
+    SDL_Rect rectForExpansion(char card, float t);
+    SDL_Rect rectForTransition(char fd, char td, float t);
 
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
