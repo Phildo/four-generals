@@ -31,11 +31,11 @@ class ClientModel
     bool imCardinal(char card);
     bool iHaveAction();
     bool iHaveMessage();
-    Messenger& myMessage();
+    Messenger myMessage();
     bool iHaveIntruder();
-    Messenger& myIntruder();
+    Messenger myIntruder();
     bool iHaveSabotage();
-    Messenger& mySabotage();
+    Messenger mySabotage();
     bool iWin();
     bool iLose();
 

@@ -21,14 +21,6 @@ class Model
     General generals[5];
     Event actions[4*FG_MAX_ACTION_HIST+1]; //2d array [(day*4)+general]
 
-    //unordered
-    Array<Messenger,16> messengers;
-    Messenger nullMessenger; //equivalent to 5th member of other arrays
-
-    //unordered
-    Array<Sabotage,16> sabotages;
-    Sabotage nullSabotage; //equivalent to 5th member of other arrays
-
     int days;
     char winning_card;
     char losing_card;
@@ -49,15 +41,13 @@ class Model
     Event& generalAction(General g);
     Event& cardinalAction(char card);
     Event& connectionAction(char con);
-    Event& generalPrevAction(General g);
-    Event& cardinalPrevAction(char card);
-    Event& connectionPrevAction(char con);
-    Messenger& cardinalMessage(char card);
-    Messenger& connectionMessage(char con);
-    Messenger& cardinalIntruder(char card);
-    Messenger& connectionIntruder(char con);
-    Sabotage& cardinalSabotage(char card);
-    Sabotage& connectionSabotage(char con);
+    Event& generalDayAction(General g, int day);
+    Event& cardinalDayAction(char card, int day);
+    Event& connectionDayAction(char con, int day);
+    Messenger cardinalMessage(char card);
+    Messenger connectionMessage(char con);
+    Messenger cardinalIntruder(char card);
+    Messenger connectionIntruder(char con);
     bool cardinalConnected(char card);
     bool connectionConnected(char con);
     bool cardinalHasAction(char card);
@@ -77,8 +67,6 @@ class Model
 
     void zeroCurrentActions();
     void zeroTomorrowsActions();
-    void zeroMessengers();
-    void zeroSabotages();
     void zero(); //'resets' game
 
     Model();

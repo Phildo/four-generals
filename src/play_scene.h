@@ -18,16 +18,27 @@ class PlayScene : public Scene
     Graphics *graphics;
     ParticleSys psys;
 
-    UI::Image sun;
+    //sprites
+    SDL_Rect generals_s[4];
+    SDL_Rect force_field_s;
+    SDL_Rect shield_full_s;
+    SDL_Rect shield_broken_s;
+    SDL_Rect sword_s;
+    SDL_Rect red_x_s;
+    SDL_Rect envelope_s;
+    SDL_Rect sun_s;
+
+    //rects
+    SDL_Rect positionRects[4];
+    SDL_Rect positionStatusRects[4];
+    SDL_Rect positionHealthRects[4];
+    SDL_Rect dayRects[7];
+    SDL_Rect sunRects[7];
+
     UI::Label dayLbls[7];
 
     UI::Image cardImgs[4];
-    UI::Image cardHealth[4];
-    UI::Image cardActIcons[4];
     UI::Button cardBtns[4];
-
-    UI::Image messengerImg;
-    UI::Image swordImg;
 
     UI::TextButton actionAttackButton;
     UI::TextButton actionMessageButton;
@@ -96,10 +107,12 @@ class PlayScene : public Scene
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);
     SDL_Rect rectForTransition(char fd, char td, float t);
+    SDL_Rect rectForPositionHealth(char c);
+    SDL_Rect rectForCardinalHealth(char c);
+    SDL_Rect rectForPositionStatus(char c);
+    SDL_Rect rectForCardinalStatus(char c);
 
-    SDL_Rect positionRects[4];
-    SDL_Rect dayRects[7];
-    SDL_Rect sunRects[7];
+    SDL_Rect spriteForAction(char a);
 
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);

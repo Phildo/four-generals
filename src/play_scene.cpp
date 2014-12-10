@@ -24,6 +24,18 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   s = 0;
   c = 0;
 
+  generals_s[0] = Sprite::n_general();
+  generals_s[1] = Sprite::e_general();
+  generals_s[2] = Sprite::s_general();
+  generals_s[3] = Sprite::w_general();
+  force_field_s   = Sprite::force_field();
+  shield_full_s   = Sprite::shield_full();
+  shield_broken_s = Sprite::shield_broken();
+  sword_s         = Sprite::sword();
+  red_x_s         = Sprite::red_x();
+  envelope_s      = Sprite::envelope();
+  sun_s           = Sprite::sun();
+
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
@@ -39,6 +51,16 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
     positionRects[i].y = posRectY[i];
     positionRects[i].w = posRectW[i];
     positionRects[i].h = posRectH[i];
+
+    positionStatusRects[i].x = posRectX[i]+(posRectW[i]/2)+(posRectW[i]/4);
+    positionStatusRects[i].y = posRectY[i]-(posRectH[i]/4);
+    positionStatusRects[i].w = posRectW[i]/2;
+    positionStatusRects[i].h = posRectH[i]/2;
+
+    positionHealthRects[i].x = positionStatusRects[i].x;
+    positionHealthRects[i].y = positionStatusRects[i].y+(2*positionStatusRects[i].h);
+    positionHealthRects[i].w = positionStatusRects[i].w;
+    positionHealthRects[i].h = positionStatusRects[i].h;
   }
 
   for(int i = 0; i < 7; i++)
@@ -61,7 +83,6 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   dayLbls[4] = UI::Label(dayRects[4], "Th");
   dayLbls[5] = UI::Label(dayRects[5], "Fr");
   dayLbls[6] = UI::Label(dayRects[6], "Sa");
-  sun = UI::Image(Sprite::sun(), sunRects[0]);
 
   for(int i = 0; i < 7; i++)
     whenBtns[i] = UI::Button(dayRects[i]);
@@ -100,9 +121,6 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   cancelButton  = UI::TextButton(space(ww,30,200,2,1), wh-60, 200, 40, "cancel");
   resetButton   = UI::TextButton(space(ww,30,200,1,0), wh-60, 200, 40, "reset game");
 
-  messengerImg = UI::Image(Sprite::messenger(),0,0,0,0);
-  swordImg = UI::Image(Sprite::sword(),0,0,0,0);
-
   known_day = '0';
   anim_day = 0.0f;
   shown_day = 0.0f;
@@ -111,91 +129,45 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 void PlayScene::enter()
 {
   //need to wait until c_model is obtained
-
   client = *client_ptr;
   s = *s_ptr;
   c = *c_ptr;
-  SDL_Rect rect;
 
-  char scard[2]; scard[1] = '\0'; //holder to pass string to labels
-  int icard;
   char card;
+  int icard;
+  SDL_Rect rect;
 
   //bottom (you)
   card = c->myCardinal();
   icard = Compass::icardinal(card);
   rect = rectForPosition('s');
-  scard[0] = card;
-  if(card == 'n') cardImgs[icard] = UI::Image(Sprite::n_general(), rect);
-  if(card == 'e') cardImgs[icard] = UI::Image(Sprite::e_general(), rect);
-  if(card == 's') cardImgs[icard] = UI::Image(Sprite::s_general(), rect);
-  if(card == 'w') cardImgs[icard] = UI::Image(Sprite::w_general(), rect);
+  cardImgs[icard]  = UI::Image(generals_s[icard], rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
-  rect.x = rect.x+rect.w/2+rect.w/4;
-  rect.y = rect.y-rect.h/4;
-  rect.w = rect.w/2;
-  rect.h = rect.h/2;
-  cardHealth[icard]   = UI::Image(Sprite::null(), rect);
-  rect.y = rect.y+2*rect.h;
-  cardActIcons[icard] = UI::Image(Sprite::null(), rect);
 
   //left (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = rectForPosition('w');
-  scard[0] = card;
-  if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
-  if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
-  if(card == 's') cardImgs[icard]  = UI::Image(Sprite::s_general(), rect);
-  if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
+  cardImgs[icard]  = UI::Image(generals_s[icard], rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
-  rect.x = rect.x+rect.w/2+rect.w/4;
-  rect.y = rect.y-rect.h/4;
-  rect.w = rect.w/2;
-  rect.h = rect.h/2;
-  cardHealth[icard]   = UI::Image(Sprite::null(), rect);
-  rect.y = rect.y+2*rect.h;
-  cardActIcons[icard] = UI::Image(Sprite::null(), rect);
 
   //top (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = rectForPosition('n');
-  scard[0] = card;
-  if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
-  if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
-  if(card == 's') cardImgs[icard]  = UI::Image(Sprite::s_general(), rect);
-  if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
+  cardImgs[icard]  = UI::Image(generals_s[icard], rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
-  rect.x = rect.x+rect.w/2+rect.w/4;
-  rect.y = rect.y-rect.h/4;
-  rect.w = rect.w/2;
-  rect.h = rect.h/2;
-  cardHealth[icard]   = UI::Image(Sprite::null(), rect);
-  rect.y = rect.y+2*rect.h;
-  cardActIcons[icard] = UI::Image(Sprite::null(), rect);
 
   //top (clockwise)
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = rectForPosition('e');
-  scard[0] = card;
-  if(card == 'n') cardImgs[icard]  = UI::Image(Sprite::n_general(), rect);
-  if(card == 'e') cardImgs[icard]  = UI::Image(Sprite::e_general(), rect);
-  if(card == 's') cardImgs[icard]  = UI::Image(Sprite::s_general(), rect);
-  if(card == 'w') cardImgs[icard]  = UI::Image(Sprite::w_general(), rect);
+  cardImgs[icard]  = UI::Image(generals_s[icard], rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
-  rect.x = rect.x+rect.w/2+rect.w/4;
-  rect.y = rect.y-rect.h/4;
-  rect.w = rect.w/2;
-  rect.h = rect.h/2;
-  cardHealth[icard]   = UI::Image(Sprite::null(), rect);
-  rect.y = rect.y+2*rect.h;
-  cardActIcons[icard] = UI::Image(Sprite::null(), rect);
 
   zeroE();
 }
@@ -436,92 +408,10 @@ int PlayScene::tick()
   if(anim_day < c->model.days) anim_day += 0.01f;
   if(anim_day > c->model.days) anim_day = (float)c->model.days;
   shown_day = anim_day;
+
   if(known_day != c->model.currentDay())
   {
-    if(c->model.days == -1)
-      return -1; //game was reset- go back to room
-
-/*
-    for(int i = 0; i < c->model.messengers.len(); i++)
-    {
-      Messenger m = c->model.messengers[i];
-      SDL_Rect spos;
-      SDL_Rect epos;
-
-      Particle p;
-      p.type = P_TYPE_MESSENGER;
-      p.mess.w = 40;
-      p.mess.h = 40;
-      p.mess.begin_card = m.was;
-      p.mess.end_card = m.at;
-
-      spos = rectForCardinal(m.was);
-      epos = rectForCardinal(m.at);
-      p.mess.x.set(spos.x,epos.x,0.f);
-      p.mess.y.set(spos.y,epos.y,0.f);
-
-      psys.registerP(p);
-    }
-    for(int i = 0; i < 4; i++)
-    {
-      char card = Compass::cardinal(i);
-      if(c->model.cardinalPrevAction(card).action == 'd')
-      {
-        SDL_Rect pos;
-
-        Particle p;
-        p.type = P_TYPE_DEFEND;
-        pos = rectForCardinal(card);
-        p.defend.y = pos.y+pos.h/2; //center
-        p.defend.x = pos.x+pos.w/2; //center
-        p.defend.w.set(pos.w,pos.w*2,0.f);
-        p.defend.h.set(pos.h,pos.h*2,0.f);
-
-        psys.registerP(p);
-      }
-      if(c->model.cardinalPrevAction(card).action == 'a')
-      {
-        Messenger m = c->model.messengers[i];
-        SDL_Rect spos;
-        SDL_Rect epos;
-
-        Particle p;
-        p.type = P_TYPE_ATTACK;
-        p.attack.w = 40;
-        p.attack.h = 40;
-        p.attack.begin_card = card;
-        p.attack.end_card = c->model.cardinalPrevAction(card).who;
-
-        spos = rectForCardinal(p.attack.begin_card);
-        epos = rectForCardinal(p.attack.end_card);
-        p.attack.x.set(spos.x,epos.x,0.f);
-        p.attack.y.set(spos.y,epos.y,0.f);
-        p.attack.anim.set(0,1);
-
-        psys.registerP(p);
-      }
-    }
-    */
-
-
-    for(int i = 0; i < 4; i++)
-    {
-      char card = Compass::cardinal(i);
-      SDL_Rect pos = rectForCardinal(card);
-      pos.x = pos.x+(pos.w/2)+(pos.w/4);
-      pos.y = pos.y-(pos.h/4);
-      pos.w = pos.w/2;
-      pos.h = pos.h/2;
-      if(c->model.cardinalPrevAction(card).action == 'd')
-        cardActIcons[i].sprite = Sprite::force_field();
-      if(c->model.cardinalPrevAction(card).action == 'a')
-        cardActIcons[i].sprite = Sprite::sword();
-      if(c->model.cardinalPrevAction(card).action == 'm')
-        cardActIcons[i].sprite = Sprite::envelope();
-      if(c->model.cardinalPrevAction(card).action == 's')
-        cardActIcons[i].sprite = Sprite::red_x();
-      cardHealth[i].sprite = Sprite::shield_full();
-    }
+    if(c->model.days == -1) return -1; //game was reset- go back to room
 
     zeroE();
     known_day = c->model.currentDay();
@@ -533,46 +423,36 @@ void PlayScene::draw()
 {
   psys.draw(graphics);
 
-  float t = 1.f-((float)c->model.days-shown_day);
-  if(t < 0.9)
+  if(shown_day > ((float)c->model.days)-0.01f) shown_day = ((float)c->model.days)-0.01f;
+  int shown_prev_day = ((int)(shown_day+1.0f))-1; //add 1.0f, cast to int (trunc toward 0), subtract 1
+  float t = shown_day-((float)shown_prev_day);
+
+  /*
+  for(int i = 0; i < c->model.messengers.len(); i++)
   {
-    for(int i = 0; i < c->model.messengers.len(); i++)
-    {
-      Messenger m = c->model.messengers[i];
-      messengerImg.rect = rectForTraversal(m.was, m.at,t);
-      messengerImg.draw(graphics);
-    }
-
-    for(int i = 0; i < 4; i++)
-    {
-      char card = Compass::cardinal(i);
-      if(c->model.cardinalPrevAction(card).action == 'a')
-      {
-        Messenger m = c->model.messengers[i];
-        swordImg.rect = rectForTraversal(card,c->model.cardinalPrevAction(card).who,t);
-        swordImg.draw(graphics);
-      }
-
-      /*
-      if(c->model.cardinalPrevAction(card).action == 'd')
-      {
-        SDL_Rect pos;
-
-        Particle p;
-        p.type = P_TYPE_DEFEND;
-        pos = rectForCardinal(card);
-        p.defend.y = pos.y+pos.h/2; //center
-        p.defend.x = pos.x+pos.w/2; //center
-        p.defend.w.set(pos.w,pos.w*2,0.f);
-        p.defend.h.set(pos.h,pos.h*2,0.f);
-
-        psys.registerP(p);
-      }
-      */
-    }
+    Messenger m = c->model.messengers[i];
+    messengerImg.rect = rectForTraversal(m.was, m.at,t);
+    messengerImg.draw(graphics);
   }
-  sun.rect = rectForTransition(Week::day((c->model.days-1)%7), known_day, t);
-  sun.draw(graphics);
+  */
+
+  for(int i = 0; i < 4; i++)
+  {
+    char card = Compass::cardinal(i);
+
+    cardImgs[i].draw(graphics);
+
+    Event e = c->model.cardinalDayAction(card, shown_prev_day);
+    if(e.action == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
+    if(e.action == 'd') graphics->draw(envelope_s, rectForExpansion(card,t));
+    if(e.action == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.where,t));
+
+    graphics->draw(spriteForAction(c->model.cardinalDayAction(card, shown_prev_day).action), rectForCardinalStatus(card));
+    //graphics->draw(cardHealth[i].sprite = shield_full_s;
+  }
+
+
+  graphics->draw(sun_s,rectForTransition(Week::day(shown_prev_day%7), Week::day((shown_prev_day+1)%7), t));
   for(int i = 0; i < 7; i++)
     dayLbls[i].draw(graphics);
 
@@ -651,14 +531,6 @@ void PlayScene::draw()
     }
     else drawWaiting(); //wait
   }
-
-  for(int i = 0; i < 4; i++)
-  {
-    cardImgs[i].draw(graphics);
-    cardHealth[i].draw(graphics);
-    cardActIcons[i].draw(graphics);
-  }
-
 }
 
 void PlayScene::leave()
@@ -718,7 +590,47 @@ SDL_Rect PlayScene::rectForExpansion(char card, float t)
 
 SDL_Rect PlayScene::rectForTransition(char fd, char td, float t)
 {
-  LerpRect x(rectForDay(fd),rectForDay(td));
-  return x.v(t);
+  return LerpRect::lerp(rectForSun(fd), rectForSun(td), t);
+}
+
+SDL_Rect PlayScene::rectForPositionHealth(char c)
+{
+  return positionHealthRects[Compass::icardinal(c)];
+}
+
+SDL_Rect PlayScene::rectForCardinalHealth(char card)
+{
+  char me = c->myCardinal();
+  while(me != 's')
+  {
+    me   = Compass::cwcardinal(me);
+    card = Compass::cwcardinal(card);
+  }
+  return rectForPositionHealth(card);
+}
+
+SDL_Rect PlayScene::rectForPositionStatus(char c)
+{
+  return positionStatusRects[Compass::icardinal(c)];
+}
+
+SDL_Rect PlayScene::rectForCardinalStatus(char card)
+{
+  char me = c->myCardinal();
+  while(me != 's')
+  {
+    me   = Compass::cwcardinal(me);
+    card = Compass::cwcardinal(card);
+  }
+  return rectForPositionStatus(card);
+}
+
+SDL_Rect PlayScene::spriteForAction(char card)
+{
+  if(card == 'd') return force_field_s;
+  if(card == 'a') return sword_s;
+  if(card == 'm') return envelope_s;
+  if(card == 's') return red_x_s;
+  return red_x_s;
 }
 

@@ -109,7 +109,7 @@ bool ClientModel::iHaveMessage()
   return imConnected() && model.connectionHasMessage(myConnection());
 }
 
-Messenger& ClientModel::myMessage()
+Messenger ClientModel::myMessage()
 {
   return model.connectionMessage(myConnection());
 }
@@ -119,7 +119,7 @@ bool ClientModel::iHaveIntruder()
   return imConnected() && model.connectionHasIntruder(myConnection());
 }
 
-Messenger& ClientModel::myIntruder()
+Messenger ClientModel::myIntruder()
 {
   return model.connectionIntruder(myConnection());
 }
@@ -129,7 +129,7 @@ bool ClientModel::iHaveSabotage()
   return imConnected() && iHaveIntruder() && myIntruder().sabotaged == 'r';
 }
 
-Messenger& ClientModel::mySabotage()
+Messenger ClientModel::mySabotage()
 {
   return myIntruder();
 }

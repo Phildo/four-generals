@@ -69,29 +69,9 @@ void Model::commitActions()
         winning_card = a.who;
       }
     }
-    else if(a.action == 'm')
-    {
-      Messenger m(a);
-      messengers.add(m);
-    }
-    else if(a.action == 's')
-    {
-      Sabotage s(a);
-      sabotages.add(s);
-    }
+    else if(a.action == 'm') { }
+    else if(a.action == 's') { }
   }
-
-  //update messengers
-  for(int i = 0; i < messengers.len(); i++)
-    if(!messengers[i].advance()) { messengers.remove(i); i--; }
-
-  //apply sabotages
-  for(int i = 0; i < sabotages.len(); i++)
-  {
-    if(cardinalHasIntruder(sabotages[i].cardinal))
-      cardinalIntruder(sabotages[i].cardinal).sabotage(sabotages[i]);
-  }
-  sabotages.removeAll();
 
   zeroTomorrowsActions();
   days++;
@@ -132,76 +112,88 @@ General& Model::connectionGeneral(char con)
 
 Event& Model::generalAction(General g)
 {
-  if(days < 0 || days >= FG_MAX_ACTION_HIST) return actions[FG_MAX_ACTION_HIST*4];
-  return actions[(days*4)+Compass::icardinal(g.cardinal)];
+  return generalDayAction(g, days);
 }
 
 Event& Model::cardinalAction(char card)
 {
-  if(days < 0 || days >= FG_MAX_ACTION_HIST) return actions[FG_MAX_ACTION_HIST*4];
-  return actions[(days*4)+Compass::icardinal(card)];
+  return cardinalDayAction(card, days);
 }
 
 Event& Model::connectionAction(char con)
 {
-  return cardinalAction(connectionCardinal(con));
+  return connectionDayAction(con, days);
 }
 
-Event& Model::generalPrevAction(General g)
+Event& Model::generalDayAction(General g, int day)
 {
-  if(days < 1 || days >= FG_MAX_ACTION_HIST-1) return actions[FG_MAX_ACTION_HIST*4];
-  return actions[((days-1)*4)+Compass::icardinal(g.cardinal)];
+  if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return actions[FG_MAX_ACTION_HIST*4];
+  return actions[(day*4)+Compass::icardinal(g.cardinal)];
 }
 
-Event& Model::cardinalPrevAction(char card)
+Event& Model::cardinalDayAction(char card, int day)
 {
-  if(days < 1 || days >= FG_MAX_ACTION_HIST-1) return actions[FG_MAX_ACTION_HIST*4];
-  return actions[((days-1)*4)+Compass::icardinal(card)];
+  if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return actions[FG_MAX_ACTION_HIST*4];
+  return actions[(day*4)+Compass::icardinal(card)];
 }
 
-Event& Model::connectionPrevAction(char con)
+Event& Model::connectionDayAction(char con, int day)
 {
-  return cardinalPrevAction(connectionCardinal(con));
+  return cardinalDayAction(connectionCardinal(con), day);
 }
 
 
-Messenger& Model::cardinalMessage(char card)
+Messenger Model::cardinalMessage(char card)
 {
-  for(int i = 0; i < messengers.len(); i++)
-    if(messengers[i].to == card &&
-       messengers[i].at == card) return messengers[i];
-  return nullMessenger;
+  Messenger m;
+  Messenger n;
+  if(days < 2) return n;
+  char p = Compass::opcardinal(card);
+  Event me = cardinalDayAction(p, days-2);
+  if(me.action != 'm') return n;
+  m = Messenger(me);
+  Event se = cardinalDayAction(me.where, days-2);
+  if(se.action != 's') return m;
+  m.sabotage(Sabotage(se));
+  if(m.sabotaged == 'b') return n; //blocked
+  return m;
 }
 
-Messenger& Model::connectionMessage(char con)
+Messenger Model::connectionMessage(char con)
 {
   return cardinalMessage(connectionCardinal(con));
 }
 
-Messenger& Model::cardinalIntruder(char card)
+Messenger Model::cardinalIntruder(char card)
 {
-  for(int i = 0; i < messengers.len(); i++)
-    if(messengers[i].from != card &&
-       messengers[i].to   != card &&
-       messengers[i].at   == card) return messengers[i];
-  return nullMessenger;
+  Messenger m;
+  Messenger n;
+  char e;
+  Event me;
+  if(days < 1) return n;
+
+  e = Compass::cwcardinal(card);
+  me = cardinalDayAction(e, days-1);
+  if(me.action == 'm')
+  {
+    m = Messenger(me);
+    return m;
+  }
+
+  e = Compass::ccwcardinal(card);
+  me = cardinalDayAction(e, days-1);
+  if(me.action == 'm')
+  {
+    m = Messenger(me);
+    return m;
+  }
+
+  return n;
 }
 
-Messenger& Model::connectionIntruder(char con)
+Messenger Model::connectionIntruder(char con)
 {
   return cardinalIntruder(connectionCardinal(con));
-}
-
-Sabotage& Model::cardinalSabotage(char card)
-{
-  for(int i = 0; i < sabotages.len(); i++)
-    if(sabotages[i].cardinal == card) return sabotages[i];
-  return nullSabotage;
-}
-
-Sabotage& Model::connectionSabotage(char con)
-{
-  return cardinalSabotage(connectionCardinal(con));
 }
 
 bool Model::cardinalConnected(char card)
@@ -226,9 +218,8 @@ bool Model::connectionHasAction(char con)
 
 bool Model::cardinalHasMessage(char card)
 {
-  for(int i = 0; i < messengers.len(); i++)
-    if(messengers[i].to == card &&
-       messengers[i].at == card) return true;
+  Messenger m = cardinalMessage(card);
+  if(m.id) return true;
   return false;
 }
 
@@ -239,10 +230,8 @@ bool Model::connectionHasMessage(char con)
 
 bool Model::cardinalHasIntruder(char card)
 {
-  for(int i = 0; i < messengers.len(); i++)
-    if(messengers[i].from != card &&
-       messengers[i].to   != card &&
-       messengers[i].at   == card) return true;
+  Messenger m = cardinalIntruder(card);
+  if(m.id) return true;
   return false;
 }
 
@@ -308,21 +297,9 @@ void Model::zeroTomorrowsActions()
     actions[((days+1)*4)+i].zero();
 }
 
-void Model::zeroMessengers()
-{
-  messengers.removeAll();
-}
-
-void Model::zeroSabotages()
-{
-  sabotages.removeAll();
-}
-
 void Model::zero() //'resets' gam
 {
   days = -1;
-  zeroMessengers();
-  zeroSabotages();
   zeroTomorrowsActions();
   winning_card = '0';
   losing_card = '0';
