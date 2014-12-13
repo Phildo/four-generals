@@ -7,8 +7,17 @@ class Graphics;
 
 struct In
 {
+  enum IN_TYPE
+  {
+    NONE,
+    DOWN,
+    UP,
+    MOVE,
+    COUNT
+  } type;
   int x;
   int y;
+  void zero();
 };
 
 class Input
@@ -20,7 +29,7 @@ class Input
   public:
     Input(Graphics *g);
     ~Input();
-    bool poll(In &in, bool &put, bool &quit);
+    bool poll(In &in, bool &quit);
 };
 
 #endif

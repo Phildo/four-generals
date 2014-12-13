@@ -49,19 +49,20 @@ Game::Game()
 void Game::run()
 {
   bool q = false;
-  bool p = false;
   In in;
   int scene = 0;
 
   while(!q)
   {
-    while(!q && input->poll(in, p, q))
+    in.zero();
+    while(!q && input->poll(in, q))
     {
-      if(p)
+      if(in.type == In::DOWN)
       {
         scenes[scene]->touch(in);
         if(debugBtn.query(in)) debug_toggle = !debug_toggle;
       }
+      in.zero();
     }
 
     int tmp = scenes[scene]->tick(); //should decouple from drawing
