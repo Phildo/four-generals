@@ -1,6 +1,7 @@
 #include "host_scene.h"
 #include "graphics.h"
 #include "network.h"
+#include "input.h"
 #include "server.h"
 #include "client.h"
 #include "server_model.h"
@@ -47,6 +48,7 @@ void HostScene::enter()
 
 void HostScene::touch(In &in)
 {
+  if(in.type != In::DOWN) return;
   if(backButton.query(in))
   {
     SCENE_CHANGE_HACK = -1;

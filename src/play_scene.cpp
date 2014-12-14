@@ -1,5 +1,6 @@
 #include "play_scene.h"
 #include "graphics.h"
+#include "input.h"
 #include "sprite.h"
 #include "network.h"
 #include "client.h"
@@ -117,6 +118,8 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   winLabel      = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "WIN");
   loseLabel     = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "LOSE");
 
+  sunBtn = UI::Button(dayRects[0]);
+
   confirmButton = UI::TextButton(space(ww,30,200,2,0), wh-60, 200, 40, "confirm");
   cancelButton  = UI::TextButton(space(ww,30,200,2,1), wh-60, 200, 40, "cancel");
   resetButton   = UI::TextButton(space(ww,30,200,1,0), wh-60, 200, 40, "reset game");
@@ -186,6 +189,17 @@ void PlayScene::chooseAction(In &in)
   if(actionDefendButton.query(in))    e.action = 'd';
   if(actionMessageButton.query(in)) { e.action = 'm'; e.to = Compass::opcardinal(e.cardinal); } //auto assign 'to'
   if(actionSabotageButton.query(in))  e.action = 's';
+}
+
+void PlayScene::chooseShownDay(In &in)
+{
+  fg_log("dragging:(%d,%d) against (%d,%d)",in.x,in.y,sunBtn.box.rect.x,sunBtn.box.rect.y);
+  if(sunBtn.query(in))
+  {
+    int firstX = dayRects[0].x+(dayRects[0].w/2);
+    int lastX  = dayRects[6].x+(dayRects[6].w/2);
+    shown_day = ((float)(in.x-firstX)/(float)(lastX-firstX))*7.0f;
+  }
 }
 
 void PlayScene::chooseHow(In &in)
@@ -330,8 +344,17 @@ void PlayScene::drawLose()
 
 void PlayScene::touch(In &in)
 {
-  //oh god terrible tree traversal touch propagation
+  if(in.type != In::DOWN)
+  {
+    //only non-"touch" handling is dragging of sun
+    if(!c->iWin() && !c->iLose() && !c->iHaveAction() && e.action == '0')
+    {
+      chooseShownDay(in);
+    }
+    return;
+  }
 
+  //oh god terrible tree traversal touch propagation
   if(!c->iWin() && !c->iLose())
   {
     if(!c->iHaveAction())
@@ -405,9 +428,12 @@ int PlayScene::tick()
   c->tick();
 
   psys.tick(0.01f);
-  if(anim_day < c->model.days) anim_day += 0.01f;
+  if(anim_day < c->model.days)
+  {
+    anim_day += 0.01f;
+    shown_day = anim_day;
+  }
   if(anim_day > c->model.days) anim_day = (float)c->model.days;
-  shown_day = anim_day;
 
   if(known_day != c->model.currentDay())
   {
@@ -451,8 +477,9 @@ void PlayScene::draw()
     //graphics->draw(cardHealth[i].sprite = shield_full_s;
   }
 
-
-  graphics->draw(sun_s,rectForTransition(Week::day(shown_prev_day%7), Week::day((shown_prev_day+1)%7), t));
+  SDL_Rect sunr = rectForTransition(Week::day(shown_prev_day%7), Week::day((shown_prev_day+1)%7), t);
+  graphics->draw(sun_s,sunr);
+  sunBtn.box.rect = sunr;
   for(int i = 0; i < 7; i++)
     dayLbls[i].draw(graphics);
 

@@ -38,7 +38,6 @@ class PlayScene : public Scene
     UI::Label dayLbls[7];
 
     UI::Image cardImgs[4];
-    UI::Button cardBtns[4];
 
     UI::TextButton actionAttackButton;
     UI::TextButton actionMessageButton;
@@ -51,6 +50,8 @@ class PlayScene : public Scene
     UI::Label whoLabel;   UI::Button whoBtns[4];
     UI::Label whenLabel;  UI::Button whenBtns[7];
     UI::Label whereLabel; UI::Button whereBtns[4];
+
+    UI::Button sunBtn;
 
     UI::TextButton confirmButton;
     UI::TextButton cancelButton;
@@ -77,6 +78,7 @@ class PlayScene : public Scene
     Event e; //populates with tentative event (holds state for what to show on screen)
     void zeroE();
     void chooseAction(In &in);
+    void chooseShownDay(In &in);
     void chooseHow(In &in);
     void chooseWhich(In &in);
     void chooseWhat(In &in);

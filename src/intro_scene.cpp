@@ -1,5 +1,6 @@
 #include "intro_scene.h"
 #include "graphics.h"
+#include "input.h"
 
 #include "logger.h"
 
@@ -23,6 +24,7 @@ void IntroScene::enter()
 
 void IntroScene::touch(In &in)
 {
+  if(in.type != In::DOWN) return;
   if(hostButton.query(in)) { SCENE_CHANGE_HACK = 1; }
   if(joinButton.query(in)) { SCENE_CHANGE_HACK = 2; }
   if(howButton.query(in))  { SCENE_CHANGE_HACK = 0; }

@@ -1,6 +1,7 @@
 #include "join_scene.h"
 #include "graphics.h"
 #include "network.h"
+#include "input.h"
 #include "client.h"
 #include "client_model.h"
 
@@ -43,6 +44,7 @@ void JoinScene::enter()
 
 void JoinScene::touch(In &in)
 {
+  if(in.type != In::DOWN) return;
   keyboard.touch(in);
   if(backButton.query(in)) SCENE_CHANGE_HACK = -2;
   if(sessionButton.query(in))

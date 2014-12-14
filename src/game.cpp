@@ -57,10 +57,10 @@ void Game::run()
     in.zero();
     while(!q && input->poll(in, q))
     {
-      if(in.type == In::DOWN)
+      if(in.type != In::NONE)
       {
         scenes[scene]->touch(in);
-        if(debugBtn.query(in)) debug_toggle = !debug_toggle;
+        if(in.type == In::DOWN && debugBtn.query(in)) debug_toggle = !debug_toggle;
       }
       in.zero();
     }

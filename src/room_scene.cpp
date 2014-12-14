@@ -2,6 +2,7 @@
 #include "graphics.h"
 #include "sprite.h"
 #include "network.h"
+#include "input.h"
 #include "client.h"
 #include "server_model.h"
 #include "client_model.h"
@@ -94,6 +95,7 @@ void RoomScene::enter()
 
 void RoomScene::touch(In &in)
 {
+  if(in.type != In::DOWN) return;
   if(backButton.query(in)) { }
 
   if( cwBtn.query(in)) cardCWOffset = (cardCWOffset+1)%4;
