@@ -200,7 +200,7 @@ void PlayScene::chooseShownDay(In &in)
   {
     int firstX = dayRects[0].x+(dayRects[0].w/2);
     int lastX  = dayRects[6].x+(dayRects[6].w/2);
-    shown_day = ((float)(in.x-firstX)/(float)(lastX-firstX))*7.0f;
+    shown_day = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
   }
 }
 
@@ -448,37 +448,38 @@ int PlayScene::tick()
   return 0;
 }
 
+float snapToInt(float v)
+{
+  float left = (float)((int)v);
+  float right = (float)((int)(v+1.0f));
+  if(v < left +0.01f) return left;
+  if(v > right-0.01f) return right;
+  return v;
+}
 void PlayScene::draw()
 {
   psys.draw(graphics);
 
-  if(shown_day > ((float)c->model.days)-0.01f) shown_day = ((float)c->model.days)-0.01f;
-  if(shown_day < -0.01) shown_day = -0.01;
-  int shown_prev_day = ((int)(shown_day+1.0f))-1; //add 1.0f, cast to int (trunc toward 0), subtract 1
-  float t = shown_day-((float)shown_prev_day);
+  float snapped_shown_day = snapToInt(shown_day);
+  if(snapped_shown_day > c->model.days) snapped_shown_day = (float)c->model.days;
+  int shown_prev_day = ((int)(snapped_shown_day+1.0f))-1; //round up, subtract 1
+  float t = snapped_shown_day-((float)shown_prev_day);
 
-  /*
-  for(int i = 0; i < c->model.messengers.len(); i++)
-  {
-    Messenger m = c->model.messengers[i];
-    messengerImg.rect = rectForTraversal(m.was, m.at,t);
-    messengerImg.draw(graphics);
-  }
-  */
-
+  //draws cardinals and actions
   for(int i = 0; i < 4; i++)
   {
     char card = Compass::cardinal(i);
 
     cardImgs[i].draw(graphics);
 
-    Event e = c->model.cardinalDayAction(card, shown_prev_day);
-    if(e.action == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
-    if(e.action == 'd') graphics->draw(envelope_s, rectForExpansion(card,t));
-    if(e.action == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.where,t));
-
-    graphics->draw(spriteForAction(c->model.cardinalDayAction(card, shown_prev_day).action), rectForCardinalStatus(card));
-    //graphics->draw(cardHealth[i].sprite = shield_full_s;
+    if(t != 0.0f)
+    {
+      Event e = c->model.cardinalDayAction(card, shown_prev_day);
+      if(e.action == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
+      if(e.action == 'd') graphics->draw(envelope_s, rectForExpansion(card,t));
+      if(e.action == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.where,t));
+    }
+    //graphics->draw(spriteForAction(c->model.cardinalDayAction(card, shown_prev_day).action), rectForCardinalStatus(card));
   }
 
   SDL_Rect sunr = rectForTransition(Week::day(shown_prev_day%7), Week::day((shown_prev_day+1)%7), t);
