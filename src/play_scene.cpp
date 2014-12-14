@@ -119,6 +119,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   loseLabel     = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "LOSE");
 
   sunBtn = UI::Button(dayRects[0]);
+  sunDragging = false;
 
   confirmButton = UI::TextButton(space(ww,30,200,2,0), wh-60, 200, 40, "confirm");
   cancelButton  = UI::TextButton(space(ww,30,200,2,1), wh-60, 200, 40, "cancel");
@@ -193,8 +194,9 @@ void PlayScene::chooseAction(In &in)
 
 void PlayScene::chooseShownDay(In &in)
 {
-  fg_log("dragging:(%d,%d) against (%d,%d)",in.x,in.y,sunBtn.box.rect.x,sunBtn.box.rect.y);
-  if(sunBtn.query(in))
+  if(sunBtn.query(in)) sunDragging = true;
+
+  if(sunDragging)
   {
     int firstX = dayRects[0].x+(dayRects[0].w/2);
     int lastX  = dayRects[6].x+(dayRects[6].w/2);
@@ -347,7 +349,8 @@ void PlayScene::touch(In &in)
   if(in.type != In::DOWN)
   {
     //only non-"touch" handling is dragging of sun
-    if(!c->iWin() && !c->iLose() && !c->iHaveAction() && e.action == '0')
+    if(in.type == In::UP) sunDragging = false;
+    else if(in.type == In::MOVE && !c->iWin() && !c->iLose() && !c->iHaveAction() && e.action == '0')
     {
       chooseShownDay(in);
     }
@@ -450,6 +453,7 @@ void PlayScene::draw()
   psys.draw(graphics);
 
   if(shown_day > ((float)c->model.days)-0.01f) shown_day = ((float)c->model.days)-0.01f;
+  if(shown_day < -0.01) shown_day = -0.01;
   int shown_prev_day = ((int)(shown_day+1.0f))-1; //add 1.0f, cast to int (trunc toward 0), subtract 1
   float t = shown_day-((float)shown_prev_day);
 

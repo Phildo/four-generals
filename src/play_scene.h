@@ -52,6 +52,7 @@ class PlayScene : public Scene
     UI::Label whereLabel; UI::Button whereBtns[4];
 
     UI::Button sunBtn;
+    bool sunDragging;
 
     UI::TextButton confirmButton;
     UI::TextButton cancelButton;
