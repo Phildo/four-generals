@@ -64,9 +64,6 @@ namespace Network
   class Client;
 
   String getIP();
-
-  String decimalRep(int i, int digs);
-  int intVal(char *s, int digs);
 }
 
 #endif

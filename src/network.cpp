@@ -30,38 +30,3 @@ String Network::getIP()
  return ip;
 }
 
-
-String Network::decimalRep(int i, int digs)
-{
-  char rep[32];
-  char *r;
-  if(digs > 32) r = new char[digs]; //only put it on heap if necessary
-  else r = &rep[0];
-
-  int d = 0;
-  for(int j = digs-1; j >= 0; j--)
-  {
-    d = i%10;
-    r[j] = '0'+d;
-    i -= d; //prob don't need to do because of truncation in division
-    i /= 10;
-  }
-
-  String s(r, digs);
-  if(r != &rep[0]) delete[] r;
-  return s;
-}
-
-int Network::intVal(char *s, int digs)
-{
-  int r = 0;
-  int d;
-  for(int i = 0; i < digs; i++)
-  {
-    d = ((int)(s[i]-'0'));
-    r *= 10;
-    r += d;
-  }
-  return r;
-}
-

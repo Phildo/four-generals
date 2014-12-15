@@ -137,19 +137,18 @@ void Server::acceptConnection()
     fg_log("Server: accepting connection %d", con->con_id);
     n_cons++;
 
-    int fd_flags = fcntl(con->sock_fd, F_GETFL);
-    fcntl(con->sock_fd, F_SETFL,fd_flags|O_NONBLOCK);
+    fcntl(con->sock_fd, F_SETFL, fcntl(con->sock_fd, F_GETFL)|O_NONBLOCK);
 
     Load l;
     if(n_cons >= FG_MAX_CONNECTIONS)
     {
-      sprintf(l.data,"FG_HANDSHAKE:%s",Network::decimalRep(0,3).ptr()); //FG_HANDSHAKE:000 means gtfo
+      sprintf(l.data,"FG_HANDSHAKE:%s",String::decimalRep(0,3).ptr()); //FG_HANDSHAKE:000 means gtfo
       sendLoad(con, &l);
       closeConnection(con);
     }
     else
     {
-      sprintf(l.data,"FG_HANDSHAKE:%s",Network::decimalRep(con->con_id,3).ptr());
+      sprintf(l.data,"FG_HANDSHAKE:%s",String::decimalRep(con->con_id,3).ptr());
       sendLoad(con, &l);
     }
   }

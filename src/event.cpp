@@ -24,9 +24,9 @@ Event::Event(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
   when       = c[8];
   where      = c[9];
   type       = c[10];
-  sabotage_id  = Network::intVal(&c[11],3);
-  messenger_id = Network::intVal(&c[14],3);
-  evt_id       = Network::intVal(&c[17],6);
+  sabotage_id  = String(&c[11],3).intVal();
+  messenger_id = String(&c[14],3).intVal();
+  evt_id       = String(&c[17],6).intVal();
 }
 
 void Event::zero()
@@ -61,15 +61,15 @@ void Event::serialize(char *c) const
   c[8] = when;
   c[9] = where;
   c[10] = type;
-  s = Network::decimalRep(sabotage_id,3);
+  s = String::decimalRep(sabotage_id,3);
   c[11] = *(s.ptr()+0);
   c[12] = *(s.ptr()+1);
   c[13] = *(s.ptr()+2);
-  s = Network::decimalRep(messenger_id,3);
+  s = String::decimalRep(messenger_id,3);
   c[14] = *(s.ptr()+0);
   c[15] = *(s.ptr()+1);
   c[16] = *(s.ptr()+2);
-  s = Network::decimalRep(evt_id,6);
+  s = String::decimalRep(evt_id,6);
   c[17] = *(s.ptr()+0);
   c[18] = *(s.ptr()+1);
   c[19] = *(s.ptr()+2);

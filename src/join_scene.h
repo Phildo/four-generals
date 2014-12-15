@@ -4,6 +4,7 @@
 #include "scene.h"
 #include "ui.h"
 #include "network.h"
+#include "string.h"
 
 class Graphics;
 class ServerModel;
@@ -17,10 +18,17 @@ class JoinScene : public Scene
     UI::Button backButton;
 
     UI::Label joinGameLabel;
+
+    UI::TextButton manual;
+    UI::TextButton automatic;
+    bool manualEntry;
+
+    UI::TextButton searchJoinButton;
+    String ipPrefix;
+    int searching;
+
+    UI::TextButton joinButton;
     UI::Label portLabel;
-
-    UI::TextButton sessionButton;
-
     UI::TextBox ipInput;
     UI::Keyboard keyboard;
 

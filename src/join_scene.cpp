@@ -18,13 +18,26 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 
   backButton = UI::Button(20,20,40,40);
 
-
   joinGameLabel = UI::Label(ww/2-250, wh/2-170,40,"Join Game");
-  ipInput     = UI::TextBox(ww/2-250, wh/2-120,400,40);
+
+  manual    = UI::TextButton(ww/2-250, 50,500,40,"Manual Entry");
+  automatic = UI::TextButton(ww/2-250, 50,500,40,"Automatic Entry");
+
+  searchJoinButton = UI::TextButton(ww/2-250, wh/2-120,500,40,"Search For Game");
+  ipPrefix = Network::getIP();
+  char ipPrefBuff[3+1+3+1+3+1];
+  int dotCt = 0;
+  int i;
+  for(i = 0; i < ipPrefix.len() && dotCt < 3; i++)
+  {
+    if(*(ipPrefix.ptr()+i) == '.') dotCt++;
+    ipPrefBuff[i] = *(ipPrefix.ptr()+i);
+  }
+  if(dotCt == 3) ipPrefix = String(ipPrefBuff,i);
+
+  joinButton = UI::TextButton(ww/2-250, wh/2-70, 500, 40, "Join Session");
   portLabel   = UI::Label(ww/2+150, wh/2-120,40,"8080");
-
-  sessionButton = UI::TextButton(ww/2-250, wh/2-70, 500, 40, "Join Session");
-
+  ipInput     = UI::TextBox(ww/2-250, wh/2-120,400,40);
   keyboard = UI::Keyboard(0,wh-200,ww,200);
   ipInput.setText(Network::getIP());
 
@@ -34,6 +47,7 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
   c_model = 0;
 
   SCENE_CHANGE_HACK = 0;
+  manualEntry = false;
 }
 
 void JoinScene::enter()
@@ -45,12 +59,37 @@ void JoinScene::enter()
 void JoinScene::touch(In &in)
 {
   if(in.type != In::DOWN) return;
-  keyboard.touch(in);
-  if(backButton.query(in)) SCENE_CHANGE_HACK = -2;
-  if(sessionButton.query(in))
+
+  if(manualEntry)
   {
-    if(!client) { client = new Network::Client(); *client_ptr = client; }
-    if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(ipInput.getText(),8080);
+    keyboard.touch(in);
+    if(backButton.query(in)) SCENE_CHANGE_HACK = -2;
+    if(joinButton.query(in))
+    {
+      if(!client) { client = new Network::Client(); *client_ptr = client; }
+      if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(ipInput.getText(),8080);
+    }
+    if(automatic.query(in))
+    {
+      manualEntry = false;
+      searching = 0;
+    }
+  }
+  else
+  {
+    if(searchJoinButton.query(in))
+    {
+      if(!searching)
+      {
+        searching = 1; //kick off actual search here, pick up in tick
+        if(!client) { client = new Network::Client(); *client_ptr = client; }
+        if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(ipPrefix.concat(String::decimalRep(searching)),8080);
+      }
+    }
+    if(manual.query(in))
+    {
+      manualEntry = true;
+    }
   }
 }
 
@@ -66,12 +105,24 @@ int JoinScene::tick()
     }
     if(client->con_state == Network::CONNECTION_STATE_STALE)
       client->disconnect();
+    if(searching)
+    {
+      if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED)
+      {
+        searching++;
+        if(searching == 256) searching = 0;
+        else client->connect(ipPrefix.concat(String::decimalRep(searching)),8080);
+      }
+    }
   }
   else
   {
-    char c = keyboard.poll();
-    if(c == '<') ipInput.backspace();
-    else if(c != 0) ipInput.input(c);
+    if(manualEntry)
+    {
+      char c = keyboard.poll();
+      if(c == '<') ipInput.backspace();
+      else if(c != 0) ipInput.input(c);
+    }
   }
 
   int tmp = SCENE_CHANGE_HACK;
@@ -84,13 +135,19 @@ void JoinScene::draw()
   backButton.draw(graphics);
   joinGameLabel.draw(graphics);
 
-  ipInput.draw(graphics);
-
-  portLabel.draw(graphics);
-
-  sessionButton.draw(graphics);
-
-  keyboard.draw(graphics);
+  if(manualEntry)
+  {
+    joinButton.draw(graphics);
+    portLabel.draw(graphics);
+    ipInput.draw(graphics);
+    keyboard.draw(graphics);
+    automatic.draw(graphics);
+  }
+  else
+  {
+    searchJoinButton.draw(graphics);
+    manual.draw(graphics);
+  }
 }
 
 void JoinScene::leave()

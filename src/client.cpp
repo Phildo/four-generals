@@ -5,6 +5,8 @@
 
 #include <strings.h>
 
+#include "errno.h" //ughhh
+
 using namespace Network;
 
 void * Network::cliThreadHandoff(void * arg)  { return ((CliThreadHandle*) arg)->client->fork(); }
@@ -34,6 +36,9 @@ void Client::connect(const String &_ip, int _port)
 
 void * Client::fork()
 {
+  fd_set sock_fds;
+  struct timeval tv;
+
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
   serv_host = gethostbyname(serv_ip.ptr());
@@ -44,11 +49,30 @@ void * Client::fork()
     bcopy((char *)serv_host->h_addr, (char *)&serv_sock_addr.sin_addr.s_addr, serv_host->h_length);
     serv_sock_addr.sin_port = htons(port);
 
-    if(::connect(sock_fd,(struct sockaddr *)&serv_sock_addr, sizeof(serv_sock_addr)) >= 0)
+    fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL)|O_NONBLOCK); //set nonblocking
+
+    if(::connect(sock_fd,(struct sockaddr *)&serv_sock_addr, sizeof(serv_sock_addr)) < 0)
     {
-      con_state = CONNECTION_STATE_CONNECTED;
-      while(con_state == CONNECTION_STATE_CONNECTED)
-        tick();
+      if(errno == EINPROGRESS)
+      {
+        FD_ZERO(&sock_fds);
+        FD_SET(sock_fd, &sock_fds);
+        tv.tv_sec = 0; tv.tv_usec = FG_US_PER_TICK;
+
+        if((select(sock_fd+1, NULL, &sock_fds, NULL, &tv) <= 0) || !FD_ISSET(sock_fd, &sock_fds))
+        {
+          fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL)&(~O_NONBLOCK)); //set blocking
+          con_state = CONNECTION_STATE_DISCONNECTING; //either error or timeout- disconnect in both cases
+        }
+        else
+        {
+          fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL)&(~O_NONBLOCK)); //set blocking
+          con_state = CONNECTION_STATE_CONNECTED;
+          while(con_state == CONNECTION_STATE_CONNECTED)
+            tick();
+        }
+      }
+      else con_state = CONNECTION_STATE_DISCONNECTING; //actual error on connect
     }
   }
   fg_log("Client: disconnecting");
@@ -68,14 +92,12 @@ void Client::tick()
   fd_set sock_fds;
   struct timeval tv;
   int retval;
-  int biggest_fd;
 
   FD_ZERO(&sock_fds);
-  biggest_fd = sock_fd;
   FD_SET(sock_fd, &sock_fds);
   tv.tv_sec = 0; tv.tv_usec = FG_US_PER_TICK;
 
-  retval = select(biggest_fd+1, &sock_fds, NULL, NULL, &tv);
+  retval = select(sock_fd+1, &sock_fds, NULL, NULL, &tv);
   if(retval == -1) con_state = CONNECTION_STATE_DISCONNECTING;
   else if(retval && FD_ISSET(sock_fd, &sock_fds))
   {
@@ -98,7 +120,7 @@ void Client::tick()
         l.data[12] == ':'
       )
       {
-        con_id = Network::intVal(&l.data[13],3);
+        con_id = String(&l.data[13],3).intVal();
         if(con_id == 0) con_state = CONNECTION_STATE_DISCONNECTING;
       }
       else recv_q.enqueue(l);

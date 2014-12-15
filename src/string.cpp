@@ -85,3 +85,63 @@ const char *String::ptr() const
   return handle;
 }
 
+
+String String::concat(const String &other) const
+{
+  int newl = len()+other.len();
+  char *buff = new char[newl]; //expensive!
+
+  for(int i = 0; i < newl; i++)
+  {
+    if(i < len()) *(buff+i) = *(ptr()+i);
+    else          *(buff+i) = *(other.ptr()+(i-len()));
+  }
+  return String(buff, newl);
+}
+
+
+String String::decimalRep(int i)
+{
+  int j = i;
+  int d = 0;
+  while(j > 0)
+  {
+    j/=10;
+    d++;
+  }
+  return decimalRep(i, d);
+}
+
+int String::intVal()
+{
+  int v = 0;
+  for(int i = 0; i < len(); i++)
+  {
+    v *= 10;
+    v += ((int)(*(ptr()+i)-'0'));
+  }
+  return v;
+}
+
+String String::decimalRep(int i, int digs)
+{
+  if(digs <= 0) digs = 1;
+
+  char rep[32];
+  char *r;
+  if(digs > 32) r = new char[digs]; //only put it on heap if necessary
+  else r = &rep[0];
+
+  int d = 0;
+  for(int j = digs-1; j >= 0; j--)
+  {
+    d = i%10;
+    r[j] = '0'+d;
+    i /= 10;
+  }
+
+  String s(r, digs);
+  if(r != &rep[0]) delete[] r;
+  return s;
+}
+

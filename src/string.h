@@ -22,6 +22,12 @@ class String
     ~String();
     int len() const;
     const char *ptr() const;
+
+    String concat(const String &other) const;
+
+    int intVal();
+    static String decimalRep(int i);
+    static String decimalRep(int i, int digs);
 };
 
 #endif
