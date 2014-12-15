@@ -478,6 +478,8 @@ void PlayScene::draw()
       if(e.action == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
       if(e.action == 'd') graphics->draw(envelope_s, rectForExpansion(card,t));
       if(e.action == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.where,t));
+      e = c->model.cardinalDayAction(card, shown_prev_day-1);
+      if(e.action == 'm') graphics->draw(envelope_s, rectForTraversal(e.where,e.to,t));
     }
     //graphics->draw(spriteForAction(c->model.cardinalDayAction(card, shown_prev_day).action), rectForCardinalStatus(card));
   }

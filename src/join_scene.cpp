@@ -48,6 +48,7 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 
   SCENE_CHANGE_HACK = 0;
   manualEntry = false;
+  searching = 0;
 }
 
 void JoinScene::enter()

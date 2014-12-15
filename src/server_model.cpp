@@ -9,6 +9,8 @@ ServerModel::ServerModel(Network::Server *s)
 {
   server = s;
   hist_i = 0;
+  mess_id_store.getId(); //eliminate 0's
+  sabo_id_store.getId(); //eliminate 0's
 }
 
 ServerModel::~ServerModel()
