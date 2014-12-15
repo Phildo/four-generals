@@ -476,7 +476,8 @@ void PlayScene::draw()
     {
       Event e = c->model.cardinalDayAction(card, shown_prev_day);
       if(e.action == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
-      if(e.action == 'd') graphics->draw(envelope_s, rectForExpansion(card,t));
+      if(e.action == 'd') graphics->draw(shield_full_s, rectForExpansion(card,t));
+      if(e.action == 's') graphics->draw(red_x_s, rectForExpansion(card,t));
       if(e.action == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.where,t));
       e = c->model.cardinalDayAction(card, shown_prev_day-1);
       if(e.action == 'm')
@@ -625,7 +626,12 @@ SDL_Rect PlayScene::rectForTraversal(char fcard, char tcard, float t)
 
 SDL_Rect PlayScene::rectForExpansion(char card, float t)
 {
-  SDL_Rect tmp;
+  SDL_Rect tmp = rectForCardinal(card);
+  tmp.x -= tmp.w/2;
+  tmp.y -= tmp.h/2;
+  tmp.w *= 2;
+  tmp.h *= 2;
+  return LerpRect::lerp(rectForCardinal(card), tmp, t);
   return tmp;
 }
 
