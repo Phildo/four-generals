@@ -147,13 +147,18 @@ Messenger Model::cardinalMessage(char card)
   Messenger m;
   Messenger n;
   if(days < 2) return n;
+
   char p = Compass::opcardinal(card);
+
   Event me = cardinalDayAction(p, days-2);
   if(me.action != 'm') return n;
   m = Messenger(me);
+
   Event se = cardinalDayAction(me.where, days-2);
   if(se.action != 's') return m;
+  if(se.how == 'b') return n;
   m.sabotage(Sabotage(se));
+
   return m;
 }
 
