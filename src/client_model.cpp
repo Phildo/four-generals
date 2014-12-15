@@ -126,7 +126,7 @@ Messenger ClientModel::myIntruder()
 
 bool ClientModel::iHaveSabotage()
 {
-  return imConnected() && iHaveIntruder() && myIntruder().sabotaged == 'r';
+  return imConnected() && model.connectionHasSabotage(myConnection());
 }
 
 Messenger ClientModel::mySabotage()

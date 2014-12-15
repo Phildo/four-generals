@@ -48,6 +48,8 @@ class Model
     Messenger connectionMessage(char con);
     Messenger cardinalIntruder(char card);
     Messenger connectionIntruder(char con);
+    Messenger cardinalSabotage(char card);
+    Messenger connectionSabotage(char con);
     bool cardinalConnected(char card);
     bool connectionConnected(char con);
     bool cardinalHasAction(char card);
@@ -56,6 +58,8 @@ class Model
     bool connectionHasMessage(char con);
     bool cardinalHasIntruder(char card);
     bool connectionHasIntruder(char con);
+    bool cardinalHasSabotage(char card);
+    bool connectionHasSabotage(char con);
     bool cardinalWin(char card);
     bool connectionWin(char con);
     bool cardinalLose(char card);

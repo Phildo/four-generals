@@ -479,7 +479,14 @@ void PlayScene::draw()
       if(e.action == 'd') graphics->draw(envelope_s, rectForExpansion(card,t));
       if(e.action == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.where,t));
       e = c->model.cardinalDayAction(card, shown_prev_day-1);
-      if(e.action == 'm') graphics->draw(envelope_s, rectForTraversal(e.where,e.to,t));
+      if(e.action == 'm')
+      {
+        char at = e.where;
+        char to = e.to;
+        e = c->model.cardinalDayAction(at, shown_prev_day-1);
+        if(!(e.action == 's' && e.how == 'b'))
+          graphics->draw(envelope_s, rectForTraversal(at,to,t));
+      }
     }
     //graphics->draw(spriteForAction(c->model.cardinalDayAction(card, shown_prev_day).action), rectForCardinalStatus(card));
   }

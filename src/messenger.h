@@ -20,7 +20,6 @@ class Messenger
     char where; //cardinal (through which route messenger will take)
 
     int id;
-    char sabotaged;
 
     Messenger();
     Messenger(Event e);
@@ -28,7 +27,6 @@ class Messenger
 
     bool operator==(Messenger m);
 
-    bool advance();
     void sabotage(Sabotage s);
 
     char *message();

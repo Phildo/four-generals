@@ -9,7 +9,6 @@ Messenger::Messenger()
 {
   memset(this, '0', sizeof(Messenger));
   id = 0;
-  sabotaged = '0';
 }
 
 Messenger::Messenger(Event e)
@@ -27,22 +26,8 @@ bool Messenger::operator==(Messenger m)
   return m.id == id;
 }
 
-bool Messenger::advance()
-{
-  was = at;
-  if(sabotaged == 'b') return false;
-  if(at != to)
-  {
-    if(at != where) at = where;
-    else at = to;
-    return true;
-  }
-  return false;
-}
-
 void Messenger::sabotage(Sabotage s)
 {
-  sabotaged = s.how;
   if(s.how == 's')
   {
     if(s.which == 'a') what  = s.what;
