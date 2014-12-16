@@ -469,6 +469,7 @@ void PlayScene::draw()
 
   float snapped_shown_day = snapToInt(shown_day);
   if(snapped_shown_day > c->model.days) snapped_shown_day = (float)c->model.days;
+  if(snapped_shown_day < 0) snapped_shown_day = 0;
   int shown_prev_day = ((int)(snapped_shown_day+1.0f))-1; //round up, subtract 1
   float t = snapped_shown_day-((float)shown_prev_day);
 
