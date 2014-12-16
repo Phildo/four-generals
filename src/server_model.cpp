@@ -110,6 +110,7 @@ void ServerModel::tick()
       case e_type_reset_game:
         model.zero();
         sendEvent(e);
+        model.days = 0; //assume auto e_type_begin_play
         break;
       default: break;
     }

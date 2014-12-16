@@ -357,10 +357,8 @@ void PlayScene::touch(In &in)
   {
     //only non-"touch" handling is dragging of sun
     if(in.type == In::UP) sunDragging = false;
-    else if(in.type == In::MOVE && !c->iWin() && !c->iLose() && !c->iTie() && !c->iHaveAction() && e.action == '0')
-    {
+    else if(in.type == In::MOVE && !c->iHaveAction() && e.action == '0')
       chooseShownDay(in);
-    }
     return;
   }
 
@@ -447,7 +445,7 @@ int PlayScene::tick()
 
   if(known_day != c->model.currentDay())
   {
-    if(c->model.days == -1) return -1; //game was reset- go back to room
+    //if(c->model.days == -1) return -1; //game was reset- go back to room
 
     zeroE();
     known_day = c->model.currentDay();
