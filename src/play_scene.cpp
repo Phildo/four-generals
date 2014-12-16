@@ -117,6 +117,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   sabotageLabel = UI::Label(space(ww,0,600,1,0), wh/2+50, 30, "sabotage");
   winLabel      = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "WIN");
   loseLabel     = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "LOSE");
+  tieLabel      = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "TIE");
 
   sunBtn = UI::Button(dayRects[0]);
   sunDragging = false;
@@ -344,13 +345,19 @@ void PlayScene::drawLose()
   if(s) resetButton.draw(graphics);
 }
 
+void PlayScene::drawTie()
+{
+  tieLabel.draw(graphics);
+  if(s) resetButton.draw(graphics);
+}
+
 void PlayScene::touch(In &in)
 {
   if(in.type != In::DOWN)
   {
     //only non-"touch" handling is dragging of sun
     if(in.type == In::UP) sunDragging = false;
-    else if(in.type == In::MOVE && !c->iWin() && !c->iLose() && !c->iHaveAction() && e.action == '0')
+    else if(in.type == In::MOVE && !c->iWin() && !c->iLose() && !c->iTie() && !c->iHaveAction() && e.action == '0')
     {
       chooseShownDay(in);
     }
@@ -358,7 +365,7 @@ void PlayScene::touch(In &in)
   }
 
   //oh god terrible tree traversal touch propagation
-  if(!c->iWin() && !c->iLose())
+  if(!c->iWin() && !c->iLose() && !c->iTie())
   {
     if(!c->iHaveAction())
     {
@@ -505,6 +512,10 @@ void PlayScene::draw()
   else if(c->iLose())
   {
     drawLose();
+  }
+  else if(c->iTie())
+  {
+    drawTie();
   }
   else
   {

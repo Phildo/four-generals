@@ -38,6 +38,7 @@ class ClientModel
     Messenger mySabotage();
     bool iWin();
     bool iLose();
+    bool iTie();
 
     void tick();
 };

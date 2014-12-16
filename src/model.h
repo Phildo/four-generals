@@ -24,6 +24,7 @@ class Model
     int days;
     char winning_card;
     char losing_card;
+    char tieing_card;
 
     void connectCon(char con);
     void disconnectCon(char con);
@@ -64,6 +65,8 @@ class Model
     bool connectionWin(char con);
     bool cardinalLose(char card);
     bool connectionLose(char con);
+    bool cardinalTie(char card);
+    bool connectionTie(char con);
     bool rolesAssigned();
     bool actionsAssigned();
 

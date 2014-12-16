@@ -64,6 +64,7 @@ class PlayScene : public Scene
     UI::Label sabotageLabel;
     UI::Label winLabel;
     UI::Label loseLabel;
+    UI::Label tieLabel;
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
@@ -102,6 +103,7 @@ class PlayScene : public Scene
     void drawWaiting();
     void drawWin();
     void drawLose();
+    void drawTie();
 
     SDL_Rect rectForPosition(char c);
     SDL_Rect rectForCardinal(char c);

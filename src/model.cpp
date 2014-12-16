@@ -58,15 +58,33 @@ void Model::commitActions()
          cardinalAction(Compass::opcardinal(card)).action == 'a' && //partner is attacking
          cardinalAction(Compass::opcardinal(card)).who == a.who) //the same person as you
       {
-        winning_card = card;
-        losing_card = a.who;
+        if(cardinalTie(card) || cardinalLose(card))
+        {
+          winning_card = '0';
+          losing_card = '0';
+          tieing_card = card; //any non-zero card = everyone ties
+        }
+        else
+        {
+          winning_card = card;
+          losing_card = a.who;
+        }
       }
       else if(cardinalAction(a.who).action == 'd' && //attackee is defending
             !(cardinalAction(Compass::opcardinal(card)).action == 'a' && //and partner isn't attacking
               cardinalAction(Compass::opcardinal(card)).who == a.who)) //the same person as you
       {
-        losing_card = card;
-        winning_card = a.who;
+        if(cardinalTie(card) || cardinalWin(card))
+        {
+          winning_card = '0';
+          losing_card = '0';
+          tieing_card = card;
+        }
+        else
+        {
+          losing_card = card;
+          winning_card = a.who;
+        }
       }
     }
     else if(a.action == 'm') { }
@@ -287,6 +305,16 @@ bool Model::connectionLose(char con)
   return cardinalLose(connectionCardinal(con));
 }
 
+bool Model::cardinalTie(char card)
+{
+  return tieing_card != '0';
+}
+
+bool Model::connectionTie(char con)
+{
+  return tieing_card != '0';
+}
+
 bool Model::rolesAssigned()
 {
   return
@@ -324,12 +352,13 @@ void Model::zeroTomorrowsActions()
     actions[((days+1)*4)+i].zero();
 }
 
-void Model::zero() //'resets' gam
+void Model::zero() //'resets' game
 {
   days = -1;
   zeroTomorrowsActions();
   winning_card = '0';
   losing_card = '0';
+  tieing_card = '0';
 }
 
 Model::~Model()

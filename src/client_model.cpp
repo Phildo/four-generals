@@ -144,6 +144,11 @@ bool ClientModel::iLose()
   return model.connectionLose(myConnection());
 }
 
+bool ClientModel::iTie()
+{
+  return model.connectionTie(myConnection());
+}
+
 void ClientModel::tick()
 {
   Network::Load l;
