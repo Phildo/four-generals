@@ -1,6 +1,6 @@
 DEVICE=-d #-e = emulator, -d = device (usb)
 
-build: bin/SDLActivity-debug.apk
+build:
 	ndk-build ; ant -S debug
 
 install: build

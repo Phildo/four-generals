@@ -1,5 +1,5 @@
 SRCDIR = ../src
-BINDIR = ../bin
+BINDIR = bin
 CC = g++
 DEBUG = -g
 DEBUGGER = gdb -q
