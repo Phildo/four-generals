@@ -66,14 +66,14 @@ void drawParticle(Particle& p, Graphics *g)
       tmp.y = p.mess.y.v();
       tmp.w = p.mess.w;
       tmp.h = p.mess.h;
-      g->draw(Sprite::messenger(),tmp);
+      g->draw(Sprite::envelope(),tmp);
       break;
     case P_TYPE_DEFEND:
       tmp.x = p.defend.x-p.defend.w.v()/2;
       tmp.y = p.defend.y-p.defend.h.v()/2;
       tmp.w = p.defend.w.v();
       tmp.h = p.defend.h.v();
-      g->draw(Sprite::circle(),tmp);
+      g->draw(Sprite::shield_full_force(),tmp);
     break;
     case P_TYPE_ATTACK:
       tmp.x = p.attack.x.v();
@@ -81,10 +81,7 @@ void drawParticle(Particle& p, Graphics *g)
       tmp.w = p.attack.w;
       tmp.h = p.attack.h;
       f = (int)(p.attack.anim.v()/0.05f)%4;
-      if(f == 0) g->draw(Sprite::stick_bs(),tmp);
-      if(f == 1) g->draw(Sprite::stick_vert(),tmp);
-      if(f == 2) g->draw(Sprite::stick_fs(),tmp);
-      if(f == 3) g->draw(Sprite::stick_horiz(),tmp);
+      if(f == 0) g->draw(Sprite::sword(),tmp);
       break;
     case P_TYPE_COUNT: break; //nothing
     default: break; //nothing

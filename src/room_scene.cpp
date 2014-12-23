@@ -39,10 +39,10 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   SDL_Rect r = whoBoxForPosition('s');
   chooseBtn = UI::Button(r);
   r.x -= 2*r.w;
-  cwBtn  = UI::Button(r);
+  cwBtn  = UI::ImageButton(r, Sprite::arrow_left_up());
   r.x += 2*r.w;
   r.x += 2*r.w;
-  ccwBtn = UI::Button(r);
+  ccwBtn = UI::ImageButton(r, Sprite::arrow_right_up());
 
   cardCWOffset = 0;
 
@@ -51,10 +51,10 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   cardRects[Compass::icardinal('s')].set(whoBoxForPosition('s'),whoBoxForPosition('s'));
   cardRects[Compass::icardinal('w')].set(whoBoxForPosition('w'),whoBoxForPosition('w'));
 
-  cardImgs[Compass::icardinal('n')] = UI::Image(Sprite::n_general(), cardRects[Compass::icardinal('n')].v());
-  cardImgs[Compass::icardinal('e')] = UI::Image(Sprite::e_general(), cardRects[Compass::icardinal('e')].v());
-  cardImgs[Compass::icardinal('s')] = UI::Image(Sprite::s_general(), cardRects[Compass::icardinal('s')].v());
-  cardImgs[Compass::icardinal('w')] = UI::Image(Sprite::w_general(), cardRects[Compass::icardinal('w')].v());
+  cardImgs[Compass::icardinal('n')] = UI::Image(Sprite::gen_n_0(), cardRects[Compass::icardinal('n')].v());
+  cardImgs[Compass::icardinal('e')] = UI::Image(Sprite::gen_e_0(), cardRects[Compass::icardinal('e')].v());
+  cardImgs[Compass::icardinal('s')] = UI::Image(Sprite::gen_s_0(), cardRects[Compass::icardinal('s')].v());
+  cardImgs[Compass::icardinal('w')] = UI::Image(Sprite::gen_w_0(), cardRects[Compass::icardinal('w')].v());
 
   cardLbls[Compass::icardinal('n')] = UI::Label(cardRects[Compass::icardinal('n')].v(), "N");
   cardLbls[Compass::icardinal('e')] = UI::Label(cardRects[Compass::icardinal('e')].v(), "E");

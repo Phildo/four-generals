@@ -2,17 +2,17 @@ TextBox::TextBox() {}
 TextBox::TextBox(SDL_Rect r)
 {
   txt_len = 0;
-  rect = r;
-  label = Label(rect, txt, 0);
+  box = Box(r);
+  label = Label(box.rect, txt, 0);
 }
 TextBox::TextBox(int x, int y, int w, int h)
 {
   txt_len = 0;
-  rect.x = x;
-  rect.y = y;
-  rect.w = w;
-  rect.h = h;
-  label = Label(rect, txt, 0);
+  box.rect.x = x;
+  box.rect.y = y;
+  box.rect.w = w;
+  box.rect.h = h;
+  label = Label(box.rect, txt, 0);
 }
 
 void TextBox::setText(String t)
@@ -50,52 +50,7 @@ void TextBox::clear()
 
 void TextBox::draw(Graphics *g)
 {
-  SDL_Rect tmp;
-
-  tmp = Sprite::border_tl();
-  tmp.x = rect.x;
-  tmp.y = rect.y;
-  g->draw(Sprite::border_tl(),tmp);
-
-  tmp = Sprite::border_t();
-  tmp.x = rect.x;
-  tmp.y = rect.y;
-  tmp.w = rect.w;
-  g->draw(Sprite::border_t(), tmp);
-
-  tmp = Sprite::border_tr();
-  tmp.x = rect.x+rect.w-tmp.w;
-  tmp.y = rect.y;
-  g->draw(Sprite::border_tr(),tmp);
-
-  tmp = Sprite::border_r();
-  tmp.x = rect.x+rect.w-tmp.w;
-  tmp.y = rect.y;
-  tmp.h = rect.h;
-  g->draw(Sprite::border_r(), tmp);
-
-  tmp = Sprite::border_br();
-  tmp.x = rect.x+rect.w-tmp.w;
-  tmp.y = rect.y+rect.h-tmp.h;
-  g->draw(Sprite::border_br(),tmp);
-
-  tmp = Sprite::border_b();
-  tmp.x = rect.x;
-  tmp.y = rect.y+rect.h-tmp.h;
-  tmp.w = rect.w;
-  g->draw(Sprite::border_b(), tmp);
-
-  tmp = Sprite::border_bl();
-  tmp.x = rect.x;
-  tmp.y = rect.y+rect.h-tmp.h;
-  g->draw(Sprite::border_bl(),tmp);
-
-  tmp = Sprite::border_l();
-  tmp.x = rect.x;
-  tmp.y = rect.y;
-  tmp.h = rect.h;
-  g->draw(Sprite::border_l(), tmp);
-
+  box.draw(g);
   label.draw(g);
 }
 

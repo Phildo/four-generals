@@ -5,38 +5,6 @@
 
 namespace Sprite
 {
-  SDL_Rect border_tl();
-  SDL_Rect border_t();
-  SDL_Rect border_tr();
-  SDL_Rect border_l();
-  SDL_Rect border_r();
-  SDL_Rect border_bl();
-  SDL_Rect border_b();
-  SDL_Rect border_br();
-  SDL_Rect rborder_tl();
-  SDL_Rect rborder_tr();
-  SDL_Rect rborder_bl();
-  SDL_Rect rborder_br();
-  SDL_Rect circle();
-  SDL_Rect messenger();
-  SDL_Rect stick_bs();
-  SDL_Rect stick_fs();
-  SDL_Rect stick_horiz();
-  SDL_Rect stick_vert();
-
-  SDL_Rect force_field();
-  SDL_Rect shield_full();
-  SDL_Rect shield_broken();
-  SDL_Rect sword();
-  SDL_Rect red_x();
-  SDL_Rect envelope();
-  SDL_Rect sun();
-
-  SDL_Rect n_general();
-  SDL_Rect e_general();
-  SDL_Rect s_general();
-  SDL_Rect w_general();
-
   SDL_Rect alpha(char a);
   SDL_Rect alpha_a();
   SDL_Rect alpha_b();
@@ -116,6 +84,49 @@ namespace Sprite
   SDL_Rect alpha_paren_r();
   SDL_Rect alpha_back();
   SDL_Rect alpha_NOPE();
+
+  SDL_Rect arrow_left();
+  SDL_Rect arrow_right();
+  SDL_Rect arrow_left_up();
+  SDL_Rect arrow_right_up();
+  SDL_Rect p1();
+  SDL_Rect p2();
+  SDL_Rect p3();
+  SDL_Rect p4();
+  SDL_Rect question_bubble();
+  SDL_Rect loading_0();
+  SDL_Rect loading_1();
+  SDL_Rect loading_2();
+  SDL_Rect tally_1();
+  SDL_Rect tally_2();
+  SDL_Rect tally_3();
+  SDL_Rect tally_4();
+  SDL_Rect tally_5();
+
+  SDL_Rect gen_n_0();
+  SDL_Rect gen_n_1();
+  SDL_Rect gen_n_2();
+  SDL_Rect gen_n_3();
+  SDL_Rect gen_e_0();
+  SDL_Rect gen_e_1();
+  SDL_Rect gen_e_2();
+  SDL_Rect gen_e_3();
+  SDL_Rect gen_s_0();
+  SDL_Rect gen_s_1();
+  SDL_Rect gen_s_2();
+  SDL_Rect gen_s_3();
+  SDL_Rect gen_w_0();
+  SDL_Rect gen_w_1();
+  SDL_Rect gen_w_2();
+  SDL_Rect gen_w_3();
+
+  SDL_Rect shield_full_force();
+  SDL_Rect shield_full();
+  SDL_Rect shield_cracked();
+  SDL_Rect sword();
+  SDL_Rect red_x();
+  SDL_Rect envelope();
+  SDL_Rect sun();
 
   SDL_Rect null();
 };

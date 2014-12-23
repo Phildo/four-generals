@@ -13,6 +13,7 @@ Box::Box(int x, int y, int w, int h)
 
 void Box::draw(Graphics *g)
 {
+/*
   SDL_Rect tmp;
 
   tmp = Sprite::border_tl();
@@ -58,5 +59,6 @@ void Box::draw(Graphics *g)
   tmp.y = rect.y;
   tmp.h = rect.h;
   g->draw(Sprite::border_l(), tmp);
+  */
 }
 

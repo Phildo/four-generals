@@ -15,10 +15,11 @@ class Graphics;
 
 namespace UI
 {
-  #include "image.h"
   #include "box.h"
+  #include "image.h"
   #include "label.h"
   #include "button.h"
+  #include "imagebutton.h"
   #include "textbutton.h"
   #include "keyboard.h"
   #include "textbox.h"

@@ -6,7 +6,7 @@ struct TextBox
   char txt[FG_MAX_TEXTBOX_LEN+1]; //+1 for null
   Label label;
 
-  SDL_Rect rect;
+  Box box;
 
   TextBox();
   TextBox(SDL_Rect r);

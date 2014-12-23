@@ -24,8 +24,8 @@ class RoomScene : public Scene
     UI::TextButton leaveSessButton;
     UI::TextButton beginGameButton;
     UI::Button chooseBtn;
-    UI::Button cwBtn;
-    UI::Button ccwBtn;
+    UI::ImageButton cwBtn;
+    UI::ImageButton ccwBtn;
 
     int cardCWOffset;
     LerpRect cardRects[4];

@@ -25,13 +25,13 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   s = 0;
   c = 0;
 
-  generals_s[0] = Sprite::n_general();
-  generals_s[1] = Sprite::e_general();
-  generals_s[2] = Sprite::s_general();
-  generals_s[3] = Sprite::w_general();
-  force_field_s   = Sprite::force_field();
+  generals_s[0] = Sprite::gen_n_0();
+  generals_s[1] = Sprite::gen_e_0();
+  generals_s[2] = Sprite::gen_s_0();
+  generals_s[3] = Sprite::gen_w_0();
+  force_field_s   = Sprite::shield_full_force();
   shield_full_s   = Sprite::shield_full();
-  shield_broken_s = Sprite::shield_broken();
+  shield_broken_s = Sprite::shield_cracked();
   sword_s         = Sprite::sword();
   red_x_s         = Sprite::red_x();
   envelope_s      = Sprite::envelope();

@@ -6,10 +6,11 @@
 
 using namespace UI;
 
-#include "image.cpp"
 #include "box.cpp"
+#include "image.cpp"
 #include "label.cpp"
 #include "button.cpp"
+#include "imagebutton.cpp"
 #include "textbutton.cpp"
 #include "keyboard.cpp"
 #include "textbox.cpp"
