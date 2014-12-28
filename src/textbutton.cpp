@@ -1,21 +1,24 @@
 TextButton::TextButton() { }
-TextButton::TextButton(SDL_Rect r)                                       : box(r)                         {}
-TextButton::TextButton(int x, int y, int w, int h)                       : box(x,y,w,h)                   {}
-TextButton::TextButton(SDL_Rect r, Label l)                              : box(r),       label(l)         {}
-TextButton::TextButton(int x, int y, int w, int h, Label l)              : box(x,y,w,h), label(l)         {}
-TextButton::TextButton(SDL_Rect r, const char *t)                        : box(r),       label(r,t)       {}
-TextButton::TextButton(int x, int y, int w, int h, const char *t)        : box(x,y,w,h), label(x,y,h,t)   {}
-TextButton::TextButton(SDL_Rect r, const char *t, int l)                 : box(r),       label(r,t,l)     {}
-TextButton::TextButton(int x, int y, int w, int h, const char *t, int l) : box(x,y,w,h), label(x,y,h,t,l) {}
+TextButton::TextButton(const char *t, SDL_Rect r) : text(t), rect(r) { }
+TextButton::TextButton(const char *t, int l, SDL_Rect r) : text(t, l), rect(r) {}
+TextButton::TextButton(const char *t, int x, int y, int w, int h) : text(t), rect(x,y,w,h) {}
+TextButton::TextButton(const char *t, int l, int x, int y, int w, int h) : text(t, l), rect(x,y,w,h) {}
 
 bool TextButton::query(const In &in)
 {
-  return (in.x > box.rect.x && in.x < box.rect.x+box.rect.w &&
-          in.y > box.rect.y && in.y < box.rect.y+box.rect.h);
+  return (in.x > rect.rect.x && in.x < rect.rect.x+rect.rect.w &&
+          in.y > rect.rect.y && in.y < rect.rect.y+rect.rect.h);
 }
 
 void TextButton::draw(Graphics *g)
 {
-  box.draw(g);
-  label.draw(g);
+  SDL_Rect tmp = rect.rect;
+  tmp.w = n_w*((float)rect.h/(float)n_h); //width of individual letter
+  for(int i = 0; i < text.len(); i++)
+  {
+    g->draw(Sprite::alpha(*(text.ptr()+i)),tmp);
+    tmp.x += tmp.w;
+  }
+  rect.draw(g);
 }
+

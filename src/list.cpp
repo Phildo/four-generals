@@ -1,27 +1,17 @@
 List::List() { }
-List::List(SDL_Rect r, int t_h)
+List::List(SDL_Rect r, int t_h) : text_height(t_h), rect(r), num_rows(r.h/t_h)
 {
-  rect = r;
-  text_height = t_h;
-  num_rows = r.h/t_h;
   if(num_rows > max_rows) num_rows = max_rows;
 
   for(int i = 0; i < num_rows; i++)
-    rows[i] = Label(rect.x, rect.y+(i*text_height), text_height, "");
+    rows[i] = Label("", rect.x, rect.y+(i*text_height), text_height);
 }
-List::List(int x, int y, int w, int h, int t_h)
+List::List(int x, int y, int w, int h, int t_h) : text_height(t_h), rect(x,y,w,h), num_rows(h/t_h)
 {
-  rect.x = x;
-  rect.y = y;
-  rect.w = w;
-  rect.h = h;
-
-  text_height = t_h;
-  num_rows = rect.h/t_h;
   if(num_rows > max_rows) num_rows = max_rows;
 
   for(int i = 0; i < num_rows; i++)
-    rows[i] = Label(rect.x, rect.y+(i*text_height), text_height, "");
+    rows[i] = Label("", rect.x, rect.y+(i*text_height), text_height);
 }
 
 void List::draw(Graphics *g)

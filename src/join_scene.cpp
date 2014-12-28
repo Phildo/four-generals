@@ -18,12 +18,12 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 
   backButton = UI::Button(20,20,40,40);
 
-  joinGameLabel = UI::Label(ww/2-250, wh/2-170,40,"Join Game");
+  joinGameLabel = UI::Label("Join Game", ww/2-250, wh/2-170,40);
 
-  manual    = UI::TextButton(ww/2-250, 50,500,40,"Manual Entry");
-  automatic = UI::TextButton(ww/2-250, 50,500,40,"Automatic Entry");
+  manual    = UI::TextButton("Manual Entry", ww/2-250, 50,500,40);
+  automatic = UI::TextButton("Automatic Entry", ww/2-250, 50,500,40);
 
-  searchJoinButton = UI::TextButton(ww/2-250, wh/2-120,500,40,"Search For Game");
+  searchJoinButton = UI::TextButton("Search For Game", ww/2-250, wh/2-120,500,40);
   ipPrefix = Network::getIP();
   char ipPrefBuff[3+1+3+1+3+1];
   int dotCt = 0;
@@ -35,8 +35,8 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
   }
   if(dotCt == 3) ipPrefix = String(ipPrefBuff,i);
 
-  joinButton = UI::TextButton(ww/2-250, wh/2-70, 500, 40, "Join Session");
-  portLabel   = UI::Label(ww/2+150, wh/2-120,40,"8080");
+  joinButton = UI::TextButton( "Join Session", ww/2-250, wh/2-70, 500, 40);
+  portLabel   = UI::Label("8080", ww/2+150, wh/2-120,40);
   ipInput     = UI::TextBox(ww/2-250, wh/2-120,400,40);
   keyboard = UI::Keyboard(0,wh-200,ww,200);
   ipInput.setText(Network::getIP());

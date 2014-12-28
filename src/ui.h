@@ -2,7 +2,7 @@
 #define _FG_UI_H_
 
 #include "string.h"
-
+#include "circ_q.h"
 #include "SDL.h"
 
 //convenient bro

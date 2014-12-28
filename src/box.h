@@ -1,6 +1,17 @@
 struct Box
 {
-  SDL_Rect rect;
+  union
+  {
+    SDL_Rect rect;
+    struct
+    {
+      int x;
+      int y;
+      int w;
+      int h;
+    };
+  };
+
   void draw(Graphics *g);
   Box();
   Box(SDL_Rect r);

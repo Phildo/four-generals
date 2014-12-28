@@ -77,54 +77,54 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
     sunRects[i].h = 60;
   }
 
-  dayLbls[0] = UI::Label(dayRects[0], "Su");
-  dayLbls[1] = UI::Label(dayRects[1], "Mo");
-  dayLbls[2] = UI::Label(dayRects[2], "Tu");
-  dayLbls[3] = UI::Label(dayRects[3], "We");
-  dayLbls[4] = UI::Label(dayRects[4], "Th");
-  dayLbls[5] = UI::Label(dayRects[5], "Fr");
-  dayLbls[6] = UI::Label(dayRects[6], "Sa");
+  dayLbls[0] = UI::Label("Su", dayRects[0]);
+  dayLbls[1] = UI::Label("Mo", dayRects[1]);
+  dayLbls[2] = UI::Label("Tu", dayRects[2]);
+  dayLbls[3] = UI::Label("We", dayRects[3]);
+  dayLbls[4] = UI::Label("Th", dayRects[4]);
+  dayLbls[5] = UI::Label("Fr", dayRects[5]);
+  dayLbls[6] = UI::Label("Sa", dayRects[6]);
 
   for(int i = 0; i < 7; i++)
     whenBtns[i] = UI::Button(dayRects[i]);
 
-  actionAttackButton   = UI::TextButton(space(ww,60,200,4,0), wh-60, 200, 40, "attack");
-  actionDefendButton   = UI::TextButton(space(ww,60,200,4,1), wh-60, 200, 40, "defend");
-  actionMessageButton  = UI::TextButton(space(ww,60,200,4,2), wh-60, 200, 40, "message");
-  actionSabotageButton = UI::TextButton(space(ww,60,200,4,3), wh-60, 200, 40, "sabotage");
+  actionAttackButton   = UI::TextButton("attack",   space(ww,60,200,4,0), wh-60, 200, 40);
+  actionDefendButton   = UI::TextButton("defend",   space(ww,60,200,4,1), wh-60, 200, 40);
+  actionMessageButton  = UI::TextButton("message",  space(ww,60,200,4,2), wh-60, 200, 40);
+  actionSabotageButton = UI::TextButton("sabotage", space(ww,60,200,4,3), wh-60, 200, 40);
 
-  howBlockButton    = UI::TextButton(space(ww,60,200,3,0), wh-60, 200, 40, "Block");
-  howReadButton     = UI::TextButton(space(ww,60,200,3,1), wh-60, 200, 40, "Read");
-  howSabotageButton = UI::TextButton(space(ww,60,200,3,2), wh-60, 200, 40, "Sabotage");
+  howBlockButton    = UI::TextButton("Block"   , space(ww,60,200,3,0), wh-60, 200, 40);
+  howReadButton     = UI::TextButton("Read"    , space(ww,60,200,3,1), wh-60, 200, 40);
+  howSabotageButton = UI::TextButton("Sabotage", space(ww,60,200,3,2), wh-60, 200, 40);
 
-  whichWhatButton  = UI::TextButton(space(ww,60,200,4,0), wh-60, 200, 40, "What");
-  whichWhoButton   = UI::TextButton(space(ww,60,200,4,1), wh-60, 200, 40, "Who");
-  whichWhenButton  = UI::TextButton(space(ww,60,200,4,2), wh-60, 200, 40, "When");
-  whichWhereButton = UI::TextButton(space(ww,60,200,4,3), wh-60, 200, 40, "Where");
+  whichWhatButton  = UI::TextButton("What",  space(ww,60,200,4,0), wh-60, 200, 40);
+  whichWhoButton   = UI::TextButton("Who",   space(ww,60,200,4,1), wh-60, 200, 40);
+  whichWhenButton  = UI::TextButton("When",  space(ww,60,200,4,2), wh-60, 200, 40);
+  whichWhereButton = UI::TextButton("Where", space(ww,60,200,4,3), wh-60, 200, 40);
 
-  whatAttackButton = UI::TextButton(space(ww,60,200,2,0), wh-60, 200, 40, "attack");
-  whatDefendButton = UI::TextButton(space(ww,60,200,2,1), wh-60, 200, 40, "defend");
+  whatAttackButton = UI::TextButton("attack", space(ww,60,200,2,0), wh-60, 200, 40);
+  whatDefendButton = UI::TextButton("defend", space(ww,60,200,2,1), wh-60, 200, 40);
 
-  howLabel      = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "how");
-  whichLabel    = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "which");
-  whatLabel     = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "what");
-  whoLabel      = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "who");
-  whenLabel     = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "when");
-  whereLabel    = UI::Label(space(ww,0,200,1,0), wh/2-60, 40, "where");
-  debreifLabel  = UI::Label(space(ww,0,600,1,0), wh/2-20, 30, "debreif");
-  waitingLabel  = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "waiting");
-  messageLabel  = UI::Label(space(ww,0,600,1,0), wh/2+20, 30, "message");
-  sabotageLabel = UI::Label(space(ww,0,600,1,0), wh/2+50, 30, "sabotage");
-  winLabel      = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "WIN");
-  loseLabel     = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "LOSE");
-  tieLabel      = UI::Label(space(ww,0,200,1,0), wh/2-20, 40, "TIE");
+  howLabel      = UI::Label("how",      space(ww,0,200,1,0), wh/2-60, 40);
+  whichLabel    = UI::Label("which",    space(ww,0,200,1,0), wh/2-60, 40);
+  whatLabel     = UI::Label("what",     space(ww,0,200,1,0), wh/2-60, 40);
+  whoLabel      = UI::Label("who",      space(ww,0,200,1,0), wh/2-60, 40);
+  whenLabel     = UI::Label("when",     space(ww,0,200,1,0), wh/2-60, 40);
+  whereLabel    = UI::Label("where",    space(ww,0,200,1,0), wh/2-60, 40);
+  debreifLabel  = UI::Label("debreif",  space(ww,0,600,1,0), wh/2-20, 30);
+  waitingLabel  = UI::Label("waiting",  space(ww,0,200,1,0), wh/2-20, 40);
+  messageLabel  = UI::Label("message",  space(ww,0,600,1,0), wh/2+20, 30);
+  sabotageLabel = UI::Label("sabotage", space(ww,0,600,1,0), wh/2+50, 30);
+  winLabel      = UI::Label("WIN",      space(ww,0,200,1,0), wh/2-20, 40);
+  loseLabel     = UI::Label("LOSE",     space(ww,0,200,1,0), wh/2-20, 40);
+  tieLabel      = UI::Label("TIE",      space(ww,0,200,1,0), wh/2-20, 40);
 
   sunBtn = UI::Button(dayRects[0]);
   sunDragging = false;
 
-  confirmButton = UI::TextButton(space(ww,30,200,2,0), wh-60, 200, 40, "confirm");
-  cancelButton  = UI::TextButton(space(ww,30,200,2,1), wh-60, 200, 40, "cancel");
-  resetButton   = UI::TextButton(space(ww,30,200,1,0), wh-60, 200, 40, "reset game");
+  confirmButton = UI::TextButton("confirm",    space(ww,30,200,2,0), wh-60, 200, 40);
+  cancelButton  = UI::TextButton("cancel",     space(ww,30,200,2,1), wh-60, 200, 40);
+  resetButton   = UI::TextButton("reset game", space(ww,30,200,1,0), wh-60, 200, 40);
 
   known_day = '0';
   anim_day = 0.0f;
@@ -500,7 +500,7 @@ void PlayScene::draw()
 
   SDL_Rect sunr = rectForTransition(Week::day(shown_prev_day%7), Week::day((shown_prev_day+1)%7), t);
   graphics->draw(sun_s,sunr);
-  sunBtn.box.rect = sunr;
+  sunBtn.rect.rect = sunr;
   for(int i = 0; i < 7; i++)
     dayLbls[i].draw(graphics);
 

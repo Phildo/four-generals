@@ -1,10 +1,11 @@
 struct List
 {
-  SDL_Rect rect;
   int text_height;
-  int num_rows; //derivable on fly, but whatevs
+  Box rect;
 
   static const int max_rows = 256;
+  int num_rows; //derivable on fly, but whatevs
+
   Label rows[max_rows];
 
   void draw(Graphics *g);

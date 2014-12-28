@@ -1,17 +1,16 @@
 struct TextButton
 {
-  Box box;
-  Label label;
+  String text;
+  Box rect; //really only uses its x,y,h
+  static const int n_w = 18; //native_width in tex
+  static const int n_h = 31; //native_height in tex
   bool query(const In &in);
   void draw(Graphics *g);
+
   TextButton();
-  TextButton(SDL_Rect r);
-  TextButton(int x, int y, int w, int h);
-  TextButton(SDL_Rect r, Label l);
-  TextButton(int x, int y, int w, int h, Label l);
-  TextButton(SDL_Rect r, const char *t);
-  TextButton(int x, int y, int w, int h, const char *t);
-  TextButton(SDL_Rect r, const char *t, int l);
-  TextButton(int x, int y, int w, int h, const char *t, int l);
+  TextButton(const char *t, SDL_Rect r);
+  TextButton(const char *t, int l, SDL_Rect r);
+  TextButton(const char *t, int l, int x, int y, int w, int h);
+  TextButton(const char *t, int x, int y, int w, int h);
 };
 

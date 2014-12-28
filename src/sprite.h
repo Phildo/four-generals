@@ -128,6 +128,23 @@ namespace Sprite
   SDL_Rect envelope();
   SDL_Rect sun();
 
+  SDL_Rect black_pixel();
+
+  SDL_Rect border_top();
+  SDL_Rect border_bottom();
+  SDL_Rect border_left();
+  SDL_Rect border_right();
+
+  SDL_Rect border_corner_tl();
+  SDL_Rect border_corner_tr();
+  SDL_Rect border_corner_bl();
+  SDL_Rect border_corner_br();
+
+  SDL_Rect border_corner_round_tl();
+  SDL_Rect border_corner_round_tr();
+  SDL_Rect border_corner_round_bl();
+  SDL_Rect border_corner_round_br();
+
   SDL_Rect null();
 };
 

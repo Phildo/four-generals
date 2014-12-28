@@ -10,9 +10,9 @@ IntroScene::IntroScene(Graphics *g)
 {
   graphics = g;
 
-  hostButton = UI::TextButton(g->winWidth()-450,50,400,40,"Host");
-  joinButton = UI::TextButton(g->winWidth()-450,110,400,40,"Join");
-  howButton = UI::TextButton(g->winWidth()-450,170,400,40,"How to Play");
+  hostButton = UI::TextButton("Host",g->winWidth()-450,50,400,40);
+  joinButton = UI::TextButton("Join",g->winWidth()-450,110,400,40);
+  howButton = UI::TextButton("How to Play",g->winWidth()-450,170,400,40);
 
   SCENE_CHANGE_HACK = 0;
 }

@@ -237,5 +237,22 @@ SDL_Rect Sprite::red_x()             { return rect(128,228, 32, 32); }
 SDL_Rect Sprite::envelope()          { return rect(160,228, 32, 32); }
 SDL_Rect Sprite::sun()               { return rect(192,228, 32, 32); }
 
+SDL_Rect Sprite::black_pixel()   { return rect(0,260,1,1); }
+
+SDL_Rect Sprite::border_top()    { return rect(  8,260, 16, 16); }
+SDL_Rect Sprite::border_bottom() { return rect(  8,276, 16, 16); }
+SDL_Rect Sprite::border_left()   { return rect(  0,268, 16, 16); }
+SDL_Rect Sprite::border_right()  { return rect( 16,268, 16, 16); }
+
+SDL_Rect Sprite::border_corner_tl() { return rect( 0,260,16,16); }
+SDL_Rect Sprite::border_corner_tr() { return rect(16,260,16,16); }
+SDL_Rect Sprite::border_corner_bl() { return rect( 0,276,16,16); }
+SDL_Rect Sprite::border_corner_br() { return rect(16,276,16,16); }
+
+SDL_Rect Sprite::border_corner_round_tl() { return rect(32,260,16,16); }
+SDL_Rect Sprite::border_corner_round_tr() { return rect(48,260,16,16); }
+SDL_Rect Sprite::border_corner_round_bl() { return rect(32,276,16,16); }
+SDL_Rect Sprite::border_corner_round_br() { return rect(48,276,16,16); }
+
 SDL_Rect Sprite::null() { return rect(0,0,0,0); }
 

@@ -1,7 +1,7 @@
 struct Image
 {
-  SDL_Rect rect;
   SDL_Rect sprite;
+  Box rect;
   void draw(Graphics *g);
   Image();
   Image(SDL_Rect s, SDL_Rect r);

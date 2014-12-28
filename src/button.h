@@ -1,6 +1,6 @@
 struct Button
 {
-  Box box;
+  Box rect;
   bool query(const In &in);
   void draw(Graphics *g);
   Button();

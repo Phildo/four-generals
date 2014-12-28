@@ -29,20 +29,20 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   backButton = UI::Button(20,20,40,40);
 
-  inRoomLabel = UI::Label(ww/2-250, wh/2-170,40,"In Room");
-  ipLabel     = UI::Label(ww/2-250, wh/2-120,40,Network::getIP().ptr());
-  portLabel   = UI::Label(ww/2+150, wh/2-120,40,"8080");
+  inRoomLabel = UI::Label("In Room", ww/2-250, wh/2-170,40);
+  ipLabel     = UI::Label(Network::getIP().ptr(), ww/2-250, wh/2-120,40);
+  portLabel   = UI::Label("8080", ww/2+150, wh/2-120,40);
 
-  leaveSessButton = UI::TextButton(ww/2-250, wh/2-70, 500, 40, "Leave Session");
-  beginGameButton = UI::TextButton(ww/2-250, wh/2-20, 500, 40, "Begin Game!");
+  leaveSessButton = UI::TextButton("Leave Session", ww/2-250, wh/2-70, 500, 40);
+  beginGameButton = UI::TextButton("Begin Game!", ww/2-250, wh/2-20, 500, 40);
 
   SDL_Rect r = whoBoxForPosition('s');
   chooseBtn = UI::Button(r);
   r.x -= 2*r.w;
-  cwBtn  = UI::ImageButton(r, Sprite::arrow_left_up());
+  cwBtn  = UI::ImageButton(Sprite::arrow_left_up(), r);
   r.x += 2*r.w;
   r.x += 2*r.w;
-  ccwBtn = UI::ImageButton(r, Sprite::arrow_right_up());
+  ccwBtn = UI::ImageButton(Sprite::arrow_right_up(), r);
 
   cardCWOffset = 0;
 
@@ -56,10 +56,10 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   cardImgs[Compass::icardinal('s')] = UI::Image(Sprite::gen_s_0(), cardRects[Compass::icardinal('s')].v());
   cardImgs[Compass::icardinal('w')] = UI::Image(Sprite::gen_w_0(), cardRects[Compass::icardinal('w')].v());
 
-  cardLbls[Compass::icardinal('n')] = UI::Label(cardRects[Compass::icardinal('n')].v(), "N");
-  cardLbls[Compass::icardinal('e')] = UI::Label(cardRects[Compass::icardinal('e')].v(), "E");
-  cardLbls[Compass::icardinal('s')] = UI::Label(cardRects[Compass::icardinal('s')].v(), "S");
-  cardLbls[Compass::icardinal('w')] = UI::Label(cardRects[Compass::icardinal('w')].v(), "W");
+  cardLbls[Compass::icardinal('n')] = UI::Label("N", cardRects[Compass::icardinal('n')].v());
+  cardLbls[Compass::icardinal('e')] = UI::Label("E", cardRects[Compass::icardinal('e')].v());
+  cardLbls[Compass::icardinal('s')] = UI::Label("S", cardRects[Compass::icardinal('s')].v());
+  cardLbls[Compass::icardinal('w')] = UI::Label("W", cardRects[Compass::icardinal('w')].v());
 
   SCENE_CHANGE_HACK = 0;
 }
