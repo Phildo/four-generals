@@ -8,6 +8,7 @@ using namespace UI;
 
 #include "box.cpp"
 #include "image.cpp"
+#include "anim.cpp"
 #include "label.cpp"
 #include "button.cpp"
 #include "imagebutton.cpp"

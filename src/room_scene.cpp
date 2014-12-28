@@ -51,10 +51,15 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   cardRects[Compass::icardinal('s')].set(whoBoxForPosition('s'),whoBoxForPosition('s'));
   cardRects[Compass::icardinal('w')].set(whoBoxForPosition('w'),whoBoxForPosition('w'));
 
-  cardImgs[Compass::icardinal('n')] = UI::Image(Sprite::gen_n_0(), cardRects[Compass::icardinal('n')].v());
-  cardImgs[Compass::icardinal('e')] = UI::Image(Sprite::gen_e_0(), cardRects[Compass::icardinal('e')].v());
-  cardImgs[Compass::icardinal('s')] = UI::Image(Sprite::gen_s_0(), cardRects[Compass::icardinal('s')].v());
-  cardImgs[Compass::icardinal('w')] = UI::Image(Sprite::gen_w_0(), cardRects[Compass::icardinal('w')].v());
+  UI::AnimSprites s;
+  s = UI::AnimSprites(Sprite::gen_n_0(), Sprite::gen_n_1(), Sprite::gen_n_2(), Sprite::gen_n_3());
+  cardImgs[Compass::icardinal('n')] = UI::Anim(s, 4, 1.f, cardRects[Compass::icardinal('n')].v());
+  s = UI::AnimSprites(Sprite::gen_e_0(), Sprite::gen_e_1(), Sprite::gen_e_2(), Sprite::gen_e_3());
+  cardImgs[Compass::icardinal('e')] = UI::Anim(s, 4, 1.f, cardRects[Compass::icardinal('e')].v());
+  s = UI::AnimSprites(Sprite::gen_s_0(), Sprite::gen_s_1(), Sprite::gen_s_2(), Sprite::gen_s_3());
+  cardImgs[Compass::icardinal('s')] = UI::Anim(s, 4, 1.f, cardRects[Compass::icardinal('s')].v());
+  s = UI::AnimSprites(Sprite::gen_w_0(), Sprite::gen_w_1(), Sprite::gen_w_2(), Sprite::gen_w_3());
+  cardImgs[Compass::icardinal('w')] = UI::Anim(s, 4, 1.f, cardRects[Compass::icardinal('w')].v());
 
   cardLbls[Compass::icardinal('n')] = UI::Label("N", cardRects[Compass::icardinal('n')].v());
   cardLbls[Compass::icardinal('e')] = UI::Label("E", cardRects[Compass::icardinal('e')].v());
@@ -117,6 +122,9 @@ int RoomScene::tick()
 {
   if(s) s->tick();
   c->tick();
+
+  for(int i = 0; i < 4; i++)
+    cardImgs[i].tick(0.2f);
 
   if(c->model.days != -1) SCENE_CHANGE_HACK = 1;
 

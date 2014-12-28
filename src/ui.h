@@ -17,6 +17,7 @@ namespace UI
 {
   #include "box.h"
   #include "image.h"
+  #include "anim.h"
   #include "label.h"
   #include "button.h"
   #include "imagebutton.h"

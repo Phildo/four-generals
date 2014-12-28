@@ -29,8 +29,8 @@ class RoomScene : public Scene
 
     int cardCWOffset;
     LerpRect cardRects[4];
-    UI::Image  cardImgs[4];
-    UI::Label  cardLbls[4];
+    UI::Anim cardImgs[4];
+    UI::Label cardLbls[4];
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
