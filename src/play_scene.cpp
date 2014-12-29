@@ -25,10 +25,10 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   s = 0;
   c = 0;
 
-  generals_s[0] = Sprite::gen_n_0();
-  generals_s[1] = Sprite::gen_e_0();
-  generals_s[2] = Sprite::gen_s_0();
-  generals_s[3] = Sprite::gen_w_0();
+  generals_s[0] = UI::AnimSprites(Sprite::gen_n_0(), Sprite::gen_n_1(), Sprite::gen_n_2(), Sprite::gen_n_3());
+  generals_s[1] = UI::AnimSprites(Sprite::gen_e_0(), Sprite::gen_e_1(), Sprite::gen_e_2(), Sprite::gen_e_3());
+  generals_s[2] = UI::AnimSprites(Sprite::gen_s_0(), Sprite::gen_s_1(), Sprite::gen_s_2(), Sprite::gen_s_3());
+  generals_s[3] = UI::AnimSprites(Sprite::gen_w_0(), Sprite::gen_w_1(), Sprite::gen_w_2(), Sprite::gen_w_3());
   force_field_s   = Sprite::shield_full_force();
   shield_full_s   = Sprite::shield_full();
   shield_broken_s = Sprite::shield_cracked();
@@ -146,7 +146,7 @@ void PlayScene::enter()
   card = c->myCardinal();
   icard = Compass::icardinal(card);
   rect = rectForPosition('s');
-  cardImgs[icard]  = UI::Image(generals_s[icard], rect);
+  cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -154,7 +154,7 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = rectForPosition('w');
-  cardImgs[icard]  = UI::Image(generals_s[icard], rect);
+  cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -162,7 +162,7 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = rectForPosition('n');
-  cardImgs[icard]  = UI::Image(generals_s[icard], rect);
+  cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -170,7 +170,7 @@ void PlayScene::enter()
   card = Compass::cwcardinal(card);
   icard = Compass::icardinal(card);
   rect = rectForPosition('e');
-  cardImgs[icard]  = UI::Image(generals_s[icard], rect);
+  cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -434,6 +434,9 @@ int PlayScene::tick()
 {
   if(s) s->tick();
   c->tick();
+
+  for(int i = 0; i < 4; i++)
+    cardImgs[i].tick(0.4f);
 
   psys.tick(0.01f);
   if(anim_day < c->model.days)

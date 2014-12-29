@@ -124,7 +124,7 @@ int RoomScene::tick()
   c->tick();
 
   for(int i = 0; i < 4; i++)
-    cardImgs[i].tick(0.2f);
+    cardImgs[i].tick(0.4f);
 
   if(c->model.days != -1) SCENE_CHANGE_HACK = 1;
 

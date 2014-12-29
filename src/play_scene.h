@@ -19,7 +19,7 @@ class PlayScene : public Scene
     ParticleSys psys;
 
     //sprites
-    SDL_Rect generals_s[4];
+    UI::AnimSprites generals_s[4];
     SDL_Rect force_field_s;
     SDL_Rect shield_full_s;
     SDL_Rect shield_broken_s;
@@ -37,7 +37,7 @@ class PlayScene : public Scene
 
     UI::Label dayLbls[7];
 
-    UI::Image cardImgs[4];
+    UI::Anim cardImgs[4];
 
     UI::TextButton actionAttackButton;
     UI::TextButton actionMessageButton;

@@ -44,6 +44,8 @@ Game::Game()
   debug_toggle = false;
   debugBtn = UI::Button(graphics->winWidth()-40,graphics->winHeight()-40,40,40);
   border = UI::Box(0,0,graphics->winWidth(),graphics->winHeight());
+
+  fg_log("Game Init");
 }
 
 void Game::run()
