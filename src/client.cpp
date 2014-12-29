@@ -62,6 +62,7 @@ void * Client::fork()
         if((select(sock_fd+1, NULL, &sock_fds, NULL, &tv) <= 0) || !FD_ISSET(sock_fd, &sock_fds))
         {
           fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL)&(~O_NONBLOCK)); //set blocking
+          fg_log("Client: abort connection (connect error/timeout)");
           con_state = CONNECTION_STATE_DISCONNECTING; //either error or timeout- disconnect in both cases
         }
         else
@@ -72,10 +73,14 @@ void * Client::fork()
 
           FD_ZERO(&sock_fds);
           FD_SET(sock_fd, &sock_fds);
-          tv.tv_sec = 0; tv.tv_usec = FG_US_PER_TICK;
+          tv.tv_sec = 1; tv.tv_usec = 0; //give whole second to try
 
           int retval = select(sock_fd+1, &sock_fds, NULL, NULL, &tv);
-          if(retval == -1) con_state = CONNECTION_STATE_DISCONNECTING;
+          if(retval == -1)
+          {
+            fg_log("Client: abort connection (ack error/timeout)");
+            con_state = CONNECTION_STATE_DISCONNECTING;
+          }
           else if(retval && FD_ISSET(sock_fd, &sock_fds))
           {
             Load l;
@@ -98,19 +103,35 @@ void * Client::fork()
                 )
               {
                 con_id = String(&l.data[13],3).intVal();
-                if(con_id == 0) con_state = CONNECTION_STATE_DISCONNECTING;
+                if(con_id == 0)
+                {
+                  fg_log("Client: abort connection (ack con_id 0)");
+                  con_state = CONNECTION_STATE_DISCONNECTING;
+                }
                 else con_state = CONNECTION_STATE_CONNECTED;
               }
-              else con_state = CONNECTION_STATE_DISCONNECTING;
+              else
+              {
+                fg_log("Client: abort connection (invalid ack)");
+                con_state = CONNECTION_STATE_DISCONNECTING;
+              }
             }
-            else con_state = CONNECTION_STATE_DISCONNECTING;
+            else
+            {
+              fg_log("Client: abort connection (ack read failed)");
+              con_state = CONNECTION_STATE_DISCONNECTING;
+            }
           }
 
           while(con_state == CONNECTION_STATE_CONNECTED)
             tick();
         }
       }
-      else con_state = CONNECTION_STATE_DISCONNECTING; //actual error on connect
+      else
+      {
+        fg_log("Client: abort connection (connection error)");
+        con_state = CONNECTION_STATE_DISCONNECTING;
+      }
     }
   }
   fg_log("Client: disconnecting");
@@ -136,19 +157,31 @@ void Client::tick()
   tv.tv_sec = 0; tv.tv_usec = FG_US_PER_TICK;
 
   retval = select(sock_fd+1, &sock_fds, NULL, NULL, &tv);
-  if(retval == -1) con_state = CONNECTION_STATE_DISCONNECTING;
+  if(retval == -1)
+  {
+    fg_log("Client: abort connection (mux error)");
+    con_state = CONNECTION_STATE_DISCONNECTING;
+  }
   else if(retval && FD_ISSET(sock_fd, &sock_fds))
   {
     Load l;
     if(receiveLoad(&l)) recv_q.enqueue(l);
-    else con_state = CONNECTION_STATE_DISCONNECTING;
+    else
+    {
+      fg_log("Client: abort connection (failed read)");
+      con_state = CONNECTION_STATE_DISCONNECTING;
+    }
   }
 
   Load *l_p;
   while((l_p = send_q.next()))
   {
     if(sendLoad(l_p)) ; //do nothing- already dequeued
-    else con_state = CONNECTION_STATE_DISCONNECTING;
+    else
+    {
+      fg_log("Client: abort connection (failed send)");
+      con_state = CONNECTION_STATE_DISCONNECTING;
+    }
   }
 }
 
