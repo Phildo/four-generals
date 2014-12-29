@@ -31,7 +31,7 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   inRoomLabel = UI::Label("In Room", ww/2-250, wh/2-170,40);
   ipLabel     = UI::Label(Network::getIP().ptr(), ww/2-250, wh/2-120,40);
-  portLabel   = UI::Label("8080", ww/2+150, wh/2-120,40);
+  portLabel   = UI::Label("4040", ww/2+150, wh/2-120,40);
 
   leaveSessButton = UI::TextButton("Leave Session", ww/2-250, wh/2-70, 500, 40);
   beginGameButton = UI::TextButton("Begin Game!", ww/2-250, wh/2-20, 500, 40);

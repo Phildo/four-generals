@@ -15,7 +15,7 @@ Server::Server()
   con_state = CONNECTION_STATE_DISCONNECTED;
   sock_fd = -1;
   ip = Network::getIP();
-  port = 8080;
+  port = 4040;
 
   con_id_store.getId(); //reserve ID 0 so that all connections have > 0 ids
   n_cons = 0;

@@ -36,7 +36,7 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
   if(dotCt == 3) ipPrefix = String(ipPrefBuff,i);
 
   joinButton = UI::TextButton( "Join Session", ww/2-250, wh/2-70, 500, 40);
-  portLabel   = UI::Label("8080", ww/2+150, wh/2-120,40);
+  portLabel   = UI::Label("4040", ww/2+150, wh/2-120,40);
   ipInput     = UI::TextBox(ww/2-250, wh/2-120,400,40);
   keyboard = UI::Keyboard(0,wh-200,ww,200);
   ipInput.setText(Network::getIP());
@@ -68,7 +68,7 @@ void JoinScene::touch(In &in)
     if(joinButton.query(in))
     {
       if(!client) { client = new Network::Client(); *client_ptr = client; }
-      if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(ipInput.getText(),8080);
+      if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(ipInput.getText(),4040);
     }
     if(automatic.query(in))
     {
@@ -84,7 +84,7 @@ void JoinScene::touch(In &in)
       {
         searching = 1; //kick off actual search here, pick up in tick
         if(!client) { client = new Network::Client(); *client_ptr = client; }
-        if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(ipPrefix.concat(String::decimalRep(searching)),8080);
+        if(client->con_state == Network::CONNECTION_STATE_DISCONNECTED) client->connect(ipPrefix.concat(String::decimalRep(searching)),4040);
       }
     }
     if(manual.query(in))
@@ -112,7 +112,7 @@ int JoinScene::tick()
       {
         searching++;
         if(searching == 256) searching = 0;
-        else client->connect(ipPrefix.concat(String::decimalRep(searching)),8080);
+        else client->connect(ipPrefix.concat(String::decimalRep(searching)),4040);
       }
     }
   }

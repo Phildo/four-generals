@@ -17,7 +17,7 @@ Client::Client()
   con_id = 0;
   sock_fd = -1;
   ip = getIP();
-  port = 8080;
+  port = 4040;
 
   handle.client = this;
 }
