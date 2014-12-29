@@ -1,2 +1,10 @@
-- "Search for game" should handle connecting to something else (eg, a dvr listening on 8080)
 - host/join specified port
+- keeping score
+- north/south/east/west labels under generals
+- p1,p2, etc... tags in character picker
+- sensible text popups
+
+- android no ip? (can't host)
+- android startup to gray screen
+- android freeze on disconnect
+- android(?) keyboard input buffers after bad connection attempt
