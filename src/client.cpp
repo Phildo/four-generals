@@ -67,7 +67,45 @@ void * Client::fork()
         else
         {
           fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL)&(~O_NONBLOCK)); //set blocking
-          con_state = CONNECTION_STATE_CONNECTED;
+
+          con_state = CONNECTION_STATE_WAITING;
+
+          FD_ZERO(&sock_fds);
+          FD_SET(sock_fd, &sock_fds);
+          tv.tv_sec = 0; tv.tv_usec = FG_US_PER_TICK;
+
+          int retval = select(sock_fd+1, &sock_fds, NULL, NULL, &tv);
+          if(retval == -1) con_state = CONNECTION_STATE_DISCONNECTING;
+          else if(retval && FD_ISSET(sock_fd, &sock_fds))
+          {
+            Load l;
+            if(receiveLoad(&l))
+            {
+              if(con_id == 0 && //this is the silliest thing...
+                l.data[ 0] == 'F' &&
+                l.data[ 1] == 'G' &&
+                l.data[ 2] == '_' &&
+                l.data[ 3] == 'H' &&
+                l.data[ 4] == 'A' &&
+                l.data[ 5] == 'N' &&
+                l.data[ 6] == 'D' &&
+                l.data[ 7] == 'S' &&
+                l.data[ 8] == 'H' &&
+                l.data[ 9] == 'A' &&
+                l.data[10] == 'K' &&
+                l.data[11] == 'E' &&
+                l.data[12] == ':'
+                )
+              {
+                con_id = String(&l.data[13],3).intVal();
+                if(con_id == 0) con_state = CONNECTION_STATE_DISCONNECTING;
+                else con_state = CONNECTION_STATE_CONNECTED;
+              }
+              else con_state = CONNECTION_STATE_DISCONNECTING;
+            }
+            else con_state = CONNECTION_STATE_DISCONNECTING;
+          }
+
           while(con_state == CONNECTION_STATE_CONNECTED)
             tick();
         }
@@ -102,29 +140,7 @@ void Client::tick()
   else if(retval && FD_ISSET(sock_fd, &sock_fds))
   {
     Load l;
-    if(receiveLoad(&l))
-    {
-      if(con_id == 0 && //this is the silliest thing...
-        l.data[ 0] == 'F' &&
-        l.data[ 1] == 'G' &&
-        l.data[ 2] == '_' &&
-        l.data[ 3] == 'H' &&
-        l.data[ 4] == 'A' &&
-        l.data[ 5] == 'N' &&
-        l.data[ 6] == 'D' &&
-        l.data[ 7] == 'S' &&
-        l.data[ 8] == 'H' &&
-        l.data[ 9] == 'A' &&
-        l.data[10] == 'K' &&
-        l.data[11] == 'E' &&
-        l.data[12] == ':'
-      )
-      {
-        con_id = String(&l.data[13],3).intVal();
-        if(con_id == 0) con_state = CONNECTION_STATE_DISCONNECTING;
-      }
-      else recv_q.enqueue(l);
-    }
+    if(receiveLoad(&l)) recv_q.enqueue(l);
     else con_state = CONNECTION_STATE_DISCONNECTING;
   }
 
