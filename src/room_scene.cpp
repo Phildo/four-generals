@@ -37,6 +37,11 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   ipLabel     = UI::Label(Network::getIP().ptr(), ww/2-250, wh/2-120,40);
   portLabel   = UI::Label("4040", ww/2+150, wh/2-120,40);
 
+  pScoreLabels[0] = UI::Image(Sprite::p1(), space(ww, 200, 40, 4, 0), 140, 40, 40);
+  pScoreLabels[1] = UI::Image(Sprite::p1(), space(ww, 200, 40, 4, 1), 140, 40, 40);
+  pScoreLabels[2] = UI::Image(Sprite::p1(), space(ww, 200, 40, 4, 2), 140, 40, 40);
+  pScoreLabels[3] = UI::Image(Sprite::p1(), space(ww, 200, 40, 4, 3), 140, 40, 40);
+
   beginGameButton = UI::TextButton("Begin Game!", ww/2-250, wh/2-20, 500, 40);
 
   SDL_Rect r = whoBoxForPosition('s');
@@ -161,6 +166,9 @@ void RoomScene::draw()
   netroleLabel.draw(graphics);
   //ipLabel.draw(graphics);
   //portLabel.draw(graphics);
+
+  for(int i = 0; i < 4; i++)
+    pScoreLabels[i].draw(graphics);
 
   //draw cardinals
   for(int i = 0; i < 4; i++)

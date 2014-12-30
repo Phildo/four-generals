@@ -24,6 +24,8 @@ class RoomScene : public Scene
     UI::Label ipLabel;
     UI::Label portLabel;
 
+    UI::Image pScoreLabels[4];
+
     UI::TextButton beginGameButton;
     UI::Button chooseBtn;
     UI::ImageButton cwBtn;
