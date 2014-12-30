@@ -61,10 +61,10 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   s = UI::AnimSprites(Sprite::gen_w_0(), Sprite::gen_w_1(), Sprite::gen_w_2(), Sprite::gen_w_3());
   cardImgs[Compass::icardinal('w')] = UI::Anim(s, 4, 1.f, cardRects[Compass::icardinal('w')].v());
 
-  cardLbls[Compass::icardinal('n')] = UI::Label("N", cardRects[Compass::icardinal('n')].v());
-  cardLbls[Compass::icardinal('e')] = UI::Label("E", cardRects[Compass::icardinal('e')].v());
-  cardLbls[Compass::icardinal('s')] = UI::Label("S", cardRects[Compass::icardinal('s')].v());
-  cardLbls[Compass::icardinal('w')] = UI::Label("W", cardRects[Compass::icardinal('w')].v());
+  cardLbls[Compass::icardinal('n')] = UI::Label("north", cardRects[Compass::icardinal('n')].v()); cardLbls[0].rect = cardRects[0].v(); cardLbls[0].rect.y += cardLbls[0].rect.h; cardLbls[0].rect.h /= 3;
+  cardLbls[Compass::icardinal('e')] = UI::Label("east",  cardRects[Compass::icardinal('e')].v()); cardLbls[1].rect = cardRects[1].v(); cardLbls[1].rect.y += cardLbls[1].rect.h; cardLbls[1].rect.h /= 3;
+  cardLbls[Compass::icardinal('s')] = UI::Label("south", cardRects[Compass::icardinal('s')].v()); cardLbls[2].rect = cardRects[2].v(); cardLbls[2].rect.y += cardLbls[2].rect.h; cardLbls[2].rect.h /= 3;
+  cardLbls[Compass::icardinal('w')] = UI::Label("west",  cardRects[Compass::icardinal('w')].v()); cardLbls[3].rect = cardRects[3].v(); cardLbls[3].rect.y += cardLbls[3].rect.h; cardLbls[3].rect.h /= 3;
 
   SCENE_CHANGE_HACK = 0;
 }
@@ -77,10 +77,10 @@ SDL_Rect RoomScene::whoBoxForPosition(char c)
   int wh = graphics->winHeight();
 
   //(clockwise)    top          right      bottom(you)     left
-  int ws[] = {          60,           80,          160,           80};
-  int hs[] = {          60,           80,          160,           80};
-  int xs[] = {ww/2-ws[0]/2,  ww-ws[1]-20, ww/2-ws[2]/2,           20};
-  int ys[] = {          20, wh/2-hs[1]/2,  wh-hs[2]-20, wh/2-hs[3]/2};
+  int ws[] = {          60,              80,             160,              80};
+  int hs[] = {          60,              80,             160,              80};
+  int xs[] = {ww/2-ws[0]/2,     ww-ws[1]-20,    ww/2-ws[2]/2,              20};
+  int ys[] = {          20, wh/2-hs[1]/2-40,  wh-hs[2]-20-40, wh/2-hs[3]/2-40};
 
   SDL_Rect tmp;
   tmp.x = xs[i];
@@ -134,6 +134,8 @@ int RoomScene::tick()
     cardRects[i].tick(0.2); //bs delta
     cardImgs[i].rect = cardRects[i].v();
     cardLbls[i].rect = cardRects[i].v();
+    cardLbls[i].rect.y += cardLbls[i].rect.h;
+    cardLbls[i].rect.h /= 3;
   }
 
   int tmp = SCENE_CHANGE_HACK;
@@ -151,10 +153,8 @@ void RoomScene::draw()
   //draw cardinals
   for(int i = 0; i < 4; i++)
   {
-    char card = Compass::cardinal(i);
     cardImgs[i].draw(graphics);
-    if(c->model.cardinalConnected(card))
-      cardLbls[i].draw(graphics);
+    cardLbls[i].draw(graphics);
   }
 
   cwBtn.draw(graphics);
