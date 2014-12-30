@@ -89,10 +89,10 @@ namespace Sprite
   SDL_Rect arrow_right();
   SDL_Rect arrow_left_up();
   SDL_Rect arrow_right_up();
-  SDL_Rect p1();
-  SDL_Rect p2();
-  SDL_Rect p3();
-  SDL_Rect p4();
+  SDL_Rect undefined_1();
+  SDL_Rect undefined_2();
+  SDL_Rect undefined_3();
+  SDL_Rect undefined_4();
   SDL_Rect question_bubble();
   SDL_Rect loading_0();
   SDL_Rect loading_1();
@@ -144,6 +144,26 @@ namespace Sprite
   SDL_Rect border_corner_round_tr();
   SDL_Rect border_corner_round_bl();
   SDL_Rect border_corner_round_br();
+
+  SDL_Rect p1();
+  SDL_Rect p2();
+  SDL_Rect p3();
+  SDL_Rect p4();
+
+  SDL_Rect p1_w();
+  SDL_Rect p2_w();
+  SDL_Rect p3_w();
+  SDL_Rect p4_w();
+
+  SDL_Rect p1_b();
+  SDL_Rect p2_b();
+  SDL_Rect p3_b();
+  SDL_Rect p4_b();
+
+  SDL_Rect p1_r();
+  SDL_Rect p2_r();
+  SDL_Rect p3_r();
+  SDL_Rect p4_r();
 
   SDL_Rect null();
 };

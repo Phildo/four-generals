@@ -37,10 +37,10 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   ipLabel     = UI::Label(Network::getIP().ptr(), ww/2-250, wh/2-120,40);
   portLabel   = UI::Label("4040", ww/2+150, wh/2-120,40);
 
-  pScoreLabels[0] = UI::Image(Sprite::p1(), space(ww, 200, 40, 4, 0), 140, 40, 40);
-  pScoreLabels[1] = UI::Image(Sprite::p1(), space(ww, 200, 40, 4, 1), 140, 40, 40);
-  pScoreLabels[2] = UI::Image(Sprite::p1(), space(ww, 200, 40, 4, 2), 140, 40, 40);
-  pScoreLabels[3] = UI::Image(Sprite::p1(), space(ww, 200, 40, 4, 3), 140, 40, 40);
+  pScoreLabels[0] = UI::Image(Sprite::p1(), space(ww, 200, 60, 4, 0), 140, 60, 60);
+  pScoreLabels[1] = UI::Image(Sprite::p2(), space(ww, 200, 60, 4, 1), 140, 60, 60);
+  pScoreLabels[2] = UI::Image(Sprite::p3(), space(ww, 200, 60, 4, 2), 140, 60, 60);
+  pScoreLabels[3] = UI::Image(Sprite::p4(), space(ww, 200, 60, 4, 3), 140, 60, 60);
 
   beginGameButton = UI::TextButton("Begin Game!", ww/2-250, wh/2-20, 500, 40);
 

@@ -199,10 +199,10 @@ SDL_Rect Sprite::arrow_left()      { return rect(  0,100, 32, 32); }
 SDL_Rect Sprite::arrow_right()     { return rect( 32,100, 32, 32); }
 SDL_Rect Sprite::arrow_left_up()   { return rect(  0,132, 32, 32); }
 SDL_Rect Sprite::arrow_right_up()  { return rect( 32,132, 32, 32); }
-SDL_Rect Sprite::p1()              { return rect( 64,100, 32, 32); }
-SDL_Rect Sprite::p2()              { return rect( 96,100, 32, 32); }
-SDL_Rect Sprite::p3()              { return rect( 64,132, 32, 32); }
-SDL_Rect Sprite::p4()              { return rect( 96,132, 32, 32); }
+SDL_Rect Sprite::undefined_1()     { return rect( 64,100, 32, 32); }
+SDL_Rect Sprite::undefined_2()     { return rect( 96,100, 32, 32); }
+SDL_Rect Sprite::undefined_3()     { return rect( 64,132, 32, 32); }
+SDL_Rect Sprite::undefined_4()     { return rect( 96,132, 32, 32); }
 SDL_Rect Sprite::question_bubble() { return rect(128,100, 32, 32); }
 SDL_Rect Sprite::loading_0()       { return rect(160,100, 32, 32); }
 SDL_Rect Sprite::loading_1()       { return rect(160,132, 32, 32); }
@@ -253,6 +253,26 @@ SDL_Rect Sprite::border_corner_round_tl() { return rect(32,260,16,16); }
 SDL_Rect Sprite::border_corner_round_tr() { return rect(48,260,16,16); }
 SDL_Rect Sprite::border_corner_round_bl() { return rect(32,276,16,16); }
 SDL_Rect Sprite::border_corner_round_br() { return rect(48,276,16,16); }
+
+SDL_Rect Sprite::p1() { return rect(  0,292, 32, 32); }
+SDL_Rect Sprite::p2() { return rect( 32,292, 32, 32); }
+SDL_Rect Sprite::p3() { return rect(  0,324, 32, 32); }
+SDL_Rect Sprite::p4() { return rect( 32,324, 32, 32); }
+
+SDL_Rect Sprite::p1_w() { return rect( 64,292, 32, 32); }
+SDL_Rect Sprite::p2_w() { return rect( 96,292, 32, 32); }
+SDL_Rect Sprite::p3_w() { return rect( 64,324, 32, 32); }
+SDL_Rect Sprite::p4_w() { return rect( 96,324, 32, 32); }
+
+SDL_Rect Sprite::p1_b() { return rect(128,292, 32, 32); }
+SDL_Rect Sprite::p2_b() { return rect(160,292, 32, 32); }
+SDL_Rect Sprite::p3_b() { return rect(128,324, 32, 32); }
+SDL_Rect Sprite::p4_b() { return rect(160,324, 32, 32); }
+
+SDL_Rect Sprite::p1_r() { return rect(192,292, 32, 32); }
+SDL_Rect Sprite::p2_r() { return rect(224,292, 32, 32); }
+SDL_Rect Sprite::p3_r() { return rect(192,324, 32, 32); }
+SDL_Rect Sprite::p4_r() { return rect(224,324, 32, 32); }
 
 SDL_Rect Sprite::null() { return rect(0,0,0,0); }
 
