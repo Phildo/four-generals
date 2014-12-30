@@ -155,6 +155,16 @@ void RoomScene::draw()
   {
     cardImgs[i].draw(graphics);
     cardLbls[i].draw(graphics);
+    char con = c->model.cardinalConnection(Compass::cardinal(i));
+    SDL_Rect tmp = cardImgs[i].rect.rect;
+    tmp.y += tmp.h/2;
+    tmp.x += tmp.w/2;
+    tmp.w /= 2;
+    tmp.h /= 2;
+         if(con == '1') graphics->draw(Sprite::p1(),tmp);
+    else if(con == '2') graphics->draw(Sprite::p2(),tmp);
+    else if(con == '3') graphics->draw(Sprite::p3(),tmp);
+    else if(con == '4') graphics->draw(Sprite::p4(),tmp);
   }
 
   cwBtn.draw(graphics);
