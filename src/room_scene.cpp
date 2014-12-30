@@ -10,6 +10,7 @@
 #include "logger.h"
 
 #include "compass.h"
+#include "conids.h"
 
 #include "SDL.h"
 
@@ -37,10 +38,27 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   ipLabel     = UI::Label(Network::getIP().ptr(), ww/2-250, wh/2-120,40);
   portLabel   = UI::Label("4040", ww/2+150, wh/2-120,40);
 
-  pScoreLabels[0] = UI::Image(Sprite::p1(), space(ww, 200, 60, 4, 0), 140, 60, 60);
-  pScoreLabels[1] = UI::Image(Sprite::p2(), space(ww, 200, 60, 4, 1), 140, 60, 60);
-  pScoreLabels[2] = UI::Image(Sprite::p3(), space(ww, 200, 60, 4, 2), 140, 60, 60);
-  pScoreLabels[3] = UI::Image(Sprite::p4(), space(ww, 200, 60, 4, 3), 140, 60, 60);
+  pTags[0] = Sprite::p1();
+  pTags[1] = Sprite::p2();
+  pTags[2] = Sprite::p3();
+  pTags[3] = Sprite::p4();
+  pTagsW[0] = Sprite::p1_w();
+  pTagsW[1] = Sprite::p2_w();
+  pTagsW[2] = Sprite::p3_w();
+  pTagsW[3] = Sprite::p4_w();
+  pTagsB[0] = Sprite::p1_b();
+  pTagsB[1] = Sprite::p2_b();
+  pTagsB[2] = Sprite::p3_b();
+  pTagsB[3] = Sprite::p4_b();
+  pTagsR[0] = Sprite::p1_r();
+  pTagsR[1] = Sprite::p2_r();
+  pTagsR[2] = Sprite::p3_r();
+  pTagsR[3] = Sprite::p4_r();
+
+  pScoreLabels[0] = UI::Image(pTags[0], space(ww, 200, 60, 4, 0), 140, 60, 60);
+  pScoreLabels[1] = UI::Image(pTags[1], space(ww, 200, 60, 4, 1), 140, 60, 60);
+  pScoreLabels[2] = UI::Image(pTags[2], space(ww, 200, 60, 4, 2), 140, 60, 60);
+  pScoreLabels[3] = UI::Image(pTags[3], space(ww, 200, 60, 4, 3), 140, 60, 60);
 
   beginGameButton = UI::TextButton("Begin Game!", ww/2-250, wh/2-20, 500, 40);
 
@@ -168,7 +186,21 @@ void RoomScene::draw()
   //portLabel.draw(graphics);
 
   for(int i = 0; i < 4; i++)
+  {
+    if(c->model.connectionConnection(ConIds::conid(i)) == '0')
+      pScoreLabels[i].sprite = pTags[i];
+    else
+    {
+      char gen = c->model.connectionGeneral(ConIds::conid(i)).cardinal;
+      if(gen == 'n' || gen == 's')
+        pScoreLabels[i].sprite = pTagsB[i];
+      else if(gen == 'e' || gen == 'w')
+        pScoreLabels[i].sprite = pTagsR[i];
+      else
+        pScoreLabels[i].sprite = pTagsW[i];
+    }
     pScoreLabels[i].draw(graphics);
+  }
 
   //draw cardinals
   for(int i = 0; i < 4; i++)

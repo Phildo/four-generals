@@ -24,6 +24,10 @@ class RoomScene : public Scene
     UI::Label ipLabel;
     UI::Label portLabel;
 
+    SDL_Rect pTags[4];
+    SDL_Rect pTagsW[4];
+    SDL_Rect pTagsB[4];
+    SDL_Rect pTagsR[4];
     UI::Image pScoreLabels[4];
 
     UI::TextButton beginGameButton;
