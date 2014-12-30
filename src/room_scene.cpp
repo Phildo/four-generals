@@ -29,11 +29,14 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   backButton = UI::Button(20,20,40,40);
 
-  inRoomLabel = UI::Label("In Room", ww/2-250, wh/2-170,40);
+  youAreLabel = UI::Label("You Are ", ww-200, 20, 30);
+  youPTag = UI::Image(Sprite::p1(), ww-70, 0, 60, 60);
+  showIpButton = UI::ImageButton(Sprite::question_bubble(), ww-200, 60, 30, 30);
+  netroleLabel = UI::Label("host", ww-160, 60, 30);
+
   ipLabel     = UI::Label(Network::getIP().ptr(), ww/2-250, wh/2-120,40);
   portLabel   = UI::Label("4040", ww/2+150, wh/2-120,40);
 
-  leaveSessButton = UI::TextButton("Leave Session", ww/2-250, wh/2-70, 500, 40);
   beginGameButton = UI::TextButton("Begin Game!", ww/2-250, wh/2-20, 500, 40);
 
   SDL_Rect r = whoBoxForPosition('s');
@@ -96,6 +99,13 @@ void RoomScene::enter()
   client = *client_ptr;
   s = *s_ptr;
   c = *c_ptr;
+
+  if(s) netroleLabel.text = String("host");
+  else  netroleLabel.text = String("client");
+       if(c->myConnection() == '1') youPTag.sprite = Sprite::p1();
+  else if(c->myConnection() == '2') youPTag.sprite = Sprite::p2();
+  else if(c->myConnection() == '3') youPTag.sprite = Sprite::p3();
+  else if(c->myConnection() == '4') youPTag.sprite = Sprite::p4();
 }
 
 void RoomScene::touch(In &in)
@@ -113,7 +123,6 @@ void RoomScene::touch(In &in)
     else                    c->requestCardinal(card);
   }
 
-  if(leaveSessButton.query(in)) { }
   if(s && c->model.rolesAssigned() && beginGameButton.query(in))
     c->requestBeginPlay();
 }
@@ -146,9 +155,12 @@ int RoomScene::tick()
 void RoomScene::draw()
 {
   backButton.draw(graphics);
-  inRoomLabel.draw(graphics);
-  ipLabel.draw(graphics);
-  portLabel.draw(graphics);
+  youAreLabel.draw(graphics);
+  youPTag.draw(graphics);
+  showIpButton.draw(graphics);
+  netroleLabel.draw(graphics);
+  //ipLabel.draw(graphics);
+  //portLabel.draw(graphics);
 
   //draw cardinals
   for(int i = 0; i < 4; i++)
@@ -169,8 +181,6 @@ void RoomScene::draw()
 
   cwBtn.draw(graphics);
   ccwBtn.draw(graphics);
-
-  leaveSessButton.draw(graphics);
 
   if(s && c->model.rolesAssigned())
     beginGameButton.draw(graphics);

@@ -17,11 +17,13 @@ class RoomScene : public Scene
 
     UI::Button backButton;
 
-    UI::Label inRoomLabel;
+    UI::Label youAreLabel;
+    UI::Image youPTag;
+    UI::ImageButton showIpButton;
+    UI::Label netroleLabel;
     UI::Label ipLabel;
     UI::Label portLabel;
 
-    UI::TextButton leaveSessButton;
     UI::TextButton beginGameButton;
     UI::Button chooseBtn;
     UI::ImageButton cwBtn;
