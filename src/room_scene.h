@@ -29,6 +29,9 @@ class RoomScene : public Scene
     SDL_Rect pTagsB[4];
     SDL_Rect pTagsR[4];
     UI::Image pScoreLabels[4];
+    UI::Label pWinLabels[4];
+    UI::Label pLossLabels[4];
+    UI::Label pTieLabels[4];
 
     UI::TextButton beginGameButton;
     UI::Button chooseBtn;

@@ -60,6 +60,21 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   pScoreLabels[2] = UI::Image(pTags[2], space(ww, 200, 60, 4, 2), 140, 60, 60);
   pScoreLabels[3] = UI::Image(pTags[3], space(ww, 200, 60, 4, 3), 140, 60, 60);
 
+  pWinLabels[0] = UI::Label("0", space(ww, 200, 30, 4, 0), 190, 30);
+  pWinLabels[1] = UI::Label("0", space(ww, 200, 30, 4, 1), 190, 30);
+  pWinLabels[2] = UI::Label("0", space(ww, 200, 30, 4, 2), 190, 30);
+  pWinLabels[3] = UI::Label("0", space(ww, 200, 30, 4, 3), 190, 30);
+
+  pLossLabels[0] = UI::Label("0", space(ww, 200, 30, 4, 0), 220, 30);
+  pLossLabels[1] = UI::Label("0", space(ww, 200, 30, 4, 1), 220, 30);
+  pLossLabels[2] = UI::Label("0", space(ww, 200, 30, 4, 2), 220, 30);
+  pLossLabels[3] = UI::Label("0", space(ww, 200, 30, 4, 3), 220, 30);
+
+  pTieLabels[0] = UI::Label("0", space(ww, 200, 30, 4, 0), 250, 30);
+  pTieLabels[1] = UI::Label("0", space(ww, 200, 30, 4, 1), 250, 30);
+  pTieLabels[2] = UI::Label("0", space(ww, 200, 30, 4, 2), 250, 30);
+  pTieLabels[3] = UI::Label("0", space(ww, 200, 30, 4, 3), 250, 30);
+
   beginGameButton = UI::TextButton("Begin Game!", ww/2-250, wh/2-20, 500, 40);
 
   SDL_Rect r = whoBoxForPosition('s');
@@ -129,6 +144,17 @@ void RoomScene::enter()
   else if(c->myConnection() == '2') youPTag.sprite = Sprite::p2();
   else if(c->myConnection() == '3') youPTag.sprite = Sprite::p3();
   else if(c->myConnection() == '4') youPTag.sprite = Sprite::p4();
+
+  //should never change while in this room... I don't think
+  for(int i = 0; i < 4; i++)
+  {
+    char con = ConIds::conid(i);
+    VictoryRecord r = c->model.connectionVictoryRecord(con);
+    pWinLabels[i].text = String::decimalRep(r.win);
+    pLossLabels[i].text = String::decimalRep(r.loss);
+    pTieLabels[i].text = String::decimalRep(r.tie);
+  }
+
 }
 
 void RoomScene::touch(In &in)
@@ -220,6 +246,14 @@ void RoomScene::draw()
         pScoreLabels[i].sprite = pTagsW[i];
     }
     pScoreLabels[i].draw(graphics);
+  }
+
+  //draw scores
+  for(int i = 0; i < 4; i++)
+  {
+    pWinLabels[i].draw(graphics);
+    pLossLabels[i].draw(graphics);
+    pTieLabels[i].draw(graphics);
   }
 
   cwBtn.draw(graphics);

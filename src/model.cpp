@@ -91,6 +91,14 @@ void Model::commitActions()
     else if(a.action == 's') { }
   }
 
+  for(int i = 0; i < 4; i++) //ascribe any victory points
+  {
+    char con = ConIds::conid(i);
+    if(connectionWin(con))  connectionVictoryRecord(con).win++;
+    if(connectionLose(con)) connectionVictoryRecord(con).loss++;
+    if(connectionTie(con))  connectionVictoryRecord(con).tie++;
+  }
+
   zeroTomorrowsActions();
   days++;
 }
