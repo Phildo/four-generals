@@ -187,7 +187,6 @@ void ClientModel::tick()
         break;
       case e_type_reset_game:
         model.zeroRound();
-        model.days = 0; //assume immediate e_type_begin_play //whaaaaat...
         break;
       default:
         break;

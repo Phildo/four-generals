@@ -364,7 +364,7 @@ void Model::zeroTomorrowsActions()
 
 void Model::zeroRound()
 {
-  days = -1;
+  days = -1; //set to "not yet a valid day"
   zeroTomorrowsActions();
   winning_card = '0';
   losing_card = '0';

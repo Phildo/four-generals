@@ -448,7 +448,7 @@ int PlayScene::tick()
 
   if(known_day != c->model.currentDay())
   {
-    //if(c->model.days == -1) return -1; //game was reset- go back to room
+    if(c->model.days == -1) return -1; //game was reset- go back to room
 
     zeroE();
     known_day = c->model.currentDay();
