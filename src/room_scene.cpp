@@ -177,31 +177,6 @@ int RoomScene::tick()
 
 void RoomScene::draw()
 {
-  backButton.draw(graphics);
-  youAreLabel.draw(graphics);
-  youPTag.draw(graphics);
-  showIpButton.draw(graphics);
-  netroleLabel.draw(graphics);
-  //ipLabel.draw(graphics);
-  //portLabel.draw(graphics);
-
-  for(int i = 0; i < 4; i++)
-  {
-    if(c->model.connectionConnection(ConIds::conid(i)) == '0')
-      pScoreLabels[i].sprite = pTags[i];
-    else
-    {
-      char gen = c->model.connectionGeneral(ConIds::conid(i)).cardinal;
-      if(gen == 'n' || gen == 's')
-        pScoreLabels[i].sprite = pTagsB[i];
-      else if(gen == 'e' || gen == 'w')
-        pScoreLabels[i].sprite = pTagsR[i];
-      else
-        pScoreLabels[i].sprite = pTagsW[i];
-    }
-    pScoreLabels[i].draw(graphics);
-  }
-
   //draw cardinals
   for(int i = 0; i < 4; i++)
   {
@@ -219,6 +194,32 @@ void RoomScene::draw()
            if(card == 'n' || card == 's') graphics->draw(pTagsB[ConIds::iconid(con)],tmp);
       else if(card == 'e' || card == 'w') graphics->draw(pTagsR[ConIds::iconid(con)],tmp);
     }
+  }
+
+  backButton.draw(graphics);
+  youAreLabel.draw(graphics);
+  youPTag.draw(graphics);
+  showIpButton.draw(graphics);
+  netroleLabel.draw(graphics);
+  //ipLabel.draw(graphics);
+  //portLabel.draw(graphics);
+
+  //draw score labels
+  for(int i = 0; i < 4; i++)
+  {
+    if(c->model.connectionConnection(ConIds::conid(i)) == '0')
+      pScoreLabels[i].sprite = pTags[i];
+    else
+    {
+      char gen = c->model.connectionGeneral(ConIds::conid(i)).cardinal;
+      if(gen == 'n' || gen == 's')
+        pScoreLabels[i].sprite = pTagsB[i];
+      else if(gen == 'e' || gen == 'w')
+        pScoreLabels[i].sprite = pTagsR[i];
+      else
+        pScoreLabels[i].sprite = pTagsW[i];
+    }
+    pScoreLabels[i].draw(graphics);
   }
 
   cwBtn.draw(graphics);

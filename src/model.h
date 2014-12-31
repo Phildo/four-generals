@@ -5,6 +5,7 @@
 #include "messenger.h"
 #include "sabotage.h"
 #include "event.h"
+#include "victory_record.h"
 
 #include "array.h"
 
@@ -16,6 +17,7 @@ class Model
   public :
     //in connection order
     char connections[5];
+    VictoryRecord connectionRecords[5]; //why this is a separate struct... who knows.
 
     //in cardinal order
     General generals[5];
@@ -36,6 +38,8 @@ class Model
     //clarity
     char& connectionConnection(char con);
     char& cardinalConnection(char card);
+    VictoryRecord& connectionVictoryRecord(char con);
+    VictoryRecord& cardinalVictoryRecord(char card);
     char connectionCardinal(char con);
     General& cardinalGeneral(char card);
     General& connectionGeneral(char con);
@@ -74,7 +78,8 @@ class Model
 
     void zeroCurrentActions();
     void zeroTomorrowsActions();
-    void zero(); //'resets' game
+    void zeroRound(); //leaves score/connections
+    void zeroAll();
 
     Model();
     ~Model();

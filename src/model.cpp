@@ -14,7 +14,7 @@ Model::Model()
   connections[2] = '0';
   connections[3] = '0';
   connections[4] = '0';
-  zero();
+  zeroAll();
 }
 
 void Model::connectCon(char con)
@@ -107,6 +107,16 @@ char& Model::cardinalConnection(char card)
   for(int i = 0; i < 4; i++)
     if(generals[i].cardinal == card) return connectionConnection(generals[i].connection);
   return connectionConnection('0');
+}
+
+VictoryRecord& Model::connectionVictoryRecord(char con)
+{
+  return connectionRecords[ConIds::iconid(con)];
+}
+
+VictoryRecord& Model::cardinalVictoryRecord(char card)
+{
+  return connectionVictoryRecord(cardinalConnection(card));
 }
 
 char Model::connectionCardinal(char con)
@@ -352,7 +362,7 @@ void Model::zeroTomorrowsActions()
     actions[((days+1)*4)+i].zero();
 }
 
-void Model::zero() //'resets' game
+void Model::zeroRound()
 {
   days = -1;
   zeroTomorrowsActions();
@@ -360,6 +370,13 @@ void Model::zero() //'resets' game
   losing_card = '0';
   tieing_card = '0';
 }
+
+void Model::zeroAll()
+{
+  zeroRound();
+  //don't actually know how to handle this yet...
+}
+
 
 Model::~Model()
 {

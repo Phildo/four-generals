@@ -108,9 +108,9 @@ void ServerModel::tick()
         break;
       case e_type_commit_actions: break; //server->client only
       case e_type_reset_game:
-        model.zero();
+        model.zeroRound();
         sendEvent(e);
-        model.days = 0; //assume auto e_type_begin_play
+        model.days = 0; //assume auto e_type_begin_play //WHAAAATTT...
         break;
       default: break;
     }

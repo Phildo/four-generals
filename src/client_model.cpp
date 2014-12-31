@@ -186,8 +186,8 @@ void ClientModel::tick()
         model.commitActions(); //also increases day
         break;
       case e_type_reset_game:
-        model.zero();
-        model.days = 0; //assume immediate e_type_begin_play
+        model.zeroRound();
+        model.days = 0; //assume immediate e_type_begin_play //whaaaaat...
         break;
       default:
         break;
