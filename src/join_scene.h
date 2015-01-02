@@ -32,6 +32,8 @@ class JoinScene : public Scene
     UI::TextBox ipInput;
     UI::Keyboard keyboard;
 
+    UI::Anim loading;
+
     Network::Client *client;
     Network::Client **client_ptr; //Pointer to the client pointer 'owned' by game
     ClientModel *c_model;

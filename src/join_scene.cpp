@@ -4,6 +4,7 @@
 #include "input.h"
 #include "client.h"
 #include "client_model.h"
+#include "sprite.h"
 
 #include "logger.h"
 
@@ -36,9 +37,11 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
   if(dotCt == 3) ipPrefix = String(ipPrefBuff,i);
 
   joinButton = UI::TextButton( "Join Session", ww/2-250, wh/2-70, 500, 40);
-  portLabel   = UI::Label("4040", ww/2+150, wh/2-120,40);
-  ipInput     = UI::TextBox(ww/2-250, wh/2-120,400,40);
-  keyboard = UI::Keyboard(0,wh-200,ww,200);
+  portLabel  = UI::Label("4040", ww/2+150, wh/2-120,40);
+  ipInput    = UI::TextBox(ww/2-250, wh/2-120,400,40);
+  keyboard   = UI::Keyboard(0,wh-200,ww,200);
+  loading    = UI::Anim(UI::AnimSprites(Sprite::loading_0(), Sprite::loading_1(), Sprite::loading_2(), Sprite::loading_2()), 3, 1.f, ww/2-250, wh/2-120,40,40);
+
   ipInput.setText(Network::getIP());
 
   client_ptr = &c;
@@ -61,10 +64,11 @@ void JoinScene::touch(In &in)
 {
   if(in.type != In::DOWN) return;
 
+  if(backButton.query(in)) SCENE_CHANGE_HACK = -2;
+
   if(manualEntry)
   {
     keyboard.touch(in);
-    if(backButton.query(in)) SCENE_CHANGE_HACK = -2;
     if(joinButton.query(in))
     {
       if(!client) { client = new Network::Client(); *client_ptr = client; }
@@ -96,6 +100,7 @@ void JoinScene::touch(In &in)
 
 int JoinScene::tick()
 {
+  loading.tick(0.2f);
   if(client)
   {
     if(client->con_state == Network::CONNECTION_STATE_CONNECTED)
@@ -116,14 +121,12 @@ int JoinScene::tick()
       }
     }
   }
-  else
+
+  if(manualEntry)
   {
-    if(manualEntry)
-    {
-      char c = keyboard.poll();
-      if(c == '<') ipInput.backspace();
-      else if(c != 0) ipInput.input(c);
-    }
+    char c = keyboard.poll();
+    if(c == '<') ipInput.backspace();
+    else if(c != 0) ipInput.input(c);
   }
 
   int tmp = SCENE_CHANGE_HACK;
@@ -138,16 +141,30 @@ void JoinScene::draw()
 
   if(manualEntry)
   {
-    joinButton.draw(graphics);
+    if(client && client->con_state != Network::CONNECTION_STATE_DISCONNECTED)
+    {
+      loading.draw(graphics);
+    }
+    else
+    {
+      joinButton.draw(graphics);
+      keyboard.draw(graphics);
+      automatic.draw(graphics);
+    }
     portLabel.draw(graphics);
     ipInput.draw(graphics);
-    keyboard.draw(graphics);
-    automatic.draw(graphics);
   }
   else
   {
-    searchJoinButton.draw(graphics);
-    manual.draw(graphics);
+    if(searching)
+    {
+      loading.draw(graphics);
+    }
+    else
+    {
+      searchJoinButton.draw(graphics);
+      manual.draw(graphics);
+    }
   }
 }
 
