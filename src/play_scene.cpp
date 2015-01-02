@@ -29,6 +29,24 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   generals_s[1] = UI::AnimSprites(Sprite::gen_e_0(), Sprite::gen_e_1(), Sprite::gen_e_2(), Sprite::gen_e_3());
   generals_s[2] = UI::AnimSprites(Sprite::gen_s_0(), Sprite::gen_s_1(), Sprite::gen_s_2(), Sprite::gen_s_3());
   generals_s[3] = UI::AnimSprites(Sprite::gen_w_0(), Sprite::gen_w_1(), Sprite::gen_w_2(), Sprite::gen_w_3());
+
+  pTags[0] = Sprite::p1();
+  pTags[1] = Sprite::p2();
+  pTags[2] = Sprite::p3();
+  pTags[3] = Sprite::p4();
+  pTagsW[0] = Sprite::p1_w();
+  pTagsW[1] = Sprite::p2_w();
+  pTagsW[2] = Sprite::p3_w();
+  pTagsW[3] = Sprite::p4_w();
+  pTagsB[0] = Sprite::p1_b();
+  pTagsB[1] = Sprite::p2_b();
+  pTagsB[2] = Sprite::p3_b();
+  pTagsB[3] = Sprite::p4_b();
+  pTagsR[0] = Sprite::p1_r();
+  pTagsR[1] = Sprite::p2_r();
+  pTagsR[2] = Sprite::p3_r();
+  pTagsR[3] = Sprite::p4_r();
+
   force_field_s   = Sprite::shield_full_force();
   shield_full_s   = Sprite::shield_full();
   shield_broken_s = Sprite::shield_cracked();
@@ -76,6 +94,11 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
     sunRects[i].w = 60;
     sunRects[i].h = 60;
   }
+
+  cardLbls[Compass::icardinal('n')] = UI::Label("north", rectForPosition('n'));
+  cardLbls[Compass::icardinal('e')] = UI::Label("east",  rectForPosition('n'));
+  cardLbls[Compass::icardinal('s')] = UI::Label("south", rectForPosition('n'));
+  cardLbls[Compass::icardinal('w')] = UI::Label("west",  rectForPosition('n'));
 
   dayLbls[0] = UI::Label("Su", dayRects[0]);
   dayLbls[1] = UI::Label("Mo", dayRects[1]);
@@ -146,8 +169,9 @@ void PlayScene::enter()
   card = c->myCardinal();
   icard = Compass::icardinal(card);
   rect = rectForPosition('s');
-  cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
-  whoBtns[icard]   = UI::Button(rect);
+  cardImgs[icard] = UI::Anim(generals_s[icard], 4, 1.f, rect);
+  cardLbls[icard].rect = rect; cardLbls[icard].rect.y += cardLbls[icard].rect.h; cardLbls[icard].rect.h /= 3;
+  whoBtns[icard] = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
   //left (clockwise)
@@ -155,6 +179,7 @@ void PlayScene::enter()
   icard = Compass::icardinal(card);
   rect = rectForPosition('w');
   cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
+  cardLbls[icard].rect = rect; cardLbls[icard].rect.y += cardLbls[icard].rect.h; cardLbls[icard].rect.h /= 3;
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -163,6 +188,7 @@ void PlayScene::enter()
   icard = Compass::icardinal(card);
   rect = rectForPosition('n');
   cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
+  cardLbls[icard].rect = rect; cardLbls[icard].rect.y += cardLbls[icard].rect.h; cardLbls[icard].rect.h /= 3;
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
 
@@ -171,10 +197,9 @@ void PlayScene::enter()
   icard = Compass::icardinal(card);
   rect = rectForPosition('e');
   cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
+  cardLbls[icard].rect = rect; cardLbls[icard].rect.y += cardLbls[icard].rect.h; cardLbls[icard].rect.h /= 3;
   whoBtns[icard]   = UI::Button(rect);
   whereBtns[icard] = UI::Button(rect);
-
-  zeroE();
 }
 
 void PlayScene::zeroE()
@@ -480,6 +505,7 @@ void PlayScene::draw()
     char card = Compass::cardinal(i);
 
     cardImgs[i].draw(graphics);
+    cardLbls[i].draw(graphics);
 
     if(t != 0.0f)
     {

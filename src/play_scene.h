@@ -20,6 +20,10 @@ class PlayScene : public Scene
 
     //sprites
     UI::AnimSprites generals_s[4];
+    SDL_Rect pTags[4];
+    SDL_Rect pTagsW[4];
+    SDL_Rect pTagsB[4];
+    SDL_Rect pTagsR[4];
     SDL_Rect force_field_s;
     SDL_Rect shield_full_s;
     SDL_Rect shield_broken_s;
@@ -34,6 +38,8 @@ class PlayScene : public Scene
     SDL_Rect positionHealthRects[4];
     SDL_Rect dayRects[7];
     SDL_Rect sunRects[7];
+
+    UI::Label cardLbls[4];
 
     UI::Label dayLbls[7];
 
