@@ -32,11 +32,13 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   youAreLabel = UI::Label("You Are ", ww-200, 20, 30);
   youPTag = UI::Image(Sprite::p1(), ww-70, 0, 60, 60);
-  showIpButton = UI::ImageButton(Sprite::question_bubble(), ww-200, 60, 30, 30);
+  showIpQ = UI::Image(Sprite::question_bubble(), ww-200, 60, 30, 30);
   netroleLabel = UI::Label("host", ww-160, 60, 30);
 
-  ipLabel     = UI::Label(Network::getIP().ptr(), ww/2-250, wh/2-120,40);
-  portLabel   = UI::Label("4040", ww/2+150, wh/2-120,40);
+  showingIp = false;
+  showIpButton = UI::Button(ww-200, 0, 200, 90);
+  ipLabel     = UI::Label(Network::getIP().ptr(), ww/2-250, wh/2-170,40);
+  portLabel   = UI::Label("4040", ww/2+150, wh/2-170,40);
 
   pTags[0] = Sprite::p1();
   pTags[1] = Sprite::p2();
@@ -159,8 +161,11 @@ void RoomScene::enter()
 
 void RoomScene::touch(In &in)
 {
+  if(in.type == In::UP) showingIp = false;
   if(in.type != In::DOWN) return;
   if(backButton.query(in)) { }
+
+  if(showIpButton.query(in)) showingIp = true;
 
   if( cwBtn.query(in)) cardCWOffset = (cardCWOffset+1)%4;
   if(ccwBtn.query(in)) cardCWOffset = (cardCWOffset+3)%4;
@@ -225,10 +230,14 @@ void RoomScene::draw()
   backButton.draw(graphics);
   youAreLabel.draw(graphics);
   youPTag.draw(graphics);
-  showIpButton.draw(graphics);
+  showIpQ.draw(graphics);
   netroleLabel.draw(graphics);
-  //ipLabel.draw(graphics);
-  //portLabel.draw(graphics);
+
+  if(showingIp)
+  {
+    ipLabel.draw(graphics);
+    portLabel.draw(graphics);
+  }
 
   //draw score labels
   for(int i = 0; i < 4; i++)

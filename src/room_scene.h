@@ -19,8 +19,11 @@ class RoomScene : public Scene
 
     UI::Label youAreLabel;
     UI::Image youPTag;
-    UI::ImageButton showIpButton;
+    UI::Image showIpQ;
     UI::Label netroleLabel;
+
+    bool showingIp;
+    UI::Button showIpButton;
     UI::Label ipLabel;
     UI::Label portLabel;
 
