@@ -14,6 +14,9 @@ PC_DEF=FG_PC
 #
 # first to handle argumentless make
 #
+b: build
+	
+
 r: run
 	
 

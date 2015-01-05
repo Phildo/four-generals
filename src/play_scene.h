@@ -29,6 +29,7 @@ class PlayScene : public Scene
     SDL_Rect red_x_s;
     SDL_Rect envelope_s;
     SDL_Rect sun_s;
+    SDL_Rect null_s;
 
     //rects
     SDL_Rect positionRects[4];
