@@ -3,7 +3,6 @@
 
 #include "scene.h"
 #include "ui.h"
-#include "particles.h"
 #include "lerp_rect.h"
 #include "network.h"
 #include "event.h"
@@ -16,7 +15,6 @@ class PlayScene : public Scene
 {
   private:
     Graphics *graphics;
-    ParticleSys psys;
 
     //sprites
     UI::AnimSprites generals_s[4];
@@ -34,43 +32,210 @@ class PlayScene : public Scene
 
     //rects
     SDL_Rect positionRects[4];
-    SDL_Rect positionStatusRects[4];
-    SDL_Rect positionHealthRects[4];
     SDL_Rect dayRects[7];
     SDL_Rect sunRects[7];
 
-    UI::Label cardLbls[4];
-
     UI::Label dayLbls[7];
+    bool sunDragging;
+    UI::Button sunBtn;
 
     UI::Anim cardImgs[4];
+    UI::Label cardLbls[4];
 
-    UI::TextButton actionAttackButton;
-    UI::TextButton actionMessageButton;
-    UI::TextButton actionDefendButton;
-    UI::TextButton actionSabotageButton;
+    /*
+    Choose
+      Attack
+        Who
+      Defend
+      Message
+        Attack
+          Who
+            When
+        Defend
+          When
+      Sabotage
+        Block
+        Read
+        Switch
+          What
+            Attack
+            Defend
+          Who
+          When
+    */
 
-    UI::Label howLabel;   UI::TextButton howBlockButton; UI::TextButton howReadButton; UI::TextButton howSabotageButton;
-    UI::Label whichLabel; UI::TextButton whichWhatButton; UI::TextButton whichWhoButton; UI::TextButton whichWhenButton; UI::TextButton whichWhereButton;
-    UI::Label whatLabel;  UI::TextButton whatAttackButton; UI::TextButton whatDefendButton;
-    UI::Label whoLabel;   UI::Button whoBtns[4];
-    UI::Label whenLabel;  UI::Button whenBtns[7];
-    UI::Label whereLabel; UI::Button whereBtns[4];
+    //choose_ (what)
+    UI::ImageButtonRound choose_attack_image;   UI::Label choose_attack_label;
+    UI::ImageButtonRound choose_defend_image;   UI::Label choose_defend_label;
+    UI::ImageButtonRound choose_message_image;  UI::Label choose_message_label;
+    UI::ImageButtonRound choose_sabotage_image; UI::Label choose_sabotage_label;
 
-    UI::Button sunBtn;
-    bool sunDragging;
+    //choose_attack_ (who)
+    UI::ImageButtonRound choose_attack_attack_image; UI::Label choose_attack_attack_label;
+    UI::ImageButtonRound choose_attack_who_image;    UI::Label choose_attack_who_label;
+    UI::Button choose_attack_who_button_cw;
+    UI::Button choose_attack_who_button_ccw;
+    UI::TextButton choose_attack_cancel_button;
 
-    UI::TextButton confirmButton;
-    UI::TextButton cancelButton;
-    UI::TextButton resetButton;
+    //choose_attack_who (confirm)
+    UI::ImageButtonRound choose_attack_who_attack_image; UI::Label choose_attack_who_attack_label;
+    UI::ImageButtonRound choose_attack_who_who_image;    UI::Label choose_attack_who_who_label;
+    UI::TextButton choose_attack_who_cancel_button;
+    UI::TextButton choose_attack_who_confirm_button;
 
-    UI::Label debreifLabel;
-    UI::Label waitingLabel;
-    UI::Label messageLabel;
-    UI::Label sabotageLabel;
-    UI::Label winLabel;
-    UI::Label loseLabel;
-    UI::Label tieLabel;
+    //choose_defend (confirm)
+    UI::ImageButtonRound choose_defend_defend_image; UI::Label choose_defend_defend_label;
+    UI::TextButton choose_defend_cancel_button;
+    UI::TextButton choose_defend_confirm_button;
+
+    //choose_message_ (what)
+    UI::ImageButtonRound choose_message_message_image; UI::Label choose_message_message_label;
+    UI::ImageButtonRound choose_message_attack_image;  UI::Label choose_message_attack_label;
+    UI::ImageButtonRound choose_message_defend_image;  UI::Label choose_message_defend_label;
+    UI::TextButton choose_message_cancel_button;
+
+    //choose_message_attack_ (who)
+    UI::ImageButtonRound choose_message_attack_message_image; UI::Label choose_message_attack_message_label;
+    UI::ImageButtonRound choose_message_attack_attack_image;  UI::Label choose_message_attack_attack_label;
+    UI::ImageButtonRound choose_message_attack_who_image;     UI::Label choose_message_attack_who_label;
+    UI::Button choose_message_attack_who_button_cw;
+    UI::Button choose_message_attack_who_button_ccw;
+    UI::TextButton choose_message_attack_cancel_button;
+
+    //choose_message_attack_who_ (when)
+    UI::ImageButtonRound choose_message_attack_who_message_image; UI::Label choose_message_attack_who_message_label;
+    UI::ImageButtonRound choose_message_attack_who_attack_image;  UI::Label choose_message_attack_who_attack_label;
+    UI::ImageButtonRound choose_message_attack_who_who_image;     UI::Label choose_message_attack_who_who_label;
+    UI::ImageButtonRound choose_message_attack_who_when_image;    UI::Label choose_message_attack_who_when_label;
+    UI::Button choose_message_attack_who_when_buttons[7];
+    UI::TextButton choose_message_attack_who_cancel_button;
+
+    //choose_message_attack_who_when_ (route)
+    UI::ImageButtonRound choose_message_attack_who_when_message_image; UI::Label choose_message_attack_who_when_message_label;
+    UI::ImageButtonRound choose_message_attack_who_when_attack_image;  UI::Label choose_message_attack_who_when_attack_label;
+    UI::ImageButtonRound choose_message_attack_who_when_who_image;     UI::Label choose_message_attack_who_when_who_label;
+    UI::ImageButtonRound choose_message_attack_who_when_when_image;    UI::Label choose_message_attack_who_when_when_label;
+    UI::ImageButtonRound choose_message_attack_who_when_route_image;   UI::Label choose_message_attack_who_when_route_label;
+    UI::Button choose_message_attack_who_when_route_button_cw;
+    UI::Button choose_message_attack_who_when_route_button_ccw;
+    UI::TextButton choose_message_attack_who_when_cancel_button;
+
+    //choose_message_attack_who_when_route (confirm)
+    UI::ImageButtonRound choose_message_attack_who_when_route_message_image; UI::Label choose_message_attack_who_when_route_message_label;
+    UI::ImageButtonRound choose_message_attack_who_when_route_attack_image;  UI::Label choose_message_attack_who_when_route_attack_label;
+    UI::ImageButtonRound choose_message_attack_who_when_route_who_image;     UI::Label choose_message_attack_who_when_route_who_label;
+    UI::ImageButtonRound choose_message_attack_who_when_route_when_image;    UI::Label choose_message_attack_who_when_route_when_label;
+    UI::ImageButtonRound choose_message_attack_who_when_route_route_image;   UI::Label choose_message_attack_who_when_route_route_label;
+    UI::TextButton choose_message_attack_who_when_route_cancel_button;
+    UI::TextButton choose_message_attack_who_when_route_confirm_button;
+
+    //choose_message_defend_ (when)
+    UI::ImageButtonRound choose_message_defend_message_image; UI::Label choose_message_defend_message_label;
+    UI::ImageButtonRound choose_message_defend_defend_image;  UI::Label choose_message_defend_defend_label;
+    UI::ImageButtonRound choose_message_defend_when_image;    UI::Label choose_message_defend_when_label;
+    UI::Button choose_defend_when_buttons[7];
+    UI::TextButton choose_message_defend_cancel_button;
+
+    //choose_message_defend_when_ (route)
+    UI::ImageButtonRound choose_message_defend_when_message_image; UI::Label choose_message_defend_when_message_label;
+    UI::ImageButtonRound choose_message_defend_when_defend_image;  UI::Label choose_message_defend_when_defend_label;
+    UI::ImageButtonRound choose_message_defend_when_when_image;    UI::Label choose_message_defend_when_when_label;
+    UI::ImageButtonRound choose_message_defend_when_route_image;   UI::Label choose_message_defend_when_route_label;
+    UI::Button choose_message_defend_when_route_button_cw;
+    UI::Button choose_message_defend_when_route_button_ccw;
+    UI::TextButton choose_message_defend_when_cancel_button;
+
+    //choose_message_defend_when_route (confirm)
+    UI::ImageButtonRound choose_message_defend_when_route_message_image; UI::Label choose_message_defend_when_route_message_label;
+    UI::ImageButtonRound choose_message_defend_when_route_defend_image;  UI::Label choose_message_defend_when_route_defend_label;
+    UI::ImageButtonRound choose_message_defend_when_route_when_image;    UI::Label choose_message_defend_when_route_when_label;
+    UI::ImageButtonRound choose_message_defend_when_route_route_image;   UI::Label choose_message_defend_when_route_route_label;
+    UI::TextButton choose_message_defend_when_route_cancel_button;
+    UI::TextButton choose_message_defend_when_route_confirm_button;
+
+    //choose_sabotage_ (how)
+    UI::ImageButtonRound choose_sabotage_sabotage_image; UI::Label choose_sabotage_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_block_image;    UI::Label choose_sabotage_block_label;
+    UI::ImageButtonRound choose_sabotage_read_image;     UI::Label choose_sabotage_read_label;
+    UI::ImageButtonRound choose_sabotage_switch_image;   UI::Label choose_sabotage_switch_label;
+    UI::TextButton choose_sabotage_cancel_button;
+
+    //choose_sabotage_block (confirm)
+    UI::ImageButtonRound choose_sabotage_block_sabotage_image; UI::Label choose_sabotage_block_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_block_block_image;    UI::Label choose_sabotage_block_block_label;
+    UI::TextButton choose_sabotage_block_cancel_button;
+    UI::TextButton choose_sabotage_block_confirm_button;
+
+    //choose_sabotage_read (confirm)
+    UI::ImageButtonRound choose_sabotage_read_sabotage_image; UI::Label choose_sabotage_read_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_read_read_image;     UI::Label choose_sabotage_read_read_label;
+    UI::TextButton choose_sabotage_read_cancel_button;
+    UI::TextButton choose_sabotage_read_confirm_button;
+
+    //choose_sabotage_switch_ (what)
+    UI::ImageButtonRound choose_sabotage_switch_sabotage_image; UI::Label choose_sabotage_switch_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_switch_switch_image;   UI::Label choose_sabotage_switch_switch_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_image;     UI::Label choose_sabotage_switch_what_label;
+    UI::ImageButtonRound choose_sabotage_switch_whot_image;      UI::Label choose_sabotage_switch_whot_label;
+    UI::ImageButtonRound choose_sabotage_switch_whent_image;     UI::Label choose_sabotage_switch_whent_label;
+    UI::TextButton choose_sabotage_switch_cancel_button;
+
+    //choose_sabotage_switch_what_ (what)
+    UI::ImageButtonRound choose_sabotage_switch_what_sabotage_image; UI::Label choose_sabotage_switch_what_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_switch_image;   UI::Label choose_sabotage_switch_what_switch_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_what_image;     UI::Label choose_sabotage_switch_what_what_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_attack_image;   UI::Label choose_sabotage_switch_what_attack_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_defend_image;   UI::Label choose_sabotage_switch_what_defend_label;
+    UI::TextButton choose_sabotage_switch_what_cancel_button;
+
+    //choose_sabotage_switch_what_attack (confirm)
+    UI::ImageButtonRound choose_sabotage_switch_what_attack_sabotage_image; UI::Label choose_sabotage_switch_what_attack_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_attack_switch_image;   UI::Label choose_sabotage_switch_what_attack_switch_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_attack_what_image;     UI::Label choose_sabotage_switch_what_attack_what_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_attack_attack_image;   UI::Label choose_sabotage_switch_what_attack_attack_label;
+    UI::TextButton choose_sabotage_switch_what_attack_cancel_button;
+    UI::TextButton choose_sabotage_switch_what_attack_confirm_button;
+
+    //choose_sabotage_switch_what_defend (confirm)
+    UI::ImageButtonRound choose_sabotage_switch_what_defend_sabotage_image; UI::Label choose_sabotage_switch_what_defend_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_defend_switch_image;   UI::Label choose_sabotage_switch_what_defend_switch_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_defend_what_image;     UI::Label choose_sabotage_switch_what_defend_what_label;
+    UI::ImageButtonRound choose_sabotage_switch_what_defend_defend_image;   UI::Label choose_sabotage_switch_what_defend_defend_label;
+    UI::TextButton choose_sabotage_switch_what_defend_cancel_button;
+    UI::TextButton choose_sabotage_switch_what_defend_confirm_button;
+
+    //choose_sabotage_switch_whot_ (who)
+    UI::ImageButtonRound choose_sabotage_switch_whot_sabotage_image; UI::Label choose_sabotage_switch_whot_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_switch_whot_switch_image;   UI::Label choose_sabotage_switch_whot_switch_label;
+    UI::ImageButtonRound choose_sabotage_switch_whot_whot_image;      UI::Label choose_sabotage_switch_whot_whot_label;
+    UI::ImageButtonRound choose_sabotage_switch_whot_who_image;      UI::Label choose_sabotage_switch_whot_who_label;
+    UI::Button choose_sabotage_switch_whot_who_button_cw;
+    UI::Button choose_sabotage_switch_whot_who_button_ccw;
+    UI::TextButton choose_sabotage_switch_whot_cancel_button;
+
+    //choose_sabotage_switch_whot_who (confirm)
+    UI::ImageButtonRound choose_sabotage_switch_whot_who_sabotage_image; UI::Label choose_sabotage_switch_whot_who_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_switch_whot_who_switch_image;   UI::Label choose_sabotage_switch_whot_who_switch_label;
+    UI::ImageButtonRound choose_sabotage_switch_whot_who_whot_image;      UI::Label choose_sabotage_switch_whot_who_whot_label;
+    UI::ImageButtonRound choose_sabotage_switch_whot_who_who_image;      UI::Label choose_sabotage_switch_whot_who_who_label;
+    UI::TextButton choose_sabotage_switch_whot_who_cancel_button;
+    UI::TextButton choose_sabotage_switch_whot_who_confirm_button;
+
+    //choose_sabotage_switch_whent_ (when)
+    UI::ImageButtonRound choose_sabotage_switch_whent_sabotage_image; UI::Label choose_sabotage_switch_whent_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_switch_whent_switch_image;   UI::Label choose_sabotage_switch_whent_switch_label;
+    UI::ImageButtonRound choose_sabotage_switch_whent_whent_image;      UI::Label choose_sabotage_switch_whent_whent_label;
+    UI::ImageButtonRound choose_sabotage_switch_whent_when_image;      UI::Label choose_sabotage_switch_whent_when_label;
+    UI::Button choose_sabotage_switch_whent_when_buttons[7];
+    UI::TextButton choose_sabotage_switch_whent_cancel_button;
+
+    //choose_sabotage_switch_whent_when (confirm)
+    UI::ImageButtonRound choose_sabotage_switch_whent_when_sabotage_image; UI::Label choose_sabotage_switch_whent_when_sabotage_label;
+    UI::ImageButtonRound choose_sabotage_switch_whent_when_switch_image;   UI::Label choose_sabotage_switch_whent_when_switch_label;
+    UI::ImageButtonRound choose_sabotage_switch_whent_when_whent_image;      UI::Label choose_sabotage_switch_whent_when_whent_label;
+    UI::ImageButtonRound choose_sabotage_switch_whent_when_when_image;      UI::Label choose_sabotage_switch_whent_when_when_label;
+    UI::TextButton choose_sabotage_switch_whent_when_cancel_button;
+    UI::TextButton choose_sabotage_switch_whent_when_confirm_button;
 
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
@@ -85,31 +250,56 @@ class PlayScene : public Scene
 
     Event e; //populates with tentative event (holds state for what to show on screen)
     void zeroE();
-    void chooseAction(In &in);
-    void chooseShownDay(In &in);
-    void chooseHow(In &in);
-    void chooseWhich(In &in);
-    void chooseWhat(In &in);
-    void chooseWho(In &in);
-    void chooseWhen(In &in);
-    void chooseWhere(In &in);
-    void seekConfirmation(In &in);
 
-    void drawAction();
-    void drawHow();
-    void drawWhich();
+    void chooseShownDay(In &in);
+
+    void chooseWhat(In &in);
+    void chooseAttackWho(In &in);
+    void chooseAttackWhoConfirm(In &in);
+    void chooseDefendConfirm(In &in);
+    void chooseMessageWhat(In &in);
+    void chooseMessageAttackWho(In &in);
+    void chooseMessageAttackWhoWhen(In &in);
+    void chooseMessageAttackWhoWhenRoute(In &in);
+    void chooseMessageAttackWhoWhenRouteConfirm(In &in);
+    void chooseMessageDefendWhen(In &in);
+    void chooseMessageDefendWhenRoute(In &in);
+    void chooseMessageDefendWhenRouteConfirm(In &in);
+    void chooseSabotageHow(In &in);
+    void chooseSabotageBlockConfirm(In &in);
+    void chooseSabotageReadConfirm(In &in);
+    void chooseSabotageSwitchWhat(In &in);
+    void chooseSabotageSwitchWhatWhat(In &in);
+    void chooseSabotageSwitchWhatAttackConfirm(In &in);
+    void chooseSabotageSwitchWhatDefendConfirm(In &in);
+    void chooseSabotageSwitchWhoWho(In &in);
+    void chooseSabotageSwitchWhoWhoConfirm(In &in);
+    void chooseSabotageSwitchWhenWhen(In &in);
+    void chooseSabotageSwitchWhenWhenConfirm(In &in);
+
     void drawWhat();
-    void drawWho();
-    void drawWhen();
-    void drawWhere();
-    void drawConfirmation();
-    void drawMessage();
-    void drawSabotage();
-    void drawDebreif();
-    void drawWaiting();
-    void drawWin();
-    void drawLose();
-    void drawTie();
+    void drawAttackWho();
+    void drawAttackWhoConfirm();
+    void drawDefendConfirm();
+    void drawMessageWhat();
+    void drawMessageAttackWho();
+    void drawMessageAttackWhoWhen();
+    void drawMessageAttackWhoWhenRoute();
+    void drawMessageAttackWhoWhenRouteConfirm();
+    void drawMessageDefendWhen();
+    void drawMessageDefendWhenRoute();
+    void drawMessageDefendWhenRouteConfirm();
+    void drawSabotageHow();
+    void drawSabotageBlockConfirm();
+    void drawSabotageReadConfirm();
+    void drawSabotageSwitchWhat();
+    void drawSabotageSwitchWhatWhat();
+    void drawSabotageSwitchWhatAttackConfirm();
+    void drawSabotageSwitchWhatDefendConfirm();
+    void drawSabotageSwitchWhoWho();
+    void drawSabotageSwitchWhoWhoConfirm();
+    void drawSabotageSwitchWhenWhen();
+    void drawSabotageSwitchWhenWhenConfirm();
 
     SDL_Rect rectForPosition(char c);
     SDL_Rect rectForCardinal(char c);
@@ -118,12 +308,6 @@ class PlayScene : public Scene
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);
     SDL_Rect rectForTransition(char fd, char td, float t);
-    SDL_Rect rectForPositionHealth(char c);
-    SDL_Rect rectForCardinalHealth(char c);
-    SDL_Rect rectForPositionStatus(char c);
-    SDL_Rect rectForCardinalStatus(char c);
-
-    SDL_Rect spriteForAction(char a);
 
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);

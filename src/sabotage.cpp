@@ -11,12 +11,12 @@ Sabotage::Sabotage()
 }
 
 Sabotage::Sabotage(Event e)
-: cardinal(e.cardinal), how(e.how), which(e.which), what(e.what), who(e.who), when(e.when), where(e.where), id(e.sabotage_id)
+: cardinal(e.cardinal), how(e.how), which(e.which), what(e.what), who(e.who), when(e.when), route(e.route), id(e.sabotage_id)
 {
 }
 
 Sabotage::Sabotage(char c, char ow, char wich, char wat, char wo, char wen, char were, int i)
-: cardinal(c), how(ow), which(wich), what(wat), who(wo), when(wen), where(were), id(i)
+: cardinal(c), how(ow), which(wich), what(wat), who(wo), when(wen), route(were), id(i)
 {
 }
 

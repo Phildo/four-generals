@@ -17,7 +17,7 @@ class Messenger
     char what;  //'a' = attack, 'd' = defend, 's' = sabotage
     char who;   //cardinal (about whom the contents of the message apply)
     char when;  //'s|m|t|w|h|f|a'
-    char where; //cardinal (through which route messenger will take)
+    char route; //cardinal (through which route messenger will take)
 
     int id;
 

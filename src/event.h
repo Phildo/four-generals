@@ -27,7 +27,7 @@ struct Event //all members chars for quick/simple serializability
   char what;       //corresponds to messenger members
   char who;        //corresponds to messenger members
   char when;       //corresponds to messenger members
-  char where;      //corresponds to messenger members
+  char route;      //corresponds to messenger members
   char type;       //listed above
   int sabotage_id;
   int messenger_id;

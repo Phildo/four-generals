@@ -22,7 +22,7 @@ Event::Event(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
   what       = c[6];
   who        = c[7];
   when       = c[8];
-  where      = c[9];
+  route      = c[9];
   type       = c[10];
   sabotage_id  = String(&c[11],3).intVal();
   messenger_id = String(&c[14],3).intVal();
@@ -40,7 +40,7 @@ void Event::zero()
   what       = '0';
   who        = '0';
   when       = '0';
-  where      = '0';
+  route      = '0';
   type       = '0';
   sabotage_id  = 0;
   messenger_id = 0;
@@ -59,7 +59,7 @@ void Event::serialize(char *c) const
   c[6] = what;
   c[7] = who;
   c[8] = when;
-  c[9] = where;
+  c[9] = route;
   c[10] = type;
   s = String::decimalRep(sabotage_id,3);
   c[11] = *(s.ptr()+0);
@@ -98,14 +98,14 @@ char *Event::humanAction()
     {
       if       (who == '0') sprintf(h_action_buff,"Sending Messenger: \"Attack (who)...\"");
       else if (when == '0') sprintf(h_action_buff,"Sending Messenger: \"Attack %c on (when)...\"",who);
-      else if(where == '0') sprintf(h_action_buff,"Sending Messenger: \"Attack %c on %c\" to the (where)...",who,when);
-      else                  sprintf(h_action_buff,"Sending Messenger: \"Attack %c on %c\" to the %c...",who,when,where);
+      else if(route == '0') sprintf(h_action_buff,"Sending Messenger: \"Attack %c on %c\" to the (route)...",who,when);
+      else                  sprintf(h_action_buff,"Sending Messenger: \"Attack %c on %c\" to the %c...",who,when,route);
     }
     else if(what == 'd')
     {
       if      (when == '0') sprintf(h_action_buff,"Sending Messenger: \"Defend on (when)...\"");
-      else if(where == '0') sprintf(h_action_buff,"Sending Messenger: \"Defend on %c\" to the (where)...",when);
-      else                  sprintf(h_action_buff,"Sending Messenger: \"Defend on %c\" to the %c...",when,where);
+      else if(route == '0') sprintf(h_action_buff,"Sending Messenger: \"Defend on %c\" to the (route)...",when);
+      else                  sprintf(h_action_buff,"Sending Messenger: \"Defend on %c\" to the %c...",when,route);
     }
   }
   else if(action == 's')
@@ -153,7 +153,7 @@ void Event::debug(char *buff)
     default:                    sprintf(event_type_buff,"NO DEBUG READABLE EVENT TYPE FOUND"); break;
   }
 
-  sprintf(buff,"con:%c card:%c act:%c how:%c which:%c to:%c what:%c who:%c when:%c where:%c mid:%d id:%d type:%c type:%s", connection, cardinal, action, how, which, to, what, who, when, where, messenger_id, evt_id, type, event_type_buff);
+  sprintf(buff,"con:%c card:%c act:%c how:%c which:%c to:%c what:%c who:%c when:%c route:%c mid:%d id:%d type:%c type:%s", connection, cardinal, action, how, which, to, what, who, when, route, messenger_id, evt_id, type, event_type_buff);
 }
 #endif
 

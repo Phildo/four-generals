@@ -12,12 +12,12 @@ Messenger::Messenger()
 }
 
 Messenger::Messenger(Event e)
-: from(e.cardinal), was(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), where(e.where), id(e.messenger_id)
+: from(e.cardinal), was(e.cardinal), at(e.cardinal), to(e.to), what(e.what), who(e.who), when(e.when), route(e.route), id(e.messenger_id)
 {
 }
 
 Messenger::Messenger(char fro, char a, char t, char wat, char wo, char wen, char were, int i)
-: from(fro), was(a), at(a), to(t), what(wat), who(wo), when(wen), where(were), id(i)
+: from(fro), was(a), at(a), to(t), what(wat), who(wo), when(wen), route(were), id(i)
 {
 }
 
@@ -33,7 +33,7 @@ void Messenger::sabotage(Sabotage s)
     if(s.which == 'a') what  = s.what;
     if(s.which == 'o') who   = s.who;
     if(s.which == 'e') when  = s.when;
-    if(s.which == 'r') where = s.where;
+    if(s.which == 'r') route = s.route;
   }
 }
 

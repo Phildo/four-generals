@@ -190,7 +190,7 @@ Messenger Model::cardinalMessage(char card)
   if(me.action != 'm') return n;
   m = Messenger(me);
 
-  Event se = cardinalDayAction(me.where, days-2);
+  Event se = cardinalDayAction(me.route, days-2);
   if(se.action != 's') return m;
   if(se.how == 'b') return n;
   m.sabotage(Sabotage(se));

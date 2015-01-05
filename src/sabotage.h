@@ -9,11 +9,11 @@ class Sabotage
   public:
     char cardinal; //'owner' of sabotage
     char how;   //'b' = block, 'r' = read, 's' = sabotage
-    char which; //'a' = what, 'o' = who, 'e' = when, 'r' = where
+    char which; //'a' = what, 'o' = who, 'e' = when, 'r' = route
     char what;  //corresponds to messenger
     char who;   //corresponds to messenger
     char when;  //corresponds to messenger
-    char where; //corresponds to messenger
+    char route; //corresponds to messenger
 
     int id;
 

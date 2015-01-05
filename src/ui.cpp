@@ -12,6 +12,7 @@ using namespace UI;
 #include "label.cpp"
 #include "button.cpp"
 #include "imagebutton.cpp"
+#include "imagebuttonround.cpp"
 #include "textbutton.cpp"
 #include "keyboard.cpp"
 #include "textbox.cpp"

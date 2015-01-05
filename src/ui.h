@@ -21,6 +21,7 @@ namespace UI
   #include "label.h"
   #include "button.h"
   #include "imagebutton.h"
+  #include "imagebuttonround.h"
   #include "textbutton.h"
   #include "keyboard.h"
   #include "textbox.h"
