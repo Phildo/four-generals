@@ -127,6 +127,9 @@ namespace Sprite
   SDL_Rect red_x();
   SDL_Rect envelope();
   SDL_Rect sun();
+  SDL_Rect sblock();
+  SDL_Rect sread();
+  SDL_Rect sswitch();
 
   SDL_Rect black_pixel();
 
@@ -164,6 +167,13 @@ namespace Sprite
   SDL_Rect p2_r();
   SDL_Rect p3_r();
   SDL_Rect p4_r();
+
+  SDL_Rect what();
+  SDL_Rect who_ns();
+  SDL_Rect who_we();
+  SDL_Rect when();
+  SDL_Rect where_ns();
+  SDL_Rect where_we();
 
   SDL_Rect null();
 };

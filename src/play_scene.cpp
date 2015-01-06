@@ -54,6 +54,15 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   red_x_s         = Sprite::red_x();
   envelope_s      = Sprite::envelope();
   sun_s           = Sprite::sun();
+  sblock_s        = Sprite::sblock();
+  sread_s         = Sprite::sread();
+  sswitch_s       = Sprite::sswitch();
+  what_s          = Sprite::what();
+  who_ns_s        = Sprite::who_ns();
+  who_we_s        = Sprite::who_we();
+  when_s          = Sprite::when();
+  where_ns_s      = Sprite::where_ns();
+  where_we_s      = Sprite::where_we();
   null_s          = Sprite::null();
 
   int ww = graphics->winWidth();
@@ -180,14 +189,14 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   //choose_attack_ (who)
   choose_attack_attack_image   = UI::ImageButtonRound(sword_s, small_02_x, small_y, small_s, small_s);
-  choose_attack_who_image      = UI::ImageButtonRound(sword_s,   big_12_x,   big_y,   big_s,   big_s);
+  choose_attack_who_image      = UI::ImageButtonRound(who_ns_s,   big_12_x,   big_y,   big_s,   big_s);
   choose_attack_who_button_cw  = whoButtonCW;
   choose_attack_who_button_ccw = whoButtonCCW;
   choose_attack_cancel_button  = cancel_single_button;
 
   //choose_attack_who (confirm)
   choose_attack_who_attack_image   = UI::ImageButtonRound(sword_s, small_02_x, small_y, small_s, small_s);
-  choose_attack_who_who_image      = UI::ImageButtonRound(sword_s, small_12_x, small_y, small_s, small_s);
+  choose_attack_who_who_image      = UI::ImageButtonRound(who_ns_s, small_12_x, small_y, small_s, small_s);
   choose_attack_who_cancel_button  = cancel_double_button;
   choose_attack_who_confirm_button = confirm_double_button;
 
@@ -205,7 +214,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   //choose_message_attack_ (who)
   choose_message_attack_message_image  = UI::ImageButtonRound(envelope_s, small_03_x, small_y, small_s, small_s);
   choose_message_attack_attack_image   = UI::ImageButtonRound(sword_s,    small_13_x, small_y, small_s, small_s);
-  choose_message_attack_who_image      = UI::ImageButtonRound(null_s,       big_23_x,   big_y,   big_s,   big_s);
+  choose_message_attack_who_image      = UI::ImageButtonRound(who_ns_s,       big_23_x,   big_y,   big_s,   big_s);
   choose_message_attack_who_button_cw  = whoButtonCW;
   choose_message_attack_who_button_ccw = whoButtonCCW;
   choose_message_attack_cancel_button         = cancel_single_button;
@@ -213,8 +222,8 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   //choose_message_attack_who_ (when)
   choose_message_attack_who_message_image = UI::ImageButtonRound(envelope_s, small_04_x, small_y, small_s, small_s);
   choose_message_attack_who_attack_image  = UI::ImageButtonRound(sword_s,    small_14_x, small_y, small_s, small_s);
-  choose_message_attack_who_who_image     = UI::ImageButtonRound(null_s,     small_24_x, small_y, small_s, small_s);
-  choose_message_attack_who_when_image    = UI::ImageButtonRound(null_s,       big_34_x,   big_y,   big_s,   big_s);
+  choose_message_attack_who_who_image     = UI::ImageButtonRound(who_ns_s,     small_24_x, small_y, small_s, small_s);
+  choose_message_attack_who_when_image    = UI::ImageButtonRound(when_s,       big_34_x,   big_y,   big_s,   big_s);
   for(int i = 0; i < 7; i++)
     choose_message_attack_who_when_buttons[i] = UI::Button(dayRects[i]);
   choose_message_attack_who_cancel_button = cancel_single_button;
@@ -222,9 +231,9 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   //choose_message_attack_who_when_ (route)
   choose_message_attack_who_when_message_image = UI::ImageButtonRound(envelope_s, small_05_x, small_y, small_s, small_s);
   choose_message_attack_who_when_attack_image  = UI::ImageButtonRound(sword_s,    small_15_x, small_y, small_s, small_s);
-  choose_message_attack_who_when_who_image     = UI::ImageButtonRound(null_s,     small_25_x, small_y, small_s, small_s);
-  choose_message_attack_who_when_when_image    = UI::ImageButtonRound(null_s,     small_35_x, small_y, small_s, small_s);
-  choose_message_attack_who_when_route_image   = UI::ImageButtonRound(null_s,       big_45_x,   big_y,   big_s,   big_s);
+  choose_message_attack_who_when_who_image     = UI::ImageButtonRound(who_ns_s,     small_25_x, small_y, small_s, small_s);
+  choose_message_attack_who_when_when_image    = UI::ImageButtonRound(when_s,     small_35_x, small_y, small_s, small_s);
+  choose_message_attack_who_when_route_image   = UI::ImageButtonRound(where_ns_s,       big_45_x,   big_y,   big_s,   big_s);
   choose_message_attack_who_when_route_button_cw  = whoButtonCW;
   choose_message_attack_who_when_route_button_ccw = whoButtonCCW;
   choose_message_attack_who_when_cancel_button = cancel_single_button;
@@ -232,16 +241,16 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   //choose_message_attack_who_when_route (confirm)
   choose_message_attack_who_when_route_message_image = UI::ImageButtonRound(envelope_s, small_05_x, small_y, small_s, small_s);
   choose_message_attack_who_when_route_attack_image  = UI::ImageButtonRound(sword_s,    small_15_x, small_y, small_s, small_s);
-  choose_message_attack_who_when_route_who_image     = UI::ImageButtonRound(null_s,     small_25_x, small_y, small_s, small_s);
-  choose_message_attack_who_when_route_when_image    = UI::ImageButtonRound(null_s,     small_35_x, small_y, small_s, small_s);
-  choose_message_attack_who_when_route_route_image   = UI::ImageButtonRound(null_s,     small_45_x, small_y, small_s, small_s);
+  choose_message_attack_who_when_route_who_image     = UI::ImageButtonRound(who_ns_s,     small_25_x, small_y, small_s, small_s);
+  choose_message_attack_who_when_route_when_image    = UI::ImageButtonRound(when_s,     small_35_x, small_y, small_s, small_s);
+  choose_message_attack_who_when_route_route_image   = UI::ImageButtonRound(where_ns_s,     small_45_x, small_y, small_s, small_s);
   choose_message_attack_who_when_route_cancel_button = cancel_double_button;
   choose_message_attack_who_when_route_confirm_button = confirm_double_button;
 
   //choose_message_defend_ (when)
   choose_message_defend_message_image = UI::ImageButtonRound(envelope_s,    small_03_x, small_y, small_s, small_s);
   choose_message_defend_defend_image  = UI::ImageButtonRound(shield_full_s, small_13_x, small_y, small_s, small_s);
-  choose_message_defend_when_image    = UI::ImageButtonRound(null_s,          big_23_x,   big_y,   big_s,   big_s);
+  choose_message_defend_when_image    = UI::ImageButtonRound(when_s,          big_23_x,   big_y,   big_s,   big_s);
   for(int i = 0; i < 7; i++)
     choose_defend_when_buttons[i] = UI::Button(dayRects[i]);
   choose_message_defend_cancel_button = cancel_single_button;
@@ -249,8 +258,8 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   //choose_message_defend_when_ (route)
   choose_message_defend_when_message_image = UI::ImageButtonRound(envelope_s,    small_04_x, small_y, small_s, small_s);
   choose_message_defend_when_defend_image  = UI::ImageButtonRound(shield_full_s, small_14_x, small_y, small_s, small_s);
-  choose_message_defend_when_when_image    = UI::ImageButtonRound(null_s,        small_24_x, small_y, small_s, small_s);
-  choose_message_defend_when_route_image   = UI::ImageButtonRound(null_s,          big_34_x,   big_y,   big_s,   big_s);
+  choose_message_defend_when_when_image    = UI::ImageButtonRound(when_s,        small_24_x, small_y, small_s, small_s);
+  choose_message_defend_when_route_image   = UI::ImageButtonRound(where_ns_s,          big_34_x,   big_y,   big_s,   big_s);
   choose_message_defend_when_route_button_cw  = whoButtonCW;
   choose_message_defend_when_route_button_ccw = whoButtonCCW;
   choose_message_defend_when_cancel_button = cancel_single_button;
@@ -258,93 +267,93 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   //choose_message_defend_when_route (confirm)
   choose_message_defend_when_route_message_image = UI::ImageButtonRound(envelope_s,    small_04_x, small_y, small_s, small_s);
   choose_message_defend_when_route_defend_image  = UI::ImageButtonRound(shield_full_s, small_14_x, small_y, small_s, small_s);
-  choose_message_defend_when_route_when_image    = UI::ImageButtonRound(null_s,        small_24_x, small_y, small_s, small_s);
-  choose_message_defend_when_route_route_image   = UI::ImageButtonRound(null_s,        small_34_x, small_y, small_s, small_s);
+  choose_message_defend_when_route_when_image    = UI::ImageButtonRound(when_s,        small_24_x, small_y, small_s, small_s);
+  choose_message_defend_when_route_route_image   = UI::ImageButtonRound(where_ns_s,        small_34_x, small_y, small_s, small_s);
   choose_message_defend_when_route_cancel_button  = cancel_double_button;
   choose_message_defend_when_route_confirm_button = confirm_double_button;
 
   //choose_sabotage_ (how)
   choose_sabotage_sabotage_image = UI::ImageButtonRound(red_x_s, small_04_x, small_y, small_s, small_s);
-  choose_sabotage_block_image    = UI::ImageButtonRound(null_s,    big_14_x,   big_y,   big_s,   big_s);
-  choose_sabotage_read_image     = UI::ImageButtonRound(null_s,    big_24_x,   big_y,   big_s,   big_s);
-  choose_sabotage_switch_image   = UI::ImageButtonRound(null_s,    big_34_x,   big_y,   big_s,   big_s);
+  choose_sabotage_block_image    = UI::ImageButtonRound(sblock_s,    big_14_x,   big_y,   big_s,   big_s);
+  choose_sabotage_read_image     = UI::ImageButtonRound(sread_s,    big_24_x,   big_y,   big_s,   big_s);
+  choose_sabotage_switch_image   = UI::ImageButtonRound(sswitch_s,    big_34_x,   big_y,   big_s,   big_s);
   choose_sabotage_cancel_button  = cancel_single_button;
 
   //choose_sabotage_block (confirm)
   choose_sabotage_block_sabotage_image = UI::ImageButtonRound(red_x_s, small_02_x, small_y, small_s, small_s);
-  choose_sabotage_block_block_image    = UI::ImageButtonRound(null_s,  small_12_x, small_y, small_s, small_s);
+  choose_sabotage_block_block_image    = UI::ImageButtonRound(sblock_s,  small_12_x, small_y, small_s, small_s);
   choose_sabotage_block_cancel_button  = cancel_double_button;
   choose_sabotage_block_confirm_button = confirm_double_button;
 
   //choose_sabotage_read (confirm)
   choose_sabotage_read_sabotage_image = UI::ImageButtonRound(red_x_s, small_02_x, small_y, small_s, small_s);
-  choose_sabotage_read_read_image     = UI::ImageButtonRound(null_s,  small_12_x, small_y, small_s, small_s);
+  choose_sabotage_read_read_image     = UI::ImageButtonRound(sread_s,  small_12_x, small_y, small_s, small_s);
   choose_sabotage_read_cancel_button  = cancel_double_button;
   choose_sabotage_read_confirm_button = confirm_double_button;
 
   //choose_sabotage_switch_ (what)
   choose_sabotage_switch_sabotage_image = UI::ImageButtonRound(red_x_s, small_05_x, small_y, small_s, small_s);
-  choose_sabotage_switch_switch_image   = UI::ImageButtonRound(null_s,  small_15_x, small_y, small_s, small_s);
-  choose_sabotage_switch_what_image     = UI::ImageButtonRound(null_s,    big_25_x,   big_y,   big_s,   big_s);
-  choose_sabotage_switch_whot_image     = UI::ImageButtonRound(null_s,    big_35_x,   big_y,   big_s,   big_s);
-  choose_sabotage_switch_whent_image    = UI::ImageButtonRound(null_s,    big_45_x,   big_y,   big_s,   big_s);
+  choose_sabotage_switch_switch_image   = UI::ImageButtonRound(sswitch_s,  small_15_x, small_y, small_s, small_s);
+  choose_sabotage_switch_what_image     = UI::ImageButtonRound(what_s,    big_25_x,   big_y,   big_s,   big_s);
+  choose_sabotage_switch_whot_image     = UI::ImageButtonRound(who_ns_s,    big_35_x,   big_y,   big_s,   big_s);
+  choose_sabotage_switch_whent_image    = UI::ImageButtonRound(when_s,    big_45_x,   big_y,   big_s,   big_s);
   choose_sabotage_switch_cancel_button  = cancel_single_button;
 
   //choose_sabotage_switch_what_ (what)
   choose_sabotage_switch_what_sabotage_image = UI::ImageButtonRound(red_x_s,       small_05_x, small_y, small_s, small_s);
-  choose_sabotage_switch_what_switch_image   = UI::ImageButtonRound(null_s,        small_15_x, small_y, small_s, small_s);
-  choose_sabotage_switch_what_what_image     = UI::ImageButtonRound(null_s,        small_25_x, small_y, small_s, small_s);
+  choose_sabotage_switch_what_switch_image   = UI::ImageButtonRound(sswitch_s,        small_15_x, small_y, small_s, small_s);
+  choose_sabotage_switch_what_what_image     = UI::ImageButtonRound(what_s,        small_25_x, small_y, small_s, small_s);
   choose_sabotage_switch_what_attack_image   = UI::ImageButtonRound(sword_s,         big_35_x,   big_y,   big_s,   big_s);
   choose_sabotage_switch_what_defend_image   = UI::ImageButtonRound(shield_full_s,   big_45_x,   big_y,   big_s,   big_s);
   choose_sabotage_switch_what_cancel_button  = cancel_single_button;
 
   //choose_sabotage_switch_what_attack (confirm)
   choose_sabotage_switch_what_attack_sabotage_image = UI::ImageButtonRound(red_x_s, small_04_x, small_y, small_s, small_s);
-  choose_sabotage_switch_what_attack_switch_image   = UI::ImageButtonRound(null_s,  small_14_x, small_y, small_s, small_s);
-  choose_sabotage_switch_what_attack_what_image     = UI::ImageButtonRound(null_s,  small_24_x, small_y, small_s, small_s);
+  choose_sabotage_switch_what_attack_switch_image   = UI::ImageButtonRound(sswitch_s,  small_14_x, small_y, small_s, small_s);
+  choose_sabotage_switch_what_attack_what_image     = UI::ImageButtonRound(what_s,  small_24_x, small_y, small_s, small_s);
   choose_sabotage_switch_what_attack_attack_image   = UI::ImageButtonRound(sword_s, small_34_x, small_y, small_s, small_s);
   choose_sabotage_switch_what_attack_cancel_button  = cancel_double_button;
   choose_sabotage_switch_what_attack_confirm_button = confirm_double_button;
 
   //choose_sabotage_switch_what_defend (confirm)
   choose_sabotage_switch_what_defend_sabotage_image = UI::ImageButtonRound(red_x_s,       small_04_x, small_y, small_s, small_s);
-  choose_sabotage_switch_what_defend_switch_image   = UI::ImageButtonRound(null_s,        small_14_x, small_y, small_s, small_s);
-  choose_sabotage_switch_what_defend_what_image     = UI::ImageButtonRound(null_s,        small_24_x, small_y, small_s, small_s);
+  choose_sabotage_switch_what_defend_switch_image   = UI::ImageButtonRound(sswitch_s,        small_14_x, small_y, small_s, small_s);
+  choose_sabotage_switch_what_defend_what_image     = UI::ImageButtonRound(what_s,        small_24_x, small_y, small_s, small_s);
   choose_sabotage_switch_what_defend_defend_image   = UI::ImageButtonRound(shield_full_s, small_34_x, small_y, small_s, small_s);
   choose_sabotage_switch_what_defend_cancel_button  = cancel_double_button;
   choose_sabotage_switch_what_defend_confirm_button = confirm_double_button;
 
   //choose_sabotage_switch_whot_ (who)
   choose_sabotage_switch_whot_sabotage_image = UI::ImageButtonRound(red_x_s, small_04_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whot_switch_image   = UI::ImageButtonRound(null_s,  small_14_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whot_whot_image     = UI::ImageButtonRound(null_s,  small_24_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whot_who_image      = UI::ImageButtonRound(null_s,    big_34_x,   big_y,   big_s,   big_s);
+  choose_sabotage_switch_whot_switch_image   = UI::ImageButtonRound(sswitch_s,  small_14_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whot_whot_image     = UI::ImageButtonRound(who_ns_s,  small_24_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whot_who_image      = UI::ImageButtonRound(who_ns_s,    big_34_x,   big_y,   big_s,   big_s);
   choose_sabotage_switch_whot_who_button_cw  = whoButtonCW;
   choose_sabotage_switch_whot_who_button_ccw = whoButtonCCW;
   choose_sabotage_switch_whot_cancel_button  = cancel_single_button;
 
   //choose_sabotage_switch_whot_who (confirm)
   choose_sabotage_switch_whot_who_sabotage_image = UI::ImageButtonRound(red_x_s, small_04_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whot_who_switch_image   = UI::ImageButtonRound(null_s,  small_14_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whot_who_whot_image     = UI::ImageButtonRound(null_s,  small_24_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whot_who_who_image      = UI::ImageButtonRound(null_s,  small_34_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whot_who_switch_image   = UI::ImageButtonRound(sswitch_s,  small_14_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whot_who_whot_image     = UI::ImageButtonRound(who_ns_s,  small_24_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whot_who_who_image      = UI::ImageButtonRound(who_ns_s,  small_34_x, small_y, small_s, small_s);
   choose_sabotage_switch_whot_who_cancel_button  = cancel_double_button;
   choose_sabotage_switch_whot_who_confirm_button = confirm_double_button;
 
   //choose_sabotage_switch_whent_ (when)
   choose_sabotage_switch_whent_sabotage_image = UI::ImageButtonRound(red_x_s, small_04_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whent_switch_image   = UI::ImageButtonRound(null_s,  small_14_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whent_whent_image    = UI::ImageButtonRound(null_s,  small_24_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whent_when_image     = UI::ImageButtonRound(null_s,    big_34_x,   big_y,   big_s,   big_s);
+  choose_sabotage_switch_whent_switch_image   = UI::ImageButtonRound(sswitch_s,  small_14_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whent_whent_image    = UI::ImageButtonRound(when_s,  small_24_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whent_when_image     = UI::ImageButtonRound(when_s,    big_34_x,   big_y,   big_s,   big_s);
   for(int i = 0; i < 7; i++)
     choose_sabotage_switch_whent_when_buttons[i] = UI::Button(dayRects[i]);
   choose_sabotage_switch_whent_cancel_button = cancel_single_button;
 
   //choose_sabotage_switch_whent_when (confirm)
   choose_sabotage_switch_whent_when_sabotage_image = UI::ImageButtonRound(red_x_s, small_04_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whent_when_switch_image   = UI::ImageButtonRound(null_s,  small_14_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whent_when_whent_image    = UI::ImageButtonRound(null_s,  small_24_x, small_y, small_s, small_s);
-  choose_sabotage_switch_whent_when_when_image     = UI::ImageButtonRound(null_s,  small_34_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whent_when_switch_image   = UI::ImageButtonRound(sswitch_s,  small_14_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whent_when_whent_image    = UI::ImageButtonRound(when_s,  small_24_x, small_y, small_s, small_s);
+  choose_sabotage_switch_whent_when_when_image     = UI::ImageButtonRound(when_s,  small_34_x, small_y, small_s, small_s);
   choose_sabotage_switch_whent_when_cancel_button  = cancel_double_button;
   choose_sabotage_switch_whent_when_confirm_button = confirm_double_button;
 

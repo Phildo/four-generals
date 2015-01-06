@@ -236,6 +236,9 @@ SDL_Rect Sprite::sword()             { return rect( 96,228, 32, 32); }
 SDL_Rect Sprite::red_x()             { return rect(128,228, 32, 32); }
 SDL_Rect Sprite::envelope()          { return rect(160,228, 32, 32); }
 SDL_Rect Sprite::sun()               { return rect(192,228, 32, 32); }
+SDL_Rect Sprite::sblock()            { return rect(224,228, 32, 32); }
+SDL_Rect Sprite::sread()             { return rect(256,228, 32, 32); }
+SDL_Rect Sprite::sswitch()           { return rect(288,228, 32, 32); }
 
 SDL_Rect Sprite::black_pixel()   { return rect(0,260,1,1); }
 
@@ -273,6 +276,13 @@ SDL_Rect Sprite::p1_r() { return rect(192,292, 32, 32); }
 SDL_Rect Sprite::p2_r() { return rect(224,292, 32, 32); }
 SDL_Rect Sprite::p3_r() { return rect(192,324, 32, 32); }
 SDL_Rect Sprite::p4_r() { return rect(224,324, 32, 32); }
+
+SDL_Rect Sprite::what()     { return rect(  0,356, 32, 32); }
+SDL_Rect Sprite::who_ns()   { return rect( 32,356, 32, 32); }
+SDL_Rect Sprite::who_we()   { return rect( 64,356, 32, 32); }
+SDL_Rect Sprite::when()     { return rect( 96,356, 32, 32); }
+SDL_Rect Sprite::where_ns() { return rect(128,356, 32, 32); }
+SDL_Rect Sprite::where_we() { return rect(160,356, 32, 32); }
 
 SDL_Rect Sprite::null() { return rect(0,0,0,0); }
 

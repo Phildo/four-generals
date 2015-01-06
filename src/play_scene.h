@@ -29,6 +29,15 @@ class PlayScene : public Scene
     SDL_Rect red_x_s;
     SDL_Rect envelope_s;
     SDL_Rect sun_s;
+    SDL_Rect sblock_s;
+    SDL_Rect sread_s;
+    SDL_Rect sswitch_s;
+    SDL_Rect what_s;
+    SDL_Rect who_ns_s;
+    SDL_Rect who_we_s;
+    SDL_Rect when_s;
+    SDL_Rect where_ns_s;
+    SDL_Rect where_we_s;
     SDL_Rect null_s;
 
     //rects
