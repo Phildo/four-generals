@@ -68,8 +68,8 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
-  int posRectW[] = {               100,                110,                120,                110};
-  int posRectH[] = {               100,                110,                120,                110};
+  int posRectW[] = {                90,                110,                120,                110};
+  int posRectH[] = {                90,                110,                120,                110};
   int posRectX[] = {ww/2-posRectW[0]/2,  ww-posRectW[1]-20, ww/2-posRectW[2]/2,                 20};
   int posRectY[] = {                60, wh/2-posRectH[1]/2,  wh-posRectH[2]-40, wh/2-posRectH[3]/2};
 
@@ -116,13 +116,10 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   cardLbls[Compass::icardinal('w')] = UI::Label("west",  rectForPosition('n'));
 
 
-
-
-
-  //Templates for all positions
+  //Templates for all positions (unused commented out to prevent warnings)
 
   int big_s = 100;
-  int big_y = 250;
+  int big_y = 220;
   int small_s = 50;
   int small_y = 250;
 
@@ -130,49 +127,49 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   int small_02_x = space(ww,200,small_s,2,0);
   int small_12_x = space(ww,200,small_s,2,1);
-  int small_x2_s = small_12_x-small_02_x;
+  //int small_x2_s = small_12_x-small_02_x;
 
   int small_03_x = space(ww,200,small_s,3,0);
   int small_13_x = space(ww,200,small_s,3,1);
-  int small_23_x = space(ww,200,small_s,3,2);
-  int small_x3_s = small_13_x-small_03_x;
+  //int small_23_x = space(ww,200,small_s,3,2);
+  //int small_x3_s = small_13_x-small_03_x;
 
   int small_04_x = space(ww,200,small_s,4,0);
   int small_14_x = space(ww,200,small_s,4,1);
   int small_24_x = space(ww,200,small_s,4,2);
   int small_34_x = space(ww,200,small_s,4,3);
-  int small_x4_s = small_14_x-small_04_x;
+  //int small_x4_s = small_14_x-small_04_x;
 
   int small_05_x = space(ww,200,small_s,5,0);
   int small_15_x = space(ww,200,small_s,5,1);
   int small_25_x = space(ww,200,small_s,5,2);
   int small_35_x = space(ww,200,small_s,5,3);
   int small_45_x = space(ww,200,small_s,5,4);
-  int small_x5_s = small_15_x-small_05_x;
+  //int small_x5_s = small_15_x-small_05_x;
 
-  int big_01_x = space(ww,200,big_s,1,0);
+  //int big_01_x = space(ww,200,big_s,1,0);
 
   int big_02_x = space(ww,200,big_s,2,0);
   int big_12_x = space(ww,200,big_s,2,1);
-  int big_x2_s = big_12_x-big_02_x;
+  //int big_x2_s = big_12_x-big_02_x;
 
   int big_03_x = space(ww,200,big_s,3,0);
   int big_13_x = space(ww,200,big_s,3,1);
   int big_23_x = space(ww,200,big_s,3,2);
-  int big_x3_s = big_13_x-big_03_x;
+  //int big_x3_s = big_13_x-big_03_x;
 
   int big_04_x = space(ww,200,big_s,4,0);
   int big_14_x = space(ww,200,big_s,4,1);
   int big_24_x = space(ww,200,big_s,4,2);
   int big_34_x = space(ww,200,big_s,4,3);
-  int big_x4_s = big_14_x-big_04_x;
+  //int big_x4_s = big_14_x-big_04_x;
 
   int big_05_x = space(ww,200,big_s,5,0);
   int big_15_x = space(ww,200,big_s,5,1);
   int big_25_x = space(ww,200,big_s,5,2);
   int big_35_x = space(ww,200,big_s,5,3);
   int big_45_x = space(ww,200,big_s,5,4);
-  int big_x5_s = big_15_x-big_05_x;
+  //int big_x5_s = big_15_x-big_05_x;
 
   UI::TextButton cancel_single_button("cancel",  space(ww,200,100,1,0),350,100,30);
   UI::TextButton cancel_double_button("cancel",  space(ww,200,100,2,0),350,100,30);
