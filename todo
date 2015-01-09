@@ -1,6 +1,10 @@
 - host/join specified port
 - sensible text popups
 
+- can back out when auto-join attempting
+- shouldn't try auto-join unless ip exists
+- notification of wireless status would be nice
+
 - android no ip? (can't host)
 - android startup to gray screen
 - android freeze on disconnect
