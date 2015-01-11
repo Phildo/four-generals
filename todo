@@ -5,6 +5,10 @@
 - shouldn't try auto-join unless ip exists
 - notification of wireless status would be nice
 
+- switch model "hasX, getX" to bool X(&X)
+- message + sabotage reading
+- playscene ui rendering not brute
+
 - android no ip? (can't host)
 - android startup to gray screen
 - android freeze on disconnect

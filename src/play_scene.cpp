@@ -105,6 +105,13 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   sunBtn = UI::Button(dayRects[0]);
   sunDragging = false;
 
+  sabotage_0_reading = false;
+  read_sabotage_0 = UI::ImageButtonRound(   red_x_s,   10,gh-50,20,20);
+  sabotage_1_reading = false;
+  read_sabotage_1 = UI::ImageButtonRound(   red_x_s,   10,gh-80,20,20);
+  read_reading = false;
+  read_message    = UI::ImageButtonRound(envelope_s,gw-30,gh-50,20,20);
+
   cardImgs[Compass::icardinal('n')] = UI::Anim(generals_s[Compass::icardinal('n')], 4, 1.f, rectForPosition('n'));
   cardImgs[Compass::icardinal('e')] = UI::Anim(generals_s[Compass::icardinal('e')], 4, 1.f, rectForPosition('n'));
   cardImgs[Compass::icardinal('s')] = UI::Anim(generals_s[Compass::icardinal('s')], 4, 1.f, rectForPosition('n'));
@@ -354,19 +361,6 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   choose_sabotage_switch_whent_when_cancel_button  = cancel_double_button;
   choose_sabotage_switch_whent_when_confirm_button = confirm_double_button;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   known_day = '0';
   anim_day = 0.0f;
   shown_day = 0.0f;
@@ -430,6 +424,17 @@ void PlayScene::chooseShownDay(In &in)
     int lastX  = dayRects[6].x+(dayRects[6].w/2);
     shown_day = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
   }
+}
+
+void PlayScene::chooseReadSabotage(In &in)
+{
+  if(read_sabotage_0.query(in)) sabotage_0_reading = true;
+  if(read_sabotage_1.query(in)) sabotage_1_reading = true;
+}
+
+void PlayScene::chooseReadMessage(In &in)
+{
+  if(read_message.query(in)) message_reading = true;
 }
 
 void PlayScene::chooseWhat(In &in)
@@ -660,8 +665,20 @@ void PlayScene::chooseSabotageSwitchWhenWhenConfirm(In &in)
 
 
 
+void PlayScene::drawSabotage0()
+{
+  read_sabotage_0.draw(graphics);
+}
 
+void PlayScene::drawSabotage1()
+{
+  read_sabotage_1.draw(graphics);
+}
 
+void PlayeScene::drawMessage()
+{
+  read_message.draw(graphics);
+}
 
 void PlayScene::drawWhat()
 {
@@ -890,17 +907,25 @@ void PlayScene::drawSabotageSwitchWhenWhenConfirm()
 
 void PlayScene::touch(In &in)
 {
-  if(in.type != In::DOWN)
+  if(in.type == In::UP)
   {
-    //only non-"touch" handling is dragging of sun
-    if(in.type == In::UP) sunDragging = false;
-    else if(in.type == In::MOVE && !c->iHaveAction() && e.action == '0')
-      chooseShownDay(in);
-    return;
+    sunDragging = false;
+    sabotage_0_reading = false;
+    sabotage_1_reading = false;
+    message_reading = false;
+  }
+
+  if((in.type == In::DOWN || in.type == In::MOVE) && !c->iHaveAction() && e.action == '0')
+    chooseShownDay(in);
+
+  if(in.type == In::DOWN)
+  {
+    chooseReadSabotage(in);
+    chooseReadMessage(in);
   }
 
   //oh god terrible tree traversal touch propagation
-  if(!c->iWin() && !c->iLose() && !c->iTie())
+  if(in.type == In::DOWN && !c->iWin() && !c->iLose() && !c->iTie())
   {
     if(!c->iHaveAction())
     {
@@ -1128,10 +1153,18 @@ void PlayScene::draw()
   }
   else
   {
-    if(c->iHaveMessage()) {};
-      //drawMessage();
-    if(c->iHaveSabotage()) {};
-      //drawSabotage();
+    if(c->iHaveMessage())
+    {
+      drawMessage();
+    }
+    if(c->iHaveSabotage0())
+    {
+      drawSabotage0();
+    }
+    if(c->iHaveSabotage1())
+    {
+      drawSabotage1();
+    }
     if(!c->iHaveAction())
     {
       if(e.action == '0')

@@ -49,6 +49,13 @@ class PlayScene : public Scene
     bool sunDragging;
     UI::Button sunBtn;
 
+    bool sabotage_0_reading;
+    UI::ImageButtonRound read_sabotage_0;
+    bool sabotage_1_reading;
+    UI::ImageButtonRound read_sabotage_1;
+    bool message_reading;
+    UI::ImageButtonRound read_message;
+
     UI::Anim cardImgs[4];
     UI::Label cardLbls[4];
 
