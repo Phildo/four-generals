@@ -104,34 +104,36 @@ bool ClientModel::iHaveAction()
   return imConnected() && model.connectionHasAction(myConnection());
 }
 
-bool ClientModel::iHaveMessage()
+bool ClientModel::myMessage(Messenger& m)
 {
-  return imConnected() && model.connectionHasMessage(myConnection());
+  if(!imConnected())
+  {
+    m.zero();
+    return false;
+  }
+  else return model.connectionMessage(myConnection(),m);
 }
 
-Messenger ClientModel::myMessage()
+bool ClientModel::myIntruder(Messenger& m0, Messenger&m1)
 {
-  return model.connectionMessage(myConnection());
+  if(!imConnected())
+  {
+    m0.zero();
+    m1.zero();
+    return false;
+  }
+  else return model.connectionIntruder(myConnection(),m0,m1);
 }
 
-bool ClientModel::iHaveIntruder()
+bool ClientModel::mySabotage(Messenger& m0, Messenger&m1)
 {
-  return imConnected() && model.connectionHasIntruder(myConnection());
-}
-
-Messenger ClientModel::myIntruder()
-{
-  return model.connectionIntruder(myConnection());
-}
-
-bool ClientModel::iHaveSabotage()
-{
-  return imConnected() && model.connectionHasSabotage(myConnection());
-}
-
-Messenger ClientModel::mySabotage()
-{
-  return myIntruder();
+  if(!imConnected())
+  {
+    m0.zero();
+    m1.zero();
+    return false;
+  }
+  else return model.connectionSabotage(myConnection(),m0,m1);
 }
 
 bool ClientModel::iWin()

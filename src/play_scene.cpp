@@ -106,11 +106,11 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   sunDragging = false;
 
   sabotage_0_reading = false;
-  read_sabotage_0 = UI::ImageButtonRound(   red_x_s,   10,gh-50,20,20);
+  read_sabotage_0 = UI::ImageButtonRound(   red_x_s,   10,wh-50,20,20);
   sabotage_1_reading = false;
-  read_sabotage_1 = UI::ImageButtonRound(   red_x_s,   10,gh-80,20,20);
-  read_reading = false;
-  read_message    = UI::ImageButtonRound(envelope_s,gw-30,gh-50,20,20);
+  read_sabotage_1 = UI::ImageButtonRound(   red_x_s,   10,wh-80,20,20);
+  message_reading = false;
+  read_message    = UI::ImageButtonRound(envelope_s,ww-30,wh-50,20,20);
 
   cardImgs[Compass::icardinal('n')] = UI::Anim(generals_s[Compass::icardinal('n')], 4, 1.f, rectForPosition('n'));
   cardImgs[Compass::icardinal('e')] = UI::Anim(generals_s[Compass::icardinal('e')], 4, 1.f, rectForPosition('n'));
@@ -675,7 +675,7 @@ void PlayScene::drawSabotage1()
   read_sabotage_1.draw(graphics);
 }
 
-void PlayeScene::drawMessage()
+void PlayScene::drawMessage()
 {
   read_message.draw(graphics);
 }
@@ -1153,17 +1153,17 @@ void PlayScene::draw()
   }
   else
   {
-    if(c->iHaveMessage())
+    Messenger m;
+    Messenger m0;
+    Messenger m1;
+    if(c->myMessage(m))
     {
       drawMessage();
     }
-    if(c->iHaveSabotage0())
+    if(c->mySabotage(m0, m1))
     {
-      drawSabotage0();
-    }
-    if(c->iHaveSabotage1())
-    {
-      drawSabotage1();
+      if(m0.id) drawSabotage0();
+      if(m1.id) drawSabotage1();
     }
     if(!c->iHaveAction())
     {

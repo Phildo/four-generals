@@ -49,22 +49,19 @@ class Model
     Event& generalDayAction(General g, int day);
     Event& cardinalDayAction(char card, int day);
     Event& connectionDayAction(char con, int day);
-    Messenger cardinalMessage(char card);
-    Messenger connectionMessage(char con);
-    Messenger cardinalIntruder(char card);
-    Messenger connectionIntruder(char con);
-    Messenger cardinalSabotage(char card);
-    Messenger connectionSabotage(char con);
+
+    bool cardinalMessage( char card, Messenger& m);
+    bool connectionMessage(char con, Messenger& m);
+    bool cardinalIntruder( char card, Messenger& m0, Messenger& m1);
+    bool connectionIntruder(char con, Messenger& m0, Messenger& m1);
+    bool cardinalSabotage( char card, Messenger& m0, Messenger& m1);
+    bool connectionSabotage(char con, Messenger& m0, Messenger& m1);
+
     bool cardinalConnected(char card);
     bool connectionConnected(char con);
     bool cardinalHasAction(char card);
     bool connectionHasAction(char con);
-    bool cardinalHasMessage(char card);
-    bool connectionHasMessage(char con);
-    bool cardinalHasIntruder(char card);
-    bool connectionHasIntruder(char con);
-    bool cardinalHasSabotage(char card);
-    bool connectionHasSabotage(char con);
+
     bool cardinalWin(char card);
     bool connectionWin(char con);
     bool cardinalLose(char card);

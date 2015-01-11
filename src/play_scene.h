@@ -269,6 +269,8 @@ class PlayScene : public Scene
     void zeroE();
 
     void chooseShownDay(In &in);
+    void chooseReadSabotage(In &in);
+    void chooseReadMessage(In &in);
 
     void chooseWhat(In &in);
     void chooseAttackWho(In &in);
@@ -293,6 +295,10 @@ class PlayScene : public Scene
     void chooseSabotageSwitchWhoWhoConfirm(In &in);
     void chooseSabotageSwitchWhenWhen(In &in);
     void chooseSabotageSwitchWhenWhenConfirm(In &in);
+
+    void drawSabotage0();
+    void drawSabotage1();
+    void drawMessage();
 
     void drawWhat();
     void drawAttackWho();

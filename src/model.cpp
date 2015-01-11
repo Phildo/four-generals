@@ -178,45 +178,47 @@ Event& Model::connectionDayAction(char con, int day)
   return cardinalDayAction(connectionCardinal(con), day);
 }
 
-Messenger Model::cardinalMessage(char card)
+bool Model::cardinalMessage(char card, Messenger& m)
 {
-  Messenger m;
-  Messenger n;
-  if(days < 2) return n;
+  if(days < 2) return false;
 
   char p = Compass::opcardinal(card);
 
   Event me = cardinalDayAction(p, days-2);
-  if(me.action != 'm') return n;
+  if(me.action != 'm') return false;
   m = Messenger(me);
 
   Event se = cardinalDayAction(me.route, days-2);
-  if(se.action != 's') return m;
-  if(se.how == 'b') return n;
+  if(se.action != 's') return true;
+  if(se.how == 'b') return false;
   m.sabotage(Sabotage(se));
 
-  return m;
+  return true;
 }
 
-Messenger Model::connectionMessage(char con)
+bool Model::connectionMessage(char con, Messenger& m)
 {
-  return cardinalMessage(connectionCardinal(con));
+  return cardinalMessage(connectionCardinal(con), m);
 }
 
-Messenger Model::cardinalIntruder(char card)
+bool Model::cardinalIntruder(char card, Messenger& m0, Messenger& m1)
 {
   Messenger m;
-  Messenger n;
   char e;
   Event me;
-  if(days < 1) return n;
+  m0.zero();
+  m1.zero();
+  if(days < 1) return false;
 
   e = Compass::cwcardinal(card);
   me = cardinalDayAction(e, days-1);
   if(me.action == 'm')
   {
     m = Messenger(me);
-    return m;
+    if(m.route == card)
+    {
+      m0 = m;
+    }
   }
 
   e = Compass::ccwcardinal(card);
@@ -224,25 +226,38 @@ Messenger Model::cardinalIntruder(char card)
   if(me.action == 'm')
   {
     m = Messenger(me);
-    return m;
+    if(m.route == card)
+    {
+      if(!m0.id) m0 = m;
+      else m1 = m;
+    }
   }
 
-  return n;
+  if(m0.id) return true;
+
+  return false;
 }
 
-Messenger Model::connectionIntruder(char con)
+bool Model::connectionIntruder(char con, Messenger& m0, Messenger& m1)
 {
-  return cardinalIntruder(connectionCardinal(con));
+  return cardinalIntruder(connectionCardinal(con), m0, m1);
 }
 
-Messenger Model::cardinalSabotage(char card)
+bool Model::cardinalSabotage(char card, Messenger& m0, Messenger& m1)
 {
-  return cardinalIntruder(card);
+  Event e = cardinalDayAction(card, days-1);
+  if(e.action != 's' || e.how != 'r')
+  {
+    m0.zero();
+    m1.zero();
+    return false;
+  }
+  else return cardinalIntruder(card, m0, m1);
 }
 
-Messenger Model::connectionSabotage(char con)
+bool Model::connectionSabotage(char con, Messenger& m0, Messenger& m1)
 {
-  return cardinalSabotage(connectionCardinal(con));
+  return cardinalSabotage(connectionCardinal(con), m0, m1);
 }
 
 bool Model::cardinalConnected(char card)
@@ -263,44 +278,6 @@ bool Model::cardinalHasAction(char card)
 bool Model::connectionHasAction(char con)
 {
   return connectionAction(con).type != '0';
-}
-
-bool Model::cardinalHasMessage(char card)
-{
-  Messenger m = cardinalMessage(card);
-  if(m.id) return true;
-  return false;
-}
-
-bool Model::connectionHasMessage(char con)
-{
-  return cardinalHasMessage(connectionCardinal(con));
-}
-
-bool Model::cardinalHasIntruder(char card)
-{
-  Messenger m = cardinalIntruder(card);
-  if(m.id) return true;
-  return false;
-}
-
-bool Model::connectionHasIntruder(char con)
-{
-  return cardinalHasIntruder(connectionCardinal(con));
-}
-
-
-bool Model::cardinalHasSabotage(char card)
-{
-  Messenger m;
-  if(!cardinalHasIntruder(card)) return false;
-  Event e = cardinalDayAction(card, days-1);
-  return (e.action == 's' && e.how == 'r');
-}
-
-bool Model::connectionHasSabotage(char con)
-{
-  return cardinalHasSabotage(connectionCardinal(con));
 }
 
 bool Model::cardinalWin(char card)

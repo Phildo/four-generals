@@ -32,6 +32,7 @@ class Messenger
     char *message();
     char message_buff[256];
 
+    void zero();
     ~Messenger();
 };
 

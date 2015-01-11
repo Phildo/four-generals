@@ -7,8 +7,7 @@
 
 Messenger::Messenger()
 {
-  memset(this, '0', sizeof(Messenger));
-  id = 0;
+  zero();
 }
 
 Messenger::Messenger(Event e)
@@ -54,6 +53,12 @@ char *Messenger::message()
   }
 
   return &message_buff[0];
+}
+
+void Messenger::zero()
+{
+  memset(this, '0', sizeof(Messenger));
+  id = 0;
 }
 
 Messenger::~Messenger()
