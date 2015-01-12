@@ -967,143 +967,146 @@ void PlayScene::touch(In &in)
   }
 
   //oh god terrible tree traversal touch propagation
-  if(in.type == In::DOWN && !c->iWin() && !c->iLose() && !c->iTie())
+  if(in.type == In::DOWN)
   {
-    if(!c->iHaveAction())
+    if(!c->iWin() && !c->iLose() && !c->iTie())
     {
-      if(e.action == '0')
+      if(!c->iHaveAction())
       {
-        chooseWhat(in);
-      }
-      else if(e.action == 'a')
-      {
-        if(e.who == '0')
+        if(e.action == '0')
         {
-          chooseAttackWho(in);
+          chooseWhat(in);
         }
-        else
-        {
-          chooseAttackWhoConfirm(in);
-        }
-      }
-      else if(e.action == 'd')
-      {
-        chooseDefendConfirm(in);
-      }
-      else if(e.action == 'm')
-      {
-        if(e.what == '0')
-        {
-          chooseMessageWhat(in);
-        }
-        else if(e.what == 'a')
+        else if(e.action == 'a')
         {
           if(e.who == '0')
           {
-            chooseMessageAttackWho(in);
+            chooseAttackWho(in);
           }
           else
           {
+            chooseAttackWhoConfirm(in);
+          }
+        }
+        else if(e.action == 'd')
+        {
+          chooseDefendConfirm(in);
+        }
+        else if(e.action == 'm')
+        {
+          if(e.what == '0')
+          {
+            chooseMessageWhat(in);
+          }
+          else if(e.what == 'a')
+          {
+            if(e.who == '0')
+            {
+              chooseMessageAttackWho(in);
+            }
+            else
+            {
+              if(e.when == '0')
+              {
+                chooseMessageAttackWhoWhen(in);
+              }
+              else
+              {
+                if(e.route == '0')
+                {
+                  chooseMessageAttackWhoWhenRoute(in);
+                }
+                else
+                {
+                  chooseMessageAttackWhoWhenRouteConfirm(in);
+                }
+              }
+            }
+          }
+          else if(e.what == 'd')
+          {
             if(e.when == '0')
             {
-              chooseMessageAttackWhoWhen(in);
+              chooseMessageDefendWhen(in);
             }
             else
             {
               if(e.route == '0')
               {
-                chooseMessageAttackWhoWhenRoute(in);
+                chooseMessageDefendWhenRoute(in);
               }
               else
               {
-                chooseMessageAttackWhoWhenRouteConfirm(in);
+                chooseMessageDefendWhenRouteConfirm(in);
               }
             }
           }
         }
-        else if(e.what == 'd')
+        else if(e.action == 's')
         {
-          if(e.when == '0')
+          if(e.how == '0')
           {
-            chooseMessageDefendWhen(in);
+            chooseSabotageHow(in);
           }
-          else
+          else if(e.how == 'b')
           {
-            if(e.route == '0')
-            {
-              chooseMessageDefendWhenRoute(in);
-            }
-            else
-            {
-              chooseMessageDefendWhenRouteConfirm(in);
-            }
+            chooseSabotageBlockConfirm(in);
           }
-        }
-      }
-      else if(e.action == 's')
-      {
-        if(e.how == '0')
-        {
-          chooseSabotageHow(in);
-        }
-        else if(e.how == 'b')
-        {
-          chooseSabotageBlockConfirm(in);
-        }
-        else if(e.how == 'r')
-        {
-          chooseSabotageReadConfirm(in);
-        }
-        else if(e.how == 's')
-        {
-          if(e.which == '0')
+          else if(e.how == 'r')
           {
-            chooseSabotageSwitchWhat(in);
+            chooseSabotageReadConfirm(in);
           }
-          else if(e.which == 'a')
+          else if(e.how == 's')
           {
-            if(e.what == '0')
+            if(e.which == '0')
             {
-              chooseSabotageSwitchWhatWhat(in);
+              chooseSabotageSwitchWhat(in);
             }
-            else if(e.what == 'a')
+            else if(e.which == 'a')
             {
-              chooseSabotageSwitchWhatAttackConfirm(in);
+              if(e.what == '0')
+              {
+                chooseSabotageSwitchWhatWhat(in);
+              }
+              else if(e.what == 'a')
+              {
+                chooseSabotageSwitchWhatAttackConfirm(in);
+              }
+              else if(e.what == 'd')
+              {
+                chooseSabotageSwitchWhatDefendConfirm(in);
+              }
             }
-            else if(e.what == 'd')
+            else if(e.which == 'o')
             {
-              chooseSabotageSwitchWhatDefendConfirm(in);
+              if(e.who == '0')
+              {
+                chooseSabotageSwitchWhoWho(in);
+              }
+              else
+              {
+                chooseSabotageSwitchWhoWhoConfirm(in);
+              }
             }
-          }
-          else if(e.which == 'o')
-          {
-            if(e.who == '0')
+            else if(e.which == 'e')
             {
-              chooseSabotageSwitchWhoWho(in);
-            }
-            else
-            {
-              chooseSabotageSwitchWhoWhoConfirm(in);
-            }
-          }
-          else if(e.which == 'e')
-          {
-            if(e.when == '0')
-            {
-              chooseSabotageSwitchWhenWhen(in);
-            }
-            else
-            {
-              chooseSabotageSwitchWhenWhenConfirm(in);
+              if(e.when == '0')
+              {
+                chooseSabotageSwitchWhenWhen(in);
+              }
+              else
+              {
+                chooseSabotageSwitchWhenWhenConfirm(in);
+              }
             }
           }
         }
       }
     }
-  }
-  else if(s && reset_game_button.query(in))
-  {
-    c->requestReset();
+    else if(s && reset_game_button.query(in))
+    {
+      c->requestReset();
+    }
   }
 }
 
@@ -1357,8 +1360,6 @@ PlayScene::~PlayScene()
 {
 
 }
-
-
 
 SDL_Rect PlayScene::rectForPosition(char c)
 {
