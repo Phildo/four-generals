@@ -361,6 +361,13 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   choose_sabotage_switch_whent_when_cancel_button  = cancel_double_button;
   choose_sabotage_switch_whent_when_confirm_button = confirm_double_button;
 
+  loading = UI::Anim(UI::AnimSprites(Sprite::loading_0(), Sprite::loading_1(), Sprite::loading_2(), Sprite::loading_2()), 3, 1.f, ww/2-250, wh/2-120,40,40);
+  waiting_on_players_label = UI::Label("waiting on players...", wh/2-20, 200, 40);
+  reset_game_button        = UI::TextButton("reset game", ww/2-100, wh/2-20, 200, 40);
+  win_img  = UI::Image(sun_s,   ww/2-100, wh/2-100, 200, 200);
+  lose_img = UI::Image(red_x_s, ww/2-100, wh/2-100, 200, 200);
+  tie_img  = UI::Image(sun_s,   ww/2-100, wh/2-100, 200, 200);
+
   known_day = '0';
   anim_day = 0.0f;
   shown_day = 0.0f;
@@ -891,6 +898,32 @@ void PlayScene::drawSabotageSwitchWhenWhenConfirm()
   choose_sabotage_switch_whent_when_confirm_button.draw(graphics);
 }
 
+void PlayScene::drawWaiting()
+{
+  loading.draw(graphics);
+  waiting_on_players_label.draw(graphics);
+}
+
+void PlayScene::drawReset()
+{
+  reset_game_button.draw(graphics);
+}
+
+void PlayScene::drawWin()
+{
+  win_img.draw(graphics);
+}
+
+void PlayScene::drawLose()
+{
+  lose_img.draw(graphics);
+}
+
+void PlayScene::drawTie()
+{
+  tie_img.draw(graphics);
+}
+
 
 
 
@@ -1068,9 +1101,9 @@ void PlayScene::touch(In &in)
       }
     }
   }
-  else if(s)// && resetButton.query(in))
+  else if(s && reset_game_button.query(in))
   {
-    //c->requestReset();
+    c->requestReset();
   }
 }
 
@@ -1150,15 +1183,15 @@ void PlayScene::draw()
 
   if(c->iWin())
   {
-    //drawWin();
+    drawWin();
   }
   else if(c->iLose())
   {
-    //drawLose();
+    drawLose();
   }
   else if(c->iTie())
   {
-    //drawTie();
+    drawTie();
   }
   else
   {
@@ -1305,7 +1338,7 @@ void PlayScene::draw()
         }
       }
     }
-    //else drawWaiting(); //wait
+    else drawWaiting();
   }
 }
 

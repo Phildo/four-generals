@@ -254,6 +254,19 @@ class PlayScene : public Scene
     UI::TextButton choose_sabotage_switch_whent_when_cancel_button;
     UI::TextButton choose_sabotage_switch_whent_when_confirm_button;
 
+    UI::Anim loading;
+    UI::Label waiting_on_players_label;
+    UI::TextButton reset_game_button;
+    UI::Image win_img;
+    UI::Image lose_img;
+    UI::Image tie_img;
+
+    void drawWaiting();
+    void drawReset();
+    void drawWin();
+    void drawLose();
+    void drawTie();
+
     Network::Client *client;
     Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
     ServerModel *s;
