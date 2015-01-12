@@ -4,8 +4,8 @@
 - can back out when auto-join attempting
 - shouldn't try auto-join unless ip exists
 - notification of wireless status would be nice
+- auto-join, then on reset game there are a bunch of aborts?
 
-- switch model "hasX, getX" to bool X(&X)
 - message + sabotage reading
 - playscene ui rendering not brute
 

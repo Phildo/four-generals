@@ -920,8 +920,17 @@ void PlayScene::touch(In &in)
 
   if(in.type == In::DOWN)
   {
-    chooseReadSabotage(in);
-    chooseReadMessage(in);
+    Messenger m;
+    Messenger m0;
+    Messenger m1;
+    if(c->myMessage(m))
+    {
+      chooseReadMessage(in);
+    }
+    if(c->mySabotage(m0, m1))
+    {
+      chooseReadSabotage(in);
+    }
   }
 
   //oh god terrible tree traversal touch propagation
@@ -1061,7 +1070,7 @@ void PlayScene::touch(In &in)
   }
   else if(s)// && resetButton.query(in))
   {
-    c->requestReset();
+    //c->requestReset();
   }
 }
 
