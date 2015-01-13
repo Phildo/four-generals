@@ -7,7 +7,9 @@
 #include "client_model.h"
 #include "scene.h"
 
+#ifdef FG_DEBUG
 #include "debug_list.h"
+#endif
 
 #include "intro_scene.h"
 #include "host_scene.h"
@@ -15,7 +17,6 @@
 #include "room_scene.h"
 #include "play_scene.h"
 
-#include "sprite.h"
 #include "logger.h"
 
 #include "SDL.h"
@@ -28,8 +29,6 @@ Game::Game()
   graphics = new Graphics();
   input = new Input(graphics);
 
-  DebugList::inst()->init(graphics);
-
   //save allocation until necessary
   server = 0;
   client = 0;
@@ -41,9 +40,12 @@ Game::Game()
   scenes[3] = new RoomScene(graphics, client, s_model, c_model);
   scenes[4] = new PlayScene(graphics, client, s_model, c_model);
 
+  #ifdef FG_DEBUG
+  DebugList::inst()->init(graphics);
   debug_toggle = false;
   debugBtn = UI::Button(graphics->winWidth()-40,graphics->winHeight()-40,40,40);
   border = UI::Box(0,0,graphics->winWidth(),graphics->winHeight());
+  #endif
 
   fg_log("Game Init");
 }
@@ -56,19 +58,22 @@ void Game::run()
 
   while(!q)
   {
-    in.zero();
-    while(!q && input->poll(in, q))
+    while(!q && input->poll(in))
     {
+      q = (in.type == In::QUIT);
       if(in.type != In::NONE)
       {
         scenes[scene]->touch(in);
+        #ifdef FG_DEBUG
         if(in.type == In::DOWN && debugBtn.query(in)) debug_toggle = !debug_toggle;
+        #endif
       }
-      in.zero();
     }
 
     int tmp = scenes[scene]->tick(); //should decouple from drawing
+    #ifdef FG_DEBUG
     DebugList::inst()->tick();
+    #endif
     if(tmp != 0) scenes[scene]->leave();
     if(tmp >  0) scenes[scene]->pass();
     if(tmp <  0) scenes[scene]->pop();
@@ -77,9 +82,11 @@ void Game::run()
 
     graphics->clear();
     scenes[scene]->draw();
+    #ifdef FG_DEBUG
     debugBtn.draw(graphics);
     border.draw(graphics);
     if(debug_toggle) DebugList::inst()->draw(graphics);
+    #endif
     graphics->flip();
 
     SDL_Delay(30);

@@ -27,9 +27,11 @@ class Game
     ClientModel* c_model;
     Scene* scenes[FG_NUM_SCENES];
 
+    #ifdef FG_DEBUG
     bool debug_toggle;
     UI::Button debugBtn;
     UI::Box border;
+    #endif
   public:
     Game();
     ~Game();

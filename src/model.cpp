@@ -41,22 +41,22 @@ void Model::revokeCard(char card)
   cardinalGeneral(card).cardinal   = '0'; //else won't be able to find it here
 }
 
-void Model::assignConAction(char con, Event e)
+void Model::assignConTurn(char con, Event e)
 {
-  connectionAction(con) = e; //copy
+  connectionTurn(con) = e; //copy
 }
 
-void Model::commitActions()
+void Model::commitTurns()
 {
   for(int i = 0; i < 4; i++)
   {
     char card = Compass::cardinal(i);
-    Event a = cardinalAction(card);
+    Event a = cardinalTurn(card);
     if(a.action == 'a')
     {
-      if(cardinalAction(a.who).action != 'd' && //attackee isn't defending
-         cardinalAction(Compass::opcardinal(card)).action == 'a' && //partner is attacking
-         cardinalAction(Compass::opcardinal(card)).who == a.who) //the same person as you
+      if(cardinalTurn(a.who).action != 'd' && //attackee isn't defending
+         cardinalTurn(Compass::opcardinal(card)).action == 'a' && //partner is attacking
+         cardinalTurn(Compass::opcardinal(card)).who == a.who) //the same person as you
       {
         if(cardinalTie(card) || cardinalLose(card))
         {
@@ -70,9 +70,9 @@ void Model::commitActions()
           losing_card = a.who;
         }
       }
-      else if(cardinalAction(a.who).action == 'd' && //attackee is defending
-            !(cardinalAction(Compass::opcardinal(card)).action == 'a' && //and partner isn't attacking
-              cardinalAction(Compass::opcardinal(card)).who == a.who)) //the same person as you
+      else if(cardinalTurn(a.who).action == 'd' && //attackee is defending
+            !(cardinalTurn(Compass::opcardinal(card)).action == 'a' && //and partner isn't attacking
+              cardinalTurn(Compass::opcardinal(card)).who == a.who)) //the same person as you
       {
         if(cardinalTie(card) || cardinalWin(card))
         {
@@ -99,7 +99,7 @@ void Model::commitActions()
     if(connectionTie(con))  connectionVictoryRecord(con).tie++;
   }
 
-  zeroTomorrowsActions();
+  zeroTomorrowsTurns();
   days++;
 }
 
@@ -146,49 +146,49 @@ General& Model::connectionGeneral(char con)
   return generals[4];
 }
 
-Event& Model::generalAction(General g)
+Event& Model::generalTurn(General g)
 {
-  return generalDayAction(g, days);
+  return generalDayTurn(g, days);
 }
 
-Event& Model::cardinalAction(char card)
+Event& Model::cardinalTurn(char card)
 {
-  return cardinalDayAction(card, days);
+  return cardinalDayTurn(card, days);
 }
 
-Event& Model::connectionAction(char con)
+Event& Model::connectionTurn(char con)
 {
-  return connectionDayAction(con, days);
+  return connectionDayTurn(con, days);
 }
 
-Event& Model::generalDayAction(General g, int day)
+Event& Model::generalDayTurn(General g, int day)
 {
   if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return actions[FG_MAX_ACTION_HIST*4];
   return actions[(day*4)+Compass::icardinal(g.cardinal)];
 }
 
-Event& Model::cardinalDayAction(char card, int day)
+Event& Model::cardinalDayTurn(char card, int day)
 {
   if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return actions[FG_MAX_ACTION_HIST*4];
   return actions[(day*4)+Compass::icardinal(card)];
 }
 
-Event& Model::connectionDayAction(char con, int day)
+Event& Model::connectionDayTurn(char con, int day)
 {
-  return cardinalDayAction(connectionCardinal(con), day);
+  return cardinalDayTurn(connectionCardinal(con), day);
 }
 
-bool Model::cardinalMessage(char card, Messenger& m)
+bool Model::cardinalMessage(char card, Turn& m)
 {
   if(days < 2) return false;
 
   char p = Compass::opcardinal(card);
 
-  Event me = cardinalDayAction(p, days-2);
+  Event me = cardinalDayTurn(p, days-2);
   if(me.action != 'm') return false;
-  m = Messenger(me);
+  m = Turn(me);
 
-  Event se = cardinalDayAction(me.route, days-2);
+  Event se = cardinalDayTurn(me.route, days-2);
   if(se.action != 's') return true;
   if(se.how == 'b') return false;
   m.sabotage(Sabotage(se));
@@ -196,14 +196,14 @@ bool Model::cardinalMessage(char card, Messenger& m)
   return true;
 }
 
-bool Model::connectionMessage(char con, Messenger& m)
+bool Model::connectionMessage(char con, Turn& m)
 {
   return cardinalMessage(connectionCardinal(con), m);
 }
 
-bool Model::cardinalIntruder(char card, Messenger& m0, Messenger& m1)
+bool Model::cardinalIntruder(char card, Turn& m0, Turn& m1)
 {
-  Messenger m;
+  Turn m;
   char e;
   Event me;
   m0.zero();
@@ -211,10 +211,10 @@ bool Model::cardinalIntruder(char card, Messenger& m0, Messenger& m1)
   if(days < 1) return false;
 
   e = Compass::cwcardinal(card);
-  me = cardinalDayAction(e, days-1);
+  me = cardinalDayTurn(e, days-1);
   if(me.action == 'm')
   {
-    m = Messenger(me);
+    m = Turn(me);
     if(m.route == card)
     {
       m0 = m;
@@ -222,10 +222,10 @@ bool Model::cardinalIntruder(char card, Messenger& m0, Messenger& m1)
   }
 
   e = Compass::ccwcardinal(card);
-  me = cardinalDayAction(e, days-1);
+  me = cardinalDayTurn(e, days-1);
   if(me.action == 'm')
   {
-    m = Messenger(me);
+    m = Turn(me);
     if(m.route == card)
     {
       if(!m0.id) m0 = m;
@@ -238,12 +238,12 @@ bool Model::cardinalIntruder(char card, Messenger& m0, Messenger& m1)
   return false;
 }
 
-bool Model::connectionIntruder(char con, Messenger& m0, Messenger& m1)
+bool Model::connectionIntruder(char con, Action& m0, Action& m1)
 {
   return cardinalIntruder(connectionCardinal(con), m0, m1);
 }
 
-bool Model::cardinalSabotage(char card, Messenger& m0, Messenger& m1)
+bool Model::cardinalSabotage(char card, Action& m0, Action& m1)
 {
   Event e = cardinalDayAction(card, days-1);
   if(e.action != 's' || e.how != 'r')
@@ -255,7 +255,7 @@ bool Model::cardinalSabotage(char card, Messenger& m0, Messenger& m1)
   else return cardinalIntruder(card, m0, m1);
 }
 
-bool Model::connectionSabotage(char con, Messenger& m0, Messenger& m1)
+bool Model::connectionSabotage(char con, Action& m0, Action& m1)
 {
   return cardinalSabotage(connectionCardinal(con), m0, m1);
 }
@@ -333,14 +333,14 @@ char Model::currentDay()
   return Week::day((days+7)%7); //+7 for obvious cross-lang modulus behavior
 }
 
-void Model::zeroCurrentActions()
+void Model::zeroCurrentTurns()
 {
   if(days < 0 || days >= FG_MAX_ACTION_HIST) return;
   for(int i = 0; i < 5; i++)
     actions[(days*4)+i].zero();
 }
 
-void Model::zeroTomorrowsActions()
+void Model::zeroTomorrowsTurns()
 {
   if(days < -1 || days >= (FG_MAX_ACTION_HIST-1)) return;
   for(int i = 0; i < 5; i++)
@@ -350,7 +350,7 @@ void Model::zeroTomorrowsActions()
 void Model::zeroRound()
 {
   days = -1; //set to "not yet a valid day"
-  zeroTomorrowsActions();
+  zeroTomorrowsTurns();
   winning_card = '0';
   losing_card = '0';
   tieing_card = '0';

@@ -14,12 +14,12 @@ Input::Input(Graphics *g)
   graphics = g;
 }
 
-bool Input::poll(In &in, bool &quit)
+bool Input::poll(In &in)
 {
-  quit = false;
+  in.zero();
   if(SDL_PollEvent(&event))
   {
-    if(event.type == SDL_QUIT) quit = true;
+    if(event.type == SDL_QUIT) in.type = QUIT;
     #ifdef FG_PC
     else if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
     {

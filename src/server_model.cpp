@@ -9,8 +9,6 @@ ServerModel::ServerModel(Network::Server *s)
 {
   server = s;
   hist_i = 0;
-  mess_id_store.getId(); //eliminate 0's
-  sabo_id_store.getId(); //eliminate 0's
 }
 
 ServerModel::~ServerModel()
@@ -93,9 +91,6 @@ void ServerModel::tick()
       case e_type_commit_action:
         if(!model.connectionHasAction(e.connection))
         {
-          //inject assignment of messenger id here
-          if(e.action == 'm') e.messenger_id = mess_id_store.getId();
-          if(e.action == 's') e.sabotage_id  = sabo_id_store.getId();
           model.assignConAction(e.connection, e);
           sendEvent(e);
         }

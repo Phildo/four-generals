@@ -3,7 +3,6 @@
 
 #include "network.h"
 #include "circ_q.h"
-#include "id_store.h"
 
 namespace Network
 {
