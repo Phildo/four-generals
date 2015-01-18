@@ -22,9 +22,7 @@ class Model
     Turn turns[4*FG_MAX_ACTION_HIST+1]; //2d array [(day*4)+general]
 
     int days;
-    char winning_card;
-    char losing_card;
-    char tieing_card;
+    char victory_status[4]; //'w' = win, 'l' = lose, 't' = tie, '0' = NA
 
     void connectCon(char con);
     void disconnectCon(char con);
@@ -51,6 +49,7 @@ class Model
     bool cardinalWin(char card);
     bool cardinalLose(char card);
     bool cardinalTie(char card);
+    bool roundOver();
 
     bool rolesAssigned();
     bool turnsAssigned();

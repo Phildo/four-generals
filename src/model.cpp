@@ -48,62 +48,86 @@ void Model::assignCardinalTurn(char card, Turn t)
 
 void Model::commitTurns()
 {
-//dis gon b gud
-/*
+  char hp[] = {2,2,2,2};
+  char card;
+  Turn t;
+  //first, defenses
   for(int i = 0; i < 4; i++)
   {
-    char card = Compass::cardinal(i);
-    Turn t = cardinalTurn(card);
-    if(a.action == 'a')
+    card = Compass::cardinal(i);
+    t = cardinalTurn(card);
+
+    if(t.actions[0].what == 'd')
+      hp[i]++;
+  }
+  //then, attacks
+  for(int i = 0; i < 4; i++)
+  {
+    card = Compass::cardinal(i);
+    t = cardinalTurn(card);
+
+    if(t.actions[0].what == 'a')
     {
-      if(cardinalTurn(a.who).action != 'd' && //attackee isn't defending
-         cardinalTurn(Compass::opcardinal(card)).action == 'a' && //partner is attacking
-         cardinalTurn(Compass::opcardinal(card)).who == a.who) //the same person as you
+      hp[i]--;
+      hp[Compass::icardinal(t.actions[0].who)]--;
+    }
+  }
+  //then, retaliations
+  for(int i = 0; i < 4; i++)
+  {
+    card = Compass::cardinal(i);
+    t = cardinalTurn(card);
+
+    if(t.actions[0].what == 'd' && hp[i] == 2) //hp == 1, means retaliate and die. hp == 3 means noone attacked.
+    {
+      for(int j = 0; j < 4; j++)
       {
-        if(cardinalTie(card) || cardinalLose(card))
+        char card2 = Compass::cardinal(j);
+        Turn t2 = cardinalTurn(card2);
+        if(t2.actions[0].what == 'a' && t2.actions[0].who == card)
         {
-          winning_card = '0';
-          losing_card = '0';
-          tieing_card = card; //any non-zero card = everyone ties
-        }
-        else
-        {
-          winning_card = card;
-          losing_card = a.who;
-        }
-      }
-      else if(cardinalTurn(a.who).action == 'd' && //attackee is defending
-            !(cardinalTurn(Compass::opcardinal(card)).action == 'a' && //and partner isn't attacking
-              cardinalTurn(Compass::opcardinal(card)).who == a.who)) //the same person as you
-      {
-        if(cardinalTie(card) || cardinalWin(card))
-        {
-          winning_card = '0';
-          losing_card = '0';
-          tieing_card = card;
-        }
-        else
-        {
-          losing_card = card;
-          winning_card = a.who;
+          hp[i]--;
+          hp[j]--;
         }
       }
     }
-    else if(a.action == 'm') { }
-    else if(a.action == 's') { }
   }
 
-  for(int i = 0; i < 4; i++) //ascribe any victory points
+  bool loser = false;
+  //find losers
+  for(int i = 0; i < 4; i++)
+  {
+    if(hp[i] <= 0)
+    {
+      victory_status[i] = 'l';
+      loser = true;
+    }
+  }
+  //see if theres a tie
+  for(int i = 0; loser && i < 4; i++)
+  {
+    if(victory_status[i] == 'l' && (victory_status[(i+1)%4] == 'l' || victory_status[(i+2)%4] == 'l'))
+    {
+      for(int j = 0; j < 4; j++)
+        victory_status[j] = 't';
+    }
+  }
+  //set winners
+  for(int i = 0; loser && i < 4; i++)
+  {
+    if(victory_status[i] == '0') victory_status[i] = 'w';
+  }
+  //ascribe victory points
+  for(int i = 0; loser && i < 4; i++)
   {
     char card = Compass::cardinal(i);
-    if(cardinalWin(card))  connectionVictoryRecord(cardinalConnection(card)).win++;
-    if(cardinalLose(card)) connectionVictoryRecord(cardinalConnection(card)).loss++;
-    if(cardinalTie(card))  connectionVictoryRecord(cardinalConnection(card)).tie++;
+    if(victory_status[i] == 'w') connectionVictoryRecord(cardinalConnection(card)).win++;
+    if(victory_status[i] == 'l') connectionVictoryRecord(cardinalConnection(card)).loss++;
+    if(victory_status[i] == 't') connectionVictoryRecord(cardinalConnection(card)).tie++;
   }
 
   zeroTomorrowsTurns();
   days++;
-*/
 }
 
 
@@ -236,17 +260,22 @@ bool Model::cardinalHasTurn(char card)
 
 bool Model::cardinalWin(char card)
 {
-  return (card == winning_card || Compass::opcardinal(card) == winning_card);
+  return victory_status[Compass::icardinal(card)] == 'w';
 }
 
 bool Model::cardinalLose(char card)
 {
-  return (card == losing_card || Compass::opcardinal(card) == losing_card);
+  return victory_status[Compass::icardinal(card)] == 'l';
 }
 
 bool Model::cardinalTie(char card)
 {
-  return tieing_card != '0';
+  return victory_status[Compass::icardinal(card)] == 't';
+}
+
+bool Model::roundOver()
+{
+  return victory_status[0] != '0';
 }
 
 bool Model::rolesAssigned()
@@ -290,15 +319,15 @@ void Model::zeroRound()
 {
   days = -1; //set to "not yet a valid day"
   zeroTomorrowsTurns();
-  winning_card = '0';
-  losing_card = '0';
-  tieing_card = '0';
+  for(int i = 0; i < 4; i++)
+    victory_status[i] = '0';
 }
 
 void Model::zeroAll()
 {
   zeroRound();
   //don't actually know how to handle this yet...
+  //probably zero victory records?
 }
 
 
