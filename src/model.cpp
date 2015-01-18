@@ -24,34 +24,36 @@ void Model::connectCon(char con)
 
 void Model::disconnectCon(char con)
 {
-  revokeCard(connectionGeneral(con).cardinal);
+  revokeCard(connectionCardinal(con));
   connectionConnection(con) = '0';
 }
 
 void Model::assignConCard(char con, char card)
 {
-  revokeCard(connectionGeneral(con).cardinal);
+  revokeCard(connectionCardinal(con));
   cardinalGeneral(card).connection = con;
   cardinalGeneral(card).cardinal   = card;
 }
 
 void Model::revokeCard(char card)
 {
-  cardinalGeneral(card).connection = '0'; //set connection first,
-  cardinalGeneral(card).cardinal   = '0'; //else won't be able to find it here
+  cardinalGeneral(card).connection = '0';
+  cardinalGeneral(card).cardinal   = '0';
 }
 
-void Model::assignConTurn(char con, Event e)
+void Model::assignCardinalTurn(char card, Turn t)
 {
-  connectionTurn(con) = e; //copy
+  cardinalTurn(card) = t;
 }
 
 void Model::commitTurns()
 {
+//dis gon b gud
+/*
   for(int i = 0; i < 4; i++)
   {
     char card = Compass::cardinal(i);
-    Event a = cardinalTurn(card);
+    Turn t = cardinalTurn(card);
     if(a.action == 'a')
     {
       if(cardinalTurn(a.who).action != 'd' && //attackee isn't defending
@@ -93,40 +95,28 @@ void Model::commitTurns()
 
   for(int i = 0; i < 4; i++) //ascribe any victory points
   {
-    char con = ConIds::conid(i);
-    if(connectionWin(con))  connectionVictoryRecord(con).win++;
-    if(connectionLose(con)) connectionVictoryRecord(con).loss++;
-    if(connectionTie(con))  connectionVictoryRecord(con).tie++;
+    char card = Compass::cardinal(i);
+    if(cardinalWin(card))  connectionVictoryRecord(cardinalConnection(card)).win++;
+    if(cardinalLose(card)) connectionVictoryRecord(cardinalConnection(card)).loss++;
+    if(cardinalTie(card))  connectionVictoryRecord(cardinalConnection(card)).tie++;
   }
 
   zeroTomorrowsTurns();
   days++;
+*/
 }
 
-//clarity
+
+//routers
 
 char& Model::connectionConnection(char con)
 {
   return connections[ConIds::iconid(con)];
 }
-
-char& Model::cardinalConnection(char card)
-{
-  for(int i = 0; i < 4; i++)
-    if(generals[i].cardinal == card) return connectionConnection(generals[i].connection);
-  return connectionConnection('0');
-}
-
 VictoryRecord& Model::connectionVictoryRecord(char con)
 {
   return connectionRecords[ConIds::iconid(con)];
 }
-
-VictoryRecord& Model::cardinalVictoryRecord(char card)
-{
-  return connectionVictoryRecord(cardinalConnection(card));
-}
-
 char Model::connectionCardinal(char con)
 {
   for(int i = 0; i < 4; i++)
@@ -134,130 +124,99 @@ char Model::connectionCardinal(char con)
   return '0';
 }
 
+
+char& Model::cardinalConnection(char card)
+{
+  return connectionConnection(cardinalGeneral(card).connection);
+}
 General& Model::cardinalGeneral(char card)
 {
   return generals[Compass::icardinal(card)];
 }
-
-General& Model::connectionGeneral(char con)
-{
-  for(int i = 0; i < 4; i++)
-    if(generals[i].connection == con) return generals[i];
-  return generals[4];
-}
-
-Event& Model::generalTurn(General g)
-{
-  return generalDayTurn(g, days);
-}
-
-Event& Model::cardinalTurn(char card)
+Turn& Model::cardinalTurn(char card)
 {
   return cardinalDayTurn(card, days);
 }
-
-Event& Model::connectionTurn(char con)
+Turn& Model::cardinalDayTurn(char card, int day)
 {
-  return connectionDayTurn(con, days);
+  if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return turns[FG_MAX_ACTION_HIST*4];
+  return turns[(day*4)+Compass::icardinal(card)];
 }
 
-Event& Model::generalDayTurn(General g, int day)
+bool Model::cardinalMessage(char card, Action& a)
 {
-  if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return actions[FG_MAX_ACTION_HIST*4];
-  return actions[(day*4)+Compass::icardinal(g.cardinal)];
-}
-
-Event& Model::cardinalDayTurn(char card, int day)
-{
-  if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return actions[FG_MAX_ACTION_HIST*4];
-  return actions[(day*4)+Compass::icardinal(card)];
-}
-
-Event& Model::connectionDayTurn(char con, int day)
-{
-  return cardinalDayTurn(connectionCardinal(con), day);
-}
-
-bool Model::cardinalMessage(char card, Turn& m)
-{
+  a.zero();
   if(days < 2) return false;
 
   char p = Compass::opcardinal(card);
 
-  Event me = cardinalDayTurn(p, days-2);
-  if(me.action != 'm') return false;
-  m = Turn(me);
+  //if partner sent message
+  Turn t = cardinalDayTurn(p, days-2);
+       if(t.actions[0].what == 'm') a = t.actions[0];
+  else if(t.actions[1].what == 'm') a = t.actions[1];
+  else                              return false;
 
-  Event se = cardinalDayTurn(me.route, days-2);
-  if(se.action != 's') return true;
-  if(se.how == 'b') return false;
-  m.sabotage(Sabotage(se));
+  //if route was sabotaged
+  t = cardinalDayTurn(a.route, days-2);
+       if(t.actions[0].what == 's') a.beSabotaged(t.actions[0]);
+  else if(t.actions[1].what == 's') a.beSabotaged(t.actions[1]);
+
+  //if sabotage was block
+  if((t.actions[0].what == 's' && t.actions[0].how == 'b') &&
+     (t.actions[0].what == 's' && t.actions[0].how == 'b'))
+  {
+    a.zero();
+    return false;
+  }
 
   return true;
 }
 
-bool Model::connectionMessage(char con, Turn& m)
+bool Model::cardinalIntruder(char card, Action& a0, Action& a1)
 {
-  return cardinalMessage(connectionCardinal(con), m);
-}
-
-bool Model::cardinalIntruder(char card, Turn& m0, Turn& m1)
-{
-  Turn m;
-  char e;
-  Event me;
-  m0.zero();
-  m1.zero();
+  a0.zero();
+  a1.zero();
   if(days < 1) return false;
 
+  char e;
+  Turn t;
+
   e = Compass::cwcardinal(card);
-  me = cardinalDayTurn(e, days-1);
-  if(me.action == 'm')
-  {
-    m = Turn(me);
-    if(m.route == card)
-    {
-      m0 = m;
-    }
-  }
+  t = cardinalDayTurn(e, days-1);
+  if(t.actions[0].what == 'm' && t.actions[0].route == card)
+      a0 = t.actions[0];
+  if(t.actions[1].what == 'm' && t.actions[1].route == card)
+      a0 = t.actions[1];
 
   e = Compass::ccwcardinal(card);
-  me = cardinalDayTurn(e, days-1);
-  if(me.action == 'm')
+  t = cardinalDayTurn(e, days-1);
+  if(t.actions[0].what == 'm' && t.actions[0].route == card)
   {
-    m = Turn(me);
-    if(m.route == card)
-    {
-      if(!m0.id) m0 = m;
-      else m1 = m;
-    }
+    if(a0.what == '0') a0 = t.actions[0];
+    else               a1 = t.actions[0];
+  }
+  if(t.actions[1].what == 'm' && t.actions[1].route == card)
+  {
+    if(a0.what == '0') a0 = t.actions[1];
+    else               a1 = t.actions[1];
   }
 
-  if(m0.id) return true;
-
-  return false;
+  return (a0.what != '0');
 }
 
-bool Model::connectionIntruder(char con, Action& m0, Action& m1)
+bool Model::cardinalSabotage(char card, Action& a0, Action& a1)
 {
-  return cardinalIntruder(connectionCardinal(con), m0, m1);
-}
+  a0.zero();
+  a1.zero();
 
-bool Model::cardinalSabotage(char card, Action& m0, Action& m1)
-{
-  Event e = cardinalDayAction(card, days-1);
-  if(e.action != 's' || e.how != 'r')
-  {
-    m0.zero();
-    m1.zero();
-    return false;
-  }
-  else return cardinalIntruder(card, m0, m1);
-}
+  Turn t = cardinalDayTurn(card, days-1);
+  Action a;
+       if(t.actions[0].what == 's') a = t.actions[0];
+  else if(t.actions[1].what == 's') a = t.actions[1];
+  else                              return false;
 
-bool Model::connectionSabotage(char con, Action& m0, Action& m1)
-{
-  return cardinalSabotage(connectionCardinal(con), m0, m1);
+  if(a.how != 'r') return false;
+  else return cardinalIntruder(card, a0, a1);
 }
 
 bool Model::cardinalConnected(char card)
@@ -270,14 +229,9 @@ bool Model::connectionConnected(char con)
   return connectionConnection(con) != '0';
 }
 
-bool Model::cardinalHasAction(char card)
+bool Model::cardinalHasTurn(char card)
 {
-  return cardinalAction(card).type != '0';
-}
-
-bool Model::connectionHasAction(char con)
-{
-  return connectionAction(con).type != '0';
+  return cardinalTurn(card).cardinal != '0';
 }
 
 bool Model::cardinalWin(char card)
@@ -285,27 +239,12 @@ bool Model::cardinalWin(char card)
   return (card == winning_card || Compass::opcardinal(card) == winning_card);
 }
 
-bool Model::connectionWin(char con)
-{
-  return cardinalWin(connectionCardinal(con));
-}
-
 bool Model::cardinalLose(char card)
 {
   return (card == losing_card || Compass::opcardinal(card) == losing_card);
 }
 
-bool Model::connectionLose(char con)
-{
-  return cardinalLose(connectionCardinal(con));
-}
-
 bool Model::cardinalTie(char card)
-{
-  return tieing_card != '0';
-}
-
-bool Model::connectionTie(char con)
 {
   return tieing_card != '0';
 }
@@ -319,13 +258,13 @@ bool Model::rolesAssigned()
     cardinalConnected('w');
 }
 
-bool Model::actionsAssigned()
+bool Model::turnsAssigned()
 {
   return
-    cardinalHasAction('n') &&
-    cardinalHasAction('e') &&
-    cardinalHasAction('s') &&
-    cardinalHasAction('w');
+    cardinalHasTurn('n') &&
+    cardinalHasTurn('e') &&
+    cardinalHasTurn('s') &&
+    cardinalHasTurn('w');
 }
 
 char Model::currentDay()
@@ -337,14 +276,14 @@ void Model::zeroCurrentTurns()
 {
   if(days < 0 || days >= FG_MAX_ACTION_HIST) return;
   for(int i = 0; i < 5; i++)
-    actions[(days*4)+i].zero();
+    turns[(days*4)+i].zero();
 }
 
 void Model::zeroTomorrowsTurns()
 {
   if(days < -1 || days >= (FG_MAX_ACTION_HIST-1)) return;
   for(int i = 0; i < 5; i++)
-    actions[((days+1)*4)+i].zero();
+    turns[((days+1)*4)+i].zero();
 }
 
 void Model::zeroRound()

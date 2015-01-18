@@ -45,9 +45,9 @@ void ServerModel::tick()
     if(model.connectionConnection('0'+i) != '0' && !server->hasConnection(i))
     {
       Event e;
-      e.connection = '0'+i;
       e.type = e_type_leave_con;
-      model.disconnectCon(e.connection);
+      e.leave_con.connection = '0'+i;
+      model.disconnectCon(e.leave_con.connection);
       sendEvent(e);
     }
   }
@@ -59,25 +59,25 @@ void ServerModel::tick()
     switch(e.type)
     {
       case e_type_join_con:
-        model.connectCon(e.connection);
-        dumpHistory(e.connection);
+        model.connectCon(e.join_con.connection);
+        dumpHistory(e.join_con.connection);
         sendEvent(e);
         break;
       case e_type_leave_con:
-        model.disconnectCon(e.connection);
+        model.disconnectCon(e.leave_con.connection);
         sendEvent(e);
         break;
       case e_type_assign_card:
-        if(!model.cardinalConnected(e.cardinal))
+        if(!model.cardinalConnected(e.assign_card.cardinal))
         {
-          model.assignConCard(e.connection, e.cardinal);
+          model.assignConCard(e.assign_card.connection, e.assign_card.cardinal);
           sendEvent(e);
         }
         break;
       case e_type_revoke_card:
-        if(model.cardinalConnected(e.cardinal) && model.cardinalGeneral(e.cardinal).connection == e.connection)
+        if(model.cardinalConnected(e.revoke_card.cardinal) && model.cardinalGeneral(e.revoke_card.cardinal).connection == e.revoke_card.connection)
         {
-          model.revokeCard(e.cardinal);
+          model.revokeCard(e.revoke_card.cardinal);
           sendEvent(e);
         }
         break;
@@ -88,20 +88,20 @@ void ServerModel::tick()
           sendEvent(e);
         }
         break;
-      case e_type_commit_action:
-        if(!model.connectionHasAction(e.connection))
+      case e_type_commit_turn:
+        if(!model.cardinalHasTurn(model.connectionCardinal(e.commit_turn.connection)))
         {
-          model.assignConAction(e.connection, e);
+          model.assignCardinalTurn(model.connectionCardinal(e.commit_turn.connection), e.commit_turn.turn);
           sendEvent(e);
         }
-        if(model.actionsAssigned())
+        if(model.turnsAssigned())
         {
-          model.commitActions(); //also increases day
-          e.type = e_type_commit_actions; //give goahead for mass commit
+          model.commitTurns(); //also increases day
+          e.type = e_type_commit_turns; //give goahead for mass commit
           sendEvent(e);
         }
         break;
-      case e_type_commit_actions: break; //server->client only
+      case e_type_commit_turns: break; //server->client only
       case e_type_reset_game:
         model.zeroRound();
         sendEvent(e);

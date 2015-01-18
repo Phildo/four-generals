@@ -4,7 +4,7 @@ Turn::Turn() //set to pseudo 'null'
 {
   zero();
 };
-Turn::Turn(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
+Turn::Turn(char *c) //inverse of serialize
 {
   int i = 0;
   cardinal = c[i]; i++;
@@ -21,7 +21,6 @@ void Turn::zero()
 
 void Turn::serialize(char *c) const
 {
-  String s;
   int i = 0;
   c[i] = cardinal; i++;
   actions[0].serialize(&c[i]); i += sizeof(Action); //a bit sketch...

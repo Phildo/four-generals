@@ -30,44 +30,30 @@ class Model
     void disconnectCon(char con);
     void assignConCard(char con, char card);
     void revokeCard(char card);
-    void assignConTurn(char con, Turn t);
+    void assignCardinalTurn(char card, Turn t);
     void commitTurns();
 
-    //clarity
+    //routers
     char& connectionConnection(char con);
-    char& cardinalConnection(char card);
     VictoryRecord& connectionVictoryRecord(char con);
-    VictoryRecord& cardinalVictoryRecord(char card);
     char connectionCardinal(char con);
-    General& cardinalGeneral(char card);
-    General& connectionGeneral(char con);
-    Turn& generalTurn(General g);
-    Turn& cardinalTurn(char card);
-    Turn& connectionTurn(char con);
-    Turn& generalDayTurn(General g, int day);
-    Turn& cardinalDayTurn(char card, int day);
-    Turn& connectionDayTurn(char con, int day);
-
-    bool cardinalMessage( char card, Action& m);
-    bool connectionMessage(char con, Action& m);
-    bool cardinalIntruder( char card, Action& m0, Action& m1);
-    bool connectionIntruder(char con, Action& m0, Action& m1);
-    bool cardinalSabotage( char card, Action& m0, Action& m1);
-    bool connectionSabotage(char con, Action& m0, Action& m1);
-
-    bool cardinalConnected(char card);
     bool connectionConnected(char con);
-    bool cardinalHasTurn(char card);
-    bool connectionHasTurn(char con);
 
+    char& cardinalConnection(char card);
+    General& cardinalGeneral(char card);
+    Turn& cardinalTurn(char card);
+    Turn& cardinalDayTurn(char card, int day);
+    bool cardinalMessage(  char card, Action& a);
+    bool cardinalIntruder( char card, Action& a0, Action& a1);
+    bool cardinalSabotage( char card, Action& a0, Action& a1);
+    bool cardinalConnected(char card);
+    bool cardinalHasTurn(char card);
     bool cardinalWin(char card);
-    bool connectionWin(char con);
     bool cardinalLose(char card);
-    bool connectionLose(char con);
     bool cardinalTie(char card);
-    bool connectionTie(char con);
+
     bool rolesAssigned();
-    bool actionsAssigned();
+    bool turnsAssigned();
 
     char currentDay();
 

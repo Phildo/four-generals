@@ -1,6 +1,7 @@
 #ifndef _FG_GAME_H_
 #define _FG_GAME_H_
 
+#include "defines.h"
 #include "ui.h"
 
 class Graphics;

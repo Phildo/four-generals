@@ -5,6 +5,8 @@
 #include "network.h"
 #include "server.h"
 
+#include "event.h"
+
 class ServerModel
 {
   private :

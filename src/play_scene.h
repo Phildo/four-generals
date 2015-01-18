@@ -100,8 +100,7 @@ class PlayScene : public Scene
     float anim_day;
     float shown_day;
 
-    Event e; //populates with tentative event (holds state for what to show on screen)
-    void zeroE();
+    Turn t; //populates with tentative turn (holds state for what to show on screen)
 
     void chooseShownDay(In &in);
     void chooseReadSabotage(In &in);

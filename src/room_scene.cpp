@@ -246,7 +246,7 @@ void RoomScene::draw()
       pScoreLabels[i].sprite = pTags[i];
     else
     {
-      char gen = c->model.connectionGeneral(ConIds::conid(i)).cardinal;
+      char gen = c->model.connectionCardinal(ConIds::conid(i));
       if(gen == 'n' || gen == 's')
         pScoreLabels[i].sprite = pTagsB[i];
       else if(gen == 'e' || gen == 'w')

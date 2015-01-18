@@ -5,7 +5,7 @@ Action::Action() //set to pseudo 'null'
   zero();
 };
 
-Action::Action(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
+Action::Action(char *c) //inverse of serialize
 {
   int i = 0;
   what  = c[i]; i++;
@@ -28,7 +28,6 @@ void Action::zero()
 
 void Action::serialize(char *c) const
 {
-  String s;
   int i = 0;
   c[i] = what;  i++;
   c[i] = how;   i++;
@@ -38,7 +37,7 @@ void Action::serialize(char *c) const
   c[i] = route; i++;
 }
 
-void beSabotaged(Action a)
+void Action::beSabotaged(Action a)
 {
   if(a.what == 's' && a.how == 's')
   {

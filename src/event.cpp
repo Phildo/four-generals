@@ -8,7 +8,6 @@ Event::Event(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
 {
   int i = 0;
   type       = c[i]; i++;
-  connection = c[i]; i++;
 
   switch(type)
   {
@@ -29,12 +28,12 @@ Event::Event(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
     case e_type_begin_play:
       begin_play.null = c[i]; i++;
       break;
-    case e_type_commit_action:
-      commit_action.connection = c[i]; i++;
-      commit_action.turn = Turn(&c[i]); i+= sizeof(Turn);
+    case e_type_commit_turn:
+      commit_turn.connection = c[i]; i++;
+      commit_turn.turn = Turn(&c[i]); i+= sizeof(Turn);
       break;
-    case e_type_commit_actions:
-      commit_actions.null = c[i]; i++;
+    case e_type_commit_turns:
+      commit_turns.null = c[i]; i++;
       break;
     case e_type_reset_game:
       reset_game.null = c[i]; i++;
@@ -71,12 +70,12 @@ void Event::serialize(char *c) const
     case e_type_begin_play:
       c[i] = begin_play.null; i++;
       break;
-    case e_type_commit_action:
-      c[i] = commit_action.connection; i++;
-      commit_action.turn.serialize(&c[i]); i+= sizeof(Turn);
+    case e_type_commit_turn:
+      c[i] = commit_turn.connection; i++;
+      commit_turn.turn.serialize(&c[i]); i+= sizeof(Turn);
       break;
-    case e_type_commit_actions:
-      c[i] = commit_actions.null; i++;
+    case e_type_commit_turns:
+      c[i] = commit_turns.null; i++;
       break;
     case e_type_reset_game:
       c[i] = reset_game.null; i++;

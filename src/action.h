@@ -1,8 +1,6 @@
 #ifndef _FG_ACTION_H_
 #define _FG_ACTION_H_
 
-#include "defines.h"
-
 struct Action //all members chars for quick/simple serializability
 {
   //anything w/ value '0' = unassigned / N/A

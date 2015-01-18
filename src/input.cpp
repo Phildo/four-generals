@@ -19,7 +19,7 @@ bool Input::poll(In &in)
   in.zero();
   if(SDL_PollEvent(&event))
   {
-    if(event.type == SDL_QUIT) in.type = QUIT;
+    if(event.type == SDL_QUIT) in.type = In::QUIT;
     #ifdef FG_PC
     else if(event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT)
     {

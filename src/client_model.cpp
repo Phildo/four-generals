@@ -8,7 +8,6 @@
 ClientModel::ClientModel(Network::Client *c)
 {
   client = c;
-  last_known_con = '0';
 }
 
 ClientModel::~ClientModel()
@@ -25,8 +24,8 @@ void ClientModel::sendEvent(const Event &e)
 void ClientModel::requestJoin()
 {
   Event e;
-  e.connection = myConnection();
   e.type = e_type_join_con;
+  e.join_con.connection = myConnection();
 
   sendEvent(e);
 }
@@ -34,9 +33,9 @@ void ClientModel::requestJoin()
 void ClientModel::requestCardinal(char card)
 {
   Event e;
-  e.connection = myConnection();
-  e.cardinal = card;
   e.type = e_type_assign_card;
+  e.assign_card.connection = myConnection();
+  e.assign_card.cardinal = card;
 
   sendEvent(e);
 }
@@ -44,9 +43,9 @@ void ClientModel::requestCardinal(char card)
 void ClientModel::requestRevokeCardinal()
 {
   Event e;
-  e.connection = myConnection();
-  e.cardinal = myCardinal();
   e.type = e_type_revoke_card;
+  e.revoke_card.connection = myConnection();
+  e.revoke_card.cardinal = myCardinal();
 
   sendEvent(e);
 }
@@ -54,23 +53,23 @@ void ClientModel::requestRevokeCardinal()
 void ClientModel::requestBeginPlay()
 {
   Event e;
-  e.connection = myConnection();
-  e.cardinal = myCardinal();
   e.type = e_type_begin_play;
 
   sendEvent(e);
 }
 
-void ClientModel::commitAction(Event e)
+void ClientModel::commitTurn(Turn t)
 {
+  Event e;
+  e.type = e_type_commit_turn;
+  e.commit_turn.turn = t;
+
   sendEvent(e);
 }
 
 void ClientModel::requestReset()
 {
   Event e;
-  e.connection = myConnection();
-  e.cardinal = myCardinal();
   e.type = e_type_reset_game;
 
   sendEvent(e);
@@ -99,66 +98,67 @@ bool ClientModel::imCardinal(char card)
   return imConnected() && model.cardinalConnection(card) == myConnection();
 }
 
-bool ClientModel::iHaveAction()
+bool ClientModel::iHaveTurn()
 {
-  return imConnected() && model.connectionHasAction(myConnection());
+  return imConnected() && model.cardinalHasTurn(myCardinal());
 }
 
-bool ClientModel::myMessage(Messenger& m)
+bool ClientModel::myMessage(Action& a)
 {
   if(!imConnected())
   {
-    m.zero();
+    a.zero();
     return false;
   }
-  else return model.connectionMessage(myConnection(),m);
+  else return model.cardinalMessage(myCardinal(),a);
 }
 
-bool ClientModel::myIntruder(Messenger& m0, Messenger&m1)
+bool ClientModel::myIntruder(Action& a0, Action&a1)
 {
   if(!imConnected())
   {
-    m0.zero();
-    m1.zero();
+    a0.zero();
+    a1.zero();
     return false;
   }
-  else return model.connectionIntruder(myConnection(),m0,m1);
+  else return model.cardinalIntruder(myCardinal(),a0,a1);
 }
 
-bool ClientModel::mySabotage(Messenger& m0, Messenger&m1)
+bool ClientModel::mySabotage(Action& a0, Action&a1)
 {
   if(!imConnected())
   {
-    m0.zero();
-    m1.zero();
+    a0.zero();
+    a1.zero();
     return false;
   }
-  else return model.connectionSabotage(myConnection(),m0,m1);
+  else return model.cardinalSabotage(myCardinal(),a0,a1);
 }
 
 bool ClientModel::iWin()
 {
-  return model.connectionWin(myConnection());
+  return model.cardinalWin(myCardinal());
 }
 
 bool ClientModel::iLose()
 {
-  return model.connectionLose(myConnection());
+  return model.cardinalLose(myCardinal());
 }
 
 bool ClientModel::iTie()
 {
-  return model.connectionTie(myConnection());
+  return model.cardinalTie(myCardinal());
 }
 
 void ClientModel::tick()
 {
   Network::Load l;
 
-  if(imConnected() && last_known_con == '0')
+  static bool already_tried_joining = false;
+  if(imConnected() && model.connectionConnected(myConnection()) && !already_tried_joining)
   {
     requestJoin();
-    last_known_con = myConnection();
+    already_tried_joining = true;
   }
 
   while(client->read(l))
@@ -167,25 +167,25 @@ void ClientModel::tick()
     switch(e.type)
     {
       case e_type_join_con:
-        model.connectCon(e.connection);
+        model.connectCon(e.join_con.connection);
         break;
       case e_type_leave_con:
-        model.disconnectCon(e.connection);
+        model.disconnectCon(e.leave_con.connection);
         break;
       case e_type_assign_card:
-        model.assignConCard(e.connection, e.cardinal);
+        model.assignConCard(e.assign_card.connection, e.assign_card.cardinal);
         break;
       case e_type_revoke_card:
-        model.revokeCard(e.cardinal);
+        model.revokeCard(e.revoke_card.cardinal);
         break;
       case e_type_begin_play:
         model.days = 0;
         break;
-      case e_type_commit_action:
-        model.assignConAction(e.connection, e);
+      case e_type_commit_turn:
+        model.assignCardinalTurn(model.connectionCardinal(e.commit_turn.connection), e.commit_turn.turn);
         break;
-      case e_type_commit_actions:
-        model.commitActions(); //also increases day
+      case e_type_commit_turns:
+        model.commitTurns(); //also increases day
         break;
       case e_type_reset_game:
         model.zeroRound();

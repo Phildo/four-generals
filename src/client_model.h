@@ -5,12 +5,13 @@
 #include "network.h"
 #include "client.h"
 
+#include "event.h"
+
 class ClientModel
 {
   private :
     Network::Client *client;
 
-    char last_known_con; //hack to be aware of disconnect
     void sendEvent(const Event &e);
   public :
     Model model;
@@ -22,18 +23,18 @@ class ClientModel
     void requestCardinal(char card);
     void requestRevokeCardinal();
     void requestBeginPlay();
-    void commitAction(Event e);
+    void commitTurn(Turn t);
     void requestReset();
 
     bool imConnected();
     char myConnection();
     char myCardinal();
     bool imCardinal(char card);
-    bool iHaveAction();
+    bool iHaveTurn();
 
-    bool myMessage(Messenger& m);
-    bool myIntruder(Messenger& m0, Messenger& m1);
-    bool mySabotage(Messenger& m0, Messenger& m1);
+    bool myMessage(Action& a);
+    bool myIntruder(Action& m0, Action& m1);
+    bool mySabotage(Action& m0, Action& m1);
 
     bool iWin();
     bool iLose();

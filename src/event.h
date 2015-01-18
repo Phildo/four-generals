@@ -10,8 +10,8 @@ static const char e_type_assign_card = 'c';
 static const char e_type_revoke_card = 'd';
 
 static const char e_type_begin_play = 'e';
-static const char e_type_commit_action = 'f';
-static const char e_type_commit_actions = 'g';
+static const char e_type_commit_turn = 'f';
+static const char e_type_commit_turns = 'g';
 
 static const char e_type_reset_game = 'h';
 
@@ -47,11 +47,11 @@ struct Event
     {
       char connection;
       Turn turn;
-    } commit_action;
+    } commit_turn;
     struct
     {
       char null;
-    } commit_actions;
+    } commit_turns;
     struct
     {
       char null;
