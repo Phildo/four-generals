@@ -73,7 +73,7 @@ void drawParticle(Particle& p, Graphics *g)
       tmp.y = p.defend.y-p.defend.h.v()/2;
       tmp.w = p.defend.w.v();
       tmp.h = p.defend.h.v();
-      g->draw(Sprite::shield_full_force(),tmp);
+      g->draw(Sprite::shield(),tmp);
     break;
     case P_TYPE_ATTACK:
       tmp.x = p.attack.x.v();

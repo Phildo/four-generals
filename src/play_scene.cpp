@@ -25,49 +25,10 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   s = 0;
   c = 0;
 
-  generals_s[0] = UI::AnimSprites(Sprite::gen_n_0(), Sprite::gen_n_1(), Sprite::gen_n_2(), Sprite::gen_n_3());
-  generals_s[1] = UI::AnimSprites(Sprite::gen_e_0(), Sprite::gen_e_1(), Sprite::gen_e_2(), Sprite::gen_e_3());
-  generals_s[2] = UI::AnimSprites(Sprite::gen_s_0(), Sprite::gen_s_1(), Sprite::gen_s_2(), Sprite::gen_s_3());
-  generals_s[3] = UI::AnimSprites(Sprite::gen_w_0(), Sprite::gen_w_1(), Sprite::gen_w_2(), Sprite::gen_w_3());
-
-  pTags[0] = Sprite::p1();
-  pTags[1] = Sprite::p2();
-  pTags[2] = Sprite::p3();
-  pTags[3] = Sprite::p4();
-  pTagsW[0] = Sprite::p1_w();
-  pTagsW[1] = Sprite::p2_w();
-  pTagsW[2] = Sprite::p3_w();
-  pTagsW[3] = Sprite::p4_w();
-  pTagsB[0] = Sprite::p1_b();
-  pTagsB[1] = Sprite::p2_b();
-  pTagsB[2] = Sprite::p3_b();
-  pTagsB[3] = Sprite::p4_b();
-  pTagsR[0] = Sprite::p1_r();
-  pTagsR[1] = Sprite::p2_r();
-  pTagsR[2] = Sprite::p3_r();
-  pTagsR[3] = Sprite::p4_r();
-
-  force_field_s   = Sprite::shield_full_force();
-  shield_full_s   = Sprite::shield_full();
-  shield_broken_s = Sprite::shield_cracked();
-  sword_s         = Sprite::sword();
-  red_x_s         = Sprite::red_x();
-  envelope_s      = Sprite::envelope();
-  sun_s           = Sprite::sun();
-  sblock_s        = Sprite::sblock();
-  sread_s         = Sprite::sread();
-  sswitch_s       = Sprite::sswitch();
-  what_s          = Sprite::what();
-  who_ns_s        = Sprite::who_ns();
-  who_we_s        = Sprite::who_we();
-  when_s          = Sprite::when();
-  where_ns_s      = Sprite::where_ns();
-  where_we_s      = Sprite::where_we();
-  null_s          = Sprite::null();
-
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
 
+  //Rects
   int posRectW[] = {                90,                110,                120,                110};
   int posRectH[] = {                90,                110,                120,                110};
   int posRectX[] = {ww/2-posRectW[0]/2,  ww-posRectW[1]-20, ww/2-posRectW[2]/2,                 20};
@@ -75,10 +36,14 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   for(int i = 0; i < 4; i++)
   {
-    positionRects[i].x = posRectX[i];
-    positionRects[i].y = posRectY[i];
-    positionRects[i].w = posRectW[i];
-    positionRects[i].h = posRectH[i];
+    posRects[i].x = posRectX[i];
+    posRects[i].y = posRectY[i];
+    posRects[i].w = posRectW[i];
+    posRects[i].h = posRectH[i];
+
+    posRects[i] = posRects[i];
+    posLabelRects[i].y += posLabelRects[i].h;
+    posLabelRects[i].h /= 3;
   }
 
   for(int i = 0; i < 7; i++)
@@ -94,51 +59,60 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
     sunRects[i].h = 60;
   }
 
-  dayLbls[0] = UI::Label("Su", dayRects[0]);
-  dayLbls[1] = UI::Label("Mo", dayRects[1]);
-  dayLbls[2] = UI::Label("Tu", dayRects[2]);
-  dayLbls[3] = UI::Label("We", dayRects[3]);
-  dayLbls[4] = UI::Label("Th", dayRects[4]);
-  dayLbls[5] = UI::Label("Fr", dayRects[5]);
-  dayLbls[6] = UI::Label("Sa", dayRects[6]);
+  //Sprites
+  generals_s[0] = UI::AnimSprites(Sprite::gen_n_0(), Sprite::gen_n_1(), Sprite::gen_n_2(), Sprite::gen_n_3());
+  generals_s[1] = UI::AnimSprites(Sprite::gen_e_0(), Sprite::gen_e_1(), Sprite::gen_e_2(), Sprite::gen_e_3());
+  generals_s[2] = UI::AnimSprites(Sprite::gen_s_0(), Sprite::gen_s_1(), Sprite::gen_s_2(), Sprite::gen_s_3());
+  generals_s[3] = UI::AnimSprites(Sprite::gen_w_0(), Sprite::gen_w_1(), Sprite::gen_w_2(), Sprite::gen_w_3());
+
+  pTags[0] = Sprite::p1();     pTags[1] = Sprite::p2();    pTags[2] = Sprite::p3();    pTags[3] = Sprite::p4();
+  pTagsW[0] = Sprite::p1_w(); pTagsW[1] = Sprite::p2_w(); pTagsW[2] = Sprite::p3_w(); pTagsW[3] = Sprite::p4_w();
+  pTagsB[0] = Sprite::p1_b(); pTagsB[1] = Sprite::p2_b(); pTagsB[2] = Sprite::p3_b(); pTagsB[3] = Sprite::p4_b();
+  pTagsR[0] = Sprite::p1_r(); pTagsR[1] = Sprite::p2_r(); pTagsR[2] = Sprite::p3_r(); pTagsR[3] = Sprite::p4_r();
+
+  //Hacks
+  char daynamehacks[] = {'S','u','\0','M','o','\0','T','u','\0','W','e','\0','T','h','\0','F','r','\0','S','a','\0'};
+  char cardnamehacks[] = {'N','o','r','t','h','\0','E','a','s','t','\0','\0','S','o','u','t','h','\0','W','e','s','t','\0','\0'};
+
+  //Views
+  for(int i = 0; i < 4; i++)
+  {
+    cardImgs[i] = UI::Anim(generals_s[i], 4, 1.f, posRects[i]);
+    cardLbls[i] = UI::Label(&cardnamehacks[i*5], posLabelRects[i]);
+  }
+
+  for(int i = 0; i < 7; i++)
+    dayLbls[i] = UI::Label(&daynamehacks[i*3], dayRects[i]);
 
   sunBtn = UI::Button(dayRects[0]);
-  sunDragging = false;
 
-  sabotage_0_reading = false;
-  read_sabotage_0 = UI::ImageButtonRound(   red_x_s,   10,wh-50,20,20);
-  sabotage_1_reading = false;
-  read_sabotage_1 = UI::ImageButtonRound(   red_x_s,   10,wh-80,20,20);
-  message_reading = false;
-  read_message    = UI::ImageButtonRound(envelope_s,ww-30,wh-50,20,20);
-
-  cardImgs[Compass::icardinal('n')] = UI::Anim(generals_s[Compass::icardinal('n')], 4, 1.f, rectForPosition('n'));
-  cardImgs[Compass::icardinal('e')] = UI::Anim(generals_s[Compass::icardinal('e')], 4, 1.f, rectForPosition('n'));
-  cardImgs[Compass::icardinal('s')] = UI::Anim(generals_s[Compass::icardinal('s')], 4, 1.f, rectForPosition('n'));
-  cardImgs[Compass::icardinal('w')] = UI::Anim(generals_s[Compass::icardinal('w')], 4, 1.f, rectForPosition('n'));
-
-  cardLbls[Compass::icardinal('n')] = UI::Label("north", rectForPosition('n'));
-  cardLbls[Compass::icardinal('e')] = UI::Label("east",  rectForPosition('n'));
-  cardLbls[Compass::icardinal('s')] = UI::Label("south", rectForPosition('n'));
-  cardLbls[Compass::icardinal('w')] = UI::Label("west",  rectForPosition('n'));
+  read_sabotage_0 = UI::ImageButtonRound(Sprite::red_x(),      10,wh-50,20,20);
+  read_sabotage_1 = UI::ImageButtonRound(Sprite::red_x(),      10,wh-80,20,20);
+  read_message    = UI::ImageButtonRound(Sprite::envelope(),ww-30,wh-50,20,20);
 
   UI::TextButton cancel_single_button("cancel",  space(ww,200,100,1,0),350,100,30);
   UI::TextButton cancel_double_button("cancel",  space(ww,200,100,2,0),350,100,30);
   UI::TextButton confirm_double_button("confirm",space(ww,200,100,2,1),350,100,30);
 
-  UI::Button whoButtonCW(rectForPosition('w'));
-  UI::Button whoButtonCCW(rectForPosition('e'));
+  UI::Button whoButtonCW(posRects[Compass::icardinal('w')]);
+  UI::Button whoButtonCcW(posRects[Compass::icardinal('e')]);
 
   loading = UI::Anim(UI::AnimSprites(Sprite::loading_0(), Sprite::loading_1(), Sprite::loading_2(), Sprite::loading_2()), 3, 1.f, ww/2-250, wh/2-120,40,40);
   waiting_on_players_label = UI::Label("waiting on players...", wh/2-20, 200, 40);
   reset_game_button        = UI::TextButton("reset game", ww/2-100, wh/2-20, 200, 40);
-  win_img  = UI::Image(sun_s,   ww/2-100, wh/2-100, 200, 200);
-  lose_img = UI::Image(red_x_s, ww/2-100, wh/2-100, 200, 200);
-  tie_img  = UI::Image(sun_s,   ww/2-100, wh/2-100, 200, 200);
+
+  win_img  = UI::Image(Sprite::sun(),   ww/2-100, wh/2-100, 200, 200);
+  lose_img = UI::Image(Sprite::red_x(), ww/2-100, wh/2-100, 200, 200);
+  tie_img  = UI::Image(Sprite::sun(),   ww/2-100, wh/2-100, 200, 200);
 
   known_day = '0';
   anim_day = 0.0f;
   shown_day = 0.0f;
+
+  sunDragging = false;
+  sabotage_0_reading = false;
+  sabotage_1_reading = false;
+  message_reading = false;
 }
 
 void PlayScene::enter()
@@ -148,37 +122,23 @@ void PlayScene::enter()
   s = *s_ptr;
   c = *c_ptr;
 
-  char card;
-  int icard;
-  SDL_Rect rect;
+  //syncs position rects with assigned cardinal rects
+  char card = c->myCardinal(); int ic = Compass::icardinal(card);
+  char pos  = 's';             int ip = Compass::icardinal(pos);
+  for(int i = 0; i < 4; i++)
+  {
+    cardRects[ic]      = posRects[ip];
+    cardLabelRects[ic] = posLabelRects[ip];
+    card = Compass::cwcardinal(card); ic = Compass::icardinal(card);
+    pos  = Compass::cwcardinal(pos);  ip = Compass::icardinal(pos);
+  }
 
-  //bottom (you)
-  card = c->myCardinal();
-  icard = Compass::icardinal(card);
-  rect = rectForPosition('s');
-  cardImgs[icard] = UI::Anim(generals_s[icard], 4, 1.f, rect);
-  cardLbls[icard].rect = rect; cardLbls[icard].rect.y += cardLbls[icard].rect.h; cardLbls[icard].rect.h /= 3;
-
-  //left (clockwise)
-  card = Compass::cwcardinal(card);
-  icard = Compass::icardinal(card);
-  rect = rectForPosition('w');
-  cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
-  cardLbls[icard].rect = rect; cardLbls[icard].rect.y += cardLbls[icard].rect.h; cardLbls[icard].rect.h /= 3;
-
-  //top (clockwise)
-  card = Compass::cwcardinal(card);
-  icard = Compass::icardinal(card);
-  rect = rectForPosition('n');
-  cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
-  cardLbls[icard].rect = rect; cardLbls[icard].rect.y += cardLbls[icard].rect.h; cardLbls[icard].rect.h /= 3;
-
-  //top (clockwise)
-  card = Compass::cwcardinal(card);
-  icard = Compass::icardinal(card);
-  rect = rectForPosition('e');
-  cardImgs[icard]  = UI::Anim(generals_s[icard], 4, 1.f, rect);
-  cardLbls[icard].rect = rect; cardLbls[icard].rect.y += cardLbls[icard].rect.h; cardLbls[icard].rect.h /= 3;
+  //places general images+labels
+  for(int i = 0; i < 4; i++)
+  {
+    cardImgs[i] = UI::Anim(generals_s[i], 4, 1.f, cardRects[i]);
+    cardLbls[i].rect = cardLabelRects[i];
+  }
 }
 
 void PlayScene::chooseShownDay(In &in)
@@ -372,7 +332,7 @@ void PlayScene::draw()
   }
 
   SDL_Rect sunr = rectForTransition(Week::day(shown_prev_day%7), Week::day((shown_prev_day+1)%7), t);
-  graphics->draw(sun_s,sunr);
+  graphics->draw(Sprite::sun(),sunr);
   sunBtn.rect.rect = sunr;
   for(int i = 0; i < 7; i++)
     dayLbls[i].draw(graphics);
@@ -424,50 +384,23 @@ PlayScene::~PlayScene()
 
 }
 
-SDL_Rect PlayScene::rectForPosition(char c)
-{
-  return positionRects[Compass::icardinal(c)];
-}
-
-SDL_Rect PlayScene::rectForCardinal(char card)
-{
-  char me = c->myCardinal();
-  while(me != 's')
-  {
-    me   = Compass::cwcardinal(me);
-    card = Compass::cwcardinal(card);
-  }
-  return rectForPosition(card);
-}
-
-SDL_Rect PlayScene::rectForDay(char d)
-{
-  return dayRects[Week::iday(d)];
-}
-
-SDL_Rect PlayScene::rectForSun(char d)
-{
-  return sunRects[Week::iday(d)];
-}
-
 SDL_Rect PlayScene::rectForTraversal(char fcard, char tcard, float t)
 {
-  return LerpRect::lerp(rectForCardinal(fcard), rectForCardinal(tcard), t);
+  return LerpRect::lerp(cardRects[Compass::icardinal(fcard)], cardRects[Compass::icardinal(tcard)], t);
 }
 
 SDL_Rect PlayScene::rectForExpansion(char card, float t)
 {
-  SDL_Rect tmp = rectForCardinal(card);
+  SDL_Rect tmp = cardRects[Compass::icardinal(card)];
   tmp.x -= tmp.w/2;
   tmp.y -= tmp.h/2;
   tmp.w *= 2;
   tmp.h *= 2;
-  return LerpRect::lerp(rectForCardinal(card), tmp, t);
-  return tmp;
+  return LerpRect::lerp(cardRects[Compass::icardinal(card)], tmp, t);
 }
 
 SDL_Rect PlayScene::rectForTransition(char fd, char td, float t)
 {
-  return LerpRect::lerp(rectForSun(fd), rectForSun(td), t);
+  return LerpRect::lerp(sunRects[Week::iday(fd)], sunRects[Week::iday(td)], t);
 }
 

@@ -229,9 +229,7 @@ SDL_Rect Sprite::gen_w_1()         { return rect(224,164, 32, 32); }
 SDL_Rect Sprite::gen_w_2()         { return rect(224,196, 32, 32); }
 SDL_Rect Sprite::gen_w_3()         { return rect(192,196, 32, 32); }
 
-SDL_Rect Sprite::shield_full_force() { return rect(  0,228, 32, 32); }
-SDL_Rect Sprite::shield_full()       { return rect( 32,228, 32, 32); }
-SDL_Rect Sprite::shield_cracked()    { return rect( 64,228, 32, 32); }
+SDL_Rect Sprite::shield()            { return rect( 32,228, 32, 32); }
 SDL_Rect Sprite::sword()             { return rect( 96,228, 32, 32); }
 SDL_Rect Sprite::red_x()             { return rect(128,228, 32, 32); }
 SDL_Rect Sprite::envelope()          { return rect(160,228, 32, 32); }

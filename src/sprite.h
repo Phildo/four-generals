@@ -120,9 +120,7 @@ namespace Sprite
   SDL_Rect gen_w_2();
   SDL_Rect gen_w_3();
 
-  SDL_Rect shield_full_force();
-  SDL_Rect shield_full();
-  SDL_Rect shield_cracked();
+  SDL_Rect shield();
   SDL_Rect sword();
   SDL_Rect red_x();
   SDL_Rect envelope();
