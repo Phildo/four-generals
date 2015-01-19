@@ -155,7 +155,7 @@ void ClientModel::tick()
   Network::Load l;
 
   static bool already_tried_joining = false;
-  if(imConnected() && model.connectionConnected(myConnection()) && !already_tried_joining)
+  if(imConnected() && !model.connectionConnected(myConnection()) && !already_tried_joining)
   {
     requestJoin();
     already_tried_joining = true;

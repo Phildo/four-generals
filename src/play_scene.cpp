@@ -41,7 +41,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
     posRects[i].w = posRectW[i];
     posRects[i].h = posRectH[i];
 
-    posRects[i] = posRects[i];
+    posLabelRects[i] = posRects[i];
     posLabelRects[i].y += posLabelRects[i].h;
     posLabelRects[i].h /= 3;
   }
@@ -78,7 +78,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   for(int i = 0; i < 4; i++)
   {
     cardImgs[i] = UI::Anim(generals_s[i], 4, 1.f, posRects[i]);
-    cardLbls[i] = UI::Label(&cardnamehacks[i*5], posLabelRects[i]);
+    cardLbls[i] = UI::Label(&cardnamehacks[i*6], posLabelRects[i]);
   }
 
   for(int i = 0; i < 7; i++)

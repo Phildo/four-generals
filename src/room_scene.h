@@ -15,6 +15,30 @@ class RoomScene : public Scene
   private:
     Graphics *graphics;
 
+    Network::Client *client;
+    Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
+    ServerModel *s;
+    ServerModel **s_ptr; //Pointers to the server model pointer 'owned' by game
+    ClientModel *c;
+    ClientModel **c_ptr; //Pointers to the client model pointer 'owned' by game
+
+    //rects
+    SDL_Rect posRects[4];
+    SDL_Rect posLabelRects[4];
+    LerpRect cardRects[4];
+    LerpRect cardLabelRects[4];
+
+    //sprites
+    UI::AnimSprites generals_s[4];
+    SDL_Rect pTags[4];
+    SDL_Rect pTagsW[4];
+    SDL_Rect pTagsB[4];
+    SDL_Rect pTagsR[4];
+
+    //views
+    UI::Anim cardImgs[4];
+    UI::Label cardLbls[4];
+
     UI::Button backButton;
 
     UI::Label youAreLabel;
@@ -22,15 +46,10 @@ class RoomScene : public Scene
     UI::Image showIpQ;
     UI::Label netroleLabel;
 
-    bool showingIp;
     UI::Button showIpButton;
     UI::Label ipLabel;
     UI::Label portLabel;
 
-    SDL_Rect pTags[4];
-    SDL_Rect pTagsW[4];
-    SDL_Rect pTagsB[4];
-    SDL_Rect pTagsR[4];
     UI::Image pScoreLabels[4];
     UI::Label pWinLabels[4];
     UI::Label pLossLabels[4];
@@ -41,20 +60,11 @@ class RoomScene : public Scene
     UI::ImageButton cwBtn;
     UI::ImageButton ccwBtn;
 
-    int cardCWOffset;
-    LerpRect cardRects[4];
-    UI::Anim cardImgs[4];
-    UI::Label cardLbls[4];
-
-    Network::Client *client;
-    Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
-    ServerModel *s;
-    ServerModel **s_ptr; //Pointers to the server model pointer 'owned' by game
-    ClientModel *c;
-    ClientModel **c_ptr; //Pointers to the client model pointer 'owned' by game
+    //state
+    int cardCWOffset; //current rotation
+    bool showingIp;
 
     int SCENE_CHANGE_HACK;
-    SDL_Rect whoBoxForPosition(char c);
   public:
     RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
     ~RoomScene();

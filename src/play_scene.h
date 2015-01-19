@@ -5,7 +5,7 @@
 #include "ui.h"
 #include "lerp_rect.h"
 #include "network.h"
-#include "event.h"
+#include "turn.h"
 
 class Graphics;
 class ServerModel;
@@ -63,6 +63,7 @@ class PlayScene : public Scene
     UI::Image lose_img;
     UI::Image tie_img;
 
+    //state
     char known_day;
     float anim_day;
     float shown_day;

@@ -210,7 +210,7 @@ void Server::disconnect()
   con_state = CONNECTION_STATE_DISCONNECTING;
   pthread_join(thread, NULL);
   con_state = CONNECTION_STATE_DISCONNECTED;
-  fg_log("Client: aborted");
+  fg_log("Server: aborted");
 }
 
 bool Server::hasConnection(char con_id)
