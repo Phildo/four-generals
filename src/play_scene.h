@@ -49,13 +49,6 @@ class PlayScene : public Scene
     UI::ImageButtonRound read_sabotage_1;
     UI::ImageButtonRound read_message;
 
-    UI::TextButton cancel_single_button;
-    UI::TextButton cancel_double_button;
-    UI::TextButton confirm_double_button;
-
-    UI::Button whoButtonCW;
-    UI::Button whoButtonCcW;
-
     UI::Anim loading;
     UI::Label waiting_on_players_label;
     UI::TextButton reset_game_button;

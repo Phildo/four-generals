@@ -77,13 +77,6 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   read_sabotage_1 = UI::ImageButtonRound(Sprite::red_x(),      10,wh-80,20,20);
   read_message    = UI::ImageButtonRound(Sprite::envelope(),ww-30,wh-50,20,20);
 
-  UI::TextButton cancel_single_button("cancel",  space(ww,200,100,1,0),350,100,30);
-  UI::TextButton cancel_double_button("cancel",  space(ww,200,100,2,0),350,100,30);
-  UI::TextButton confirm_double_button("confirm",space(ww,200,100,2,1),350,100,30);
-
-  UI::Button whoButtonCW(posRects[Compass::icardinal('w')]);
-  UI::Button whoButtonCcW(posRects[Compass::icardinal('e')]);
-
   loading = UI::Anim(UI::AnimSprites(Sprite::loading_0(), Sprite::loading_1(), Sprite::loading_2(), Sprite::loading_2()), 3, 1.f, ww/2-250, wh/2-120,40,40);
   waiting_on_players_label = UI::Label("waiting on players...", wh/2-20, 200, 40);
   reset_game_button        = UI::TextButton("reset game", ww/2-100, wh/2-20, 200, 40);
