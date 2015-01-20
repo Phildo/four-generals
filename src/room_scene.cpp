@@ -36,14 +36,8 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   for(int i = 0; i < 4; i++)
   {
-    posRects[i].x = xs[i];
-    posRects[i].y = ys[i];
-    posRects[i].w = ws[i];
-    posRects[i].h = hs[i];
-
-    posLabelRects[i] = posRects[i];
-    posLabelRects[i].y += posLabelRects[i].h;
-    posLabelRects[i].h /= 3;
+    posRects[i]      = UI::Box(xs[i],       ys[i], ws[i],   hs[i]).rect;
+    posLabelRects[i] = UI::Box(xs[i], ys[i]+hs[i], ws[i], hs[i]/3).rect;
   }
 
   for(int i = 0; i < 4; i++)

@@ -29,34 +29,21 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   int wh = graphics->winHeight();
 
   //Rects
-  int posRectW[] = {                90,                110,                120,                110};
-  int posRectH[] = {                90,                110,                120,                110};
-  int posRectX[] = {ww/2-posRectW[0]/2,  ww-posRectW[1]-20, ww/2-posRectW[2]/2,                 20};
-  int posRectY[] = {                60, wh/2-posRectH[1]/2,  wh-posRectH[2]-40, wh/2-posRectH[3]/2};
+  int ws[] = {          90,          110,          120,          110};
+  int hs[] = {          90,          110,          120,          110};
+  int xs[] = {ww/2-ws[0]/2,  ww-ws[1]-20, ww/2-ws[2]/2,           20};
+  int ys[] = {          60, wh/2-hs[1]/2,  wh-hs[2]-40, wh/2-hs[3]/2};
 
   for(int i = 0; i < 4; i++)
   {
-    posRects[i].x = posRectX[i];
-    posRects[i].y = posRectY[i];
-    posRects[i].w = posRectW[i];
-    posRects[i].h = posRectH[i];
-
-    posLabelRects[i] = posRects[i];
-    posLabelRects[i].y += posLabelRects[i].h;
-    posLabelRects[i].h /= 3;
+    posRects[i]      = UI::Box(xs[i],       ys[i], ws[i],   hs[i]).rect;
+    posLabelRects[i] = UI::Box(xs[i], ys[i]+hs[i], ws[i], hs[i]/3).rect;
   }
 
   for(int i = 0; i < 7; i++)
   {
-    dayRects[i].x = space(ww,60,40,7,i);
-    dayRects[i].y = 20;
-    dayRects[i].w = 40;
-    dayRects[i].h = 40;
-
-    sunRects[i].x = space(ww,50,60,7,i);
-    sunRects[i].y = 10;
-    sunRects[i].w = 60;
-    sunRects[i].h = 60;
+    dayRects[i] = UI::Box(space(ww,60,40,7,i), 20, 40, 40).rect;
+    sunRects[i] = UI::Box(space(ww,50,60,7,i), 10, 60, 60).rect;
   }
 
   //Sprites
