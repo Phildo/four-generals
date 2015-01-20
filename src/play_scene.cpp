@@ -85,6 +85,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   lose_img = UI::Image(Sprite::red_x(), ww/2-100, wh/2-100, 200, 200);
   tie_img  = UI::Image(Sprite::sun(),   ww/2-100, wh/2-100, 200, 200);
 
+  //state
   known_day = '0';
   anim_day = 0.0f;
   shown_day = 0.0f;
@@ -227,12 +228,11 @@ void PlayScene::touch(In &in)
     }
   }
 
-  //oh god terrible tree traversal touch propagation
   if(in.type == In::DOWN)
   {
-    if(!c->iWin() && !c->iLose() && !c->iTie())
+    if(!c->model.roundOver())
     {
-      if(!c->iHaveTurn()) { }
+      //pass to turn picker
     }
     else if(s && reset_game_button.query(in))
     {
@@ -256,7 +256,7 @@ int PlayScene::tick()
   }
   if(anim_day > c->model.days) anim_day = (float)c->model.days;
 
-  if(known_day != c->model.currentDay())
+  if(known_day != c->model.currentDay()) //turn passed
   {
     if(c->model.days == -1) return -1; //game was reset- go back to room
 
@@ -317,17 +317,11 @@ void PlayScene::draw()
   for(int i = 0; i < 7; i++)
     dayLbls[i].draw(graphics);
 
-  if(c->iWin())
+  if(c->model.roundOver())
   {
-    drawWin();
-  }
-  else if(c->iLose())
-  {
-    drawLose();
-  }
-  else if(c->iTie())
-  {
-    drawTie();
+         if(c->iWin())  drawWin();
+    else if(c->iLose()) drawLose();
+    else if(c->iTie())  drawTie();
   }
   else
   {
@@ -343,8 +337,7 @@ void PlayScene::draw()
       if(a0.what != '0') drawSabotage0();
       if(a1.what != '0') drawSabotage1();
     }
-    if(!c->iHaveTurn()) {}
-    else drawWaiting();
+    //draw wturn picker
   }
 }
 
