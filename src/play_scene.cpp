@@ -260,7 +260,6 @@ int PlayScene::tick()
   {
     if(c->model.days == -1) return -1; //game was reset- go back to room
 
-    t.zero();
     known_day = c->model.currentDay();
   }
   return 0;
@@ -338,6 +337,7 @@ void PlayScene::draw()
       if(a1.what != '0') drawSabotage1();
     }
     //draw wturn picker
+    picker.draw(graphics);
   }
 }
 

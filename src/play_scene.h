@@ -5,7 +5,8 @@
 #include "ui.h"
 #include "lerp_rect.h"
 #include "network.h"
-#include "turn.h"
+
+#include "turn_picker.h"
 
 class Graphics;
 class ServerModel;
@@ -56,6 +57,8 @@ class PlayScene : public Scene
     UI::Image lose_img;
     UI::Image tie_img;
 
+    TurnPicker picker;
+
     //state
     char known_day;
     float anim_day;
@@ -65,8 +68,6 @@ class PlayScene : public Scene
     bool sabotage_0_reading;
     bool sabotage_1_reading;
     bool message_reading;
-
-    Turn t; //populates with tentative turn (holds state for what to show on screen)
 
     void drawWaiting();
     void drawReset();
