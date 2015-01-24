@@ -7,6 +7,7 @@
 #include "network.h"
 
 #include "turn_picker.h"
+#include "messager.h"
 
 class Graphics;
 class ServerModel;
@@ -58,16 +59,28 @@ class PlayScene : public Scene
     UI::Image tie_img;
 
     TurnPicker picker;
+    Messager messager;
 
     //state
-    float goal_days;
-    float current_days;
-    float shown_days;
+
+    //note - all states can be interrupted by history viewing
+    enum PLAY_SCENE_STATE //the visual state of the view
+    {
+      IDLE,         // can choose to look at messages or pick turn
+      MESSAGE,      // full screen message/sabotage showing
+      TURN_PICKING, // full screen action picker
+      WAITING,      // picked turn, waiting on other players
+      SHOWING,      // animating newly played out action (interaction disabled)
+      OVER,         // game over
+      COUNT
+    } state;
+    void setViewState(PLAY_SCENE_STATE s); //clears state vars and sets state
+
+    float goal_days;    //day known about in model
+    float current_days; //day shown up til (animates toward goal)
+    float shown_days;   //currently showing day (animation, history)
 
     bool sunDragging;
-    bool sabotage_0_reading;
-    bool sabotage_1_reading;
-    bool message_reading;
 
     void drawWaiting();
     void drawReset();
@@ -75,7 +88,7 @@ class PlayScene : public Scene
     void drawLose();
     void drawTie();
 
-    void chooseShownDay(In &in);
+    bool chooseShownDay(In &in);
 
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);

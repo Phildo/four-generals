@@ -18,11 +18,16 @@ class TurnPicker
     TurnPicker();
     ~TurnPicker();
 
-    bool getTurn(Turn &t);
-    void reset();
     void touch(In &in);
+    bool query(In &in);
     void tick();
     void draw(Graphics *g);
+
+    void activate();
+    void clearViewState();
+
+    bool getTurn(Turn &t);
+    void reset();
 };
 
 #endif

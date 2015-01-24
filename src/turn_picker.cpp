@@ -10,19 +10,14 @@ TurnPicker::~TurnPicker()
 {
 }
 
-bool TurnPicker::getTurn(Turn &t)
-{
-  return false;
-}
-
-void TurnPicker::reset()
-{
-
-}
-
 void TurnPicker::touch(In &in)
 {
 
+}
+
+bool TurnPicker::query(In &in)
+{
+  return false;
 }
 
 void TurnPicker::tick()
@@ -33,5 +28,25 @@ void TurnPicker::tick()
 void TurnPicker::draw(Graphics *g)
 {
   box.draw(g);
+}
+
+void TurnPicker::activate()
+{
+
+}
+
+void TurnPicker::clearViewState()
+{
+
+}
+
+bool TurnPicker::getTurn(Turn &t)
+{
+  return false;
+}
+
+void TurnPicker::reset()
+{
+
 }
 

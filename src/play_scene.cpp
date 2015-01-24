@@ -85,14 +85,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   lose_img = UI::Image(Sprite::red_x(), ww/2-100, wh/2-100, 200, 200);
   tie_img  = UI::Image(Sprite::sun(),   ww/2-100, wh/2-100, 200, 200);
 
-  //state
-  current_days = 0.0f;
-  shown_days = 0.0f;
-
-  sunDragging = false;
-  sabotage_0_reading = false;
-  sabotage_1_reading = false;
-  message_reading = false;
+  setViewState(IDLE);
 }
 
 void PlayScene::enter()
@@ -121,7 +114,18 @@ void PlayScene::enter()
   }
 }
 
-void PlayScene::chooseShownDay(In &in)
+void PlayScene::setViewState(PLAY_SCENE_STATE s)
+{
+  state = s;
+
+  shown_days = current_days;
+
+  sunDragging = false;
+  picker.clearViewState();
+  messager.clearViewState();
+}
+
+bool PlayScene::chooseShownDay(In &in)
 {
   if(sunBtn.query(in)) sunDragging = true;
 
@@ -131,6 +135,8 @@ void PlayScene::chooseShownDay(In &in)
     int lastX  = dayRects[6].x+(dayRects[6].w/2);
     shown_days = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
   }
+
+  return sunDragging;
 }
 
 void PlayScene::drawWaiting()
@@ -146,43 +152,47 @@ void PlayScene::drawReset()
 
 void PlayScene::touch(In &in)
 {
-  if(in.type == In::UP)
+  if(shown_days != current_days) //history
   {
-    sunDragging = false;
-    sabotage_0_reading = false;
-    sabotage_1_reading = false;
-    message_reading = false;
+    if((in.type == In::DOWN || in.type == In::MOVE)) chooseShownDay(in);
+    else if(in.type == In::UP)                       sunDragging = false;
+    return;
   }
 
-  if((in.type == In::DOWN || in.type == In::MOVE) && !c->iHaveTurn())
-    chooseShownDay(in);
-
-  if(in.type == In::DOWN)
+  Action a, a0, a1;
+  switch(state)
   {
-    Action a;
-    Action a0;
-    Action a1;
-    if(c->myMessage(a))
-    {
-      if(read_message.query(in)) message_reading = true;
-    }
-    if(c->mySabotage(a0, a1))
-    {
-      if(read_sabotage_0.query(in)) sabotage_0_reading = true;
-      if(read_sabotage_1.query(in)) sabotage_1_reading = true;
-    }
-  }
-
-  if(in.type == In::DOWN)
-  {
-    if(!c->model.roundOver())
-    {
-      //pass to turn picker
-    }
-    else if(s && reset_game_button.query(in))
-    {
-      c->requestReset();
-    }
+    case IDLE:
+      if(in.type == In::DOWN && chooseShownDay(in)) break; //go to history mode
+      if(in.type == In::DOWN)
+      {
+        c->myMessage(a);
+        c->mySabotage(a0,a1);
+        if(picker.query(in)) { setViewState(TURN_PICKING); picker.activate(); }
+        else if(a.what == 'm'  && read_message.query(in))    { setViewState(MESSAGE); messager.setMessage(a); }
+        else if(a0.what == 's' && read_sabotage_0.query(in)) { setViewState(MESSAGE); messager.setMessage(a0); }
+        else if(a1.what == 's' && read_sabotage_1.query(in)) { setViewState(MESSAGE); messager.setMessage(a1); }
+      }
+      break;
+    case MESSAGE:
+      if(in.type == In::UP)
+        setViewState(IDLE);
+      break;
+    case TURN_PICKING:
+      picker.touch(in);
+      break;
+    case WAITING:
+      if(in.type == In::DOWN && chooseShownDay(in)) break; //go to history mode
+      break;
+    case SHOWING:
+      //interaction disabled
+      break;
+    case OVER:
+      if(in.type == In::DOWN && chooseShownDay(in)) break; //go to history mode
+      if(s && in.type == In::DOWN && reset_game_button.query(in))
+        c->requestReset();
+      break;
+    default: break;
   }
 }
 
@@ -193,6 +203,9 @@ int PlayScene::tick()
 
   for(int i = 0; i < 4; i++)
     cardImgs[i].tick(0.4f);
+  picker.tick();
+  messager.tick();
+  loading.tick(0.4f);
 
   if(goal_days != c->model.days)
   {
@@ -202,10 +215,20 @@ int PlayScene::tick()
 
   if(current_days < goal_days)
   {
+    setViewState(SHOWING);
     current_days += 0.01f;
-    if(current_days > goal_days) current_days = goal_days;
+    if(current_days >= goal_days)
+    {
+      current_days = goal_days;
+      setViewState(IDLE);
+    }
     shown_days = current_days; //force showing of "currently progressing day"
   }
+
+  if(state != WAITING && c->iHaveTurn())
+    setViewState(WAITING);
+  if(state != WAITING && state != SHOWING && c->model.roundOver())
+    setViewState(OVER);
 
   return 0;
 }
@@ -226,9 +249,15 @@ static float clamp(float v, float min, float max)
 }
 void PlayScene::draw()
 {
-  float snapped_shown_days = clamp(snapToInt(shown_days), 0, (float)c->model.days);
+  float snapped_shown_days = clamp(snapToInt(shown_days), 0, current_days);
   int base_day = (int)snapped_shown_days;
   float t = snapped_shown_days-((float)base_day);
+
+  SDL_Rect sunr = rectForTransition(Week::day(base_day%7), Week::day((base_day+1)%7), t);
+  graphics->draw(Sprite::sun(),sunr);
+  sunBtn.rect.rect = sunr;
+  for(int i = 0; i < 7; i++)
+    dayLbls[i].draw(graphics);
 
   //draws cardinals and actions
   for(int i = 0; i < 4; i++)
@@ -259,34 +288,35 @@ void PlayScene::draw()
     }
   }
 
-  SDL_Rect sunr = rectForTransition(Week::day(base_day%7), Week::day((base_day+1)%7), t);
-  graphics->draw(Sprite::sun(),sunr);
-  sunBtn.rect.rect = sunr;
-  for(int i = 0; i < 7; i++)
-    dayLbls[i].draw(graphics);
-
-  if(c->model.roundOver())
+  Action a, a0, a1;
+  switch(state)
   {
-         if(c->iWin())  win_img.draw(graphics);
-    else if(c->iLose()) lose_img.draw(graphics);
-    else if(c->iTie())  tie_img.draw(graphics);
-  }
-  else
-  {
-    Action a;
-    Action a0;
-    Action a1;
-    if(c->myMessage(a))
-    {
-      read_message.draw(graphics);
-    }
-    if(c->mySabotage(a0, a1))
-    {
-      if(a0.what != '0') read_sabotage_0.draw(graphics);
-      if(a1.what != '0') read_sabotage_1.draw(graphics);
-    }
-    //draw wturn picker
-    picker.draw(graphics);
+    case IDLE:
+      c->myMessage(a);
+      c->mySabotage(a0,a1);
+           if(a.what == 'm')  read_message.draw(graphics);
+      else if(a0.what == 's') read_sabotage_0.draw(graphics);
+      else if(a1.what == 's') read_sabotage_1.draw(graphics);
+      picker.draw(graphics);
+      break;
+    case MESSAGE:
+      messager.draw(graphics);
+      break;
+    case TURN_PICKING:
+      picker.draw(graphics);
+      break;
+    case WAITING:
+      loading.draw(graphics);
+      break;
+    case SHOWING:
+      //interaction disabled
+      break;
+    case OVER:
+           if(c->iWin())  win_img.draw(graphics);
+      else if(c->iLose()) lose_img.draw(graphics);
+      else if(c->iTie())  tie_img.draw(graphics);
+      break;
+    default: break;
   }
 }
 
