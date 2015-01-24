@@ -134,32 +134,6 @@ void PlayScene::chooseShownDay(In &in)
   }
 }
 
-void PlayScene::chooseReadSabotage(In &in)
-{
-  if(read_sabotage_0.query(in)) sabotage_0_reading = true;
-  if(read_sabotage_1.query(in)) sabotage_1_reading = true;
-}
-
-void PlayScene::chooseReadMessage(In &in)
-{
-  if(read_message.query(in)) message_reading = true;
-}
-
-void PlayScene::drawSabotage0()
-{
-  read_sabotage_0.draw(graphics);
-}
-
-void PlayScene::drawSabotage1()
-{
-  read_sabotage_1.draw(graphics);
-}
-
-void PlayScene::drawMessage()
-{
-  read_message.draw(graphics);
-}
-
 void PlayScene::drawWaiting()
 {
   loading.draw(graphics);
@@ -220,11 +194,12 @@ void PlayScene::touch(In &in)
     Action a1;
     if(c->myMessage(a))
     {
-      chooseReadMessage(in);
+      if(read_message.query(in)) message_reading = true;
     }
     if(c->mySabotage(a0, a1))
     {
-      chooseReadSabotage(in);
+      if(read_sabotage_0.query(in)) sabotage_0_reading = true;
+      if(read_sabotage_1.query(in)) sabotage_1_reading = true;
     }
   }
 
@@ -265,7 +240,7 @@ int PlayScene::tick()
   return 0;
 }
 
-float snapToInt(float v)
+static float snapToInt(float v)
 {
   float left = (float)((int)v);
   float right = (float)((int)(v+1.0f));
@@ -273,13 +248,17 @@ float snapToInt(float v)
   if(v > right-0.01f) return right;
   return v;
 }
+static float clamp(float v, float min, float max)
+{
+  if(v < min) return min;
+  if(v > max) return max;
+  return v;
+}
 void PlayScene::draw()
 {
-  float snapped_shown_day = snapToInt(shown_day);
-  if(snapped_shown_day > c->model.days) snapped_shown_day = (float)c->model.days;
-  if(snapped_shown_day < 0) snapped_shown_day = 0;
-  int shown_prev_day = ((int)(snapped_shown_day+1.0f))-1; //round up, subtract 1
-  float t = snapped_shown_day-((float)shown_prev_day);
+  float snapped_shown_day = clamp(snapToInt(shown_day), 0, (float)c->model.days);
+  int base_day = (int)snapped_shown_day;
+  float t = snapped_shown_day-((float)base_day);
 
   //draws cardinals and actions
   for(int i = 0; i < 4; i++)
@@ -292,17 +271,17 @@ void PlayScene::draw()
     if(t != 0.0f)
     {
     /*
-      Action a = c->model.cardinalDayTurn(card, shown_prev_day);
+      Action a = c->model.cardinalDayTurn(card, base_day);
       if(a.what == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
       if(a.what == 'd') graphics->draw(shield_full_s, rectForExpansion(card,t));
       if(a.what == 's') graphics->draw(red_x_s, rectForExpansion(card,t));
       if(a.what == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.route,t));
-      a = c->model.cardinalDayTurn(card, shown_prev_day-1);
+      a = c->model.cardinalDayTurn(card, base_day-1);
       if(a.what == 'm')
       {
         char at = a.route;
         char to = a.to;
-        a = c->model.cardinalDayTurn(at, shown_prev_day-1);
+        a = c->model.cardinalDayTurn(at, base_day-1);
         if(!(a.what == 's' && a.how == 'b'))
           graphics->draw(envelope_s, rectForTraversal(at,to,t));
       }
@@ -310,7 +289,7 @@ void PlayScene::draw()
     }
   }
 
-  SDL_Rect sunr = rectForTransition(Week::day(shown_prev_day%7), Week::day((shown_prev_day+1)%7), t);
+  SDL_Rect sunr = rectForTransition(Week::day(base_day%7), Week::day((base_day+1)%7), t);
   graphics->draw(Sprite::sun(),sunr);
   sunBtn.rect.rect = sunr;
   for(int i = 0; i < 7; i++)
@@ -329,12 +308,12 @@ void PlayScene::draw()
     Action a1;
     if(c->myMessage(a))
     {
-      drawMessage();
+      read_message.draw(graphics);
     }
     if(c->mySabotage(a0, a1))
     {
-      if(a0.what != '0') drawSabotage0();
-      if(a1.what != '0') drawSabotage1();
+      if(a0.what != '0') read_sabotage_0.draw(graphics);
+      if(a1.what != '0') read_sabotage_1.draw(graphics);
     }
     //draw wturn picker
     picker.draw(graphics);

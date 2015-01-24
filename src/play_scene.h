@@ -76,12 +76,6 @@ class PlayScene : public Scene
     void drawTie();
 
     void chooseShownDay(In &in);
-    void chooseReadSabotage(In &in);
-    void chooseReadMessage(In &in);
-
-    void drawSabotage0();
-    void drawSabotage1();
-    void drawMessage();
 
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);
