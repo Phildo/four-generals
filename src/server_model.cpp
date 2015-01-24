@@ -82,11 +82,12 @@ void ServerModel::tick()
         }
         break;
       case e_type_begin_play:
-        if(model.rolesAssigned())
-        {
+        //NOTE- PHIL HACK HACKED THIS FOR FAKE HOST SCENE
+        //if(model.rolesAssigned())
+        //{
           model.days = 0;
           sendEvent(e);
-        }
+        //}
         break;
       case e_type_commit_turn:
         if(!model.cardinalHasTurn(model.connectionCardinal(e.commit_turn.connection)))
