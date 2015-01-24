@@ -144,35 +144,6 @@ void PlayScene::drawReset()
   reset_game_button.draw(graphics);
 }
 
-void PlayScene::drawWin()
-{
-  win_img.draw(graphics);
-}
-
-void PlayScene::drawLose()
-{
-  lose_img.draw(graphics);
-}
-
-void PlayScene::drawTie()
-{
-  tie_img.draw(graphics);
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 void PlayScene::touch(In &in)
 {
   if(in.type == In::UP)
@@ -296,9 +267,9 @@ void PlayScene::draw()
 
   if(c->model.roundOver())
   {
-         if(c->iWin())  drawWin();
-    else if(c->iLose()) drawLose();
-    else if(c->iTie())  drawTie();
+         if(c->iWin())  win_img.draw(graphics);
+    else if(c->iLose()) lose_img.draw(graphics);
+    else if(c->iTie())  tie_img.draw(graphics);
   }
   else
   {
