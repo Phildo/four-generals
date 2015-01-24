@@ -24,6 +24,7 @@ class String
     const char *ptr() const;
 
     String concat(const String &other) const;
+    bool equals(const String &other) const;
 
     int intVal();
     static String decimalRep(int i);

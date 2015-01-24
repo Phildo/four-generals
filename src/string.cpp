@@ -99,6 +99,14 @@ String String::concat(const String &other) const
   return String(buff, newl);
 }
 
+bool String::equals(const String &other) const
+{
+  int i;
+  char *me = ptr();
+  char *them = other.ptr();
+  while(*(me+i) == *(them+i) && *(me+i) != '\0') i++;
+  return (*(me+i) == '\0' && *(them+i) == '\0');
+}
 
 String String::decimalRep(int i)
 {

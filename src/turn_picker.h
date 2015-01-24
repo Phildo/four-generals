@@ -14,6 +14,8 @@ class TurnPicker
     Turn t;
     circQ<Turn, 2> turn_q; //really should only ever be 1 in here.
     UI::Box box;
+
+    bool active;
   public:
     TurnPicker();
     ~TurnPicker();

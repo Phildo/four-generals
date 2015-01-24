@@ -6,6 +6,7 @@
 
 #include "SDL.h"
 #include "SDL_image.h"
+#include "Sprite.h"
 
 //So lame
 void signal_callback_handler(int signum)
@@ -34,6 +35,8 @@ int main(int argc, char* argv[])
 
   SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
   IMG_Init(IMG_INIT_PNG); //SDL_image
+
+  Sprite::init("sprites.txt");
 
   Game g;
   g.run();
