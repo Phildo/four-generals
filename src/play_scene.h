@@ -60,9 +60,9 @@ class PlayScene : public Scene
     TurnPicker picker;
 
     //state
-    char known_day;
-    float anim_day;
-    float shown_day;
+    float goal_days;
+    float current_days;
+    float shown_days;
 
     bool sunDragging;
     bool sabotage_0_reading;

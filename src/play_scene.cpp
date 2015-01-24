@@ -86,9 +86,8 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   tie_img  = UI::Image(Sprite::sun(),   ww/2-100, wh/2-100, 200, 200);
 
   //state
-  known_day = '0';
-  anim_day = 0.0f;
-  shown_day = 0.0f;
+  current_days = 0.0f;
+  shown_days = 0.0f;
 
   sunDragging = false;
   sabotage_0_reading = false;
@@ -130,7 +129,7 @@ void PlayScene::chooseShownDay(In &in)
   {
     int firstX = dayRects[0].x+(dayRects[0].w/2);
     int lastX  = dayRects[6].x+(dayRects[6].w/2);
-    shown_day = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
+    shown_days = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
   }
 }
 
@@ -224,19 +223,19 @@ int PlayScene::tick()
   for(int i = 0; i < 4; i++)
     cardImgs[i].tick(0.4f);
 
-  if(anim_day < c->model.days)
-  {
-    anim_day += 0.01f;
-    shown_day = anim_day;
-  }
-  if(anim_day > c->model.days) anim_day = (float)c->model.days;
-
-  if(known_day != c->model.currentDay()) //turn passed
+  if(goal_days != c->model.days)
   {
     if(c->model.days == -1) return -1; //game was reset- go back to room
-
-    known_day = c->model.currentDay();
+    goal_days = c->model.days;
   }
+
+  if(current_days < goal_days)
+  {
+    current_days += 0.01f;
+    if(current_days > goal_days) current_days = goal_days;
+    shown_days = current_days; //force showing of "currently progressing day"
+  }
+
   return 0;
 }
 
@@ -256,9 +255,9 @@ static float clamp(float v, float min, float max)
 }
 void PlayScene::draw()
 {
-  float snapped_shown_day = clamp(snapToInt(shown_day), 0, (float)c->model.days);
-  int base_day = (int)snapped_shown_day;
-  float t = snapped_shown_day-((float)base_day);
+  float snapped_shown_days = clamp(snapToInt(shown_days), 0, (float)c->model.days);
+  int base_day = (int)snapped_shown_days;
+  float t = snapped_shown_days-((float)base_day);
 
   //draws cardinals and actions
   for(int i = 0; i < 4; i++)
