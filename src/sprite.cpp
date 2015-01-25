@@ -101,21 +101,26 @@ SDL_Rect null;
 
 static void parseIntoRect(char *b, SDL_Rect *v)
 {
+  fg_log("parsing %s",b);
   int i = 0;
   int j = 0;
 
   j = i;
   while(*(b+i) != ',') i++; *(b+i) = '\0';
-  v->x = String(b+i).intVal();
+  v->x = String(b+j).intVal();
+  i++;
   j = i;
   while(*(b+i) != ',') i++; *(b+i) = '\0';
-  v->y = String(b+i).intVal();
+  v->y = String(b+j).intVal();
+  i++;
   j = i;
   while(*(b+i) != ',') i++; *(b+i) = '\0';
-  v->w = String(b+i).intVal();
+  v->w = String(b+j).intVal();
+  i++;
   j = i;
   while(*(b+i) != ',') i++; *(b+i) = '\0';
-  v->h = String(b+i).intVal();
+  v->h = String(b+j).intVal();
+  fg_log("into %d, %d, %d, %d",v->x,v->y,v->w,v->h);
 }
 
 void Sprite::init(const char *f)

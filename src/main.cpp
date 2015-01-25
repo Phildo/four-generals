@@ -36,7 +36,7 @@ int main(int argc, char* argv[])
   SDL_Init(SDL_INIT_TIMER | SDL_INIT_AUDIO | SDL_INIT_VIDEO | SDL_INIT_EVENTS);
   IMG_Init(IMG_INIT_PNG); //SDL_image
 
-  Sprite::init("sprites.txt");
+  Sprite::init("sprite.txt");
 
   Game g;
   g.run();
