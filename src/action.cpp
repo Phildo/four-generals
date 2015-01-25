@@ -16,6 +16,13 @@ Action::Action(char *c) //inverse of serialize
   route = c[i]; i++;
 }
 
+int Action::power()
+{
+  if(what == 'a' || what == 'd') return 2;
+  else if(what == '0') return 0;
+  else return 1;
+}
+
 void Action::zero()
 {
   what  = '0';

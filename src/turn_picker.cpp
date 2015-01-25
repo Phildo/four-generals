@@ -18,7 +18,7 @@ void TurnPicker::init()
   int h = 180;
   box = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
   button = UI::Button(box.rect);
-  show = ShowTurnPicker(box.rect);
+  show = ShowTurnPicker(&turn, box.rect);
   browse = BrowseTurnPicker(box.rect);
   specify = SpecifyTurnPicker(box.rect);
 
@@ -62,13 +62,13 @@ void TurnPicker::draw(Graphics *g)
   switch(state)
   {
     case SHOW:
-      show.draw(t,g);
+      show.draw(g);
       break;
     case BROWSE:
-      browse.draw(t,g);
+      browse.draw(turn,g);
       break;
     case SPECIFY:
-      specify.draw(t,g);
+      specify.draw(turn,g);
       break;
     default:
       break;

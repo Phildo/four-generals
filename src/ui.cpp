@@ -17,4 +17,5 @@ using namespace UI;
 #include "keyboard.cpp"
 #include "textbox.cpp"
 #include "list.cpp"
+#include "scroller.cpp"
 

@@ -27,6 +27,7 @@ namespace UI
   #include "keyboard.h"
   #include "textbox.h"
   #include "list.h"
+  #include "scroller.h"
 }
 
 #endif

@@ -12,6 +12,11 @@ Turn::Turn(char *c) //inverse of serialize
   actions[1] = Action(&c[i]); i += sizeof(Action); //a bit sketch...
 }
 
+int Turn::power()
+{
+  return actions[0].power() + actions[1].power();
+}
+
 void Turn::zero()
 {
   cardinal = '0';

@@ -13,6 +13,9 @@ struct Action //all members chars for quick/simple serializability
 
   Action();
   Action(char *c);
+
+  int power();
+
   void zero();
 
   void serialize(char *c) const;

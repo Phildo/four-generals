@@ -10,6 +10,9 @@ struct Turn
 
   Turn();
   Turn(char *c);
+
+  int power();
+
   void zero();
 
   void serialize(char *c) const;

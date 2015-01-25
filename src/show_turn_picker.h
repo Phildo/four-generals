@@ -7,27 +7,42 @@
 class Graphics;
 struct In;
 
+struct ShowRequest
+{
+  enum SHOW_REQUEST_TYPE
+  {
+    NONE,
+    ADD_ACTION,
+    EDIT_ACTION,
+    CONFIRM,
+    COUNT
+  } type;
+  int action; //0 or 1
+};
+
 class ShowTurnPicker
 {
   private:
+    Turn *turn;
+
     UI::Box box;
     UI::Label titleLabel;
     UI::Image power_0;
     UI::Image power_1;
-    UI::ImageButtonRound add;
-    UI::ImageButtonRound action_0;
-    UI::ImageButtonRound action_1;
+    UI::ImageButtonRound action_0_1;
+    UI::ImageButtonRound action_0_2;
+    UI::ImageButtonRound action_1_2;
     UI::TextButton cancel;
     UI::TextButton confirm;
 
   public:
     ShowTurnPicker();
-    ShowTurnPicker(UI::Box wbox);
+    ShowTurnPicker(Turn * t, UI::Box wbox);
     ~ShowTurnPicker();
 
-    void touch(In &in);
+    ShowRequest touch(In &in);
     void tick();
-    void draw(Turn t, Graphics *g);
+    void draw(Graphics *g);
 };
 
 #endif

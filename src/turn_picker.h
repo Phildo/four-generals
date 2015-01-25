@@ -15,7 +15,7 @@ struct In;
 class TurnPicker
 {
   private:
-    Turn t;
+    Turn turn;
     circQ<Turn, 2> turn_q; //really should only ever be 1 in here.
     UI::Box win_box;
 
