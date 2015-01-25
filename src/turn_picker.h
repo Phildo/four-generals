@@ -35,12 +35,12 @@ class TurnPicker
       COUNT
     } state;
     void setViewState(TURN_PICKER_STATE s); //clears state vars and sets state
-
-    void init();
   public:
     TurnPicker();
     TurnPicker(UI::Box wbox);
     ~TurnPicker();
+
+    void init();
 
     void touch(In &in);
     bool query(In &in);

@@ -75,6 +75,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   tie_img  = UI::Image(Sprite::sun, ww/2-100, wh/2-100, 200, 200);
 
   picker = TurnPicker(UI::Box(0,0,ww,wh));
+  picker.init();
   messager = Messager();
 
   setViewState(IDLE);

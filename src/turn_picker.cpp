@@ -4,12 +4,10 @@
 
 TurnPicker::TurnPicker() : win_box(0,0,100,100)
 {
-  init();
 }
 
 TurnPicker::TurnPicker(UI::Box wBox) : win_box(wBox)
 {
-  init();
 }
 
 void TurnPicker::init()
@@ -19,7 +17,7 @@ void TurnPicker::init()
   box = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
   button = UI::Button(box.rect);
   show = ShowTurnPicker(&turn, box.rect);
-  browse = BrowseTurnPicker(box.rect);
+  browse = BrowseTurnPicker(&turn, box.rect);
   specify = SpecifyTurnPicker(box.rect);
 
   setViewState(SHOW);
@@ -31,10 +29,12 @@ TurnPicker::~TurnPicker()
 
 void TurnPicker::touch(In &in)
 {
+  ShowRequest s;
   switch(state)
   {
     case SHOW:
-      show.touch(in);
+      s = show.touch(in);
+      if(s.type == ShowRequest::ADD_ACTION) setViewState(BROWSE);
     break;
     case BROWSE:
       browse.touch(in);
@@ -65,7 +65,7 @@ void TurnPicker::draw(Graphics *g)
       show.draw(g);
       break;
     case BROWSE:
-      browse.draw(turn,g);
+      browse.draw(g);
       break;
     case SPECIFY:
       specify.draw(turn,g);
