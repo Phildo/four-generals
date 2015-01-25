@@ -62,17 +62,20 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   sunBtn = UI::Button(dayRects[0]);
 
-  read_sabotage_0 = UI::ImageButtonRound(Sprite::red_x,      10,wh-50,20,20);
-  read_sabotage_1 = UI::ImageButtonRound(Sprite::red_x,      10,wh-80,20,20);
+  read_sabotage_0 = UI::ImageButtonRound(Sprite::knife,      10,wh-50,20,20);
+  read_sabotage_1 = UI::ImageButtonRound(Sprite::knife,      10,wh-80,20,20);
   read_message    = UI::ImageButtonRound(Sprite::envelope,ww-30,wh-50,20,20);
 
   loading = UI::Anim(Sprite::loading_anim, 3, 1.f, ww/2-250, wh/2-120,40,40);
   waiting_on_players_label = UI::Label("waiting on players...", wh/2-20, 200, 40);
   reset_game_button        = UI::TextButton("reset game", ww/2-100, wh/2-20, 200, 40);
 
-  win_img  = UI::Image(Sprite::sun,   ww/2-100, wh/2-100, 200, 200);
-  lose_img = UI::Image(Sprite::red_x, ww/2-100, wh/2-100, 200, 200);
-  tie_img  = UI::Image(Sprite::sun,   ww/2-100, wh/2-100, 200, 200);
+  win_img  = UI::Image(Sprite::sun, ww/2-100, wh/2-100, 200, 200);
+  lose_img = UI::Image(Sprite::ex,  ww/2-100, wh/2-100, 200, 200);
+  tie_img  = UI::Image(Sprite::sun, ww/2-100, wh/2-100, 200, 200);
+
+  picker = TurnPicker(UI::Box(0,0,ww,wh));
+  messager = Messager();
 
   setViewState(IDLE);
 }
@@ -157,7 +160,7 @@ void PlayScene::touch(In &in)
       {
         c->myMessage(a);
         c->mySabotage(a0,a1);
-        if(picker.query(in)) { setViewState(TURN_PICKING); picker.activate(); }
+        if(picker.query(in)) { setViewState(TURN_PICKING); picker.touch(in); }
         else if(a.what == 'm'  && read_message.query(in))    { setViewState(MESSAGE); messager.setMessage(a); }
         else if(a0.what == 's' && read_sabotage_0.query(in)) { setViewState(MESSAGE); messager.setMessage(a0); }
         else if(a1.what == 's' && read_sabotage_1.query(in)) { setViewState(MESSAGE); messager.setMessage(a1); }
@@ -251,7 +254,7 @@ void PlayScene::draw()
   //draws cardinals and actions
   for(int i = 0; i < 4; i++)
   {
-    char card = Compass::cardinal(i);
+    //char card = Compass::cardinal(i);
 
     cardImgs[i].draw(graphics);
     cardLbls[i].draw(graphics);
@@ -262,7 +265,7 @@ void PlayScene::draw()
       Action a = c->model.cardinalDayTurn(card, base_day);
       if(a.what == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
       if(a.what == 'd') graphics->draw(shield_full_s, rectForExpansion(card,t));
-      if(a.what == 's') graphics->draw(red_x_s, rectForExpansion(card,t));
+      if(a.what == 's') graphics->draw(knife, rectForExpansion(card,t));
       if(a.what == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.route,t));
       a = c->model.cardinalDayTurn(card, base_day-1);
       if(a.what == 'm')

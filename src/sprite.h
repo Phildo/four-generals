@@ -58,14 +58,22 @@ namespace Sprite
   extern SDL_Rect gen_w_2;
   extern SDL_Rect gen_w_3;
 
+  extern SDL_Rect heart;
+  extern SDL_Rect bolt;
+  extern SDL_Rect bolt_empty;
   extern SDL_Rect shield;
   extern SDL_Rect sword;
-  extern SDL_Rect red_x;
+  extern SDL_Rect knife;
   extern SDL_Rect envelope;
   extern SDL_Rect sun;
   extern SDL_Rect sblock;
   extern SDL_Rect sread;
   extern SDL_Rect sswitch;
+
+  extern SDL_Rect square;
+  extern SDL_Rect circle;
+  extern SDL_Rect ex;
+  extern SDL_Rect plus;
 
   extern SDL_Rect black_pixel;
 

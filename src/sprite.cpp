@@ -42,14 +42,22 @@ SDL_Rect gen_w_1;
 SDL_Rect gen_w_2;
 SDL_Rect gen_w_3;
 
+SDL_Rect heart;
+SDL_Rect bolt;
+SDL_Rect bolt_empty;
 SDL_Rect shield;
 SDL_Rect sword;
-SDL_Rect red_x;
+SDL_Rect knife;
 SDL_Rect envelope;
 SDL_Rect sun;
 SDL_Rect sblock;
 SDL_Rect sread;
 SDL_Rect sswitch;
+
+SDL_Rect square;
+SDL_Rect circle;
+SDL_Rect ex;
+SDL_Rect plus;
 
 SDL_Rect black_pixel;
 
@@ -180,14 +188,22 @@ void Sprite::init(const char *f)
   values[i] = &gen_w_2; keys[i] = String("gen_w_2"); i++;
   values[i] = &gen_w_3; keys[i] = String("gen_w_3"); i++;
 
-  values[i] = &shield;   keys[i] = String("shield"); i++;
-  values[i] = &sword;    keys[i] = String("sword"); i++;
-  values[i] = &red_x;    keys[i] = String("red_x"); i++;
+  values[i] = &heart; keys[i] = String("heart"); i++;
+  values[i] = &bolt; keys[i] = String("bolt"); i++;
+  values[i] = &bolt_empty; keys[i] = String("bolt_empty"); i++;
+  values[i] = &shield; keys[i] = String("shield"); i++;
+  values[i] = &sword; keys[i] = String("sword"); i++;
+  values[i] = &knife; keys[i] = String("knife"); i++;
   values[i] = &envelope; keys[i] = String("envelope"); i++;
-  values[i] = &sun;      keys[i] = String("sun"); i++;
-  values[i] = &sblock;   keys[i] = String("sblock"); i++;
-  values[i] = &sread;    keys[i] = String("sread"); i++;
-  values[i] = &sswitch;  keys[i] = String("sswitch"); i++;
+  values[i] = &sun; keys[i] = String("sun"); i++;
+  values[i] = &sblock; keys[i] = String("sblock"); i++;
+  values[i] = &sread; keys[i] = String("sread"); i++;
+  values[i] = &sswitch; keys[i] = String("sswitch"); i++;
+
+  values[i] = &square; keys[i] = String("square"); i++;
+  values[i] = &circle; keys[i] = String("circle"); i++;
+  values[i] = &ex; keys[i] = String("ex"); i++;
+  values[i] = &plus; keys[i] = String("plus"); i++;
 
   values[i] = &black_pixel; keys[i] = String("black_pixel"); i++;
 

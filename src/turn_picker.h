@@ -13,11 +13,35 @@ class TurnPicker
   private:
     Turn t;
     circQ<Turn, 2> turn_q; //really should only ever be 1 in here.
-    UI::Box box;
+    UI::Box win_box;
 
-    bool active;
+    UI::Box box;
+    //views
+    UI::Label titleLabel;
+    UI::Image power_0;
+    UI::Image power_1;
+
+    UI::ImageButtonRound add;
+
+    UI::TextButton cancel;
+    UI::TextButton confirm;
+
+    enum TURN_PICKER_STATE //the visual state of the view
+    {
+      IDLE,         // can choose to look at messages or pick turn
+      MESSAGE,      // full screen message/sabotage showing
+      TURN_PICKING, // full screen action picker
+      WAITING,      // picked turn, waiting on other players
+      SHOWING,      // animating newly played out action (interaction disabled)
+      OVER,         // game over
+      COUNT
+    } state;
+    void setViewState(TURN_PICKER_STATE s); //clears state vars and sets state
+
+    void init();
   public:
     TurnPicker();
+    TurnPicker(UI::Box wbox);
     ~TurnPicker();
 
     void touch(In &in);
@@ -25,7 +49,6 @@ class TurnPicker
     void tick();
     void draw(Graphics *g);
 
-    void activate();
     void clearViewState();
 
     bool getTurn(Turn &t);
