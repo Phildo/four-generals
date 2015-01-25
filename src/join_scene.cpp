@@ -40,7 +40,7 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
   portLabel  = UI::Label("4040", ww/2+150, wh/2-120,40);
   ipInput    = UI::TextBox(ww/2-250, wh/2-120,400,40);
   keyboard   = UI::Keyboard(0,wh-200,ww,200);
-  loading    = UI::Anim(UI::AnimSprites(Sprite::loading_0, Sprite::loading_1, Sprite::loading_2, Sprite::loading_2), 3, 1.f, ww/2-250, wh/2-120,40,40);
+  loading    = UI::Anim(Sprite::loading_anim, 3, 1.f, ww/2-250, wh/2-120,40,40);
 
   ipInput.setText(Network::getIP());
 

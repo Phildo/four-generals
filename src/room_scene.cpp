@@ -46,24 +46,13 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
     cardLabelRects[i].set(posLabelRects[i],posLabelRects[i]);
   }
 
-  //Sprites
-  generals_s[0] = UI::AnimSprites(Sprite::gen_n_0, Sprite::gen_n_1, Sprite::gen_n_2, Sprite::gen_n_3);
-  generals_s[1] = UI::AnimSprites(Sprite::gen_e_0, Sprite::gen_e_1, Sprite::gen_e_2, Sprite::gen_e_3);
-  generals_s[2] = UI::AnimSprites(Sprite::gen_s_0, Sprite::gen_s_1, Sprite::gen_s_2, Sprite::gen_s_3);
-  generals_s[3] = UI::AnimSprites(Sprite::gen_w_0, Sprite::gen_w_1, Sprite::gen_w_2, Sprite::gen_w_3);
-
-  pTags[0] = Sprite::p1;     pTags[1] = Sprite::p2;    pTags[2] = Sprite::p3;    pTags[3] = Sprite::p4;
-  pTagsW[0] = Sprite::p1_w; pTagsW[1] = Sprite::p2_w; pTagsW[2] = Sprite::p3_w; pTagsW[3] = Sprite::p4_w;
-  pTagsB[0] = Sprite::p1_b; pTagsB[1] = Sprite::p2_b; pTagsB[2] = Sprite::p3_b; pTagsB[3] = Sprite::p4_b;
-  pTagsR[0] = Sprite::p1_r; pTagsR[1] = Sprite::p2_r; pTagsR[2] = Sprite::p3_r; pTagsR[3] = Sprite::p4_r;
-
   //Hacks
   char cardnamehacks[] = {'N','o','r','t','h','\0','E','a','s','t','\0','\0','S','o','u','t','h','\0','W','e','s','t','\0','\0'};
 
   //Views
   for(int i = 0; i < 4; i++)
   {
-    cardImgs[i] = UI::Anim(generals_s[i], 4, 1.f, posRects[i]);
+    cardImgs[i] = UI::Anim(Sprite::general_anims[i], 4, 1.f, posRects[i]);
     cardLbls[i] = UI::Label(&cardnamehacks[i*6], posLabelRects[i]);
   }
 
@@ -80,7 +69,7 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   for(int i = 0; i < 4; i++)
   {
-    pScoreLabels[i] = UI::Image(pTags[i], space(ww, 200, 60, 4, i), 140, 60, 60);
+    pScoreLabels[i] = UI::Image(Sprite::pTags[i], space(ww, 200, 60, 4, i), 140, 60, 60);
     pWinLabels[i]   = UI::Label("0",      space(ww, 200, 30, 4, i), 190, 30);
     pLossLabels[i]  = UI::Label("0",      space(ww, 200, 30, 4, i), 220, 30);
     pTieLabels[i]   = UI::Label("0",      space(ww, 200, 30, 4, i), 250, 30);
@@ -189,8 +178,8 @@ void RoomScene::draw()
     tmp.h /= 2;
     if(con != '0')
     {
-           if(card == 'n' || card == 's') graphics->draw(pTagsB[ConIds::iconid(con)],tmp);
-      else if(card == 'e' || card == 'w') graphics->draw(pTagsR[ConIds::iconid(con)],tmp);
+           if(card == 'n' || card == 's') graphics->draw(Sprite::pTagsB[ConIds::iconid(con)],tmp);
+      else if(card == 'e' || card == 'w') graphics->draw(Sprite::pTagsR[ConIds::iconid(con)],tmp);
     }
   }
 
@@ -210,16 +199,16 @@ void RoomScene::draw()
   for(int i = 0; i < 4; i++)
   {
     if(c->model.connectionConnection(ConIds::conid(i)) == '0')
-      pScoreLabels[i].sprite = pTags[i];
+      pScoreLabels[i].sprite = Sprite::pTags[i];
     else
     {
       char gen = c->model.connectionCardinal(ConIds::conid(i));
       if(gen == 'n' || gen == 's')
-        pScoreLabels[i].sprite = pTagsB[i];
+        pScoreLabels[i].sprite = Sprite::pTagsB[i];
       else if(gen == 'e' || gen == 'w')
-        pScoreLabels[i].sprite = pTagsR[i];
+        pScoreLabels[i].sprite = Sprite::pTagsR[i];
       else
-        pScoreLabels[i].sprite = pTagsW[i];
+        pScoreLabels[i].sprite = Sprite::pTagsW[i];
     }
     pScoreLabels[i].draw(graphics);
   }

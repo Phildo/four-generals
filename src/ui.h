@@ -3,6 +3,7 @@
 
 #include "string.h"
 #include "circ_q.h"
+#include "sprite.h"
 #include "SDL.h"
 
 //convenient bro

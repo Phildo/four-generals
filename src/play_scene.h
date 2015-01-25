@@ -33,13 +33,6 @@ class PlayScene : public Scene
     SDL_Rect dayRects[7];
     SDL_Rect sunRects[7];
 
-    //sprites
-    UI::AnimSprites generals_s[4];
-    SDL_Rect pTags[4];
-    SDL_Rect pTagsW[4];
-    SDL_Rect pTagsB[4];
-    SDL_Rect pTagsR[4];
-
     //views
     UI::Anim cardImgs[4];
     UI::Label cardLbls[4];

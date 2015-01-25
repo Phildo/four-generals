@@ -96,6 +96,14 @@ SDL_Rect where_ns;
 SDL_Rect where_we;
 
 SDL_Rect null;
+
+SDL_Rect pTags[4];
+SDL_Rect pTagsW[4];
+SDL_Rect pTagsB[4];
+SDL_Rect pTagsR[4];
+
+AnimSprites general_anims[4];
+AnimSprites loading_anim;
 };
 
 
@@ -274,6 +282,19 @@ void Sprite::init(const char *f)
     }
   }
   fclose(fp);
+
+  //construct groupings
+  pTags[0]  = Sprite::p1;    pTags[1] = Sprite::p2;    pTags[2] = Sprite::p3;    pTags[3] = Sprite::p4;
+  pTagsW[0] = Sprite::p1_w; pTagsW[1] = Sprite::p2_w; pTagsW[2] = Sprite::p3_w; pTagsW[3] = Sprite::p4_w;
+  pTagsB[0] = Sprite::p1_b; pTagsB[1] = Sprite::p2_b; pTagsB[2] = Sprite::p3_b; pTagsB[3] = Sprite::p4_b;
+  pTagsR[0] = Sprite::p1_r; pTagsR[1] = Sprite::p2_r; pTagsR[2] = Sprite::p3_r; pTagsR[3] = Sprite::p4_r;
+
+  general_anims[0] = AnimSprites(Sprite::gen_n_0, Sprite::gen_n_1, Sprite::gen_n_2, Sprite::gen_n_3);
+  general_anims[1] = AnimSprites(Sprite::gen_e_0, Sprite::gen_e_1, Sprite::gen_e_2, Sprite::gen_e_3);
+  general_anims[2] = AnimSprites(Sprite::gen_s_0, Sprite::gen_s_1, Sprite::gen_s_2, Sprite::gen_s_3);
+  general_anims[3] = AnimSprites(Sprite::gen_w_0, Sprite::gen_w_1, Sprite::gen_w_2, Sprite::gen_w_3);
+
+  loading_anim = AnimSprites(Sprite::loading_0, Sprite::loading_1, Sprite::loading_2, Sprite::loading_1);
 }
 
 SDL_Rect Sprite::alpha(char c)

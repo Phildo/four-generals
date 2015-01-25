@@ -28,13 +28,6 @@ class RoomScene : public Scene
     LerpRect cardRects[4];
     LerpRect cardLabelRects[4];
 
-    //sprites
-    UI::AnimSprites generals_s[4];
-    SDL_Rect pTags[4];
-    SDL_Rect pTagsW[4];
-    SDL_Rect pTagsB[4];
-    SDL_Rect pTagsR[4];
-
     //views
     UI::Anim cardImgs[4];
     UI::Label cardLbls[4];

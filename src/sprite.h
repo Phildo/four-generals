@@ -5,6 +5,19 @@
 
 namespace Sprite
 {
+  struct AnimSprites
+  {
+    SDL_Rect sprite[4];
+    AnimSprites() {};
+    AnimSprites(SDL_Rect s0, SDL_Rect s1, SDL_Rect s2, SDL_Rect s3)
+    {
+      sprite[0] = s0;
+      sprite[1] = s1;
+      sprite[2] = s2;
+      sprite[3] = s3;
+    }
+  };
+
   void init(const char *f);
 
   extern SDL_Rect a[256];
@@ -99,6 +112,17 @@ namespace Sprite
   extern SDL_Rect where_we;
 
   extern SDL_Rect null;
+
+
+  //groupings
+  extern SDL_Rect pTags[4];
+  extern SDL_Rect pTagsW[4];
+  extern SDL_Rect pTagsB[4];
+  extern SDL_Rect pTagsR[4];
+
+  extern AnimSprites general_anims[4];
+  extern AnimSprites loading_anim;
+
 };
 
 #endif
