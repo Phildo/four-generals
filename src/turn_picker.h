@@ -5,6 +5,10 @@
 #include "circ_q.h"
 #include "ui.h"
 
+#include "show_turn_picker.h"
+#include "browse_turn_picker.h"
+#include "specify_turn_picker.h"
+
 class Graphics;
 struct In;
 
@@ -15,25 +19,19 @@ class TurnPicker
     circQ<Turn, 2> turn_q; //really should only ever be 1 in here.
     UI::Box win_box;
 
-    UI::Box box;
     //views
-    UI::Label titleLabel;
-    UI::Image power_0;
-    UI::Image power_1;
+    UI::Box box;
+    UI::Button button;
 
-    UI::ImageButtonRound add;
-
-    UI::TextButton cancel;
-    UI::TextButton confirm;
+    ShowTurnPicker show;
+    BrowseTurnPicker browse;
+    SpecifyTurnPicker specify;
 
     enum TURN_PICKER_STATE //the visual state of the view
     {
-      IDLE,         // can choose to look at messages or pick turn
-      MESSAGE,      // full screen message/sabotage showing
-      TURN_PICKING, // full screen action picker
-      WAITING,      // picked turn, waiting on other players
-      SHOWING,      // animating newly played out action (interaction disabled)
-      OVER,         // game over
+      SHOW,    // shows currently chosen actions (or + if none chosen)
+      BROWSE,  // browse scrollable list of choosable actions
+      SPECIFY, // action chosen, choosing details
       COUNT
     } state;
     void setViewState(TURN_PICKER_STATE s); //clears state vars and sets state

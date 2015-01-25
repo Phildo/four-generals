@@ -117,7 +117,6 @@ AnimSprites loading_anim;
 
 static void parseIntoRect(char *b, SDL_Rect *v)
 {
-  fg_log("parsing %s",b);
   int i = 0;
   int j = 0;
 
@@ -136,7 +135,6 @@ static void parseIntoRect(char *b, SDL_Rect *v)
   j = i;
   while(*(b+i) != ',') i++; *(b+i) = '\0';
   v->h = String(b+j).intVal();
-  fg_log("into %d, %d, %d, %d",v->x,v->y,v->w,v->h);
 }
 
 void Sprite::init(const char *f)
