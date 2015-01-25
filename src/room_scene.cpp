@@ -47,15 +47,15 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   }
 
   //Sprites
-  generals_s[0] = UI::AnimSprites(Sprite::gen_n_0(), Sprite::gen_n_1(), Sprite::gen_n_2(), Sprite::gen_n_3());
-  generals_s[1] = UI::AnimSprites(Sprite::gen_e_0(), Sprite::gen_e_1(), Sprite::gen_e_2(), Sprite::gen_e_3());
-  generals_s[2] = UI::AnimSprites(Sprite::gen_s_0(), Sprite::gen_s_1(), Sprite::gen_s_2(), Sprite::gen_s_3());
-  generals_s[3] = UI::AnimSprites(Sprite::gen_w_0(), Sprite::gen_w_1(), Sprite::gen_w_2(), Sprite::gen_w_3());
+  generals_s[0] = UI::AnimSprites(Sprite::gen_n_0, Sprite::gen_n_1, Sprite::gen_n_2, Sprite::gen_n_3);
+  generals_s[1] = UI::AnimSprites(Sprite::gen_e_0, Sprite::gen_e_1, Sprite::gen_e_2, Sprite::gen_e_3);
+  generals_s[2] = UI::AnimSprites(Sprite::gen_s_0, Sprite::gen_s_1, Sprite::gen_s_2, Sprite::gen_s_3);
+  generals_s[3] = UI::AnimSprites(Sprite::gen_w_0, Sprite::gen_w_1, Sprite::gen_w_2, Sprite::gen_w_3);
 
-  pTags[0] = Sprite::p1();     pTags[1] = Sprite::p2();    pTags[2] = Sprite::p3();    pTags[3] = Sprite::p4();
-  pTagsW[0] = Sprite::p1_w(); pTagsW[1] = Sprite::p2_w(); pTagsW[2] = Sprite::p3_w(); pTagsW[3] = Sprite::p4_w();
-  pTagsB[0] = Sprite::p1_b(); pTagsB[1] = Sprite::p2_b(); pTagsB[2] = Sprite::p3_b(); pTagsB[3] = Sprite::p4_b();
-  pTagsR[0] = Sprite::p1_r(); pTagsR[1] = Sprite::p2_r(); pTagsR[2] = Sprite::p3_r(); pTagsR[3] = Sprite::p4_r();
+  pTags[0] = Sprite::p1;     pTags[1] = Sprite::p2;    pTags[2] = Sprite::p3;    pTags[3] = Sprite::p4;
+  pTagsW[0] = Sprite::p1_w; pTagsW[1] = Sprite::p2_w; pTagsW[2] = Sprite::p3_w; pTagsW[3] = Sprite::p4_w;
+  pTagsB[0] = Sprite::p1_b; pTagsB[1] = Sprite::p2_b; pTagsB[2] = Sprite::p3_b; pTagsB[3] = Sprite::p4_b;
+  pTagsR[0] = Sprite::p1_r; pTagsR[1] = Sprite::p2_r; pTagsR[2] = Sprite::p3_r; pTagsR[3] = Sprite::p4_r;
 
   //Hacks
   char cardnamehacks[] = {'N','o','r','t','h','\0','E','a','s','t','\0','\0','S','o','u','t','h','\0','W','e','s','t','\0','\0'};
@@ -70,8 +70,8 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   backButton = UI::Button(20,20,40,40);
 
   youAreLabel = UI::Label("You Are ", ww-200, 20, 30);
-  youPTag = UI::Image(Sprite::p1(), ww-70, 0, 60, 60);
-  showIpQ = UI::Image(Sprite::question_bubble(), ww-200, 60, 30, 30);
+  youPTag = UI::Image(Sprite::p1, ww-70, 0, 60, 60);
+  showIpQ = UI::Image(Sprite::question_bubble, ww-200, 60, 30, 30);
   netroleLabel = UI::Label("host", ww-160, 60, 30);
 
   showIpButton = UI::Button(ww-200, 0, 200, 90);
@@ -91,9 +91,9 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   SDL_Rect r = posRects[2]; //rect = 's' pos
   chooseBtn = UI::Button(r);
   r.x -= 2*r.w;
-  cwBtn  = UI::ImageButton(Sprite::arrow_left_up(), r);
+  cwBtn  = UI::ImageButton(Sprite::arrow_left_up, r);
   r.x += 4*r.w;
-  ccwBtn = UI::ImageButton(Sprite::arrow_right_up(), r);
+  ccwBtn = UI::ImageButton(Sprite::arrow_right_up, r);
 
   cardCWOffset = 0;
   showingIp = false;
@@ -109,10 +109,10 @@ void RoomScene::enter()
 
   if(s) netroleLabel.text = String("host");
   else  netroleLabel.text = String("client");
-       if(c->myConnection() == '1') youPTag.sprite = Sprite::p1();
-  else if(c->myConnection() == '2') youPTag.sprite = Sprite::p2();
-  else if(c->myConnection() == '3') youPTag.sprite = Sprite::p3();
-  else if(c->myConnection() == '4') youPTag.sprite = Sprite::p4();
+       if(c->myConnection() == '1') youPTag.sprite = Sprite::p1;
+  else if(c->myConnection() == '2') youPTag.sprite = Sprite::p2;
+  else if(c->myConnection() == '3') youPTag.sprite = Sprite::p3;
+  else if(c->myConnection() == '4') youPTag.sprite = Sprite::p4;
 
   //should never change while in this room... I don't think
   for(int i = 0; i < 4; i++)

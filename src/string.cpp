@@ -101,9 +101,9 @@ String String::concat(const String &other) const
 
 bool String::equals(const String &other) const
 {
-  int i;
-  char *me = ptr();
-  char *them = other.ptr();
+  int i = 0;
+  char *me = (char *)ptr();
+  char *them = (char *)other.ptr();
   while(*(me+i) == *(them+i) && *(me+i) != '\0') i++;
   return (*(me+i) == '\0' && *(them+i) == '\0');
 }

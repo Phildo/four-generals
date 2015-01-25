@@ -47,15 +47,15 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   }
 
   //Sprites
-  generals_s[0] = UI::AnimSprites(Sprite::gen_n_0(), Sprite::gen_n_1(), Sprite::gen_n_2(), Sprite::gen_n_3());
-  generals_s[1] = UI::AnimSprites(Sprite::gen_e_0(), Sprite::gen_e_1(), Sprite::gen_e_2(), Sprite::gen_e_3());
-  generals_s[2] = UI::AnimSprites(Sprite::gen_s_0(), Sprite::gen_s_1(), Sprite::gen_s_2(), Sprite::gen_s_3());
-  generals_s[3] = UI::AnimSprites(Sprite::gen_w_0(), Sprite::gen_w_1(), Sprite::gen_w_2(), Sprite::gen_w_3());
+  generals_s[0] = UI::AnimSprites(Sprite::gen_n_0, Sprite::gen_n_1, Sprite::gen_n_2, Sprite::gen_n_3);
+  generals_s[1] = UI::AnimSprites(Sprite::gen_e_0, Sprite::gen_e_1, Sprite::gen_e_2, Sprite::gen_e_3);
+  generals_s[2] = UI::AnimSprites(Sprite::gen_s_0, Sprite::gen_s_1, Sprite::gen_s_2, Sprite::gen_s_3);
+  generals_s[3] = UI::AnimSprites(Sprite::gen_w_0, Sprite::gen_w_1, Sprite::gen_w_2, Sprite::gen_w_3);
 
-  pTags[0] = Sprite::p1();     pTags[1] = Sprite::p2();    pTags[2] = Sprite::p3();    pTags[3] = Sprite::p4();
-  pTagsW[0] = Sprite::p1_w(); pTagsW[1] = Sprite::p2_w(); pTagsW[2] = Sprite::p3_w(); pTagsW[3] = Sprite::p4_w();
-  pTagsB[0] = Sprite::p1_b(); pTagsB[1] = Sprite::p2_b(); pTagsB[2] = Sprite::p3_b(); pTagsB[3] = Sprite::p4_b();
-  pTagsR[0] = Sprite::p1_r(); pTagsR[1] = Sprite::p2_r(); pTagsR[2] = Sprite::p3_r(); pTagsR[3] = Sprite::p4_r();
+  pTags[0] = Sprite::p1;     pTags[1] = Sprite::p2;    pTags[2] = Sprite::p3;    pTags[3] = Sprite::p4;
+  pTagsW[0] = Sprite::p1_w; pTagsW[1] = Sprite::p2_w; pTagsW[2] = Sprite::p3_w; pTagsW[3] = Sprite::p4_w;
+  pTagsB[0] = Sprite::p1_b; pTagsB[1] = Sprite::p2_b; pTagsB[2] = Sprite::p3_b; pTagsB[3] = Sprite::p4_b;
+  pTagsR[0] = Sprite::p1_r; pTagsR[1] = Sprite::p2_r; pTagsR[2] = Sprite::p3_r; pTagsR[3] = Sprite::p4_r;
 
   //Hacks
   char daynamehacks[] = {'S','u','\0','M','o','\0','T','u','\0','W','e','\0','T','h','\0','F','r','\0','S','a','\0'};
@@ -73,17 +73,17 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   sunBtn = UI::Button(dayRects[0]);
 
-  read_sabotage_0 = UI::ImageButtonRound(Sprite::red_x(),      10,wh-50,20,20);
-  read_sabotage_1 = UI::ImageButtonRound(Sprite::red_x(),      10,wh-80,20,20);
-  read_message    = UI::ImageButtonRound(Sprite::envelope(),ww-30,wh-50,20,20);
+  read_sabotage_0 = UI::ImageButtonRound(Sprite::red_x,      10,wh-50,20,20);
+  read_sabotage_1 = UI::ImageButtonRound(Sprite::red_x,      10,wh-80,20,20);
+  read_message    = UI::ImageButtonRound(Sprite::envelope,ww-30,wh-50,20,20);
 
-  loading = UI::Anim(UI::AnimSprites(Sprite::loading_0(), Sprite::loading_1(), Sprite::loading_2(), Sprite::loading_2()), 3, 1.f, ww/2-250, wh/2-120,40,40);
+  loading = UI::Anim(UI::AnimSprites(Sprite::loading_0, Sprite::loading_1, Sprite::loading_2, Sprite::loading_2), 3, 1.f, ww/2-250, wh/2-120,40,40);
   waiting_on_players_label = UI::Label("waiting on players...", wh/2-20, 200, 40);
   reset_game_button        = UI::TextButton("reset game", ww/2-100, wh/2-20, 200, 40);
 
-  win_img  = UI::Image(Sprite::sun(),   ww/2-100, wh/2-100, 200, 200);
-  lose_img = UI::Image(Sprite::red_x(), ww/2-100, wh/2-100, 200, 200);
-  tie_img  = UI::Image(Sprite::sun(),   ww/2-100, wh/2-100, 200, 200);
+  win_img  = UI::Image(Sprite::sun,   ww/2-100, wh/2-100, 200, 200);
+  lose_img = UI::Image(Sprite::red_x, ww/2-100, wh/2-100, 200, 200);
+  tie_img  = UI::Image(Sprite::sun,   ww/2-100, wh/2-100, 200, 200);
 
   setViewState(IDLE);
 }
@@ -254,7 +254,7 @@ void PlayScene::draw()
   float t = snapped_shown_days-((float)base_day);
 
   SDL_Rect sunr = rectForTransition(Week::day(base_day%7), Week::day((base_day+1)%7), t);
-  graphics->draw(Sprite::sun(),sunr);
+  graphics->draw(Sprite::sun,sunr);
   sunBtn.rect.rect = sunr;
   for(int i = 0; i < 7; i++)
     dayLbls[i].draw(graphics);

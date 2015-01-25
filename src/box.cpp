@@ -20,27 +20,27 @@ void Box::draw(Graphics *g)
   tmp.x = rect.x;
   tmp.y = rect.y;
   tmp.w = rect.w;
-  g->draw(Sprite::border_top(),tmp);
+  g->draw(Sprite::border_top,tmp);
 
   tmp.w = 16;
   tmp.h = 16;
   tmp.x = rect.x;
   tmp.y = rect.y+rect.h-tmp.h;
   tmp.w = rect.w;
-  g->draw(Sprite::border_bottom(),tmp);
+  g->draw(Sprite::border_bottom,tmp);
 
   tmp.w = 16;
   tmp.h = 16;
   tmp.x = rect.x;
   tmp.y = rect.y;
   tmp.h = rect.h;
-  g->draw(Sprite::border_left(),tmp);
+  g->draw(Sprite::border_left,tmp);
 
   tmp.w = 16;
   tmp.h = 16;
   tmp.x = rect.x+rect.w-tmp.w;
   tmp.y = rect.y;
   tmp.h = rect.h;
-  g->draw(Sprite::border_right(),tmp);
+  g->draw(Sprite::border_right,tmp);
 }
 
