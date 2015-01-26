@@ -42,3 +42,37 @@ void ImageButtonRound::draw(Graphics *g)
   g->draw(sprite, rect.rect);
 }
 
+void ImageButtonRound::drawInMask(Graphics *g, SDL_Rect m)
+{
+  SDL_Rect r;
+  r.x = rect.x;
+  r.y = rect.y;
+  r.w = Sprite::border_corner_round_tl.w;
+  r.h = Sprite::border_corner_round_tl.h;
+  g->drawInMask(Sprite::border_corner_round_tl,r,m);
+  r.x = rect.x+rect.w-Sprite::border_corner_round_tr.w;
+  g->drawInMask(Sprite::border_corner_round_tr,r,m);
+  r.y = rect.y+rect.h-Sprite::border_corner_round_br.h;
+  g->drawInMask(Sprite::border_corner_round_br,r,m);
+  r.x = rect.x;
+  g->drawInMask(Sprite::border_corner_round_bl,r,m);
+
+  r.x = rect.x+Sprite::border_corner_round_tl.w;
+  r.y = rect.y;
+  r.w = rect.w-Sprite::border_corner_round_tl.w-Sprite::border_corner_round_tr.w;
+  r.h = Sprite::border_top.h;
+  g->drawInMask(Sprite::border_top, r,m);
+  r.y = rect.y+rect.h-Sprite::border_bottom.h;
+  g->drawInMask(Sprite::border_bottom, r,m);
+
+  r.x = rect.x;
+  r.y = rect.y+Sprite::border_corner_round_tl.h;
+  r.w = Sprite::border_left.w;
+  r.h = rect.h-Sprite::border_corner_round_tl.h-Sprite::border_corner_round_bl.h;
+  g->drawInMask(Sprite::border_left, r,m);
+  r.x = rect.x+rect.w-Sprite::border_right.w;
+  g->drawInMask(Sprite::border_right, r,m);
+
+  g->drawInMask(sprite, rect.rect,m);
+}
+

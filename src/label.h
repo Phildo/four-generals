@@ -5,6 +5,7 @@ struct Label
   static const int n_w = 18; //native_width in tex
   static const int n_h = 31; //native_height in tex
   void draw(Graphics *g);
+  void drawInMask(Graphics *g, SDL_Rect m);
 
   Label();
   Label(const char *t, SDL_Rect r);

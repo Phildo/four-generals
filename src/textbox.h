@@ -13,6 +13,7 @@ struct TextBox
   void backspace();
   void clear();
   void draw(Graphics *g);
+  void drawInMask(Graphics *g, SDL_Rect m);
 
   TextBox();
   TextBox(SDL_Rect r);

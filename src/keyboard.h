@@ -17,6 +17,7 @@ struct Keyboard
   void touch(In &in);
   char poll();
   void draw(Graphics *g);
+  void drawInMask(Graphics *g, SDL_Rect m);
 
   //Ugh
   private:

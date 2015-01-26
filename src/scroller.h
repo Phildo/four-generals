@@ -12,6 +12,7 @@ struct Scroller
   void touch(const In &in);
   void tick();
   void draw(Graphics *g);
+  void drawInMask(Graphics *g, SDL_Rect m);
 
   float p();
 

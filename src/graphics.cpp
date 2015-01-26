@@ -58,6 +58,60 @@ void Graphics::draw(const SDL_Rect& src, const SDL_Rect& dest)
   SDL_RenderCopy(renderer, tex, &src, &offsetDest);
 }
 
+void Graphics::drawInMask(SDL_Rect src, SDL_Rect dest, SDL_Rect mask)
+{
+  if(dest.x < mask.x)
+  {
+    int d = mask.x-dest.x;
+    float f = (float)d/((float)dest.w);
+    int cut = (src.w*f);
+    src.x += cut;
+    src.w -= cut;
+    dest.x += d;
+    dest.w -= d;
+  }
+  if(dest.y < mask.y)
+  {
+    int d = mask.y-dest.y;
+    float f = (float)d/((float)dest.h);
+    int cut = (src.h*f);
+    src.y += cut;
+    src.h -= cut;
+    dest.y += d;
+    dest.h -= d;
+  }
+  if(dest.x+dest.w > mask.x+mask.w)
+  {
+    int d = (dest.x+dest.w)-(mask.x+mask.w);
+    float f = (float)d/((float)dest.w);
+    int cut = (src.w*f);
+    src.w -= cut;
+    dest.w -= d;
+  }
+  if(dest.y+dest.h > mask.y+mask.h)
+  {
+    int d = (dest.y+dest.h)-(mask.y+mask.h);
+    float f = (float)d/((float)dest.h);
+    int cut = (src.h*f);
+    src.h -= cut;
+    dest.h -= d;
+  }
+
+  SDL_Rect offsetDest;
+  #ifdef FG_HALF_SIZE
+  offsetDest.x = (dest.x/2)+offsetX();
+  offsetDest.y = (dest.y/2)+offsetY();
+  offsetDest.w = (dest.w/2);
+  offsetDest.h = (dest.h/2);
+  #else
+  offsetDest.x = dest.x+offsetX();
+  offsetDest.y = dest.y+offsetY();
+  offsetDest.w = dest.w;
+  offsetDest.h = dest.h;
+  #endif
+  SDL_RenderCopy(renderer, tex, &src, &offsetDest);
+}
+
 void Graphics::drawAt(const SDL_Rect& src, int x, int y)
 {
   SDL_Rect offsetDest;

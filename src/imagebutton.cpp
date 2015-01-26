@@ -14,3 +14,10 @@ void ImageButton::draw(Graphics *g)
   g->draw(sprite, rect.rect);
 }
 
+void ImageButton::drawInMask(Graphics *g, SDL_Rect m)
+{
+  rect.drawInMask(g,m);
+  g->drawInMask(sprite, rect.rect,m);
+}
+
+

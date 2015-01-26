@@ -6,6 +6,7 @@ struct TextButton
   static const int n_h = 31; //native_height in tex
   bool query(const In &in);
   void draw(Graphics *g);
+  void drawInMask(Graphics *g, SDL_Rect m);
 
   TextButton();
   TextButton(const char *t, SDL_Rect r);

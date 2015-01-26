@@ -6,3 +6,8 @@ void Image::draw(Graphics *g)
   g->draw(sprite,rect.rect);
 }
 
+void Image::drawInMask(Graphics *g, SDL_Rect m)
+{
+  g->drawInMask(sprite,rect.rect,m);
+}
+

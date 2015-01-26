@@ -9,6 +9,7 @@ struct Anim
   float f;
 
   void draw(Graphics *g);
+  void drawInMask(Graphics *g, SDL_Rect m);
   void tick(float d);
   Anim();
   Anim(Sprite::AnimSprites s, int c, float f, SDL_Rect r);

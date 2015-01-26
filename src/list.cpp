@@ -20,6 +20,13 @@ void List::draw(Graphics *g)
     rows[i].draw(g);
 }
 
+void List::drawInMask(Graphics *g, SDL_Rect m)
+{
+  for(int i = 0; i < num_rows; i++)
+    rows[i].drawInMask(g,m);
+}
+
+
 void List::append(const char *b)
 {
   for(int i = 0; i < num_rows-1; i++)

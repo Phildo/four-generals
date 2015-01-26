@@ -28,7 +28,7 @@ struct BrowseButton
   UI::Label title;
   UI::Label description;
 
-  void drawAtOffset(int o, Graphics *g);
+  void drawAtOffsetInMask(int o, Graphics *g, SDL_Rect r);
 };
 
 class BrowseTurnPicker

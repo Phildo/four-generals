@@ -46,3 +46,38 @@ void Box::draw(Graphics *g)
   g->draw(Sprite::border_right,tmp);
 }
 
+void Box::drawInMask(Graphics *g, SDL_Rect m)
+{
+  SDL_Rect tmp;
+
+  g->drawInMask(Sprite::grey,rect,m);
+
+  tmp.w = 16;
+  tmp.h = 16;
+  tmp.x = rect.x;
+  tmp.y = rect.y;
+  tmp.w = rect.w;
+  g->drawInMask(Sprite::border_top,tmp,m);
+
+  tmp.w = 16;
+  tmp.h = 16;
+  tmp.x = rect.x;
+  tmp.y = rect.y+rect.h-tmp.h;
+  tmp.w = rect.w;
+  g->drawInMask(Sprite::border_bottom,tmp,m);
+
+  tmp.w = 16;
+  tmp.h = 16;
+  tmp.x = rect.x;
+  tmp.y = rect.y;
+  tmp.h = rect.h;
+  g->drawInMask(Sprite::border_left,tmp,m);
+
+  tmp.w = 16;
+  tmp.h = 16;
+  tmp.x = rect.x+rect.w-tmp.w;
+  tmp.y = rect.y;
+  tmp.h = rect.h;
+  g->drawInMask(Sprite::border_right,tmp,m);
+}
+

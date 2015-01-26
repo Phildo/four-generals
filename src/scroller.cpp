@@ -45,6 +45,12 @@ void Scroller::draw(Graphics *g)
   rect.draw(g);
 }
 
+void Scroller::drawInMask(Graphics *g, SDL_Rect m)
+{
+  rect.drawInMask(g,m);
+}
+
+
 float Scroller::p()
 {
   return ((float)offset)/((float)(-content_rect.h+rect.h));

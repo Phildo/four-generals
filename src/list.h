@@ -9,6 +9,7 @@ struct List
   Label rows[max_rows];
 
   void draw(Graphics *g);
+  void drawInMask(Graphics *g, SDL_Rect m);
   void append(const char *b);
   List();
   //from rect.h + text height we will derive num rows

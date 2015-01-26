@@ -6,6 +6,11 @@ void Anim::draw(Graphics *g)
   g->draw(sprite.sprite[i],rect.rect);
 }
 
+void Anim::drawInMask(Graphics *g, SDL_Rect m)
+{
+  g->drawInMask(sprite.sprite[i],rect.rect,m);
+}
+
 void Anim::tick(float d)
 {
   f += d;

@@ -44,3 +44,17 @@ void TextBox::draw(Graphics *g)
   }
 }
 
+void TextBox::drawInMask(Graphics *g, SDL_Rect m)
+{
+  rect.drawInMask(g,m);
+
+  SDL_Rect tmp = rect.rect;
+  tmp.w = n_w*((float)rect.h/(float)n_h); //width of individual letter
+  for(int i = 0; i < txt_len; i++)
+  {
+    g->drawInMask(Sprite::alpha(txt[i]),tmp,m);
+    tmp.x += tmp.w;
+  }
+}
+
+

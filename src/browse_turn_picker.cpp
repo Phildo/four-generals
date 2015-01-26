@@ -3,7 +3,7 @@
 #include "input.h"
 #include "logger.h"
 
-void formButtonWithinRect(BrowseButton *b)
+void formButtonWithInMask(BrowseButton *b)
 {
   b->image.rect = b->button.rect;
   b->image.rect.x += 10;
@@ -35,7 +35,7 @@ void formButtonWithinRect(BrowseButton *b)
   b->description.rect.w = b->button.rect.w-b->image.rect.w-20;
 }
 
-void BrowseButton::drawAtOffset(int o, Graphics *g)
+void BrowseButton::drawAtOffsetInMask(int o, Graphics *g, SDL_Rect r)
 {
   UI::Button b = button;
   UI::Image i = image;
@@ -51,12 +51,12 @@ void BrowseButton::drawAtOffset(int o, Graphics *g)
   t.rect.y += o;
   d.rect.y += o;
 
-  b.draw(g);
-  i.draw(g);
-  p0.draw(g);
-  p1.draw(g);
-  t.draw(g);
-  d.draw(g);
+  b.drawInMask(g,r);
+  i.drawInMask(g,r);
+  p0.drawInMask(g,r);
+  p1.drawInMask(g,r);
+  t.drawInMask(g,r);
+  d.drawInMask(g,r);
 }
 
 BrowseTurnPicker::BrowseTurnPicker()
@@ -90,11 +90,11 @@ BrowseTurnPicker::BrowseTurnPicker(Turn *t, UI::Box b)
   sabotage.button = UI::Button(scroll.rect.x,scroll.rect.y+buttonH*3,scroll.rect.w,buttonH);
   scout.button    = UI::Button(scroll.rect.x,scroll.rect.y+buttonH*4,scroll.rect.w,buttonH);
 
-  formButtonWithinRect(&attack);
-  formButtonWithinRect(&defend);
-  formButtonWithinRect(&message);
-  formButtonWithinRect(&sabotage);
-  formButtonWithinRect(&scout);
+  formButtonWithInMask(&attack);
+  formButtonWithInMask(&defend);
+  formButtonWithInMask(&message);
+  formButtonWithInMask(&sabotage);
+  formButtonWithInMask(&scout);
 
   attack.image.sprite = Sprite::sword;
   defend.image.sprite = Sprite::shield;
@@ -153,11 +153,11 @@ void BrowseTurnPicker::draw(Graphics *g)
   power_1.draw(g);
 
   scroll.draw(g);
-  attack.drawAtOffset(scroll.offset,g);
-  defend.drawAtOffset(scroll.offset,g);
-  message.drawAtOffset(scroll.offset,g);
-  sabotage.drawAtOffset(scroll.offset,g);
-  scout.drawAtOffset(scroll.offset,g);
+  attack.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
+  defend.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
+  message.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
+  sabotage.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
+  scout.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
 
   cancel.draw(g);
 }

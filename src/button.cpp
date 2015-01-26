@@ -13,3 +13,9 @@ void Button::draw(Graphics *g)
   rect.draw(g);
 }
 
+void Button::drawInMask(Graphics *g, SDL_Rect m)
+{
+  rect.drawInMask(g,m);
+}
+
+

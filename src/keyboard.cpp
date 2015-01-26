@@ -98,3 +98,15 @@ void Keyboard::draw(Graphics *g)
   k += 5;
 }
 
+void Keyboard::drawInMask(Graphics *g, SDL_Rect m)
+{
+  for(int i = 0; i < 38; i++)
+  {
+    keys[i].drawInMask(g,m);
+    glyphs[i].drawInMask(g,m);
+  }
+  int k = 12;
+  k += 5;
+}
+
+

@@ -23,3 +23,17 @@ void TextButton::draw(Graphics *g)
   }
 }
 
+void TextButton::drawInMask(Graphics *g, SDL_Rect m)
+{
+  rect.drawInMask(g,m);
+
+  SDL_Rect tmp = rect.rect;
+  tmp.w = n_w*((float)rect.h/(float)n_h); //width of individual letter
+  for(int i = 0; i < text.len(); i++)
+  {
+    g->drawInMask(Sprite::alpha(*(text.ptr()+i)),tmp,m);
+    tmp.x += tmp.w;
+  }
+}
+
+
