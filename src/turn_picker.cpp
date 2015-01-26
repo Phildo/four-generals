@@ -49,7 +49,11 @@ void TurnPicker::touch(In &in)
     break;
     case BROWSE:
       b = browse.touch(in);
-      if(b.type == BrowseRequest::SPECIFY_ACTION) setViewState(SPECIFY);
+      if(b.type == BrowseRequest::SPECIFY_ACTION)
+      {
+        specify.setAction(&turn.actions[b.action]);
+        setViewState(SPECIFY);
+      }
       if(b.type == BrowseRequest::CANCEL_BROWSE) setViewState(SHOW);
     break;
     case SPECIFY:
@@ -82,7 +86,6 @@ void TurnPicker::tick()
     default:
       break;
   }
-
 }
 
 void TurnPicker::draw(Graphics *g)

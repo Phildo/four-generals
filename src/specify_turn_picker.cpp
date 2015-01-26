@@ -79,6 +79,47 @@ void SpecifyTurnPicker::draw(Graphics *g)
 void SpecifyTurnPicker::setAction(Action *a)
 {
   action = a;
+
+  switch(action->what)
+  {
+    case 'a':
+      action_image.sprite = Sprite::sword;
+      action_power_1.sprite = Sprite::bolt;
+      action_title.text = String("Attack");
+      action_description_0.text = String("Attacking is good.");
+      action_description_1.text = String("Like seriously hella good");
+      break;
+    case 'd':
+      action_image.sprite = Sprite::shield;
+      action_power_1.sprite = Sprite::bolt;
+      action_title.text = String("Fortify");
+      action_description_0.text = String("You like defend and shit");
+      action_description_1.text = String("Dude it's a good idea do it.");
+      break;
+    case 'm':
+      action_image.sprite = Sprite::envelope;
+      action_power_1.sprite = Sprite::bolt_empty;
+      action_title.text = String("Message");
+      action_description_0.text = String("Send a message to your homies");
+      action_description_1.text = String("Your homies haven't heard from you in forever");
+      break;
+    case 's':
+      action_image.sprite = Sprite::knife;
+      action_power_1.sprite = Sprite::bolt_empty;
+      action_title.text = String("Sabotage");
+      action_description_0.text = String("Stop that messenger");
+      action_description_1.text = String("Stop him right there.");
+      break;
+    case 'c':
+      action_image.sprite = Sprite::knife;
+      action_power_1.sprite = Sprite::bolt_empty;
+      action_title.text = String("Scout");
+      action_description_0.text = String("Dawg you can see everything");
+      action_description_1.text = String("But first, you must look inside yourself");
+      break;
+    default:
+      break;
+  }
 }
 
 void SpecifyTurnPicker::deactivate()
