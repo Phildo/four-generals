@@ -12,13 +12,22 @@ TurnPicker::TurnPicker(UI::Box wBox) : win_box(wBox)
 
 void TurnPicker::init()
 {
-  int w = 400;
-  int h = 180;
-  box = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
-  button = UI::Button(box.rect);
-  show = ShowTurnPicker(&turn, box.rect);
-  browse = BrowseTurnPicker(&turn, box.rect);
-  specify = SpecifyTurnPicker(box.rect);
+  int w;
+  int h;
+  UI::Box b;
+
+  w = 400;
+  h = 180;
+  b = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
+  show = ShowTurnPicker(&turn, b.rect);
+  w = win_box.w-100;
+  h = win_box.h-100;
+  b = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
+  browse = BrowseTurnPicker(&turn, b.rect);
+  w = win_box.w-40;
+  h = win_box.h-40;
+  b = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
+  specify = SpecifyTurnPicker(b.rect);
 
   setViewState(SHOW);
 }
@@ -54,6 +63,20 @@ bool TurnPicker::query(In &in)
 
 void TurnPicker::tick()
 {
+  switch(state)
+  {
+    case SHOW:
+      show.tick();
+      break;
+    case BROWSE:
+      browse.tick();
+      break;
+    case SPECIFY:
+      specify.tick();
+      break;
+    default:
+      break;
+  }
 
 }
 
@@ -78,6 +101,24 @@ void TurnPicker::draw(Graphics *g)
 void TurnPicker::setViewState(TURN_PICKER_STATE s)
 {
   state = s;
+  switch(state)
+  {
+    case SHOW:
+      box.rect = show.box.rect;
+      button.rect = show.box.rect;
+      break;
+    case BROWSE:
+      box.rect = browse.box.rect;
+      button.rect = browse.box.rect;
+      break;
+    case SPECIFY:
+      box.rect = specify.box.rect;
+      button.rect = specify.box.rect;
+      break;
+    default:
+      break;
+  }
+
   //set box/button
 }
 

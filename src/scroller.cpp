@@ -22,14 +22,14 @@ void Scroller::touch(const In &in)
     down_time = 0;
     last_y = in.y;
   }
-  if(in.type == In::MOVE && button.query(in))
+  else if(in.type == In::MOVE && down && button.query(in))
   {
     offset += in.y-last_y;
     if(offset > 0) offset = 0;
     if(offset < (-content_rect.h+rect.h)) offset = -content_rect.h+rect.h;
     last_y = in.y;
   }
-  if(in.type == In::UP)
+  else if(in.type == In::UP)
   {
     down = false;
   }

@@ -36,7 +36,6 @@ class BrowseTurnPicker
   private:
     Turn *turn;
 
-    UI::Box box;
     UI::Label titleLabel;
     UI::Image power_0;
     UI::Image power_1;
@@ -48,10 +47,10 @@ class BrowseTurnPicker
     BrowseButton sabotage;
     BrowseButton scout;
 
-
     UI::TextButton cancel;
 
   public:
+    UI::Box box;
     BrowseTurnPicker();
     BrowseTurnPicker(Turn *t, UI::Box wbox);
     ~BrowseTurnPicker();

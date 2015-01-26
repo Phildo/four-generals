@@ -10,7 +10,6 @@ struct In;
 class SpecifyTurnPicker
 {
   private:
-    UI::Box box;
     UI::Label titleLabel;
     UI::Image power_0;
     UI::Image power_1;
@@ -21,6 +20,7 @@ class SpecifyTurnPicker
     UI::TextButton confirm;
 
   public:
+    UI::Box box;
     SpecifyTurnPicker();
     SpecifyTurnPicker(UI::Box wbox);
     ~SpecifyTurnPicker();

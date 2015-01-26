@@ -1,6 +1,7 @@
 #include "browse_turn_picker.h"
 #include "graphics.h"
 #include "input.h"
+#include "logger.h"
 
 void formButtonWithinRect(BrowseButton *b)
 {
@@ -11,24 +12,24 @@ void formButtonWithinRect(BrowseButton *b)
   b->image.rect.w = b->image.rect.h;
 
   b->power_0 = UI::Image(Sprite::bolt, b->image.rect.rect);
-  b->power_0.rect.x = b->power_0.rect.x+b->power_0.rect.w-50;
-  b->power_0.rect.y = b->power_0.rect.y+b->power_0.rect.h-30;
-  b->power_0.rect.w = 20;
-  b->power_0.rect.h = 20;
+  b->power_0.rect.x = b->power_0.rect.x+b->power_0.rect.w-60;
+  b->power_0.rect.y = b->power_0.rect.y+b->power_0.rect.h-40;
+  b->power_0.rect.w = 30;
+  b->power_0.rect.h = 30;
 
   b->power_1 = UI::Image(Sprite::bolt, b->image.rect.rect);
-  b->power_1.rect.x = b->power_1.rect.x+b->power_1.rect.w-30;
-  b->power_1.rect.y = b->power_1.rect.y+b->power_1.rect.h-30;
-  b->power_1.rect.w = 20;
-  b->power_1.rect.h = 20;
+  b->power_1.rect.x = b->power_1.rect.x+b->power_1.rect.w-40;
+  b->power_1.rect.y = b->power_1.rect.y+b->power_1.rect.h-40;
+  b->power_1.rect.w = 30;
+  b->power_1.rect.h = 30;
 
   b->title = UI::Label("",b->image.rect.rect);
-  b->title.rect.x = b->title.rect.x+b->title.rect.w+10;
+  b->title.rect.x = b->image.rect.x+b->image.rect.w+10;
   b->title.rect.h = 30;
   b->title.rect.w = b->button.rect.w-b->image.rect.w-20;
 
   b->description = UI::Label("",b->image.rect.rect);
-  b->description.rect.x = b->description.rect.x+b->description.rect.w+10;
+  b->description.rect.x = b->image.rect.x+b->image.rect.w+10;
   b->description.rect.y = b->title.rect.y+b->title.rect.h+10;
   b->description.rect.h = 30;
   b->description.rect.w = b->button.rect.w-b->image.rect.w-20;
@@ -36,12 +37,26 @@ void formButtonWithinRect(BrowseButton *b)
 
 void BrowseButton::drawAtOffset(int o, Graphics *g)
 {
-  button.draw(g);
-  image.draw(g);
-  power_0.draw(g);
-  power_1.draw(g);
-  title.draw(g);
-  description.draw(g);
+  UI::Button b = button;
+  UI::Image i = image;
+  UI::Image p0 = power_0;
+  UI::Image p1 = power_1;
+  UI::Label t = title;
+  UI::Label d = description;
+
+  b.rect.y += o;
+  i.rect.y += o;
+  p0.rect.y += o;
+  p1.rect.y += o;
+  t.rect.y += o;
+  d.rect.y += o;
+
+  b.draw(g);
+  i.draw(g);
+  p0.draw(g);
+  p1.draw(g);
+  t.draw(g);
+  d.draw(g);
 }
 
 BrowseTurnPicker::BrowseTurnPicker()
@@ -58,7 +73,7 @@ BrowseTurnPicker::BrowseTurnPicker(Turn *t, UI::Box b)
   power_0 = UI::Image(Sprite::bolt_empty, box.x+box.w-10-40-5-40, box.y+10, 40,40);
   power_1 = UI::Image(Sprite::bolt_empty, box.x+box.w-10-40     , box.y+10, 40,40);
 
-  int buttonH = 100;
+  int buttonH = 110;
 
   SDL_Rect r = box.rect;
   r.x += 10;
@@ -112,11 +127,22 @@ BrowseTurnPicker::~BrowseTurnPicker()
 
 void BrowseTurnPicker::touch(In &in)
 {
+  scroll.touch(in);
+  if(in.type == In::UP && scroll.down_time < 10)
+  {
+    In i = in; //copy for mutation
+    i.y -= scroll.offset;
+    if(attack.button.query(i)) fg_log("Attack");
+    if(defend.button.query(i)) fg_log("defend");
+    if(message.button.query(i)) fg_log("message");
+    if(sabotage.button.query(i)) fg_log("sabotage");
+    if(scout.button.query(i)) fg_log("scout");
+  }
 }
 
 void BrowseTurnPicker::tick()
 {
-
+  scroll.tick();
 }
 
 void BrowseTurnPicker::draw(Graphics *g)
@@ -125,6 +151,13 @@ void BrowseTurnPicker::draw(Graphics *g)
   titleLabel.draw(g);
   power_0.draw(g);
   power_1.draw(g);
+
+  scroll.draw(g);
+  attack.drawAtOffset(scroll.offset,g);
+  defend.drawAtOffset(scroll.offset,g);
+  message.drawAtOffset(scroll.offset,g);
+  sabotage.drawAtOffset(scroll.offset,g);
+  scout.drawAtOffset(scroll.offset,g);
 
   cancel.draw(g);
 }

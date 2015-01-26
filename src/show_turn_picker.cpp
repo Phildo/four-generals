@@ -29,7 +29,6 @@ ShowTurnPicker::~ShowTurnPicker()
 
 ShowRequest ShowTurnPicker::touch(In &in)
 {
-
   ShowRequest s;
   s.type = ShowRequest::NONE;
   if(turn->actions[0].power() == 0)
