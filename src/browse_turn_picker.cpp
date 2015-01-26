@@ -103,16 +103,16 @@ BrowseTurnPicker::BrowseTurnPicker(Turn *t, UI::Box b)
   scout.image.sprite = Sprite::knife;
 
   attack.title.text = String("Attack");
-  defend.title.text = String("Defend");
+  defend.title.text = String("Fortify");
   message.title.text = String("Message");
   sabotage.title.text = String("Sabotage");
   scout.title.text = String("Scout");
 
-  attack.description.text = String("Attack is good");
-  defend.description.text = String("Defend is good");
-  message.description.text = String("Message is good");
-  sabotage.description.text = String("Sabotage is good");
-  scout.description.text = String("Scout is good");
+  attack.description.text = String("Initiate an Attack");
+  defend.description.text = String("Increase Defense and Retaliate");
+  message.description.text = String("Schedule an Attack");
+  sabotage.description.text = String("Impede enemy communication");
+  scout.description.text = String("See all actions on the board");
 
   message.power_1.sprite = Sprite::bolt_empty;
   sabotage.power_1.sprite = Sprite::bolt_empty;
@@ -148,9 +148,6 @@ void BrowseTurnPicker::tick()
 void BrowseTurnPicker::draw(Graphics *g)
 {
   box.draw(g);
-  titleLabel.draw(g);
-  power_0.draw(g);
-  power_1.draw(g);
 
   scroll.draw(g);
   attack.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
@@ -158,6 +155,10 @@ void BrowseTurnPicker::draw(Graphics *g)
   message.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
   sabotage.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
   scout.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
+
+  titleLabel.draw(g);
+  power_0.draw(g);
+  power_1.draw(g);
 
   cancel.draw(g);
 }
