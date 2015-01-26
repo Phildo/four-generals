@@ -10,7 +10,6 @@ bool ImageButtonRound::query(const In &in)
 
 void ImageButtonRound::draw(Graphics *g)
 {
-  g->draw(sprite, rect.rect);
   SDL_Rect r;
   r.x = rect.x;
   r.y = rect.y;
@@ -39,5 +38,7 @@ void ImageButtonRound::draw(Graphics *g)
   g->draw(Sprite::border_left, r);
   r.x = rect.x+rect.w-Sprite::border_right.w;
   g->draw(Sprite::border_right, r);
+
+  g->draw(sprite, rect.rect);
 }
 

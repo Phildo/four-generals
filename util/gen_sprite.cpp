@@ -243,6 +243,21 @@ int main(int argc, char* argv[])
   sprite(buff,"border_corner_round_bl",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
   sprite(buff,"border_corner_round_br",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
 
+  x = 0;
+  y = 100;
+  w = 32;
+  h = 32;
+  right(x,y,w,h);
+  right(x,y,w,h);
+  w = 1;
+  h = 1;
+  sprite(buff,"black",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
+  sprite(buff,"white",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
+  sprite(buff,"grey",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
+  sprite(buff,"red",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
+  sprite(buff,"green",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
+  sprite(buff,"blue",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
+
   fclose(fp);
 }
 

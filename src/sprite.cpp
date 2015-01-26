@@ -105,6 +105,13 @@ SDL_Rect where_we;
 
 SDL_Rect null;
 
+SDL_Rect black;
+SDL_Rect white;
+SDL_Rect grey;
+SDL_Rect red;
+SDL_Rect green;
+SDL_Rect blue;
+
 SDL_Rect pTags[4];
 SDL_Rect pTagsW[4];
 SDL_Rect pTagsB[4];
@@ -248,6 +255,13 @@ void Sprite::init(const char *f)
   values[i] = &where_we; keys[i] = String("where_we"); i++;
 
   values[i] = &null; keys[i] = String("null"); i++;
+
+  values[i] = &black; keys[i] = String("black"); i++;
+  values[i] = &white; keys[i] = String("white"); i++;
+  values[i] = &grey; keys[i] = String("grey"); i++;
+  values[i] = &red; keys[i] = String("red"); i++;
+  values[i] = &green; keys[i] = String("green"); i++;
+  values[i] = &blue; keys[i] = String("blue"); i++;
 
   String k;
   SDL_Rect *v;

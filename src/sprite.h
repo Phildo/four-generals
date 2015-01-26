@@ -121,6 +121,12 @@ namespace Sprite
 
   extern SDL_Rect null;
 
+  extern SDL_Rect black;
+  extern SDL_Rect white;
+  extern SDL_Rect grey;
+  extern SDL_Rect red;
+  extern SDL_Rect green;
+  extern SDL_Rect blue;
 
   //groupings
   extern SDL_Rect pTags[4];

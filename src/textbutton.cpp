@@ -12,6 +12,8 @@ bool TextButton::query(const In &in)
 
 void TextButton::draw(Graphics *g)
 {
+  rect.draw(g);
+
   SDL_Rect tmp = rect.rect;
   tmp.w = n_w*((float)rect.h/(float)n_h); //width of individual letter
   for(int i = 0; i < text.len(); i++)
@@ -19,6 +21,5 @@ void TextButton::draw(Graphics *g)
     g->draw(Sprite::alpha(*(text.ptr()+i)),tmp);
     tmp.x += tmp.w;
   }
-  rect.draw(g);
 }
 

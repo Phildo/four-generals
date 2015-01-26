@@ -10,7 +10,7 @@ bool ImageButton::query(const In &in)
 
 void ImageButton::draw(Graphics *g)
 {
-  g->draw(sprite, rect.rect);
   rect.draw(g);
+  g->draw(sprite, rect.rect);
 }
 

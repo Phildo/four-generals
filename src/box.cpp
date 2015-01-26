@@ -15,6 +15,8 @@ void Box::draw(Graphics *g)
 {
   SDL_Rect tmp;
 
+  g->draw(Sprite::grey,rect);
+
   tmp.w = 16;
   tmp.h = 16;
   tmp.x = rect.x;

@@ -6,6 +6,8 @@ Label::Label(const char *t, int l, int x, int y, int h) : text(t, l), rect(x,y,n
 
 void Label::draw(Graphics *g)
 {
+  rect.draw(g);
+
   SDL_Rect tmp = rect.rect;
   tmp.w = n_w*((float)rect.h/(float)n_h); //width of individual letter
   for(int i = 0; i < text.len(); i++)

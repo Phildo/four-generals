@@ -33,6 +33,8 @@ void TextBox::clear()
 
 void TextBox::draw(Graphics *g)
 {
+  rect.draw(g);
+
   SDL_Rect tmp = rect.rect;
   tmp.w = n_w*((float)rect.h/(float)n_h); //width of individual letter
   for(int i = 0; i < txt_len; i++)
@@ -40,6 +42,5 @@ void TextBox::draw(Graphics *g)
     g->draw(Sprite::alpha(txt[i]),tmp);
     tmp.x += tmp.w;
   }
-  rect.draw(g);
 }
 
