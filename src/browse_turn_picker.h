@@ -59,6 +59,9 @@ class BrowseTurnPicker
     BrowseRequest touch(In &in);
     void tick();
     void draw(Graphics *g);
+
+    void deactivate();
+    void activate();
 };
 
 #endif

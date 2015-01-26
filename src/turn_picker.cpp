@@ -20,8 +20,8 @@ void TurnPicker::init()
   h = 180;
   b = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
   show = ShowTurnPicker(&turn, b.rect);
-  w = win_box.w-100;
-  h = win_box.h-100;
+  w = win_box.w-200;
+  h = win_box.h-200;
   b = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
   browse = BrowseTurnPicker(&turn, b.rect);
   w = win_box.w-40;
@@ -50,6 +50,7 @@ void TurnPicker::touch(In &in)
     case BROWSE:
       b = browse.touch(in);
       if(b.type == BrowseRequest::SPECIFY_ACTION) setViewState(SPECIFY);
+      if(b.type == BrowseRequest::CANCEL_BROWSE) setViewState(SHOW);
     break;
     case SPECIFY:
       sp = specify.touch(in);
@@ -103,26 +104,41 @@ void TurnPicker::draw(Graphics *g)
 
 void TurnPicker::setViewState(TURN_PICKER_STATE s)
 {
+  switch(state)
+  {
+    case SHOW:
+      show.deactivate();
+      break;
+    case BROWSE:
+      browse.deactivate();
+      break;
+    case SPECIFY:
+      specify.deactivate();
+      break;
+    default:
+      break;
+  }
   state = s;
   switch(state)
   {
     case SHOW:
       box.rect = show.box.rect;
       button.rect = show.box.rect;
+      show.activate();
       break;
     case BROWSE:
       box.rect = browse.box.rect;
       button.rect = browse.box.rect;
+      browse.activate();
       break;
     case SPECIFY:
       box.rect = specify.box.rect;
       button.rect = specify.box.rect;
+      specify.activate();
       break;
     default:
       break;
   }
-
-  //set box/button
 }
 
 void TurnPicker::clearViewState()

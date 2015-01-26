@@ -50,3 +50,13 @@ void SpecifyTurnPicker::draw(Graphics *g)
   confirm.draw(g);
 }
 
+void SpecifyTurnPicker::deactivate()
+{
+
+}
+
+void SpecifyTurnPicker::activate()
+{
+
+}
+

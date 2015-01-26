@@ -7,7 +7,7 @@ Event::Event() //set to pseudo 'null'
 Event::Event(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
 {
   int i = 0;
-  type       = c[i]; i++;
+  type = c[i]; i++;
 
   switch(type)
   {
@@ -26,17 +26,17 @@ Event::Event(char *c) //MUST MANUALLY KEEP IN SYNC W/ SERIALIZE!
       revoke_card.cardinal = c[i]; i++;
       break;
     case e_type_begin_play:
-      begin_play.null = c[i]; i++;
+      begin_play.null = '\0'; i++;
       break;
     case e_type_commit_turn:
       commit_turn.connection = c[i]; i++;
       commit_turn.turn = Turn(&c[i]); i+= sizeof(Turn);
       break;
     case e_type_commit_turns:
-      commit_turns.null = c[i]; i++;
+      commit_turns.null = '\0'; i++;
       break;
     case e_type_reset_game:
-      reset_game.null = c[i]; i++;
+      reset_game.null = '\0'; i++;
       break;
   }
 }

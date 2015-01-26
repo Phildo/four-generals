@@ -118,7 +118,7 @@ BrowseTurnPicker::BrowseTurnPicker(Turn *t, UI::Box b)
   sabotage.power_1.sprite = Sprite::bolt_empty;
   scout.power_1.sprite = Sprite::bolt_empty;
 
-  cancel  = UI::TextButton("Cancel", box.x+(box.w/2)-100-50,box.y+box.h-15,100,30);
+  cancel  = UI::TextButton("Cancel", box.x+(box.w/2)-50,box.y+box.h-15,100,30);
 
   listening = false;
 }
@@ -134,6 +134,12 @@ BrowseRequest BrowseTurnPicker::touch(In &in)
 
   if(in.type == In::DOWN) listening = true; //needs to see explicit "DOWN" before it starts responding
   if(!listening) return b;
+
+  if(in.type == In::DOWN && cancel.query(in))
+  {
+    b.type = BrowseRequest::CANCEL_BROWSE;
+    return b;
+  }
 
   if(turn->actions[0].power() == 0) b.action = 0;
   else                              b.action = 1;
@@ -170,7 +176,6 @@ BrowseRequest BrowseTurnPicker::touch(In &in)
     }
   }
 
-  if(b.type != BrowseRequest::NONE) listening = false;
   return b;
 }
 
@@ -196,4 +201,15 @@ void BrowseTurnPicker::draw(Graphics *g)
 
   cancel.draw(g);
 }
+
+void BrowseTurnPicker::deactivate()
+{
+  listening = false;
+}
+
+void BrowseTurnPicker::activate()
+{
+  //listening stays false until it sees an explicit 'DOWN' event
+}
+
 

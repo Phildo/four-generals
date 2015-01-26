@@ -54,6 +54,7 @@ void ClientModel::requestBeginPlay()
 {
   Event e;
   e.type = e_type_begin_play;
+  e.begin_play.null = '\0';
 
   sendEvent(e);
 }
@@ -71,6 +72,7 @@ void ClientModel::requestReset()
 {
   Event e;
   e.type = e_type_reset_game;
+  e.reset_game.null = '\0';
 
   sendEvent(e);
 }

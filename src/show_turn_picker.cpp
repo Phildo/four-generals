@@ -64,3 +64,13 @@ void ShowTurnPicker::draw(Graphics *g)
   confirm.draw(g);
 }
 
+void ShowTurnPicker::deactivate()
+{
+
+}
+
+void ShowTurnPicker::activate()
+{
+
+}
+

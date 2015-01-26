@@ -43,6 +43,9 @@ class SpecifyTurnPicker
     SpecifyRequest touch(In &in);
     void tick();
     void draw(Graphics *g);
+
+    void deactivate();
+    void activate();
 };
 
 #endif
