@@ -49,13 +49,14 @@ class BrowseTurnPicker
 
     UI::TextButton cancel;
 
+    bool listening;
   public:
     UI::Box box;
     BrowseTurnPicker();
     BrowseTurnPicker(Turn *t, UI::Box wbox);
     ~BrowseTurnPicker();
 
-    void touch(In &in);
+    BrowseRequest touch(In &in);
     void tick();
     void draw(Graphics *g);
 };

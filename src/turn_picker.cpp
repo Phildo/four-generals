@@ -39,6 +39,7 @@ TurnPicker::~TurnPicker()
 void TurnPicker::touch(In &in)
 {
   ShowRequest s;
+  BrowseRequest b;
   switch(state)
   {
     case SHOW:
@@ -46,7 +47,8 @@ void TurnPicker::touch(In &in)
       if(s.type == ShowRequest::ADD_ACTION) setViewState(BROWSE);
     break;
     case BROWSE:
-      browse.touch(in);
+      b = browse.touch(in);
+      if(b.type == BrowseRequest::SPECIFY_ACTION) setViewState(SPECIFY);
     break;
     case SPECIFY:
       specify.touch(in);

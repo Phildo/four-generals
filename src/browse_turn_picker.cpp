@@ -119,25 +119,59 @@ BrowseTurnPicker::BrowseTurnPicker(Turn *t, UI::Box b)
   scout.power_1.sprite = Sprite::bolt_empty;
 
   cancel  = UI::TextButton("Cancel", box.x+(box.w/2)-100-50,box.y+box.h-15,100,30);
+
+  listening = false;
 }
 
 BrowseTurnPicker::~BrowseTurnPicker()
 {
 }
 
-void BrowseTurnPicker::touch(In &in)
+BrowseRequest BrowseTurnPicker::touch(In &in)
 {
+  BrowseRequest b;
+  b.type = BrowseRequest::NONE;
+
+  if(in.type == In::DOWN) listening = true; //needs to see explicit "DOWN" before it starts responding
+  if(!listening) return b;
+
+  if(turn->actions[0].power() == 0) b.action = 0;
+  else                              b.action = 1;
+
   scroll.touch(in);
   if(in.type == In::UP && scroll.down_time < 10)
   {
     In i = in; //copy for mutation
     i.y -= scroll.offset;
-    if(attack.button.query(i)) fg_log("Attack");
-    if(defend.button.query(i)) fg_log("defend");
-    if(message.button.query(i)) fg_log("message");
-    if(sabotage.button.query(i)) fg_log("sabotage");
-    if(scout.button.query(i)) fg_log("scout");
+    if(attack.button.query(i))
+    {
+      b.type = BrowseRequest::SPECIFY_ACTION;
+      turn->actions[b.action].what = 'a';
+    }
+    if(defend.button.query(i))
+    {
+      b.type = BrowseRequest::SPECIFY_ACTION;
+      turn->actions[b.action].what = 'd';
+    }
+    if(message.button.query(i))
+    {
+      b.type = BrowseRequest::SPECIFY_ACTION;
+      turn->actions[b.action].what = 'm';
+    }
+    if(sabotage.button.query(i))
+    {
+      b.type = BrowseRequest::SPECIFY_ACTION;
+      turn->actions[b.action].what = 's';
+    }
+    if(scout.button.query(i))
+    {
+      b.type = BrowseRequest::SPECIFY_ACTION;
+      turn->actions[b.action].what = 'c';
+    }
   }
+
+  if(b.type != BrowseRequest::NONE) listening = false;
+  return b;
 }
 
 void BrowseTurnPicker::tick()
