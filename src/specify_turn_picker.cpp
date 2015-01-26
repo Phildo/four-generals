@@ -7,8 +7,10 @@ SpecifyTurnPicker::SpecifyTurnPicker()
 
 }
 
-SpecifyTurnPicker::SpecifyTurnPicker(UI::Box b)
+SpecifyTurnPicker::SpecifyTurnPicker(Turn *t, UI::Box b)
 {
+  turn = t;
+
   box = b;
   titleLabel = UI::Label("Your Move:",box.x+10,box.y+10,34);
   power_0 = UI::Image(Sprite::bolt_empty, box.x+box.w-10-40-5-40, box.y+10, 40,40);
@@ -23,8 +25,12 @@ SpecifyTurnPicker::~SpecifyTurnPicker()
 {
 }
 
-void SpecifyTurnPicker::touch(In &in)
+SpecifyRequest SpecifyTurnPicker::touch(In &in)
 {
+  SpecifyRequest s;
+  s.type = SpecifyRequest::NONE;
+
+  return s;
 }
 
 void SpecifyTurnPicker::tick()
@@ -32,7 +38,7 @@ void SpecifyTurnPicker::tick()
 
 }
 
-void SpecifyTurnPicker::draw(Turn t, Graphics *g)
+void SpecifyTurnPicker::draw(Graphics *g)
 {
   box.draw(g);
   titleLabel.draw(g);

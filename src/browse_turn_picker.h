@@ -9,7 +9,7 @@ struct In;
 
 struct BrowseRequest
 {
-  enum SHOW_REQUEST_TYPE
+  enum BROWSE_REQUEST_TYPE
   {
     NONE,
     SPECIFY_ACTION,

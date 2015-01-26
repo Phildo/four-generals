@@ -7,9 +7,24 @@
 class Graphics;
 struct In;
 
+struct SpecifyRequest
+{
+  enum SHOW_REQUEST_TYPE
+  {
+    NONE,
+    CONFIRM_ACTION,
+    CANCEL_SPECIFY,
+    COUNT
+  } type;
+  int action; //0 or 1
+};
+
+
 class SpecifyTurnPicker
 {
   private:
+    Turn *turn;
+
     UI::Label titleLabel;
     UI::Image power_0;
     UI::Image power_1;
@@ -22,12 +37,12 @@ class SpecifyTurnPicker
   public:
     UI::Box box;
     SpecifyTurnPicker();
-    SpecifyTurnPicker(UI::Box wbox);
+    SpecifyTurnPicker(Turn *t, UI::Box wbox);
     ~SpecifyTurnPicker();
 
-    void touch(In &in);
+    SpecifyRequest touch(In &in);
     void tick();
-    void draw(Turn t, Graphics *g);
+    void draw(Graphics *g);
 };
 
 #endif
