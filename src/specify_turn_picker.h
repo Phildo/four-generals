@@ -19,11 +19,11 @@ struct SpecifyRequest
   int action; //0 or 1
 };
 
-
 class SpecifyTurnPicker
 {
   private:
     Turn *turn;
+    Action *action;
 
     UI::Label titleLabel;
     UI::Image power_0;
@@ -44,6 +44,7 @@ class SpecifyTurnPicker
     void tick();
     void draw(Graphics *g);
 
+    void setAction(Action *a);
     void deactivate();
     void activate();
 };

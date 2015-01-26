@@ -24,8 +24,8 @@ void TurnPicker::init()
   h = win_box.h-200;
   b = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
   browse = BrowseTurnPicker(&turn, b.rect);
-  w = win_box.w-40;
-  h = win_box.h-40;
+  w = win_box.w-200;
+  h = win_box.h-200;
   b = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
   specify = SpecifyTurnPicker(&turn, b.rect);
 
@@ -54,6 +54,7 @@ void TurnPicker::touch(In &in)
     break;
     case SPECIFY:
       sp = specify.touch(in);
+      if(sp.type == SpecifyRequest::CANCEL_SPECIFY) setViewState(BROWSE);
     break;
     default:
     break;

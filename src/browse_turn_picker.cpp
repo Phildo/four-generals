@@ -145,7 +145,7 @@ BrowseRequest BrowseTurnPicker::touch(In &in)
   else                              b.action = 1;
 
   scroll.touch(in);
-  if(in.type == In::UP && scroll.down_time < 10)
+  if(in.type == In::UP && scroll.motion < 10)
   {
     In i = in; //copy for mutation
     i.y -= scroll.offset;

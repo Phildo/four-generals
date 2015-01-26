@@ -3,6 +3,7 @@ Scroller::Scroller(SDL_Rect r, SDL_Rect c) : rect(r), content_rect(c), button(re
 {
   down = false;
   down_time = 0;
+  motion = 0;
   last_y = 0;
   offset = 0;
 }
@@ -10,6 +11,7 @@ Scroller::Scroller(int rx, int ry, int rw, int rh, int cx, int cy, int cw, int c
 {
   down = false;
   down_time = 0;
+  motion = 0;
   last_y = 0;
   offset = 0;
 }
@@ -20,11 +22,16 @@ void Scroller::touch(const In &in)
   {
     down = true;
     down_time = 0;
+    motion = 0;
     last_y = in.y;
   }
   else if(in.type == In::MOVE && down && button.query(in))
   {
     offset += in.y-last_y;
+
+    if(in.y > last_y) motion += in.y-last_y;
+    else              motion += last_y-in.y;
+
     if(offset > 0) offset = 0;
     if(offset < (-content_rect.h+rect.h)) offset = -content_rect.h+rect.h;
     last_y = in.y;
@@ -49,7 +56,6 @@ void Scroller::drawInMask(Graphics *g, SDL_Rect m)
 {
   rect.drawInMask(g,m);
 }
-
 
 float Scroller::p()
 {

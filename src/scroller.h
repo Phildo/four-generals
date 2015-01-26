@@ -6,6 +6,7 @@ struct Scroller
 
   bool down;
   int down_time;
+  int motion;
   int last_y;
   int offset;
 

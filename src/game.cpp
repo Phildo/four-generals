@@ -83,11 +83,11 @@ void Game::run()
     graphics->clear();
     #ifdef FG_DEBUG
     border.draw(graphics);
-    if(debug_toggle) DebugList::inst()->draw(graphics);
     #endif
     scenes[scene]->draw();
     #ifdef FG_DEBUG
     debugBtn.draw(graphics);
+    if(debug_toggle) DebugList::inst()->draw(graphics);
     #endif
     graphics->flip();
 

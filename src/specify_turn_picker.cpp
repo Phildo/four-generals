@@ -30,6 +30,9 @@ SpecifyRequest SpecifyTurnPicker::touch(In &in)
   SpecifyRequest s;
   s.type = SpecifyRequest::NONE;
 
+  if(in.type == In::DOWN && cancel.query(in))
+    s.type = SpecifyRequest::CANCEL_SPECIFY;
+
   return s;
 }
 
@@ -48,6 +51,11 @@ void SpecifyTurnPicker::draw(Graphics *g)
 
   cancel.draw(g);
   confirm.draw(g);
+}
+
+void SpecifyTurnPicker::setAction(Action *a)
+{
+  action = a;
 }
 
 void SpecifyTurnPicker::deactivate()
