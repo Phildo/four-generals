@@ -78,6 +78,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   picker.init();
   messager = Messager();
 
+  current_days = 0;
   setViewState(IDLE);
 }
 

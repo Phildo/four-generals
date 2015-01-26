@@ -28,12 +28,16 @@ class SpecifyTurnPicker
     UI::Label titleLabel;
     UI::Image power_0;
     UI::Image power_1;
-    UI::ImageButtonRound add;
-    UI::ImageButtonRound action_0;
-    UI::ImageButtonRound action_1;
+
+    UI::Image action_image;
+    UI::Image action_power_0;
+    UI::Image action_power_1;
+    UI::Label action_title;
+    UI::Label action_description_0;
+    UI::Label action_description_1;
+
     UI::TextButton cancel;
     UI::TextButton confirm;
-
   public:
     UI::Box box;
     SpecifyTurnPicker();
