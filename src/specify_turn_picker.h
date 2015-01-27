@@ -9,14 +9,14 @@ struct In;
 
 struct SpecifyRequest
 {
-  enum SHOW_REQUEST_TYPE
+  enum SPECIFY_REQUEST_TYPE
   {
     NONE,
     CONFIRM_ACTION,
     CANCEL_SPECIFY,
     COUNT
   } type;
-  int action; //0 or 1
+  Action *action;
 };
 
 class SpecifyTurnPicker

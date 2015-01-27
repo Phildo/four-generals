@@ -200,4 +200,3 @@ void BrowseTurnPicker::activate()
   //listening stays false until it sees an explicit 'DOWN' event
 }
 
-

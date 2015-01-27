@@ -17,7 +17,7 @@ struct ShowRequest
     CONFIRM,
     COUNT
   } type;
-  int action; //0 or 1
+  Action *action;
 };
 
 class ShowTurnPicker
