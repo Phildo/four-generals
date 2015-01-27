@@ -19,18 +19,73 @@ struct SpecifyRequest
   Action *action;
 };
 
-#define SPECIFIER_SPEC \
+#define SPECIFIER_FUNC_SPEC \
   Action *action; \
+  UI::Box rect; \
+  void init(SDL_Rect r); \
   SpecifyRequest touch(In &in); \
   void tick(); \
-  void draw(Graphics *g); \
+  void draw(Graphics *g);
 
+#define SPECIFIER_HOW_SPEC \
+  UI::Label how; \
+  UI::ImageButton how_block; \
+  UI::ImageButton how_read; \
+  UI::ImageButton how_switch;
 
-struct AttackSpecifier   { SPECIFIER_SPEC };
-struct DefendSpecifier   { SPECIFIER_SPEC };
-struct MessageSpecifier  { SPECIFIER_SPEC };
-struct SabotageSpecifier { SPECIFIER_SPEC };
-struct ScoutSpecifier    { SPECIFIER_SPEC };
+#define SPECIFIER_WHICH_SPEC \
+  UI::Label which; \
+  UI::ImageButton which_who; \
+  UI::ImageButton which_when;
+
+#define SPECIFIER_WHO_SPEC \
+  UI::Label who; \
+  UI::ImageButton who_cw; \
+  UI::ImageButton who_ccw;
+
+#define SPECIFIER_WHEN_SPEC \
+  UI::Label when; \
+  UI::ImageButton when_su; \
+  UI::ImageButton when_mo; \
+  UI::ImageButton when_tu; \
+  UI::ImageButton when_we; \
+  UI::ImageButton when_th; \
+  UI::ImageButton when_fr; \
+  UI::ImageButton when_sa;
+
+#define SPECIFIER_ROUTE_SPEC \
+  UI::Label route; \
+  UI::ImageButton route_cw; \
+  UI::ImageButton route_ccw;
+
+struct AttackSpecifier
+{
+  SPECIFIER_FUNC_SPEC
+  SPECIFIER_WHO_SPEC
+};
+struct DefendSpecifier
+{
+  SPECIFIER_FUNC_SPEC
+};
+struct MessageSpecifier
+{
+  SPECIFIER_FUNC_SPEC
+  SPECIFIER_WHO_SPEC
+  SPECIFIER_WHEN_SPEC
+  SPECIFIER_ROUTE_SPEC
+};
+struct SabotageSpecifier
+{
+  SPECIFIER_FUNC_SPEC
+  SPECIFIER_HOW_SPEC
+  SPECIFIER_WHICH_SPEC
+  SPECIFIER_WHO_SPEC
+  SPECIFIER_WHEN_SPEC
+};
+struct ScoutSpecifier
+{
+  SPECIFIER_FUNC_SPEC
+};
 
 class SpecifyTurnPicker
 {

@@ -2,6 +2,42 @@
 #include "graphics.h"
 #include "input.h"
 
+#define SPECIFIER_HOW_IMPL \
+  how = UI::Label("How will you sabotage?",r.x+10,r.y+10,35); \
+  how_block  = UI::ImageButton(Sprite::sblock,  space(r.w,0,100,3,0), r.y+50, 100, 100); \
+  how_read   = UI::ImageButton(Sprite::sread,   space(r.w,0,100,3,1), r.y+50, 100, 100); \
+  how_switch = UI::ImageButton(Sprite::sswitch, space(r.w,0,100,3,2), r.y+50, 100, 100);
+
+#define SPECIFIER_WHICH_IMPL \
+  which = UI::Label("Which data will you switch?",r.x+10,r.y+10,35); \
+  which_who  = UI::ImageButton(Sprite::sblock, space(r.w,0,100,2,0), r.y+50, 100, 100); \
+  which_when = UI::ImageButton(Sprite::sun,    space(r.w,0,100,2,1), r.y+50, 100, 100);
+
+#define SPECIFIER_WHO_IMPL \
+  who = UI::Label("Who?",r.x+10,r.y+10,35); \
+  who_cw  = UI::ImageButton(Sprite::sblock, space(r.w,0,100,2,0), r.y+50, 100, 100); \
+  who_ccw = UI::ImageButton(Sprite::sblock, space(r.w,0,100,2,1), r.y+50, 100, 100);
+
+#define SPECIFIER_WHEN_IMPL \
+  when = UI::Label("When?",r.x+10,r.y+10,35); \
+  when_su = UI::ImageButton(Sprite::sun, space(r.w,0,100,7,0), r.y+50, 100, 100); \
+  when_mo = UI::ImageButton(Sprite::sun, space(r.w,0,100,7,1), r.y+50, 100, 100); \
+  when_tu = UI::ImageButton(Sprite::sun, space(r.w,0,100,7,2), r.y+50, 100, 100); \
+  when_we = UI::ImageButton(Sprite::sun, space(r.w,0,100,7,3), r.y+50, 100, 100); \
+  when_th = UI::ImageButton(Sprite::sun, space(r.w,0,100,7,4), r.y+50, 100, 100); \
+  when_fr = UI::ImageButton(Sprite::sun, space(r.w,0,100,7,5), r.y+50, 100, 100); \
+  when_sa = UI::ImageButton(Sprite::sun, space(r.w,0,100,7,6), r.y+50, 100, 100);
+
+#define SPECIFIER_ROUTE_IMPL \
+  route = UI::Label("Which route should the messenger take?",r.x+10,r.y+10,35); \
+  route_cw  = UI::ImageButton(Sprite::sblock, space(r.w,0,100,2,0), r.y+50, 100, 100); \
+  route_ccw = UI::ImageButton(Sprite::sblock, space(r.w,0,100,2,1), r.y+50, 100, 100);
+
+void AttackSpecifier::init(SDL_Rect r)
+{
+  rect = UI::Box(r);
+  SPECIFIER_WHO_IMPL
+}
 SpecifyRequest AttackSpecifier::touch(In &in)
 {
   SpecifyRequest s;
@@ -16,6 +52,11 @@ void AttackSpecifier::draw(Graphics *g)
 
 }
 
+void DefendSpecifier::init(SDL_Rect r)
+{
+  rect = UI::Box(r);
+
+}
 SpecifyRequest DefendSpecifier::touch(In &in)
 {
   SpecifyRequest s;
@@ -30,6 +71,13 @@ void DefendSpecifier::draw(Graphics *g)
 
 }
 
+void MessageSpecifier::init(SDL_Rect r)
+{
+  rect = UI::Box(r);
+  SPECIFIER_WHO_IMPL
+  SPECIFIER_WHEN_IMPL
+  SPECIFIER_ROUTE_IMPL
+}
 SpecifyRequest MessageSpecifier::touch(In &in)
 {
   SpecifyRequest s;
@@ -44,6 +92,14 @@ void MessageSpecifier::draw(Graphics *g)
 
 }
 
+void SabotageSpecifier::init(SDL_Rect r)
+{
+  rect = UI::Box(r);
+  SPECIFIER_HOW_SPEC
+  SPECIFIER_WHICH_SPEC
+  SPECIFIER_WHO_SPEC
+  SPECIFIER_WHEN_SPEC
+}
 SpecifyRequest SabotageSpecifier::touch(In &in)
 {
   SpecifyRequest s;
@@ -58,6 +114,10 @@ void SabotageSpecifier::draw(Graphics *g)
 
 }
 
+void ScoutSpecifier::init(SDL_Rect r)
+{
+  rect = UI::Box(r);
+}
 SpecifyRequest ScoutSpecifier::touch(In &in)
 {
   SpecifyRequest s;
