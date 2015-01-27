@@ -19,6 +19,19 @@ struct SpecifyRequest
   Action *action;
 };
 
+#define SPECIFIER_SPEC \
+  Action *action; \
+  SpecifyRequest touch(In &in); \
+  void tick(); \
+  void draw(Graphics *g); \
+
+
+struct AttackSpecifier   { SPECIFIER_SPEC };
+struct DefendSpecifier   { SPECIFIER_SPEC };
+struct MessageSpecifier  { SPECIFIER_SPEC };
+struct SabotageSpecifier { SPECIFIER_SPEC };
+struct ScoutSpecifier    { SPECIFIER_SPEC };
+
 class SpecifyTurnPicker
 {
   private:
@@ -35,6 +48,12 @@ class SpecifyTurnPicker
     UI::Label action_title;
     UI::Label action_description_0;
     UI::Label action_description_1;
+
+    AttackSpecifier attack_specifier;
+    DefendSpecifier defend_specifier;
+    MessageSpecifier message_specifier;
+    SabotageSpecifier sabotage_specifier;
+    ScoutSpecifier scout_specifier;
 
     UI::TextButton cancel;
     UI::TextButton confirm;
