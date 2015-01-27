@@ -45,16 +45,25 @@ void TurnPicker::touch(In &in)
   {
     case SHOW:
       s = show.touch(in);
-      if(s.type == ShowRequest::ADD_ACTION) setViewState(BROWSE);
+      if(s.type == ShowRequest::ADD_ACTION)
+      {
+        if(turn.actions[0].power() == 0) browse.setAction(&turn.actions[0]);
+        else                             browse.setAction(&turn.actions[1]);
+        setViewState(BROWSE);
+      }
     break;
     case BROWSE:
       b = browse.touch(in);
       if(b.type == BrowseRequest::SPECIFY_ACTION)
       {
-        specify.setAction(&turn.actions[b.action]);
+        specify.setAction(b.action);
         setViewState(SPECIFY);
       }
-      if(b.type == BrowseRequest::CANCEL_BROWSE) setViewState(SHOW);
+      if(b.type == BrowseRequest::CANCEL_BROWSE)
+      {
+        b.action->zero();
+        setViewState(SHOW);
+      }
     break;
     case SPECIFY:
       sp = specify.touch(in);

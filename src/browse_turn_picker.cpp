@@ -118,7 +118,7 @@ BrowseTurnPicker::BrowseTurnPicker(Turn *t, UI::Box b)
   sabotage.power_1.sprite = Sprite::bolt_empty;
   scout.power_1.sprite = Sprite::bolt_empty;
 
-  cancel  = UI::TextButton("Cancel", box.x+(box.w/2)-50,box.y+box.h-15,100,30);
+  cancel = UI::TextButton("Cancel", box.x+(box.w/2)-50,box.y+box.h-15,100,30);
 
   listening = false;
 }
@@ -138,42 +138,25 @@ BrowseRequest BrowseTurnPicker::touch(In &in)
   if(in.type == In::DOWN && cancel.query(in))
   {
     b.type = BrowseRequest::CANCEL_BROWSE;
+    b.action = action;
     return b;
   }
-
-  if(turn->actions[0].power() == 0) b.action = 0;
-  else                              b.action = 1;
 
   scroll.touch(in);
   if(in.type == In::UP && scroll.motion < 10)
   {
     In i = in; //copy for mutation
     i.y -= scroll.offset;
-    if(attack.button.query(i))
-    {
-      b.type = BrowseRequest::SPECIFY_ACTION;
-      turn->actions[b.action].what = 'a';
-    }
-    if(defend.button.query(i))
-    {
-      b.type = BrowseRequest::SPECIFY_ACTION;
-      turn->actions[b.action].what = 'd';
-    }
-    if(message.button.query(i))
-    {
-      b.type = BrowseRequest::SPECIFY_ACTION;
-      turn->actions[b.action].what = 'm';
-    }
-    if(sabotage.button.query(i))
-    {
-      b.type = BrowseRequest::SPECIFY_ACTION;
-      turn->actions[b.action].what = 's';
-    }
-    if(scout.button.query(i))
-    {
-      b.type = BrowseRequest::SPECIFY_ACTION;
-      turn->actions[b.action].what = 'c';
-    }
+
+    b.type = BrowseRequest::SPECIFY_ACTION;
+    b.action = action;
+
+         if(attack.button.query(i))   action->what = 'a';
+    else if(defend.button.query(i))   action->what = 'd';
+    else if(message.button.query(i))  action->what = 'm';
+    else if(sabotage.button.query(i)) action->what = 's';
+    else if(scout.button.query(i))    action->what = 'c';
+    else b.type = BrowseRequest::NONE;
   }
 
   return b;
@@ -200,6 +183,11 @@ void BrowseTurnPicker::draw(Graphics *g)
   power_1.draw(g);
 
   cancel.draw(g);
+}
+
+void BrowseTurnPicker::setAction(Action *a)
+{
+  action = a;
 }
 
 void BrowseTurnPicker::deactivate()

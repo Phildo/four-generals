@@ -16,7 +16,7 @@ struct BrowseRequest
     CANCEL_BROWSE,
     COUNT
   } type;
-  int action; //0 or 1
+  Action *action;
 };
 
 struct BrowseButton
@@ -35,6 +35,7 @@ class BrowseTurnPicker
 {
   private:
     Turn *turn;
+    Action *action;
 
     UI::Label titleLabel;
     UI::Image power_0;
@@ -60,6 +61,7 @@ class BrowseTurnPicker
     void tick();
     void draw(Graphics *g);
 
+    void setAction(Action *a);
     void deactivate();
     void activate();
 };
