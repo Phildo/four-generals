@@ -77,6 +77,43 @@
 }
 
 
+#define SPECIFIER_TOUCH_HOW_IMPL \
+{ \
+  if(how_block.query(in))  action->how = 'b'; \
+  if(how_read.query(in))   action->how = 'r'; \
+  if(how_switch.query(in)) action->how = 's'; \
+}
+
+#define SPECIFIER_TOUCH_WHICH_IMPL \
+{ \
+  if(which_who.query(in))  action->which = 'o'; \
+  if(which_when.query(in)) action->which = 'e'; \
+}
+
+#define SPECIFIER_TOUCH_WHO_IMPL \
+{ \
+  if(who_cw.query(in))  action->who = 'c'; \
+  if(who_ccw.query(in)) action->who = 'c'; \
+}
+
+#define SPECIFIER_TOUCH_WHEN_IMPL \
+{ \
+  if(when_su.query(in)) action->when = 's'; \
+  if(when_mo.query(in)) action->when = 'm'; \
+  if(when_tu.query(in)) action->when = 't'; \
+  if(when_we.query(in)) action->when = 'w'; \
+  if(when_th.query(in)) action->when = 'h'; \
+  if(when_fr.query(in)) action->when = 'f'; \
+  if(when_sa.query(in)) action->when = 'a'; \
+}
+
+#define SPECIFIER_TOUCH_ROUTE_IMPL \
+{ \
+  if(route_cw.query(in))  action->route = 'c'; \
+  if(route_ccw.query(in)) action->route = 'c'; \
+}
+
+
 
 void AttackSpecifier::init(SDL_Rect r)
 {
@@ -86,6 +123,15 @@ void AttackSpecifier::init(SDL_Rect r)
 SpecifyRequest AttackSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+  if(action->who == '0')
+  {
+    SPECIFIER_TOUCH_WHO_IMPL
+  }
+  else
+  {
+    //touch confirm
+  }
+
   return s;
 }
 void AttackSpecifier::tick()
@@ -97,6 +143,10 @@ void AttackSpecifier::draw(Graphics *g)
   rect.draw(g);
   if(action->who == '0')
     SPECIFIER_DRAW_WHO_IMPL
+  else
+  {
+    //draw confirm
+  }
 }
 
 void DefendSpecifier::init(SDL_Rect r)
@@ -115,7 +165,7 @@ void DefendSpecifier::tick()
 }
 void DefendSpecifier::draw(Graphics *g)
 {
-
+  //draw confirm
 }
 
 void MessageSpecifier::init(SDL_Rect r)
@@ -128,6 +178,18 @@ void MessageSpecifier::init(SDL_Rect r)
 SpecifyRequest MessageSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+
+  if(action->who == '0')
+    SPECIFIER_TOUCH_WHO_IMPL
+  else if(action->when == '0')
+    SPECIFIER_TOUCH_WHEN_IMPL
+  else if(action->route == '0')
+    SPECIFIER_TOUCH_ROUTE_IMPL
+  else
+  {
+    //touch confirm
+  }
+
   return s;
 }
 void MessageSpecifier::tick()
@@ -142,6 +204,10 @@ void MessageSpecifier::draw(Graphics *g)
     SPECIFIER_DRAW_WHEN_IMPL
   else if(action->route == '0')
     SPECIFIER_DRAW_ROUTE_IMPL
+  else
+  {
+    //draw confirm
+  }
 }
 
 void SabotageSpecifier::init(SDL_Rect r)
@@ -155,6 +221,37 @@ void SabotageSpecifier::init(SDL_Rect r)
 SpecifyRequest SabotageSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+
+  if(action->how == '0')
+    SPECIFIER_TOUCH_HOW_IMPL
+  else if(action->how == 's')
+  {
+    if(action->which == '0')
+      SPECIFIER_TOUCH_WHICH_IMPL
+    else if(action->which == 'o')
+    {
+      if(action->who == '0')
+        SPECIFIER_TOUCH_WHO_IMPL
+      else
+      {
+        //touch confirm
+      }
+    }
+    else if(action->which == 'e')
+    {
+      if(action->when == '0')
+         SPECIFIER_TOUCH_WHEN_IMPL
+      else
+      {
+        //touch confirm
+      }
+    }
+  }
+  else
+  {
+    //touch confirm
+  }
+
   return s;
 }
 void SabotageSpecifier::tick()
@@ -164,20 +261,33 @@ void SabotageSpecifier::tick()
 void SabotageSpecifier::draw(Graphics *g)
 {
   if(action->how == '0')
-  {
-    how.draw(g);
-    how_block.draw(g);
-    how_read.draw(g);
-    how_switch.draw(g);
-  }
+    SPECIFIER_DRAW_HOW_IMPL
   else if(action->how == 's')
   {
     if(action->which == '0')
       SPECIFIER_DRAW_WHICH_IMPL
     else if(action->which == 'o')
-      SPECIFIER_DRAW_WHO_IMPL
+    {
+      if(action->who == '0')
+        SPECIFIER_DRAW_WHO_IMPL
+      else
+      {
+        //draw confirm
+      }
+    }
     else if(action->which == 'e')
-      SPECIFIER_DRAW_WHEN_IMPL
+    {
+      if(action->when == '0')
+         SPECIFIER_DRAW_WHEN_IMPL
+      else
+      {
+        //draw confirm
+      }
+    }
+  }
+  else
+  {
+    //draw confirm
   }
 }
 
@@ -188,6 +298,9 @@ void ScoutSpecifier::init(SDL_Rect r)
 SpecifyRequest ScoutSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+
+  //touch confirm
+
   return s;
 }
 void ScoutSpecifier::tick()
@@ -196,7 +309,7 @@ void ScoutSpecifier::tick()
 }
 void ScoutSpecifier::draw(Graphics *g)
 {
-
+  //draw confirm
 }
 
 
@@ -257,27 +370,33 @@ SpecifyRequest SpecifyTurnPicker::touch(In &in)
   s.type = SpecifyRequest::NONE;
 
   if(in.type == In::DOWN && cancel.query(in))
-    s.type = SpecifyRequest::CANCEL_SPECIFY;
-
-  switch(action->what)
   {
-    case 'a':
-      attack_specifier.touch(in);
-      break;
-    case 'd':
-      defend_specifier.touch(in);
-      break;
-    case 'm':
-      message_specifier.touch(in);
-      break;
-    case 's':
-      sabotage_specifier.touch(in);
-      break;
-    case 'c':
-      scout_specifier.touch(in);
-      break;
-    default:
-      break;
+    s.type = SpecifyRequest::CANCEL_SPECIFY;
+    s.action = action;
+  }
+
+  if(in.type == In::DOWN)
+  {
+    switch(action->what)
+    {
+      case 'a':
+        attack_specifier.touch(in);
+        break;
+      case 'd':
+        defend_specifier.touch(in);
+        break;
+      case 'm':
+        message_specifier.touch(in);
+        break;
+      case 's':
+        sabotage_specifier.touch(in);
+        break;
+      case 'c':
+        scout_specifier.touch(in);
+        break;
+      default:
+        break;
+    }
   }
 
   return s;

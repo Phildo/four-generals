@@ -67,7 +67,11 @@ void TurnPicker::touch(In &in)
     break;
     case SPECIFY:
       sp = specify.touch(in);
-      if(sp.type == SpecifyRequest::CANCEL_SPECIFY) setViewState(BROWSE);
+      if(sp.type == SpecifyRequest::CANCEL_SPECIFY)
+      {
+        sp.action->zero();
+        setViewState(BROWSE);
+      }
     break;
     default:
     break;
