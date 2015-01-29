@@ -16,6 +16,8 @@ class TurnPicker
 {
   private:
     Turn turn;
+    char cardinal;
+
     circQ<Turn, 2> turn_q; //really should only ever be 1 in here.
     UI::Box win_box;
 
@@ -41,6 +43,7 @@ class TurnPicker
     ~TurnPicker();
 
     void init();
+    void setCardinal(char c);
 
     void touch(In &in);
     bool query(In &in);

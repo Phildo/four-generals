@@ -106,6 +106,8 @@ void PlayScene::enter()
     cardImgs[i] = UI::Anim(Sprite::general_anims[i], 4, 1.f, cardRects[i]);
     cardLbls[i].rect = cardLabelRects[i];
   }
+
+  picker.setCardinal(c->myCardinal());
 }
 
 void PlayScene::setViewState(PLAY_SCENE_STATE s)

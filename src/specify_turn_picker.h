@@ -21,8 +21,10 @@ struct SpecifyRequest
 
 #define SPECIFIER_FUNC_SPEC \
   Action *action; \
+  char cardinal; \
   UI::Box rect; \
   void init(SDL_Rect r); \
+  void setCardinal(char c); \
   SpecifyRequest touch(In &in); \
   void tick(); \
   void draw(Graphics *g);
@@ -92,6 +94,7 @@ class SpecifyTurnPicker
   private:
     Turn *turn;
     Action *action;
+    char cardinal;
 
     UI::Label titleLabel;
     UI::Image power_0;
@@ -118,6 +121,7 @@ class SpecifyTurnPicker
     SpecifyTurnPicker(Turn *t, UI::Box wbox);
     ~SpecifyTurnPicker();
 
+    void setCardinal(char c);
     SpecifyRequest touch(In &in);
     void tick();
     void draw(Graphics *g);

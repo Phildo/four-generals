@@ -1,6 +1,7 @@
 #include "specify_turn_picker.h"
 #include "graphics.h"
 #include "input.h"
+#include "compass.h"
 
 #define SPECIFIER_HOW_IMPL \
   how = UI::Label("How will you sabotage?",r.x+10,r.y+10,35); \
@@ -92,8 +93,8 @@
 
 #define SPECIFIER_TOUCH_WHO_IMPL \
 { \
-  if(who_cw.query(in))  action->who = 'c'; \
-  if(who_ccw.query(in)) action->who = 'c'; \
+  if(who_cw.query(in))  action->who = Compass::cwcardinal(cardinal); \
+  if(who_ccw.query(in)) action->who = Compass::ccwcardinal(cardinal); \
 }
 
 #define SPECIFIER_TOUCH_WHEN_IMPL \
@@ -109,8 +110,8 @@
 
 #define SPECIFIER_TOUCH_ROUTE_IMPL \
 { \
-  if(route_cw.query(in))  action->route = 'c'; \
-  if(route_ccw.query(in)) action->route = 'c'; \
+  if(route_cw.query(in))  action->route = Compass::cwcardinal(cardinal); \
+  if(route_ccw.query(in)) action->route = Compass::ccwcardinal(cardinal); \
 }
 
 
@@ -119,6 +120,12 @@ void AttackSpecifier::init(SDL_Rect r)
 {
   rect = UI::Box(r);
   SPECIFIER_WHO_IMPL
+}
+void AttackSpecifier::setCardinal(char c)
+{
+  cardinal = c;
+  who_cw.sprite = Sprite::generals[Compass::icardinal(Compass::cwcardinal(cardinal))];
+  who_ccw.sprite = Sprite::generals[Compass::icardinal(Compass::ccwcardinal(cardinal))];
 }
 SpecifyRequest AttackSpecifier::touch(In &in)
 {
@@ -154,6 +161,10 @@ void DefendSpecifier::init(SDL_Rect r)
   rect = UI::Box(r);
 
 }
+void DefendSpecifier::setCardinal(char c)
+{
+  cardinal = c;
+}
 SpecifyRequest DefendSpecifier::touch(In &in)
 {
   SpecifyRequest s;
@@ -174,6 +185,14 @@ void MessageSpecifier::init(SDL_Rect r)
   SPECIFIER_WHO_IMPL
   SPECIFIER_WHEN_IMPL
   SPECIFIER_ROUTE_IMPL
+}
+void MessageSpecifier::setCardinal(char c)
+{
+  cardinal = c;
+  who_cw.sprite = Sprite::generals[Compass::icardinal(Compass::cwcardinal(cardinal))];
+  who_ccw.sprite = Sprite::generals[Compass::icardinal(Compass::ccwcardinal(cardinal))];
+  route_cw.sprite = Sprite::generals[Compass::icardinal(Compass::cwcardinal(cardinal))];
+  route_ccw.sprite = Sprite::generals[Compass::icardinal(Compass::ccwcardinal(cardinal))];
 }
 SpecifyRequest MessageSpecifier::touch(In &in)
 {
@@ -217,6 +236,12 @@ void SabotageSpecifier::init(SDL_Rect r)
   SPECIFIER_WHICH_IMPL
   SPECIFIER_WHO_IMPL
   SPECIFIER_WHEN_IMPL
+}
+void SabotageSpecifier::setCardinal(char c)
+{
+  cardinal = c;
+  who_cw.sprite = Sprite::generals[Compass::icardinal(Compass::cwcardinal(cardinal))];
+  who_ccw.sprite = Sprite::generals[Compass::icardinal(Compass::ccwcardinal(cardinal))];
 }
 SpecifyRequest SabotageSpecifier::touch(In &in)
 {
@@ -295,6 +320,10 @@ void ScoutSpecifier::init(SDL_Rect r)
 {
   rect = UI::Box(r);
 }
+void ScoutSpecifier::setCardinal(char c)
+{
+  cardinal = c;
+}
 SpecifyRequest ScoutSpecifier::touch(In &in)
 {
   SpecifyRequest s;
@@ -362,6 +391,16 @@ SpecifyTurnPicker::SpecifyTurnPicker(Turn *t, UI::Box b)
 
 SpecifyTurnPicker::~SpecifyTurnPicker()
 {
+}
+
+void SpecifyTurnPicker::setCardinal(char c)
+{
+  cardinal = c;
+  attack_specifier.setCardinal(c);
+  defend_specifier.setCardinal(c);
+  message_specifier.setCardinal(c);
+  sabotage_specifier.setCardinal(c);
+  scout_specifier.setCardinal(c);
 }
 
 SpecifyRequest SpecifyTurnPicker::touch(In &in)

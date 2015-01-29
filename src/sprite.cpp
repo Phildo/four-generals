@@ -117,6 +117,7 @@ SDL_Rect pTagsW[4];
 SDL_Rect pTagsB[4];
 SDL_Rect pTagsR[4];
 
+SDL_Rect generals[4];
 AnimSprites general_anims[4];
 AnimSprites loading_anim;
 };
@@ -316,6 +317,11 @@ void Sprite::init(const char *f)
   pTagsW[0] = Sprite::p1_w; pTagsW[1] = Sprite::p2_w; pTagsW[2] = Sprite::p3_w; pTagsW[3] = Sprite::p4_w;
   pTagsB[0] = Sprite::p1_b; pTagsB[1] = Sprite::p2_b; pTagsB[2] = Sprite::p3_b; pTagsB[3] = Sprite::p4_b;
   pTagsR[0] = Sprite::p1_r; pTagsR[1] = Sprite::p2_r; pTagsR[2] = Sprite::p3_r; pTagsR[3] = Sprite::p4_r;
+
+  generals[0] = Sprite::gen_n_0;
+  generals[1] = Sprite::gen_e_0;
+  generals[2] = Sprite::gen_s_0;
+  generals[3] = Sprite::gen_w_0;
 
   general_anims[0] = AnimSprites(Sprite::gen_n_0, Sprite::gen_n_1, Sprite::gen_n_2, Sprite::gen_n_3);
   general_anims[1] = AnimSprites(Sprite::gen_e_0, Sprite::gen_e_1, Sprite::gen_e_2, Sprite::gen_e_3);

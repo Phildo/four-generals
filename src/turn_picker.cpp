@@ -32,6 +32,12 @@ void TurnPicker::init()
   setViewState(SHOW);
 }
 
+void TurnPicker::setCardinal(char c)
+{
+  cardinal = c;
+  specify.setCardinal(c);
+}
+
 TurnPicker::~TurnPicker()
 {
 }

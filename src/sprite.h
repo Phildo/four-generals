@@ -134,6 +134,7 @@ namespace Sprite
   extern SDL_Rect pTagsB[4];
   extern SDL_Rect pTagsR[4];
 
+  extern SDL_Rect generals[4];
   extern AnimSprites general_anims[4];
   extern AnimSprites loading_anim;
 
