@@ -64,10 +64,15 @@ struct AttackSpecifier
 {
   SPECIFIER_FUNC_SPEC
   SPECIFIER_WHO_SPEC
+  UI::Label confirm;
+  UI::Image confirm_attack;
+  UI::Image confirm_who;
 };
 struct DefendSpecifier
 {
   SPECIFIER_FUNC_SPEC
+  UI::Label confirm;
+  UI::Image confirm_defend;
 };
 struct MessageSpecifier
 {
@@ -75,6 +80,11 @@ struct MessageSpecifier
   SPECIFIER_WHO_SPEC
   SPECIFIER_WHEN_SPEC
   SPECIFIER_ROUTE_SPEC
+  UI::Label confirm;
+  UI::Image confirm_message;
+  UI::Image confirm_who;
+  UI::Image confirm_when;
+  UI::Image confirm_route;
 };
 struct SabotageSpecifier
 {
@@ -83,10 +93,18 @@ struct SabotageSpecifier
   SPECIFIER_WHICH_SPEC
   SPECIFIER_WHO_SPEC
   SPECIFIER_WHEN_SPEC
+  UI::Label confirm;
+  UI::Image confirm_sabotage;
+  UI::Image confirm_how;
+  UI::Image confirm_which;
+  UI::Image confirm_who;
+  UI::Image confirm_when;
 };
 struct ScoutSpecifier
 {
   SPECIFIER_FUNC_SPEC
+  UI::Label confirm;
+  UI::Image confirm_scout;
 };
 
 class SpecifyTurnPicker
