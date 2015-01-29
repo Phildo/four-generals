@@ -23,6 +23,7 @@ struct SpecifyRequest
   Action *action; \
   char cardinal; \
   UI::Box rect; \
+  UI::TextButton confirm; \
   void init(SDL_Rect r); \
   void setCardinal(char c); \
   SpecifyRequest touch(In &in); \
@@ -64,14 +65,14 @@ struct AttackSpecifier
 {
   SPECIFIER_FUNC_SPEC
   SPECIFIER_WHO_SPEC
-  UI::Label confirm;
+  UI::Label confirm_label;
   UI::ImageButton confirm_attack;
   UI::ImageButton confirm_who;
 };
 struct DefendSpecifier
 {
   SPECIFIER_FUNC_SPEC
-  UI::Label confirm;
+  UI::Label confirm_label;
   UI::ImageButton confirm_defend;
 };
 struct MessageSpecifier
@@ -80,7 +81,7 @@ struct MessageSpecifier
   SPECIFIER_WHO_SPEC
   SPECIFIER_WHEN_SPEC
   SPECIFIER_ROUTE_SPEC
-  UI::Label confirm;
+  UI::Label confirm_label;
   UI::ImageButton confirm_message;
   UI::ImageButton confirm_who;
   UI::ImageButton confirm_when;
@@ -93,7 +94,7 @@ struct SabotageSpecifier
   SPECIFIER_WHICH_SPEC
   SPECIFIER_WHO_SPEC
   SPECIFIER_WHEN_SPEC
-  UI::Label confirm;
+  UI::Label confirm_label;
   UI::ImageButton confirm_sabotage;
   UI::ImageButton confirm_how;
   UI::ImageButton confirm_which;
@@ -103,7 +104,7 @@ struct SabotageSpecifier
 struct ScoutSpecifier
 {
   SPECIFIER_FUNC_SPEC
-  UI::Label confirm;
+  UI::Label confirm_label;
   UI::ImageButton confirm_scout;
 };
 

@@ -78,6 +78,10 @@ void TurnPicker::touch(In &in)
         sp.action->zero();
         setViewState(BROWSE);
       }
+      if(sp.type == SpecifyRequest::CONFIRM_ACTION)
+      {
+        setViewState(SHOW);
+      }
     break;
     default:
     break;
