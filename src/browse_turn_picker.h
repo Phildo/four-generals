@@ -62,6 +62,7 @@ class BrowseTurnPicker
     void draw(Graphics *g);
 
     void setAction(Action *a);
+    void setPower(int p);
     void deactivate();
     void activate();
 };

@@ -65,14 +65,14 @@ struct AttackSpecifier
   SPECIFIER_FUNC_SPEC
   SPECIFIER_WHO_SPEC
   UI::Label confirm;
-  UI::Image confirm_attack;
-  UI::Image confirm_who;
+  UI::ImageButton confirm_attack;
+  UI::ImageButton confirm_who;
 };
 struct DefendSpecifier
 {
   SPECIFIER_FUNC_SPEC
   UI::Label confirm;
-  UI::Image confirm_defend;
+  UI::ImageButton confirm_defend;
 };
 struct MessageSpecifier
 {
@@ -81,10 +81,10 @@ struct MessageSpecifier
   SPECIFIER_WHEN_SPEC
   SPECIFIER_ROUTE_SPEC
   UI::Label confirm;
-  UI::Image confirm_message;
-  UI::Image confirm_who;
-  UI::Image confirm_when;
-  UI::Image confirm_route;
+  UI::ImageButton confirm_message;
+  UI::ImageButton confirm_who;
+  UI::ImageButton confirm_when;
+  UI::ImageButton confirm_route;
 };
 struct SabotageSpecifier
 {
@@ -94,17 +94,17 @@ struct SabotageSpecifier
   SPECIFIER_WHO_SPEC
   SPECIFIER_WHEN_SPEC
   UI::Label confirm;
-  UI::Image confirm_sabotage;
-  UI::Image confirm_how;
-  UI::Image confirm_which;
-  UI::Image confirm_who;
-  UI::Image confirm_when;
+  UI::ImageButton confirm_sabotage;
+  UI::ImageButton confirm_how;
+  UI::ImageButton confirm_which;
+  UI::ImageButton confirm_who;
+  UI::ImageButton confirm_when;
 };
 struct ScoutSpecifier
 {
   SPECIFIER_FUNC_SPEC
   UI::Label confirm;
-  UI::Image confirm_scout;
+  UI::ImageButton confirm_scout;
 };
 
 class SpecifyTurnPicker
@@ -145,6 +145,7 @@ class SpecifyTurnPicker
     void draw(Graphics *g);
 
     void setAction(Action *a);
+    void setPower(int p);
     void deactivate();
     void activate();
 };

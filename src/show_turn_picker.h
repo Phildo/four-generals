@@ -44,6 +44,7 @@ class ShowTurnPicker
     void tick();
     void draw(Graphics *g);
 
+    void setPower(int p);
     void deactivate();
     void activate();
 };

@@ -123,8 +123,8 @@ void AttackSpecifier::init(SDL_Rect r)
   rect = UI::Box(r);
   SPECIFIER_WHO_IMPL
   confirm = UI::Label("Confirm?",r.x+10,r.y+10,35);
-  confirm_attack = UI::Image(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100);
-  confirm_who    = UI::Image(Sprite::sread, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
+  confirm_attack = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100);
+  confirm_who    = UI::ImageButton(Sprite::sread, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
 }
 void AttackSpecifier::setCardinal(char c)
 {
@@ -135,13 +135,16 @@ void AttackSpecifier::setCardinal(char c)
 SpecifyRequest AttackSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+  s.type = SpecifyRequest::NONE;
+
   if(action->who == '0')
   {
     SPECIFIER_TOUCH_WHO_IMPL
   }
   else
   {
-    //touch confirm
+    if(confirm_attack.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
+    if(confirm_who.query(in)) action->who = '0';
   }
 
   return s;
@@ -166,7 +169,7 @@ void DefendSpecifier::init(SDL_Rect r)
 {
   rect = UI::Box(r);
   confirm = UI::Label("Confirm?",r.x+10,r.y+10,35);
-  confirm_defend = UI::Image(Sprite::shield, r.x+space(r.w,0,100,1,0), r.y+50, 100, 100);
+  confirm_defend = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,1,0), r.y+50, 100, 100);
 }
 void DefendSpecifier::setCardinal(char c)
 {
@@ -194,10 +197,10 @@ void MessageSpecifier::init(SDL_Rect r)
   SPECIFIER_WHEN_IMPL
   SPECIFIER_ROUTE_IMPL
   confirm = UI::Label("Confirm?",r.x+10,r.y+10,35);
-  confirm_message = UI::Image(Sprite::envelope, r.x+space(r.w,0,100,4,0), r.y+50, 100, 100);
-  confirm_who     = UI::Image(Sprite::shield,   r.x+space(r.w,0,100,4,1), r.y+50, 100, 100);
-  confirm_when    = UI::Image(Sprite::sun,      r.x+space(r.w,0,100,4,2), r.y+50, 100, 100);
-  confirm_route   = UI::Image(Sprite::shield,   r.x+space(r.w,0,100,4,3), r.y+50, 100, 100);
+  confirm_message = UI::ImageButton(Sprite::envelope, r.x+space(r.w,0,100,4,0), r.y+50, 100, 100);
+  confirm_who     = UI::ImageButton(Sprite::shield,   r.x+space(r.w,0,100,4,1), r.y+50, 100, 100);
+  confirm_when    = UI::ImageButton(Sprite::sun,      r.x+space(r.w,0,100,4,2), r.y+50, 100, 100);
+  confirm_route   = UI::ImageButton(Sprite::shield,   r.x+space(r.w,0,100,4,3), r.y+50, 100, 100);
 }
 void MessageSpecifier::setCardinal(char c)
 {
@@ -210,6 +213,7 @@ void MessageSpecifier::setCardinal(char c)
 SpecifyRequest MessageSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+  s.type = SpecifyRequest::NONE;
 
   if(action->who == '0')
     SPECIFIER_TOUCH_WHO_IMPL
@@ -219,7 +223,10 @@ SpecifyRequest MessageSpecifier::touch(In &in)
     SPECIFIER_TOUCH_ROUTE_IMPL
   else
   {
-    //touch confirm
+    if(confirm_message.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
+    if(confirm_who.query(in)) action->who = '0';
+    if(confirm_when.query(in)) action->when = '0';
+    if(confirm_route.query(in)) action->route = '0';
   }
 
   return s;
@@ -254,11 +261,11 @@ void SabotageSpecifier::init(SDL_Rect r)
   SPECIFIER_WHO_IMPL
   SPECIFIER_WHEN_IMPL
   confirm = UI::Label("Confirm?",r.x+10,r.y+10,35);
-  confirm_sabotage = UI::Image(Sprite::knife,  r.x+space(r.w,0,100,5,0), r.y+50, 100, 100);
-  confirm_how      = UI::Image(Sprite::shield, r.x+space(r.w,0,100,5,1), r.y+50, 100, 100);
-  confirm_which    = UI::Image(Sprite::sun,    r.x+space(r.w,0,100,5,2), r.y+50, 100, 100);
-  confirm_who      = UI::Image(Sprite::shield, r.x+space(r.w,0,100,5,3), r.y+50, 100, 100);
-  confirm_when     = UI::Image(Sprite::shield, r.x+space(r.w,0,100,5,4), r.y+50, 100, 100);
+  confirm_sabotage = UI::ImageButton(Sprite::knife,  r.x+space(r.w,0,100,5,0), r.y+50, 100, 100);
+  confirm_how      = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,1), r.y+50, 100, 100);
+  confirm_which    = UI::ImageButton(Sprite::sun,    r.x+space(r.w,0,100,5,2), r.y+50, 100, 100);
+  confirm_who      = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,3), r.y+50, 100, 100);
+  confirm_when     = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,4), r.y+50, 100, 100);
 }
 void SabotageSpecifier::setCardinal(char c)
 {
@@ -269,6 +276,7 @@ void SabotageSpecifier::setCardinal(char c)
 SpecifyRequest SabotageSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+  s.type = SpecifyRequest::NONE;
 
   if(action->how == '0')
     SPECIFIER_TOUCH_HOW_IMPL
@@ -282,7 +290,10 @@ SpecifyRequest SabotageSpecifier::touch(In &in)
         SPECIFIER_TOUCH_WHO_IMPL
       else
       {
-        //touch confirm
+        if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
+        if(confirm_how.query(in)) action->how = '0';
+        if(confirm_which.query(in)) action->which = '0';
+        if(confirm_who.query(in)) action->who = '0';
       }
     }
     else if(action->which == 'e')
@@ -291,13 +302,17 @@ SpecifyRequest SabotageSpecifier::touch(In &in)
          SPECIFIER_TOUCH_WHEN_IMPL
       else
       {
-        //touch confirm
+        if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
+        if(confirm_how.query(in)) action->how = '0';
+        if(confirm_which.query(in)) action->which = '0';
+        if(confirm_when.query(in)) action->when = '0';
       }
     }
   }
   else
   {
-    //touch confirm
+    if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
+    if(confirm_how.query(in)) action->how = '0';
   }
 
   return s;
@@ -353,7 +368,7 @@ void ScoutSpecifier::init(SDL_Rect r)
 {
   rect = UI::Box(r);
   confirm = UI::Label("Confirm?",r.x+10,r.y+10,35);
-  confirm_scout = UI::Image(Sprite::shield, r.x+space(r.w,0,100,1,0), r.y+50, 100, 100);
+  confirm_scout = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,1,0), r.y+50, 100, 100);
 }
 void ScoutSpecifier::setCardinal(char c)
 {
@@ -362,8 +377,9 @@ void ScoutSpecifier::setCardinal(char c)
 SpecifyRequest ScoutSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+  s.type = SpecifyRequest::NONE;
 
-  //touch confirm
+  if(confirm_scout.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
 
   return s;
 }
@@ -443,34 +459,34 @@ SpecifyRequest SpecifyTurnPicker::touch(In &in)
 {
   SpecifyRequest s;
   s.type = SpecifyRequest::NONE;
-
-  if(in.type == In::DOWN && cancel.query(in))
-  {
-    s.type = SpecifyRequest::CANCEL_SPECIFY;
-    s.action = action;
-  }
+  s.action = action;
 
   if(in.type == In::DOWN)
   {
-    switch(action->what)
+    if(cancel.query(in))
+      s.type = SpecifyRequest::CANCEL_SPECIFY;
+    else
     {
-      case 'a':
-        attack_specifier.touch(in);
-        break;
-      case 'd':
-        defend_specifier.touch(in);
-        break;
-      case 'm':
-        message_specifier.touch(in);
-        break;
-      case 's':
-        sabotage_specifier.touch(in);
-        break;
-      case 'c':
-        scout_specifier.touch(in);
-        break;
-      default:
-        break;
+      switch(action->what)
+      {
+        case 'a':
+          s.type = attack_specifier.touch(in).type;
+          break;
+        case 'd':
+          s.type = defend_specifier.touch(in).type;
+          break;
+        case 'm':
+          s.type = message_specifier.touch(in).type;
+          break;
+        case 's':
+          s.type = sabotage_specifier.touch(in).type;
+          break;
+        case 'c':
+          s.type = scout_specifier.touch(in).type;
+          break;
+        default:
+          break;
+      }
     }
   }
 
@@ -589,6 +605,12 @@ void SpecifyTurnPicker::setAction(Action *a)
     default:
       break;
   }
+}
+
+void SpecifyTurnPicker::setPower(int p)
+{
+  if(p > 0) power_0.sprite = Sprite::bolt; else power_0.sprite = Sprite::bolt_empty;
+  if(p > 1) power_1.sprite = Sprite::bolt; else power_1.sprite = Sprite::bolt_empty;
 }
 
 void SpecifyTurnPicker::deactivate()

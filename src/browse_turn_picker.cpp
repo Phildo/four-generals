@@ -190,6 +190,12 @@ void BrowseTurnPicker::setAction(Action *a)
   action = a;
 }
 
+void BrowseTurnPicker::setPower(int p)
+{
+  if(p > 0) power_0.sprite = Sprite::bolt; else power_0.sprite = Sprite::bolt_empty;
+  if(p > 1) power_1.sprite = Sprite::bolt; else power_1.sprite = Sprite::bolt_empty;
+}
+
 void BrowseTurnPicker::deactivate()
 {
   listening = false;

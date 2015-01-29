@@ -142,21 +142,25 @@ void TurnPicker::setViewState(TURN_PICKER_STATE s)
       break;
   }
   state = s;
+  int power = turn.actions[0].power()+turn.actions[1].power();
   switch(state)
   {
     case SHOW:
       box.rect = show.box.rect;
       button.rect = show.box.rect;
+      show.setPower(power);
       show.activate();
       break;
     case BROWSE:
       box.rect = browse.box.rect;
       button.rect = browse.box.rect;
+      browse.setPower(power);
       browse.activate();
       break;
     case SPECIFY:
       box.rect = specify.box.rect;
       button.rect = specify.box.rect;
+      specify.setPower(power);
       specify.activate();
       break;
     default:
