@@ -14,6 +14,7 @@ struct ShowRequest
     NONE,
     ADD_ACTION,
     EDIT_ACTION,
+    CANCEL,
     CONFIRM,
     COUNT
   } type;

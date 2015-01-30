@@ -34,6 +34,7 @@ void TurnPicker::init()
 
 void TurnPicker::setCardinal(char c)
 {
+  turn.cardinal = c;
   cardinal = c;
   specify.setCardinal(c);
 }
@@ -53,9 +54,23 @@ void TurnPicker::touch(In &in)
       s = show.touch(in);
       if(s.type == ShowRequest::ADD_ACTION)
       {
-        if(turn.actions[0].power() == 0) browse.setAction(&turn.actions[0]);
-        else                             browse.setAction(&turn.actions[1]);
+        s.action->zero();
+        browse.setAction(s.action);
         setViewState(BROWSE);
+      }
+      else if(s.type == ShowRequest::EDIT_ACTION)
+      {
+        specify.setAction(s.action);
+        setViewState(SPECIFY);
+      }
+      else if(s.type == ShowRequest::CONFIRM)
+      {
+      }
+      else if(s.type == ShowRequest::CANCEL)
+      {
+        turn.actions[0].zero();
+        turn.actions[1].zero();
+        setViewState(SHOW); //give it chance to update
       }
     break;
     case BROWSE:

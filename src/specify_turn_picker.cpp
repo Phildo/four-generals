@@ -182,6 +182,11 @@ void DefendSpecifier::setCardinal(char c)
 SpecifyRequest DefendSpecifier::touch(In &in)
 {
   SpecifyRequest s;
+  s.type = SpecifyRequest::NONE;
+
+  if(confirm_defend.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
+  if(confirm.query(in)) s.type = SpecifyRequest::CONFIRM_ACTION;
+
   return s;
 }
 void DefendSpecifier::tick()
