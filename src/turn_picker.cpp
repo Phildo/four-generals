@@ -72,6 +72,9 @@ void TurnPicker::touch(In &in)
       }
       else if(s.type == ShowRequest::CONFIRM)
       {
+        //ok this is a bit weird
+        if(turn.power() == 2)
+          turn_q.enqueue(turn);
       }
       else if(s.type == ShowRequest::CANCEL)
       {
@@ -201,6 +204,12 @@ void TurnPicker::clearViewState()
 
 bool TurnPicker::getTurn(Turn &t)
 {
+  Turn *tp = turn_q.next();
+  if(tp)
+  {
+    t = *tp;
+    return true;
+  }
   return false;
 }
 

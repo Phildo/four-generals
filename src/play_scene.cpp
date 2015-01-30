@@ -156,6 +156,7 @@ void PlayScene::touch(In &in)
   }
 
   Action a, a0, a1;
+  Turn t;
   switch(state)
   {
     case IDLE:
@@ -176,6 +177,11 @@ void PlayScene::touch(In &in)
       break;
     case TURN_PICKING:
       picker.touch(in);
+      if(picker.getTurn(t))
+      {
+        c->commitTurn(t);
+        setViewState(WAITING);
+      }
       break;
     case WAITING:
       if(in.type == In::DOWN && chooseShownDay(in)) break; //go to history mode
