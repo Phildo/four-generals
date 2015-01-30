@@ -35,7 +35,7 @@ void formButtonWithInMask(BrowseButton *b)
   b->description.rect.w = b->button.rect.w-b->image.rect.w-20;
 }
 
-void BrowseButton::drawAtOffsetInMask(int o, Graphics *g, SDL_Rect r)
+void BrowseButton::drawAtOffsetInMask(int o, Graphics *g, SDL_Rect r, bool enabled)
 {
   UI::Button b = button;
   UI::Image i = image;
@@ -57,6 +57,8 @@ void BrowseButton::drawAtOffsetInMask(int o, Graphics *g, SDL_Rect r)
   p1.drawInMask(g,r);
   t.drawInMask(g,r);
   d.drawInMask(g,r);
+
+  if(!enabled) g->drawInMask(Sprite::black_a, b.rect.rect, r);
 }
 
 BrowseTurnPicker::BrowseTurnPicker()
@@ -151,11 +153,11 @@ BrowseRequest BrowseTurnPicker::touch(In &in)
     b.type = BrowseRequest::SPECIFY_ACTION;
     b.action = action;
 
-         if(attack.button.query(i))   action->what = 'a';
-    else if(defend.button.query(i))   action->what = 'd';
-    else if(message.button.query(i))  action->what = 'm';
-    else if(sabotage.button.query(i)) action->what = 's';
-    else if(scout.button.query(i))    action->what = 'c';
+         if(attack.button.query(i)   && (turn->actions[0].power() == 0)) action->what = 'a';
+    else if(defend.button.query(i)   && (turn->actions[0].power() == 0)) action->what = 'd';
+    else if(message.button.query(i)  && (turn->actions[0].what != 'm'))  action->what = 'm';
+    else if(sabotage.button.query(i) && (turn->actions[0].what != 's'))  action->what = 's';
+    else if(scout.button.query(i)    && (turn->actions[0].what != 'c'))  action->what = 'c';
     else b.type = BrowseRequest::NONE;
   }
 
@@ -172,11 +174,11 @@ void BrowseTurnPicker::draw(Graphics *g)
   box.draw(g);
 
   scroll.draw(g);
-  attack.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
-  defend.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
-  message.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
-  sabotage.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
-  scout.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect);
+  attack.drawAtOffsetInMask(  scroll.offset,g,scroll.rect.rect,(turn->actions[0].power() == 0));
+  defend.drawAtOffsetInMask(  scroll.offset,g,scroll.rect.rect,(turn->actions[0].power() == 0));
+  message.drawAtOffsetInMask( scroll.offset,g,scroll.rect.rect,(turn->actions[0].what != 'm'));
+  sabotage.drawAtOffsetInMask(scroll.offset,g,scroll.rect.rect,(turn->actions[0].what != 's'));
+  scout.drawAtOffsetInMask(   scroll.offset,g,scroll.rect.rect,(turn->actions[0].what != 'c'));
 
   titleLabel.draw(g);
   power_0.draw(g);
