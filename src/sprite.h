@@ -75,8 +75,6 @@ namespace Sprite
   extern SDL_Rect ex;
   extern SDL_Rect plus;
 
-  extern SDL_Rect black_pixel;
-
   extern SDL_Rect border_top;
   extern SDL_Rect border_bottom;
   extern SDL_Rect border_left;
@@ -127,6 +125,13 @@ namespace Sprite
   extern SDL_Rect red;
   extern SDL_Rect green;
   extern SDL_Rect blue;
+
+  extern SDL_Rect black_a;
+  extern SDL_Rect white_a;
+  extern SDL_Rect grey_a;
+  extern SDL_Rect red_a;
+  extern SDL_Rect green_a;
+  extern SDL_Rect blue_a;
 
   //groupings
   extern SDL_Rect pTags[4];

@@ -59,8 +59,6 @@ SDL_Rect circle;
 SDL_Rect ex;
 SDL_Rect plus;
 
-SDL_Rect black_pixel;
-
 SDL_Rect border_top;
 SDL_Rect border_bottom;
 SDL_Rect border_left;
@@ -111,6 +109,13 @@ SDL_Rect grey;
 SDL_Rect red;
 SDL_Rect green;
 SDL_Rect blue;
+
+SDL_Rect black_a;
+SDL_Rect white_a;
+SDL_Rect grey_a;
+SDL_Rect red_a;
+SDL_Rect green_a;
+SDL_Rect blue_a;
 
 SDL_Rect pTags[4];
 SDL_Rect pTagsW[4];
@@ -211,8 +216,6 @@ void Sprite::init(const char *f)
   values[i] = &ex; keys[i] = String("ex"); i++;
   values[i] = &plus; keys[i] = String("plus"); i++;
 
-  values[i] = &black_pixel; keys[i] = String("black_pixel"); i++;
-
   values[i] = &border_top;    keys[i] = String("border_top"); i++;
   values[i] = &border_bottom; keys[i] = String("border_bottom"); i++;
   values[i] = &border_left;   keys[i] = String("border_left"); i++;
@@ -263,6 +266,13 @@ void Sprite::init(const char *f)
   values[i] = &red; keys[i] = String("red"); i++;
   values[i] = &green; keys[i] = String("green"); i++;
   values[i] = &blue; keys[i] = String("blue"); i++;
+
+  values[i] = &black_a; keys[i] = String("black_a"); i++;
+  values[i] = &white_a; keys[i] = String("white_a"); i++;
+  values[i] = &grey_a; keys[i] = String("grey_a"); i++;
+  values[i] = &red_a; keys[i] = String("red_a"); i++;
+  values[i] = &green_a; keys[i] = String("green_a"); i++;
+  values[i] = &blue_a; keys[i] = String("blue_a"); i++;
 
   String k;
   SDL_Rect *v;
