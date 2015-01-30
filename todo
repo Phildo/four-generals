@@ -12,3 +12,6 @@
 - android no ip? (can't host)
 - android startup to gray screen
 - android freeze on disconnect
+
+- Disallow repeat actions
+- Disallow 2 cost actions when 1 cost used

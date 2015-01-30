@@ -60,6 +60,13 @@ void TurnPicker::touch(In &in)
       }
       else if(s.type == ShowRequest::EDIT_ACTION)
       {
+        if(s.action == &turn.actions[0] && turn.actions[1].power() != 0) //switch position, so always editing second if two
+        {
+          Action tmp = turn.actions[0];
+          turn.actions[0] = turn.actions[1];
+          turn.actions[1] = tmp;
+          s.action = &turn.actions[1];
+        }
         specify.setAction(s.action);
         setViewState(SPECIFY);
       }
