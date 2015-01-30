@@ -62,7 +62,9 @@ void ClientModel::requestBeginPlay()
 void ClientModel::commitTurn(Turn t)
 {
   Event e;
+  t.cardinal = myCardinal();
   e.type = e_type_commit_turn;
+  e.commit_turn.connection = myConnection();
   e.commit_turn.turn = t;
 
   sendEvent(e);

@@ -20,6 +20,13 @@ b: build
 r: run
 	
 
+# switch out with garbage files to quickly get to main bits
+stub:
+	cp $(SRC_DIR)/{s_,}host_scene.cpp ; cp $(SRC_DIR)/{s_,}host_scene.h
+
+unstub:
+	cp $(SRC_DIR)/{o_,}host_scene.cpp ; cp $(SRC_DIR)/{o_,}host_scene.h
+
 tags:
 	ctags -R $(SRC_DIR)/*
 
