@@ -6,7 +6,7 @@
 #define FG_PC
 
 #ifdef FG_PC
-//#define FG_HALF_SIZE
+#define FG_HALF_SIZE
 #endif
 
 #endif

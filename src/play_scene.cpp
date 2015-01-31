@@ -264,13 +264,98 @@ void PlayScene::draw()
   //draws cardinals and actions
   for(int i = 0; i < 4; i++)
   {
-    //char card = Compass::cardinal(i);
+    char card = Compass::cardinal(i);
+    Turn turn;
+    Turn cwturn;
+    Turn ccwturn;
+    Turn pturn;
 
     cardImgs[i].draw(graphics);
     cardLbls[i].draw(graphics);
+    SDL_Rect heart_0;
+    SDL_Rect heart_1;
+    SDL_Rect heart_2;
+    heart_0 = cardImgs[i].rect.rect;
+    heart_0.w /= 4;
+    heart_0.h /= 4;
+    heart_0.x += heart_0.w*2;
+    heart_1 = heart_0;
+    heart_1.x += heart_1.w*0.75;
+    heart_2 = heart_1;
+    heart_2.x += heart_2.w*0.75;
 
     if(t != 0.0f)
     {
+      const float n = 6.0f;
+      const float x = 1.0f/n;
+      float lt; //0.0-1.0 for phase
+      turn    = c->model.cardinalDayTurn(card, base_day);
+      cwturn  = c->model.cardinalDayTurn(Compass::cwcardinal(card), base_day);
+      ccwturn = c->model.cardinalDayTurn(Compass::ccwcardinal(card), base_day);
+      pturn   = c->model.cardinalDayTurn(Compass::opcardinal(card), base_day);
+
+      bool imDefending = turn.actions[0].what == 'd' || turn.actions[1].what == 'd';
+      bool beingAttackedCW =
+          ((cwturn.actions[0].what == 'a' && cwturn.actions[0].who == card) ||
+           (cwturn.actions[1].what == 'a' && cwturn.actions[1].who == card));
+      bool beingAttackedCCW =
+          ((ccwturn.actions[0].what == 'a' && ccwturn.actions[0].who == card) ||
+           (ccwturn.actions[1].what == 'a' && ccwturn.actions[1].who == card));
+      int beingAttacked = beingAttackedCW + beingAttackedCCW;
+
+
+      if(t < x*1.0f) //defend
+      {
+        lt = (t-(x*1.0f))*n;
+        if(imDefending)
+          graphics->draw(Sprite::shield, heart_2);
+        graphics->draw(Sprite::heart, heart_0);
+        graphics->draw(Sprite::heart, heart_1);
+      }
+      else if(t < x*2.0f) //attack
+      {
+        lt = (t-(x*2.0f))*n;
+        if(imDefending && (lt < 0.3f || !beingAttacked))
+          graphics->draw(Sprite::shield, heart_2);
+        if(lt < 0.3f ||
+          (lt < 0.6f && (imDefending || !beingAttacked)) ||
+          (lt < 1.0f && ((imDefending && beingAttacked <= 1)))
+          )
+          graphics->draw(Sprite::heart, heart_1);
+        else if(turn.actions[0].what == 'a' ||
+           turn.actions[1].what == 'a')
+          graphics->draw(Sprite::sword, heart_2);
+        graphics->draw(Sprite::heart, heart_0);
+      }
+      else if(t < x*3.0f) //retaliate
+      {
+        lt = (t-(x*3.0f))*n;
+        if(turn.actions[0].what == 'd' ||
+           turn.actions[1].what == 'd')
+          graphics->draw(Sprite::shield, heart_2);
+      }
+      else if(t < x*4.0f) //sabotage
+      {
+        lt = (t-(x*4.0f))*n;
+        if(turn.actions[0].what == 's' ||
+           turn.actions[1].what == 's')
+          graphics->draw(Sprite::knife, heart_2);
+      }
+      else if(t < x*5.0f) //message
+      {
+        lt = (t-(x*5.0f))*n;
+        if(turn.actions[0].what == 'm' ||
+           turn.actions[1].what == 'm')
+          graphics->draw(Sprite::envelope, heart_2);
+      }
+      else if(t < x*6.0f) //scout
+      {
+        lt = (t-(x*6.0f))*n;
+        if(turn.actions[0].what == 'c' ||
+           turn.actions[1].what == 'c')
+          graphics->draw(Sprite::knife, heart_2);
+      }
+
     /*
       Action a = c->model.cardinalDayTurn(card, base_day);
       if(a.what == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
