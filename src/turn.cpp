@@ -16,6 +16,12 @@ int Turn::power()
 {
   return actions[0].power() + actions[1].power();
 }
+Action *Turn::action(char what)
+{
+  if(actions[0].what == what) return &actions[0];
+  if(actions[1].what == what) return &actions[1];
+  return 0;
+}
 
 void Turn::zero()
 {

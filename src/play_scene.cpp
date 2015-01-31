@@ -256,15 +256,71 @@ void PlayScene::draw()
   for(int i = 0; i < 7; i++)
     dayLbls[i].draw(graphics);
 
+  //compute intermediate state
+  int health[4] = {2,2,2,2};
+  if(t != 0.0f)
+  {
+    circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;
+    circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;
+    circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho;
+    circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;
+    circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;
+    Action *action;
+    Turn turns[4];
+    for(int i = 0; i < 4; i++)
+      turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_day);
+
+    for(int i = 0; i < 4; i++) //defend
+      if((action = turns[i].action('d'))) { defendActions.enqueue(*action); defendActionsWho.enqueue(i); }
+    for(int i = 0; i < 4; i++) //attack
+      if((action = turns[i].action('a'))) { attackActions.enqueue(*action); attackActionsWho.enqueue(i); }
+    for(int i = 0; i < 4; i++) //retaliate
+      if((action = turns[i].action('d'))) { retaliateActions.enqueue(*action); retaliateActionsWho.enqueue(i); }
+    for(int i = 0; i < 4; i++) //sabotage
+      if((action = turns[i].action('s'))) { sabotageActions.enqueue(*action); sabotageActionsWho.enqueue(i); }
+    for(int i = 0; i < 4; i++) //message
+      if((action = turns[i].action('m'))) { messageActions.enqueue(*action); messageActionsWho.enqueue(i); }
+
+    const float n = 5.0f;
+    const float x = 1.0f/n;
+    //float lt; //0.0-1.0 for phase
+
+    action = 0;
+    if(t > x*1.0f) //already defended
+    {
+      while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+    }
+    if(t > x*2.0f) //already attacked
+    {
+      while((action = attackActions.next())) { health[*attackActionsWho.next()]--; health[Compass::icardinal(action->who)]--; }
+    }
+    if(t > x*3.0f) //already retaliated
+    {
+      while((action = retaliateActions.next()))
+      {
+        int c = *retaliateActionsWho.next();
+        int e;
+        if(health[Compass::icardinal(action->who)] > 1)
+        {
+          Action *a;
+
+          //cw attack
+          e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(c)));
+          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
+          { health[c]--; health[e]--; }
+
+          //ccw attack
+          e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(c)));
+          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
+          { health[c]--; health[e]--; }
+        }
+      }
+    }
+  }
+
   //draws cardinals and actions
   for(int i = 0; i < 4; i++)
   {
-    char card = Compass::cardinal(i);
-    Turn turn;
-    Turn cwturn;
-    Turn ccwturn;
-    Turn pturn;
-
     cardImgs[i].draw(graphics);
     cardLbls[i].draw(graphics);
     SDL_Rect heart_0;
@@ -279,153 +335,9 @@ void PlayScene::draw()
     heart_2 = heart_1;
     heart_2.x += heart_2.w*0.75;
 
-    if(t != 0.0f)
-    {
-      const float n = 6.0f;
-      const float x = 1.0f/n;
-      float lt; //0.0-1.0 for phase
-      turn    = c->model.cardinalDayTurn(card, base_day);
-      cwturn  = c->model.cardinalDayTurn(Compass::cwcardinal(card), base_day);
-      ccwturn = c->model.cardinalDayTurn(Compass::ccwcardinal(card), base_day);
-      pturn   = c->model.cardinalDayTurn(Compass::opcardinal(card), base_day);
-
-      bool imDefending = turn.actions[0].what == 'd' || turn.actions[1].what == 'd';
-      //Action defend = turn.actions[0].what == 'd' ? turn.actions[0] : turn.actions[1];
-      bool imAttacking = turn.actions[0].what == 'a' || turn.actions[1].what == 'a';
-      Action attack = turn.actions[0].what == 'd' ? turn.actions[0] : turn.actions[1];
-      bool beingAttackedCW =
-          ((cwturn.actions[0].what == 'a' && cwturn.actions[0].who == card) ||
-           (cwturn.actions[1].what == 'a' && cwturn.actions[1].who == card));
-      bool cwdefending = (cwturn.actions[0].what == 'd' || cwturn.actions[1].what == 'd');
-      bool beingAttackedCCW =
-          ((ccwturn.actions[0].what == 'a' && ccwturn.actions[0].who == card) ||
-           (ccwturn.actions[1].what == 'a' && ccwturn.actions[1].who == card));
-      int beingAttacked = beingAttackedCW + beingAttackedCCW;
-      bool ccwdefending = (ccwturn.actions[0].what == 'd' || ccwturn.actions[1].what == 'd');
-
-      if(t < x*1.0f) //defend
-      {
-        lt = 1.0-(((x*1.0f)-t)*n);
-        if(imDefending)
-          graphics->draw(Sprite::shield, heart_2);
-        graphics->draw(Sprite::heart, heart_0);
-        graphics->draw(Sprite::heart, heart_1);
-      }
-      else if(t < x*2.0f) //attack
-      {
-        lt = 1.0-(((x*2.0f)-t)*n);
-        if(imDefending)
-        {
-          if(imDefending && (lt < 0.3f || !beingAttacked))
-            graphics->draw(Sprite::shield, heart_2);
-          if(lt < 0.3f ||
-            (lt < 0.6f && (imDefending || !beingAttacked)) ||                        //one attack
-            (lt < 1.0f && ((imDefending && beingAttacked <= 1) || !beingAttacked))   //two attack
-            )
-            graphics->draw(Sprite::heart, heart_1);
-          if(lt < 0.3f ||
-            (lt < 0.6f) || //one attack
-            (lt < 1.0f && (imDefending || beingAttacked < 2))
-            )
-            graphics->draw(Sprite::heart, heart_0);
-        }
-
-
-/*
-        if(imDefending && (lt < 0.3f || !beingAttacked))
-          graphics->draw(Sprite::shield, heart_2);
-        if(lt < 0.3f ||
-          (lt < 0.6f && (imDefending || !beingAttacked)) ||                        //one attack
-          (lt < 1.0f && ((imDefending && beingAttacked <= 1) || !beingAttacked))   //two attack
-          )
-          graphics->draw(Sprite::heart, heart_1);
-        if(lt < 0.3f ||
-          (lt < 0.6f) || //one attack
-          (lt < 1.0f && (imDefending || beingAttacked < 2))
-          )
-          graphics->draw(Sprite::heart, heart_0);
-*/
-
-        if(imAttacking)
-          graphics->draw(Sprite::sword, cardRects[i]);
-      }
-      else if(t < x*3.0f) //retaliate
-      {
-        lt = 1.0-(((x*3.0f)-t)*n);
-        if(imDefending)
-        {
-          if(!beingAttacked)
-            graphics->draw(Sprite::shield, heart_2);
-          if(beingAttacked < 1)
-            graphics->draw(Sprite::heart, heart_1);
-          if(beingAttacked < 2)
-            graphics->draw(Sprite::heart, heart_0);
-        }
-        else if(imAttacking)
-        {
-          if(lt < 0.5f)
-          {
-            if(!beingAttacked)
-              graphics->draw(Sprite::heart, heart_1);
-            if(beingAttacked < 2)
-              graphics->draw(Sprite::heart, heart_0);
-          }
-          else
-          {
-            if(!beingAttacked &&
-              !(attack.who == Compass::cwcardinal(card) && cwdefending) &&
-              !(attack.who == Compass::ccwcardinal(card) && ccwdefending))
-              graphics->draw(Sprite::heart, heart_1);
-            if(beingAttacked < 2 ||
-                (
-                beingAttacked < 1 &&
-                  (
-                    !(attack.who == Compass::cwcardinal(card) && cwdefending) &&
-                    !(attack.who == Compass::ccwcardinal(card) && ccwdefending)
-                  )
-                ) ||
-                (
-                !beingAttacked &&
-                  !(
-                    (attack.who == Compass::cwcardinal(card) && cwdefending) &&
-                    (attack.who == Compass::ccwcardinal(card) && ccwdefending)
-                  )
-                )
-              )
-              graphics->draw(Sprite::heart, heart_0);
-          }
-        }
-
-        if(imDefending)
-          graphics->draw(Sprite::shield, cardRects[i]);
-      }
-      else if(t < x*4.0f) //sabotage
-      {
-        lt = 1.0-(((x*4.0f)-t)*n);
-        if(turn.actions[0].what == 's' ||
-           turn.actions[1].what == 's')
-          graphics->draw(Sprite::knife, heart_2);
-      }
-      else if(t < x*5.0f) //message
-      {
-        lt = 1.0-(((x*5.0f)-t)*n);
-        if(turn.actions[0].what == 'm' ||
-           turn.actions[1].what == 'm')
-          graphics->draw(Sprite::envelope, heart_2);
-      }
-      else if(t < x*6.0f) //scout
-      {
-        lt = 1.0-(((x*6.0f)-t)*n);
-        if(turn.actions[0].what == 'c' ||
-           turn.actions[1].what == 'c')
-          graphics->draw(Sprite::knife, heart_2);
-      }
-    }
-    else //draw hearts
-    {
-        graphics->draw(Sprite::heart, heart_0);
-        graphics->draw(Sprite::heart, heart_1);
-    }
+    if(health[i] > 0) graphics->draw(Sprite::heart,  heart_0);
+    if(health[i] > 1) graphics->draw(Sprite::heart,  heart_1);
+    if(health[i] > 2) graphics->draw(Sprite::shield, heart_2);
   }
 
   Action a, a0, a1;

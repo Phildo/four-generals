@@ -12,6 +12,7 @@ struct Turn
   Turn(char *c);
 
   int power();
+  Action *action(char what);
 
   void zero();
 
