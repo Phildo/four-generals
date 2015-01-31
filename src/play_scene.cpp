@@ -116,7 +116,6 @@ void PlayScene::setViewState(PLAY_SCENE_STATE s)
 
   shown_days = current_days;
 
-  sunDragging = false;
   picker.clearViewState();
   messager.clearViewState();
 }
@@ -150,8 +149,8 @@ void PlayScene::touch(In &in)
 {
   if(shown_days != current_days) //history
   {
-    if((in.type == In::DOWN || in.type == In::MOVE)) chooseShownDay(in);
-    else if(in.type == In::UP)                       sunDragging = false;
+    if(in.type == In::DOWN || in.type == In::MOVE) chooseShownDay(in);
+    else if(in.type == In::UP)                     sunDragging = false;
     return;
   }
 
@@ -189,13 +188,11 @@ void PlayScene::touch(In &in)
     case SHOWING:
       //interaction disabled
       break;
-    case OVER:
-      if(in.type == In::DOWN && chooseShownDay(in)) break; //go to history mode
-      if(s && in.type == In::DOWN && reset_game_button.query(in))
-        c->requestReset();
-      break;
     default: break;
   }
+
+  if(s && c->model.roundOver() && in.type == In::DOWN && reset_game_button.query(in))
+    c->requestReset();
 }
 
 int PlayScene::tick()
@@ -218,7 +215,7 @@ int PlayScene::tick()
   if(current_days < goal_days)
   {
     setViewState(SHOWING);
-    current_days += 0.01f;
+    current_days += 0.005f;
     if(current_days >= goal_days)
     {
       current_days = goal_days;
@@ -229,8 +226,6 @@ int PlayScene::tick()
 
   if(state != WAITING && c->iHaveTurn())
     setViewState(WAITING);
-  if(state != WAITING && state != SHOWING && c->model.roundOver())
-    setViewState(OVER);
 
   return 0;
 }
@@ -295,18 +290,22 @@ void PlayScene::draw()
       pturn   = c->model.cardinalDayTurn(Compass::opcardinal(card), base_day);
 
       bool imDefending = turn.actions[0].what == 'd' || turn.actions[1].what == 'd';
+      //Action defend = turn.actions[0].what == 'd' ? turn.actions[0] : turn.actions[1];
+      bool imAttacking = turn.actions[0].what == 'a' || turn.actions[1].what == 'a';
+      Action attack = turn.actions[0].what == 'd' ? turn.actions[0] : turn.actions[1];
       bool beingAttackedCW =
           ((cwturn.actions[0].what == 'a' && cwturn.actions[0].who == card) ||
            (cwturn.actions[1].what == 'a' && cwturn.actions[1].who == card));
+      bool cwdefending = (cwturn.actions[0].what == 'd' || cwturn.actions[1].what == 'd');
       bool beingAttackedCCW =
           ((ccwturn.actions[0].what == 'a' && ccwturn.actions[0].who == card) ||
            (ccwturn.actions[1].what == 'a' && ccwturn.actions[1].who == card));
       int beingAttacked = beingAttackedCW + beingAttackedCCW;
-
+      bool ccwdefending = (ccwturn.actions[0].what == 'd' || ccwturn.actions[1].what == 'd');
 
       if(t < x*1.0f) //defend
       {
-        lt = (t-(x*1.0f))*n;
+        lt = 1.0-(((x*1.0f)-t)*n);
         if(imDefending)
           graphics->draw(Sprite::shield, heart_2);
         graphics->draw(Sprite::heart, heart_0);
@@ -314,64 +313,118 @@ void PlayScene::draw()
       }
       else if(t < x*2.0f) //attack
       {
-        lt = (t-(x*2.0f))*n;
+        lt = 1.0-(((x*2.0f)-t)*n);
+        if(imDefending)
+        {
+          if(imDefending && (lt < 0.3f || !beingAttacked))
+            graphics->draw(Sprite::shield, heart_2);
+          if(lt < 0.3f ||
+            (lt < 0.6f && (imDefending || !beingAttacked)) ||                        //one attack
+            (lt < 1.0f && ((imDefending && beingAttacked <= 1) || !beingAttacked))   //two attack
+            )
+            graphics->draw(Sprite::heart, heart_1);
+          if(lt < 0.3f ||
+            (lt < 0.6f) || //one attack
+            (lt < 1.0f && (imDefending || beingAttacked < 2))
+            )
+            graphics->draw(Sprite::heart, heart_0);
+        }
+
+
+/*
         if(imDefending && (lt < 0.3f || !beingAttacked))
           graphics->draw(Sprite::shield, heart_2);
         if(lt < 0.3f ||
-          (lt < 0.6f && (imDefending || !beingAttacked)) ||
-          (lt < 1.0f && ((imDefending && beingAttacked <= 1)))
+          (lt < 0.6f && (imDefending || !beingAttacked)) ||                        //one attack
+          (lt < 1.0f && ((imDefending && beingAttacked <= 1) || !beingAttacked))   //two attack
           )
           graphics->draw(Sprite::heart, heart_1);
-        else if(turn.actions[0].what == 'a' ||
-           turn.actions[1].what == 'a')
-          graphics->draw(Sprite::sword, heart_2);
-        graphics->draw(Sprite::heart, heart_0);
+        if(lt < 0.3f ||
+          (lt < 0.6f) || //one attack
+          (lt < 1.0f && (imDefending || beingAttacked < 2))
+          )
+          graphics->draw(Sprite::heart, heart_0);
+*/
+
+        if(imAttacking)
+          graphics->draw(Sprite::sword, cardRects[i]);
       }
       else if(t < x*3.0f) //retaliate
       {
-        lt = (t-(x*3.0f))*n;
-        if(turn.actions[0].what == 'd' ||
-           turn.actions[1].what == 'd')
-          graphics->draw(Sprite::shield, heart_2);
+        lt = 1.0-(((x*3.0f)-t)*n);
+        if(imDefending)
+        {
+          if(!beingAttacked)
+            graphics->draw(Sprite::shield, heart_2);
+          if(beingAttacked < 1)
+            graphics->draw(Sprite::heart, heart_1);
+          if(beingAttacked < 2)
+            graphics->draw(Sprite::heart, heart_0);
+        }
+        else if(imAttacking)
+        {
+          if(lt < 0.5f)
+          {
+            if(!beingAttacked)
+              graphics->draw(Sprite::heart, heart_1);
+            if(beingAttacked < 2)
+              graphics->draw(Sprite::heart, heart_0);
+          }
+          else
+          {
+            if(!beingAttacked &&
+              !(attack.who == Compass::cwcardinal(card) && cwdefending) &&
+              !(attack.who == Compass::ccwcardinal(card) && ccwdefending))
+              graphics->draw(Sprite::heart, heart_1);
+            if(beingAttacked < 2 ||
+                (
+                beingAttacked < 1 &&
+                  (
+                    !(attack.who == Compass::cwcardinal(card) && cwdefending) &&
+                    !(attack.who == Compass::ccwcardinal(card) && ccwdefending)
+                  )
+                ) ||
+                (
+                !beingAttacked &&
+                  !(
+                    (attack.who == Compass::cwcardinal(card) && cwdefending) &&
+                    (attack.who == Compass::ccwcardinal(card) && ccwdefending)
+                  )
+                )
+              )
+              graphics->draw(Sprite::heart, heart_0);
+          }
+        }
+
+        if(imDefending)
+          graphics->draw(Sprite::shield, cardRects[i]);
       }
       else if(t < x*4.0f) //sabotage
       {
-        lt = (t-(x*4.0f))*n;
+        lt = 1.0-(((x*4.0f)-t)*n);
         if(turn.actions[0].what == 's' ||
            turn.actions[1].what == 's')
           graphics->draw(Sprite::knife, heart_2);
       }
       else if(t < x*5.0f) //message
       {
-        lt = (t-(x*5.0f))*n;
+        lt = 1.0-(((x*5.0f)-t)*n);
         if(turn.actions[0].what == 'm' ||
            turn.actions[1].what == 'm')
           graphics->draw(Sprite::envelope, heart_2);
       }
       else if(t < x*6.0f) //scout
       {
-        lt = (t-(x*6.0f))*n;
+        lt = 1.0-(((x*6.0f)-t)*n);
         if(turn.actions[0].what == 'c' ||
            turn.actions[1].what == 'c')
           graphics->draw(Sprite::knife, heart_2);
       }
-
-    /*
-      Action a = c->model.cardinalDayTurn(card, base_day);
-      if(a.what == 'a') graphics->draw(sword_s, rectForTraversal(card,e.who,t));
-      if(a.what == 'd') graphics->draw(shield_full_s, rectForExpansion(card,t));
-      if(a.what == 's') graphics->draw(knife, rectForExpansion(card,t));
-      if(a.what == 'm') graphics->draw(envelope_s, rectForTraversal(card,e.route,t));
-      a = c->model.cardinalDayTurn(card, base_day-1);
-      if(a.what == 'm')
-      {
-        char at = a.route;
-        char to = a.to;
-        a = c->model.cardinalDayTurn(at, base_day-1);
-        if(!(a.what == 's' && a.how == 'b'))
-          graphics->draw(envelope_s, rectForTraversal(at,to,t));
-      }
-    */
+    }
+    else //draw hearts
+    {
+        graphics->draw(Sprite::heart, heart_0);
+        graphics->draw(Sprite::heart, heart_1);
     }
   }
 
@@ -384,7 +437,11 @@ void PlayScene::draw()
            if(a.what == 'm')  read_message.draw(graphics);
       else if(a0.what == 's') read_sabotage_0.draw(graphics);
       else if(a1.what == 's') read_sabotage_1.draw(graphics);
-      picker.draw(graphics);
+      if(!c->model.roundOver()) picker.draw(graphics);
+      else if(c->iWin())  win_img.draw(graphics);
+      else if(c->iLose()) lose_img.draw(graphics);
+      else if(c->iTie())  tie_img.draw(graphics);
+
       break;
     case MESSAGE:
       messager.draw(graphics);
@@ -397,11 +454,6 @@ void PlayScene::draw()
       break;
     case SHOWING:
       //interaction disabled
-      break;
-    case OVER:
-           if(c->iWin())  win_img.draw(graphics);
-      else if(c->iLose()) lose_img.draw(graphics);
-      else if(c->iTie())  tie_img.draw(graphics);
       break;
     default: break;
   }

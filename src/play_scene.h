@@ -64,7 +64,6 @@ class PlayScene : public Scene
       TURN_PICKING, // full screen action picker
       WAITING,      // picked turn, waiting on other players
       SHOWING,      // animating newly played out action (interaction disabled)
-      OVER,         // game over
       COUNT
     } state;
     void setViewState(PLAY_SCENE_STATE s); //clears state vars and sets state
