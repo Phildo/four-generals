@@ -283,38 +283,53 @@ void PlayScene::draw()
 
     const float n = 5.0f;
     const float x = 1.0f/n;
-    //float lt; //0.0-1.0 for phase
+
+    float lt = t; //0.0-1.0 for phase
+    while(lt > x) lt -= x;
+    lt /= x;
 
     action = 0;
-    if(t > x*1.0f) //already defended
+
+    if(x*(1.0f-0.25f) < t) //already defended
     {
       while((action = defendActions.next())) health[*defendActionsWho.next()]++;
-    }
-    if(t > x*2.0f) //already attacked
-    {
-      while((action = attackActions.next())) { health[*attackActionsWho.next()]--; health[Compass::icardinal(action->who)]--; }
-    }
-    if(t > x*3.0f) //already retaliated
-    {
-      while((action = retaliateActions.next()))
+
+      if(x*(2.0f-0.25f) < t) //already attacked
       {
-        int c = *retaliateActionsWho.next();
-        int e;
-        if(health[Compass::icardinal(action->who)] > 1)
+        while((action = attackActions.next())) { health[*attackActionsWho.next()]--; health[Compass::icardinal(action->who)]--; }
+
+        if(x*(3.0f-0.25f) < t) //already retaliated
         {
-          Action *a;
+          while((action = retaliateActions.next()))
+          {
+            int c = *retaliateActionsWho.next();
+            int e;
+            if(health[Compass::icardinal(action->who)] > 1)
+            {
+              Action *a;
 
-          //cw attack
-          e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(c)));
-          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
-          { health[c]--; health[e]--; }
+              //cw attack
+              e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(c)));
+              if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
+              { health[c]--; health[e]--; }
 
-          //ccw attack
-          e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(c)));
-          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
-          { health[c]--; health[e]--; }
+              //ccw attack
+              e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(c)));
+              if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
+              { health[c]--; health[e]--; }
+            }
+          }
+        }
+        else //retaliate phase
+        {
         }
       }
+      else //attack phase
+      {
+      }
+    }
+    else //defend phase
+    {
     }
   }
 
