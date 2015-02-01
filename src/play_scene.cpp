@@ -14,6 +14,21 @@
 
 #include "SDL.h"
 
+static float snapToInt(float v)
+{
+  float left = (float)((int)v);
+  float right = (float)((int)(v+1.0f));
+  if(v < left +0.01f) return left;
+  if(v > right-0.01f) return right;
+  return v;
+}
+static float clamp(float v, float min, float max)
+{
+  if(v < min) return min;
+  if(v > max) return max;
+  return v;
+}
+
 PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
@@ -129,6 +144,7 @@ bool PlayScene::chooseShownDay(In &in)
     int firstX = dayRects[0].x+(dayRects[0].w/2);
     int lastX  = dayRects[6].x+(dayRects[6].w/2);
     shown_days = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
+    shown_days = clamp(shown_days, 0, current_days);
   }
 
   return sunDragging;
@@ -147,21 +163,14 @@ void PlayScene::drawReset()
 
 void PlayScene::touch(In &in)
 {
-  if(shown_days != current_days) //history
-  {
-    if(in.type == In::DOWN || in.type == In::MOVE) chooseShownDay(in);
-    else if(in.type == In::UP)                     sunDragging = false;
-    return;
-  }
-
   Action a, a0, a1;
   Turn t;
   switch(state)
   {
     case IDLE:
-      if(in.type == In::DOWN && chooseShownDay(in)) break; //go to history mode
       if(in.type == In::DOWN)
       {
+        if(chooseShownDay(in)) break;
         c->myMessage(a);
         c->mySabotage(a0,a1);
         if(picker.query(in)) { setViewState(TURN_PICKING); picker.touch(in); }
@@ -169,6 +178,8 @@ void PlayScene::touch(In &in)
         else if(a0.what == 's' && read_sabotage_0.query(in)) { setViewState(MESSAGE); messager.setMessage(a0); }
         else if(a1.what == 's' && read_sabotage_1.query(in)) { setViewState(MESSAGE); messager.setMessage(a1); }
       }
+      if(in.type == In::MOVE && sunDragging) chooseShownDay(in);
+      if(in.type == In::UP)                  sunDragging = false;
       break;
     case MESSAGE:
       if(in.type == In::UP)
@@ -183,7 +194,9 @@ void PlayScene::touch(In &in)
       }
       break;
     case WAITING:
-      if(in.type == In::DOWN && chooseShownDay(in)) break; //go to history mode
+      if(in.type == In::DOWN) chooseShownDay(in);
+      if(in.type == In::MOVE && sunDragging) chooseShownDay(in);
+      if(in.type == In::UP)                  sunDragging = false;
       break;
     case SHOWING:
       //interaction disabled
@@ -197,6 +210,9 @@ void PlayScene::touch(In &in)
 
 int PlayScene::tick()
 {
+  if(sunDragging) fg_log("dragging");
+  else            fg_log("not");
+
   if(s) s->tick();
   c->tick();
 
@@ -230,20 +246,6 @@ int PlayScene::tick()
   return 0;
 }
 
-static float snapToInt(float v)
-{
-  float left = (float)((int)v);
-  float right = (float)((int)(v+1.0f));
-  if(v < left +0.01f) return left;
-  if(v > right-0.01f) return right;
-  return v;
-}
-static float clamp(float v, float min, float max)
-{
-  if(v < min) return min;
-  if(v > max) return max;
-  return v;
-}
 void PlayScene::draw()
 {
   float snapped_shown_days = clamp(snapToInt(shown_days), 0, current_days);
@@ -301,7 +303,6 @@ void PlayScene::draw()
     else if(!foundPhase)
     {
       foundPhase = true;
-      fg_log("defend");
     }
 
     //Attack
@@ -313,7 +314,6 @@ void PlayScene::draw()
     else if(!foundPhase)
     {
       foundPhase = true;
-      fg_log("attack");
     }
 
     //Retaliate
@@ -343,7 +343,6 @@ void PlayScene::draw()
     else if(!foundPhase)
     {
       foundPhase = true;
-      fg_log("retaliate");
     }
 
     //Sabotage
@@ -355,7 +354,6 @@ void PlayScene::draw()
     else if(!foundPhase)
     {
       foundPhase = true;
-      fg_log("sabotage");
     }
 
     //Message
@@ -367,7 +365,6 @@ void PlayScene::draw()
     else if(!foundPhase)
     {
       foundPhase = true;
-      fg_log("message");
     }
 
 
