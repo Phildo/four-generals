@@ -14,5 +14,6 @@ struct Anim
   Anim();
   Anim(Sprite::AnimSprites s, int c, float f, SDL_Rect r);
   Anim(Sprite::AnimSprites s, int c, float f, int x, int y, int w, int h);
+  SDL_Rect curSprite();
 };
 

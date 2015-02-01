@@ -8,7 +8,7 @@ void Anim::draw(Graphics *g)
 
 void Anim::drawInMask(Graphics *g, SDL_Rect m)
 {
-  g->drawInMask(sprite.sprite[i],rect.rect,m);
+  g->drawInMask(curSprite(),rect.rect,m);
 }
 
 void Anim::tick(float d)
@@ -19,5 +19,10 @@ void Anim::tick(float d)
     f = 0.0f;
     i = (i+1)%count;
   }
+}
+
+SDL_Rect Anim::curSprite()
+{
+  return sprite.sprite[i];
 }
 

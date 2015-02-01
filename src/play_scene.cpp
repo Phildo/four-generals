@@ -210,9 +210,6 @@ void PlayScene::touch(In &in)
 
 int PlayScene::tick()
 {
-  if(sunDragging) fg_log("dragging");
-  else            fg_log("not");
-
   if(s) s->tick();
   c->tick();
 
@@ -260,28 +257,33 @@ void PlayScene::draw()
 
   //compute intermediate state
   int health[4] = {2,2,2,2};
+  bool cardsDrawn[4] = {false,false,false,false};
   if(t != 0.0f)
   {
-    circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;
-    circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;
-    circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho;
-    circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;
-    circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;
     Action *action;
+    Action *actions[4];
+
     Turn turns[4];
     for(int i = 0; i < 4; i++)
       turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_day);
 
-    for(int i = 0; i < 4; i++) //defend
-      if((action = turns[i].action('d'))) { defendActions.enqueue(*action); defendActionsWho.enqueue(i); }
-    for(int i = 0; i < 4; i++) //attack
-      if((action = turns[i].action('a'))) { attackActions.enqueue(*action); attackActionsWho.enqueue(i); }
-    for(int i = 0; i < 4; i++) //retaliate
-      if((action = turns[i].action('d'))) { retaliateActions.enqueue(*action); retaliateActionsWho.enqueue(i); }
-    for(int i = 0; i < 4; i++) //sabotage
-      if((action = turns[i].action('s'))) { sabotageActions.enqueue(*action); sabotageActionsWho.enqueue(i); }
-    for(int i = 0; i < 4; i++) //message
-      if((action = turns[i].action('m'))) { messageActions.enqueue(*action); messageActionsWho.enqueue(i); }
+    circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
+    circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
+    circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho; int nRetaliates = 0;
+    circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;  int nSabotages  = 0;
+    circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;   int nMessages   = 0;
+
+    /* defends    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) { defendActions.enqueue(*action);    defendActionsWho.enqueue(i);    nDefends++;    }
+    /* attacks    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('a'))) { attackActions.enqueue(*action);    attackActionsWho.enqueue(i);    nAttacks++;    }
+    /* retaliates */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) { retaliateActions.enqueue(*action); retaliateActionsWho.enqueue(i); nRetaliates++; }
+    /* sabotages  */ for(int i = 0; i < 4; i++) if((action = turns[i].action('s'))) { sabotageActions.enqueue(*action);  sabotageActionsWho.enqueue(i);  nSabotages++;  }
+    /* messages   */ for(int i = 0; i < 4; i++) if((action = turns[i].action('m'))) { messageActions.enqueue(*action);   messageActionsWho.enqueue(i);   nMessages++;   }
+
+    int nActions = (nDefends   > 0 ? 1 : 0)   + //any defends happen simultaneously
+                   (nAttacks)                 + //all attacks get played out individually
+                   (nRetaliates)              + //all retaliations get played out individually
+                   (nSabotages > 0 ? 1 : 0)   + //any sabotages happen simultaneously
+                   (nMessages  > 0 ? 1 : 0);    //any messages happen simultaneously
 
     const float n = 5.0f;
     const float x = 1.0f/n;
@@ -296,7 +298,7 @@ void PlayScene::draw()
 
     //Defend
     phase += 1.0f;
-    if(!foundPhase && x*(phase-0.25f) < t)
+    if(!foundPhase && (x*phase)-0.25f < t)
     {
       while((action = defendActions.next())) health[*defendActionsWho.next()]++;
     }
@@ -307,18 +309,25 @@ void PlayScene::draw()
 
     //Attack
     phase += 1.0f;
-    if(!foundPhase && x*(phase-0.25f) < t)
+    if(!foundPhase && (x*phase)-0.25f < t)
     {
       while((action = attackActions.next())) { health[*attackActionsWho.next()]--; health[Compass::icardinal(action->who)]--; }
     }
     else if(!foundPhase)
     {
       foundPhase = true;
+
+      while((action = attackActions.next()))
+      {
+        int c = *attackActionsWho.next();
+        graphics->draw(cardImgs[c].curSprite(),rectForTraversal(Compass::cardinal(c), action->who, lt/0.75));
+        cardsDrawn[c] = true;
+      }
     }
 
     //Retaliate
     phase += 1.0f;
-    if(!foundPhase && x*(phase-0.25f) < t)
+    if(!foundPhase && (x*phase)-0.25f < t)
     {
       while((action = retaliateActions.next()))
       {
@@ -343,11 +352,37 @@ void PlayScene::draw()
     else if(!foundPhase)
     {
       foundPhase = true;
+
+      while((action = retaliateActions.next()))
+      {
+        int c = *retaliateActionsWho.next();
+        int e;
+        if(health[Compass::icardinal(action->who)] > 1)
+        {
+          Action *a;
+
+          //cw attack
+          e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(c)));
+          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
+          {
+            graphics->draw(cardImgs[c].curSprite(),rectForTraversal(Compass::cardinal(c), Compass::cardinal(e), lt/0.75));
+            cardsDrawn[c] = true;
+          }
+
+          //ccw attack
+          e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(c)));
+          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
+          {
+            graphics->draw(cardImgs[c].curSprite(),rectForTraversal(Compass::cardinal(c), Compass::cardinal(e), lt/0.75));
+            cardsDrawn[c] = true;
+          }
+        }
+      }
     }
 
     //Sabotage
     phase += 1.0f;
-    if(!foundPhase && x*(phase-0.25f) < t)
+    if(!foundPhase && (x*phase)-0.25f < t)
     {
       while((action = sabotageActions.next())) ;
     }
@@ -358,7 +393,7 @@ void PlayScene::draw()
 
     //Message
     phase += 1.0f;
-    if(!foundPhase && x*(phase-0.25f) < t)
+    if(!foundPhase && (x*phase)-0.25f < t)
     {
       while((action = messageActions.next())) ;
     }
@@ -373,7 +408,7 @@ void PlayScene::draw()
   //draws cardinals and actions
   for(int i = 0; i < 4; i++)
   {
-    cardImgs[i].draw(graphics);
+    if(!cardsDrawn[i]) cardImgs[i].draw(graphics);
     cardLbls[i].draw(graphics);
     SDL_Rect heart_0;
     SDL_Rect heart_1;
