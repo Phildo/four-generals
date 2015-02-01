@@ -289,48 +289,88 @@ void PlayScene::draw()
     lt /= x;
 
     action = 0;
+    bool foundPhase = false;
+    float phase = 0.0;
 
-    if(x*(1.0f-0.25f) < t) //already defended
+    //Defend
+    phase += 1.0f;
+    if(!foundPhase && x*(phase-0.25f) < t)
     {
       while((action = defendActions.next())) health[*defendActionsWho.next()]++;
-
-      if(x*(2.0f-0.25f) < t) //already attacked
-      {
-        while((action = attackActions.next())) { health[*attackActionsWho.next()]--; health[Compass::icardinal(action->who)]--; }
-
-        if(x*(3.0f-0.25f) < t) //already retaliated
-        {
-          while((action = retaliateActions.next()))
-          {
-            int c = *retaliateActionsWho.next();
-            int e;
-            if(health[Compass::icardinal(action->who)] > 1)
-            {
-              Action *a;
-
-              //cw attack
-              e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(c)));
-              if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
-              { health[c]--; health[e]--; }
-
-              //ccw attack
-              e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(c)));
-              if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
-              { health[c]--; health[e]--; }
-            }
-          }
-        }
-        else //retaliate phase
-        {
-        }
-      }
-      else //attack phase
-      {
-      }
     }
-    else //defend phase
+    else if(!foundPhase)
     {
+      foundPhase = true;
+      fg_log("defend");
     }
+
+    //Attack
+    phase += 1.0f;
+    if(!foundPhase && x*(phase-0.25f) < t)
+    {
+      while((action = attackActions.next())) { health[*attackActionsWho.next()]--; health[Compass::icardinal(action->who)]--; }
+    }
+    else if(!foundPhase)
+    {
+      foundPhase = true;
+      fg_log("attack");
+    }
+
+    //Retaliate
+    phase += 1.0f;
+    if(!foundPhase && x*(phase-0.25f) < t)
+    {
+      while((action = retaliateActions.next()))
+      {
+        int c = *retaliateActionsWho.next();
+        int e;
+        if(health[Compass::icardinal(action->who)] > 1)
+        {
+          Action *a;
+
+          //cw attack
+          e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(c)));
+          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
+          { health[c]--; health[e]--; }
+
+          //ccw attack
+          e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(c)));
+          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
+          { health[c]--; health[e]--; }
+        }
+      }
+    }
+    else if(!foundPhase)
+    {
+      foundPhase = true;
+      fg_log("retaliate");
+    }
+
+    //Sabotage
+    phase += 1.0f;
+    if(!foundPhase && x*(phase-0.25f) < t)
+    {
+      while((action = sabotageActions.next())) ;
+    }
+    else if(!foundPhase)
+    {
+      foundPhase = true;
+      fg_log("sabotage");
+    }
+
+    //Message
+    phase += 1.0f;
+    if(!foundPhase && x*(phase-0.25f) < t)
+    {
+      while((action = messageActions.next())) ;
+    }
+    else if(!foundPhase)
+    {
+      foundPhase = true;
+      fg_log("message");
+    }
+
+
   }
 
   //draws cardinals and actions
