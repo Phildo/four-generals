@@ -289,30 +289,28 @@ void PlayScene::draw()
     const float n = (float)nActions;
     const float plen = 1.0f/n;
     float st = 0.0; //simulated time
-    bool done = false;
 
     Action *action = 0;
     int card;
 
-    fg_log("actions:%d t:%f",nActions,t);
-
     //Defends
-    if(!done && nDefends > 0 && st+plen < t)
+    if(nDefends > 0 && st+plen < t)
     {
-      nDefends = 0;
       while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+
+      nDefends = 0;
       st += plen;
     }
-    if(!done && nDefends > 0)
+    if(nDefends > 0 && st < t)
     {
-      nDefends = 0;
       while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+
+      nDefends = 0;
       st += plen;
-      done = true;
     }
 
     //Attacks
-    while(!done && nAttacks > 0 && st+plen < t)
+    while(nAttacks > 0 && st+plen < t)
     {
       action = attackActions.next();
       health[*attackActionsWho.next()]--;
@@ -321,7 +319,7 @@ void PlayScene::draw()
       nAttacks--;
       st += plen;
     }
-    if(!done && nAttacks > 0)
+    if(nAttacks > 0 && st < t)
     {
       action = attackActions.next();
       card = *attackActionsWho.next();
@@ -330,11 +328,10 @@ void PlayScene::draw()
 
       nAttacks--;
       st += plen;
-      done = true;
     }
 
     //Retaliate
-    while(!done && nRetaliates > 0 && st+plen < t)
+    while(nRetaliates > 0 && st+plen < t)
     {
       action = retaliateActions.next();
       card = *retaliateActionsWho.next();
@@ -358,7 +355,7 @@ void PlayScene::draw()
       nRetaliates--;
       st += plen;
     }
-    if(nRetaliates > 0)
+    if(nRetaliates > 0 && st < t)
     {
       action = retaliateActions.next();
       card = *retaliateActionsWho.next();
@@ -387,9 +384,40 @@ void PlayScene::draw()
 
       nRetaliates--;
       st += plen;
-      done = true;
     }
 
+    //Sabotages
+    if(nSabotages > 0 && st+plen < t)
+    {
+      //no need to simulate anything
+      nSabotages = 0;
+      st += plen;
+    }
+    if(nSabotages > 0 && st < t)
+    {
+      graphics->draw(Sprite::knife, cardRects[card]);
+
+      nSabotages = 0;
+      st += plen;
+    }
+
+    //Messages
+    if(nMessages > 0 && st+plen < t)
+    {
+      //no need to simulate anything
+      nMessages = 0;
+      st += plen;
+    }
+    if(nMessages > 0 && st < t)
+    {
+      action = messageActions.next();
+      card = *messageActionsWho.next();
+
+      graphics->draw(Sprite::envelope,rectForTraversal(Compass::cardinal(card), action->route, (t-st)/plen));
+
+      nMessages = 0;
+      st += plen;
+    }
   }
 
   //draws cardinals and actions
