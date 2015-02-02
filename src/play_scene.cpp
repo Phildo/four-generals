@@ -260,9 +260,6 @@ void PlayScene::draw()
   bool cardsDrawn[4] = {false,false,false,false};
   if(t != 0.0f)
   {
-    Action *action;
-    Action *actions[4];
-
     Turn turns[4];
     for(int i = 0; i < 4; i++)
       turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_day);
@@ -273,135 +270,125 @@ void PlayScene::draw()
     circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;  int nSabotages  = 0;
     circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;   int nMessages   = 0;
 
+    { //to scope action
+    Action *action;
     /* defends    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) { defendActions.enqueue(*action);    defendActionsWho.enqueue(i);    nDefends++;    }
     /* attacks    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('a'))) { attackActions.enqueue(*action);    attackActionsWho.enqueue(i);    nAttacks++;    }
     /* retaliates */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) { retaliateActions.enqueue(*action); retaliateActionsWho.enqueue(i); nRetaliates++; }
     /* sabotages  */ for(int i = 0; i < 4; i++) if((action = turns[i].action('s'))) { sabotageActions.enqueue(*action);  sabotageActionsWho.enqueue(i);  nSabotages++;  }
     /* messages   */ for(int i = 0; i < 4; i++) if((action = turns[i].action('m'))) { messageActions.enqueue(*action);   messageActionsWho.enqueue(i);   nMessages++;   }
+    }
 
     int nActions = (nDefends   > 0 ? 1 : 0)   + //any defends happen simultaneously
                    (nAttacks)                 + //all attacks get played out individually
                    (nRetaliates)              + //all retaliations get played out individually
                    (nSabotages > 0 ? 1 : 0)   + //any sabotages happen simultaneously
-                   (nMessages  > 0 ? 1 : 0);    //any messages happen simultaneously
+                   (nMessages  > 0 ? 1 : 0)   + //any messages happen simultaneously
+                   1; //for "heal" phase
 
-    const float n = 5.0f;
-    const float x = 1.0f/n;
+    const float n = (float)nActions;
+    const float plen = 1.0f/n;
+    float st = 0.0; //simulated time
+    bool done = false;
 
-    float lt = t; //0.0-1.0 for phase
-    while(lt > x) lt -= x;
-    lt /= x;
+    Action *action = 0;
+    int card;
 
-    action = 0;
-    bool foundPhase = false;
-    float phase = 0.0;
+    fg_log("actions:%d t:%f",nActions,t);
 
-    //Defend
-    phase += 1.0f;
-    if(!foundPhase && (x*phase)-0.25f < t)
+    //Defends
+    if(!done && nDefends > 0 && st+plen < t)
     {
+      nDefends = 0;
       while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+      st += plen;
     }
-    else if(!foundPhase)
+    if(!done && nDefends > 0)
     {
-      foundPhase = true;
+      nDefends = 0;
+      while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+      st += plen;
+      done = true;
     }
 
-    //Attack
-    phase += 1.0f;
-    if(!foundPhase && (x*phase)-0.25f < t)
+    //Attacks
+    while(!done && nAttacks > 0 && st+plen < t)
     {
-      while((action = attackActions.next())) { health[*attackActionsWho.next()]--; health[Compass::icardinal(action->who)]--; }
-    }
-    else if(!foundPhase)
-    {
-      foundPhase = true;
+      action = attackActions.next();
+      health[*attackActionsWho.next()]--;
+      health[Compass::icardinal(action->who)]--;
 
-      while((action = attackActions.next()))
-      {
-        int c = *attackActionsWho.next();
-        graphics->draw(cardImgs[c].curSprite(),rectForTraversal(Compass::cardinal(c), action->who, lt/0.75));
-        cardsDrawn[c] = true;
-      }
+      nAttacks--;
+      st += plen;
+    }
+    if(!done && nAttacks > 0)
+    {
+      action = attackActions.next();
+      card = *attackActionsWho.next();
+      graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), action->who, (t-st)/plen));
+      cardsDrawn[card] = true;
+
+      nAttacks--;
+      st += plen;
+      done = true;
     }
 
     //Retaliate
-    phase += 1.0f;
-    if(!foundPhase && (x*phase)-0.25f < t)
+    while(!done && nRetaliates > 0 && st+plen < t)
     {
-      while((action = retaliateActions.next()))
+      action = retaliateActions.next();
+      card = *retaliateActionsWho.next();
+
+      int e;
+      if(health[card] > 1)
       {
-        int c = *retaliateActionsWho.next();
-        int e;
-        if(health[Compass::icardinal(action->who)] > 1)
+        Action *a;
+
+        //cw attack
+        e = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(card)));
+        if((a = turns[e].action('a')) && a->who == Compass::cardinal(card))
+        { health[card]--; health[e]--; }
+
+        //ccw attack
+        e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(card)));
+        if((a = turns[e].action('a')) && a->who == Compass::cardinal(card))
+        { health[card]--; health[e]--; }
+      }
+
+      nRetaliates--;
+      st += plen;
+    }
+    if(nRetaliates > 0)
+    {
+      action = retaliateActions.next();
+      card = *retaliateActionsWho.next();
+
+      int e;
+      if(health[card] > 1)
+      {
+        Action *a;
+
+        //cw attack
+        e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(card)));
+        if((a = turns[e].action('a')) && a->who == Compass::cardinal(card))
         {
-          Action *a;
+          graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), Compass::cardinal(e), (t-st)/plen));
+          cardsDrawn[card] = true;
+        }
 
-          //cw attack
-          e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(c)));
-          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
-          { health[c]--; health[e]--; }
-
-          //ccw attack
-          e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(c)));
-          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
-          { health[c]--; health[e]--; }
+        //ccw attack
+        e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(card)));
+        if((a = turns[e].action('a')) && a->who == Compass::cardinal(card))
+        {
+          graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), Compass::cardinal(e), (t-st)/plen));
+          cardsDrawn[card] = true;
         }
       }
-    }
-    else if(!foundPhase)
-    {
-      foundPhase = true;
 
-      while((action = retaliateActions.next()))
-      {
-        int c = *retaliateActionsWho.next();
-        int e;
-        if(health[Compass::icardinal(action->who)] > 1)
-        {
-          Action *a;
-
-          //cw attack
-          e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(c)));
-          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
-          {
-            graphics->draw(cardImgs[c].curSprite(),rectForTraversal(Compass::cardinal(c), Compass::cardinal(e), lt/0.75));
-            cardsDrawn[c] = true;
-          }
-
-          //ccw attack
-          e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(c)));
-          if((a = turns[e].action('a')) && a->who == Compass::cardinal(c))
-          {
-            graphics->draw(cardImgs[c].curSprite(),rectForTraversal(Compass::cardinal(c), Compass::cardinal(e), lt/0.75));
-            cardsDrawn[c] = true;
-          }
-        }
-      }
+      nRetaliates--;
+      st += plen;
+      done = true;
     }
-
-    //Sabotage
-    phase += 1.0f;
-    if(!foundPhase && (x*phase)-0.25f < t)
-    {
-      while((action = sabotageActions.next())) ;
-    }
-    else if(!foundPhase)
-    {
-      foundPhase = true;
-    }
-
-    //Message
-    phase += 1.0f;
-    if(!foundPhase && (x*phase)-0.25f < t)
-    {
-      while((action = messageActions.next())) ;
-    }
-    else if(!foundPhase)
-    {
-      foundPhase = true;
-    }
-
 
   }
 
