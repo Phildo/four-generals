@@ -198,9 +198,19 @@ int PlayScene::tick()
 
   if(known_days != c->model.days)
   {
-    if(c->model.days == -1) return -1; //game was reset- go back to room
     picker.reset();
+    if(c->model.days == -1) return -1; //game was reset- go back to room
     known_days = c->model.days;
+    if(known_days == 0)
+    {
+      shown_days = 0.0f;;
+      showing_days = 0.0f;;
+    }
+    else
+    {
+      shown_days = known_days-1.0f;
+      showing_days = shown_days;
+    }
   }
 
   if(shown_days < known_days)
@@ -208,7 +218,6 @@ int PlayScene::tick()
     state = SHOWING;
     sunDragging = false;
 
-    if(shown_days < known_days-1.0f) shown_days = known_days-1.0f;
     shown_days += 0.005f;
     if(shown_days >= known_days)
     {
@@ -396,6 +405,9 @@ void PlayScene::draw()
     }
     if(nSabotages > 0 && st < t)
     {
+      action = sabotageActions.next();
+      card = *sabotageActionsWho.next();
+
       graphics->draw(Sprite::knife, cardRects[card]);
 
       nSabotages = 0;
