@@ -199,6 +199,7 @@ int PlayScene::tick()
   if(known_days != c->model.days)
   {
     if(c->model.days == -1) return -1; //game was reset- go back to room
+    picker.reset();
     known_days = c->model.days;
   }
 
@@ -206,8 +207,6 @@ int PlayScene::tick()
   {
     state = SHOWING;
     sunDragging = false;
-    picker.clearViewState();
-    messager.clearViewState();
 
     if(shown_days < known_days-1.0f) shown_days = known_days-1.0f;
     shown_days += 0.005f;
@@ -221,7 +220,26 @@ int PlayScene::tick()
 
   Turn t;
   if(picker.getTurn(t)) c->commitTurn(t);
-  if(c->iHaveTurn()) state = IDLE;
+
+  switch(state)
+  {
+    case IDLE:
+      //tick nothin
+      break;
+    case MESSAGE:
+      //tick nothin
+      break;
+    case TURN_PICKING:
+      //tick nothin
+      break;
+    case VIEWING:
+      //tick nothin
+      break;
+    case SHOWING:
+      //tick nothin
+      break;
+    default: break;
+  }
 
   return 0;
 }

@@ -49,8 +49,6 @@ class TurnPicker
     void tick();
     void draw(Graphics *g);
 
-    void clearViewState();
-
     bool getTurn(Turn &t);
     void reset();
 };

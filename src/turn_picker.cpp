@@ -194,11 +194,6 @@ void TurnPicker::setViewState(TURN_PICKER_STATE s)
   }
 }
 
-void TurnPicker::clearViewState()
-{
-
-}
-
 bool TurnPicker::getTurn(Turn &t)
 {
   Turn *tp = turn_q.next();
@@ -212,6 +207,7 @@ bool TurnPicker::getTurn(Turn &t)
 
 void TurnPicker::reset()
 {
-
+  turn.zero();
+  setViewState(SHOW);
 }
 
