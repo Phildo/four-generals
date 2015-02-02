@@ -45,8 +45,7 @@ class TurnPicker
     void init();
     void setCardinal(char c);
 
-    void touch(In &in);
-    bool query(In &in);
+    bool touch(In &in);
     void tick();
     void draw(Graphics *g);
 

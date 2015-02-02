@@ -43,7 +43,7 @@ TurnPicker::~TurnPicker()
 {
 }
 
-void TurnPicker::touch(In &in)
+bool TurnPicker::touch(In &in)
 {
   ShowRequest s;
   BrowseRequest b;
@@ -111,11 +111,8 @@ void TurnPicker::touch(In &in)
     default:
     break;
   }
-}
 
-bool TurnPicker::query(In &in)
-{
-  return button.query(in);
+  return state != SHOW;
 }
 
 void TurnPicker::tick()

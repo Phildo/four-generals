@@ -59,28 +59,26 @@ class PlayScene : public Scene
     //note - all states can be interrupted by history viewing
     enum PLAY_SCENE_STATE //the visual state of the view
     {
-      IDLE,         // can choose to look at messages or pick turn
+      IDLE,         // can choose to look at messages, pick turn, or view history
       MESSAGE,      // full screen message/sabotage showing
       TURN_PICKING, // full screen action picker
-      WAITING,      // picked turn, waiting on other players
+      VIEWING,      // viewing history
       SHOWING,      // animating newly played out action (interaction disabled)
       COUNT
     } state;
     void setViewState(PLAY_SCENE_STATE s); //clears state vars and sets state
 
-    float goal_days;    //day known about in model
-    float current_days; //day shown up til (animates toward goal)
-    float shown_days;   //currently showing day (animation, history)
+    float known_days;   //day known about in model
+    float shown_days;   //day shown up til (animates toward goal)
+    float showing_days; //currently showing day (animation, history)
 
     bool sunDragging;
 
-    void drawWaiting();
-    void drawReset();
     void drawWin();
     void drawLose();
     void drawTie();
 
-    bool chooseShownDay(In &in);
+    bool chooseShowingDay(In &in);
 
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);

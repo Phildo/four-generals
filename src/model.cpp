@@ -99,7 +99,8 @@ void Model::commitTurns()
   {
     if(hp[i] <= 0)
     {
-      victory_status[i] = 'l';
+      victory_status[i]       = 'l';
+      victory_status[(i+2)%4] = 'l';
       loser = true;
     }
   }

@@ -93,8 +93,10 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   picker.init();
   messager = Messager();
 
-  current_days = 0;
-  setViewState(IDLE);
+  known_days = 0.0f;
+  shown_days = 0.0f;
+  showing_days = 0.0f;
+  state = IDLE;
 }
 
 void PlayScene::enter()
@@ -125,17 +127,7 @@ void PlayScene::enter()
   picker.setCardinal(c->myCardinal());
 }
 
-void PlayScene::setViewState(PLAY_SCENE_STATE s)
-{
-  state = s;
-
-  shown_days = current_days;
-
-  picker.clearViewState();
-  messager.clearViewState();
-}
-
-bool PlayScene::chooseShownDay(In &in)
+bool PlayScene::chooseShowingDay(In &in)
 {
   if(sunBtn.query(in)) sunDragging = true;
 
@@ -143,60 +135,40 @@ bool PlayScene::chooseShownDay(In &in)
   {
     int firstX = dayRects[0].x+(dayRects[0].w/2);
     int lastX  = dayRects[6].x+(dayRects[6].w/2);
-    shown_days = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
-    shown_days = clamp(shown_days, 0, current_days);
+    showing_days = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
+    showing_days = clamp(showing_days, 0, shown_days);
   }
 
   return sunDragging;
 }
 
-void PlayScene::drawWaiting()
-{
-  loading.draw(graphics);
-  waiting_on_players_label.draw(graphics);
-}
-
-void PlayScene::drawReset()
-{
-  reset_game_button.draw(graphics);
-}
-
 void PlayScene::touch(In &in)
 {
   Action a, a0, a1;
-  Turn t;
   switch(state)
   {
     case IDLE:
       if(in.type == In::DOWN)
       {
-        if(chooseShownDay(in)) break;
         c->myMessage(a);
         c->mySabotage(a0,a1);
-        if(picker.query(in)) { setViewState(TURN_PICKING); picker.touch(in); }
-        else if(a.what == 'm'  && read_message.query(in))    { setViewState(MESSAGE); messager.setMessage(a); }
-        else if(a0.what == 's' && read_sabotage_0.query(in)) { setViewState(MESSAGE); messager.setMessage(a0); }
-        else if(a1.what == 's' && read_sabotage_1.query(in)) { setViewState(MESSAGE); messager.setMessage(a1); }
+        if(chooseShowingDay(in)) state = VIEWING;
+        if(!c->iHaveTurn() && !c->model.roundOver() && picker.touch(in)) { state = TURN_PICKING; }
+        else if(a.what == 'm'  && read_message.query(in))    { state = MESSAGE; messager.setMessage(a); }
+        else if(a0.what == 's' && read_sabotage_0.query(in)) { state = MESSAGE; messager.setMessage(a0); }
+        else if(a1.what == 's' && read_sabotage_1.query(in)) { state = MESSAGE; messager.setMessage(a1); }
       }
-      if(in.type == In::MOVE && sunDragging) chooseShownDay(in);
-      if(in.type == In::UP)                  sunDragging = false;
       break;
     case MESSAGE:
-      if(in.type == In::UP)
-        setViewState(IDLE);
+      if(in.type == In::UP) state = IDLE;
       break;
     case TURN_PICKING:
-      picker.touch(in);
-      if(picker.getTurn(t))
-      {
-        c->commitTurn(t);
-        setViewState(WAITING);
-      }
+      if(!picker.touch(in)) state = IDLE;
       break;
-    case WAITING:
-      if(in.type == In::DOWN) chooseShownDay(in);
-      if(in.type == In::MOVE && sunDragging) chooseShownDay(in);
-      if(in.type == In::UP)                  sunDragging = false;
+    case VIEWING:
+      if(in.type == In::DOWN || (in.type == In::MOVE && sunDragging)) chooseShowingDay(in);
+      if(in.type == In::UP) sunDragging = false;
+      if(!sunDragging && showing_days == shown_days) state = IDLE;
       break;
     case SHOWING:
       //interaction disabled
@@ -207,6 +179,11 @@ void PlayScene::touch(In &in)
   if(s && c->model.roundOver() && in.type == In::DOWN && reset_game_button.query(in))
     c->requestReset();
 }
+
+//model->days  - latest known state
+//known_days   - scene known state (syncs w/ model->days ASAP, uses negative change as evidence of round reset)
+//shown_days   - latest state shown at least once
+//showing_days - currently visible days
 
 int PlayScene::tick()
 {
@@ -219,37 +196,43 @@ int PlayScene::tick()
   messager.tick();
   loading.tick(0.4f);
 
-  if(goal_days != c->model.days)
+  if(known_days != c->model.days)
   {
     if(c->model.days == -1) return -1; //game was reset- go back to room
-    goal_days = c->model.days;
+    known_days = c->model.days;
   }
 
-  if(current_days < goal_days)
+  if(shown_days < known_days)
   {
-    setViewState(SHOWING);
-    current_days += 0.005f;
-    if(current_days >= goal_days)
+    state = SHOWING;
+    sunDragging = false;
+    picker.clearViewState();
+    messager.clearViewState();
+
+    if(shown_days < known_days-1.0f) shown_days = known_days-1.0f;
+    shown_days += 0.005f;
+    if(shown_days >= known_days)
     {
-      current_days = goal_days;
-      setViewState(IDLE);
+      shown_days = known_days;
+      state = IDLE;
     }
-    shown_days = current_days; //force showing of "currently progressing day"
+    showing_days = shown_days; //force showing of "currently progressing day"
   }
 
-  if(state != WAITING && c->iHaveTurn())
-    setViewState(WAITING);
+  Turn t;
+  if(picker.getTurn(t)) c->commitTurn(t);
+  if(c->iHaveTurn()) state = IDLE;
 
   return 0;
 }
 
 void PlayScene::draw()
 {
-  float snapped_shown_days = clamp(snapToInt(shown_days), 0, current_days);
-  int base_day = (int)snapped_shown_days;
-  float t = snapped_shown_days-((float)base_day);
+  float snapped_showing_days = clamp(snapToInt(showing_days), 0, shown_days);
+  int base_showing_day = (int)snapped_showing_days;
+  float t = snapped_showing_days-((float)base_showing_day);
 
-  SDL_Rect sunr = rectForTransition(Week::day(base_day%7), Week::day((base_day+1)%7), t);
+  SDL_Rect sunr = rectForTransition(Week::day(base_showing_day%7), Week::day((base_showing_day+1)%7), t);
   graphics->draw(Sprite::sun,sunr);
   sunBtn.rect.rect = sunr;
   for(int i = 0; i < 7; i++)
@@ -262,7 +245,7 @@ void PlayScene::draw()
   {
     Turn turns[4];
     for(int i = 0; i < 4; i++)
-      turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_day);
+      turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day);
 
     circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
     circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
@@ -451,11 +434,18 @@ void PlayScene::draw()
            if(a.what == 'm')  read_message.draw(graphics);
       else if(a0.what == 's') read_sabotage_0.draw(graphics);
       else if(a1.what == 's') read_sabotage_1.draw(graphics);
-      if(!c->model.roundOver()) picker.draw(graphics);
-      else if(c->iWin())  win_img.draw(graphics);
-      else if(c->iLose()) lose_img.draw(graphics);
-      else if(c->iTie())  tie_img.draw(graphics);
-
+      if(!c->model.roundOver())
+      {
+        if(!c->iHaveTurn()) picker.draw(graphics);
+        else                loading.draw(graphics);
+      }
+      else
+      {
+        if(s) reset_game_button.draw(graphics);
+             if(c->iWin())  win_img.draw(graphics);
+        else if(c->iLose()) lose_img.draw(graphics);
+        else if(c->iTie())  tie_img.draw(graphics);
+      }
       break;
     case MESSAGE:
       messager.draw(graphics);
@@ -463,11 +453,11 @@ void PlayScene::draw()
     case TURN_PICKING:
       picker.draw(graphics);
       break;
-    case WAITING:
-      loading.draw(graphics);
+    case VIEWING:
+      //already drawn- t != 0.0f
       break;
     case SHOWING:
-      //interaction disabled
+      //already drawn- t != 0.0f
       break;
     default: break;
   }
