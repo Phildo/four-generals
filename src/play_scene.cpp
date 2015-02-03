@@ -276,7 +276,7 @@ void PlayScene::draw()
 
     circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
     circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
-    circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho; int nRetaliates = 0;
+    circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho; circQ<int,4> retaliateActionsAgainst; int nRetaliates = 0;
     circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;  int nSabotages  = 0;
     circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;   int nMessages   = 0;
 
@@ -284,7 +284,30 @@ void PlayScene::draw()
     Action *action;
     /* defends    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) { defendActions.enqueue(*action);    defendActionsWho.enqueue(i);    nDefends++;    }
     /* attacks    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('a'))) { attackActions.enqueue(*action);    attackActionsWho.enqueue(i);    nAttacks++;    }
-    /* retaliates */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) { retaliateActions.enqueue(*action); retaliateActionsWho.enqueue(i); nRetaliates++; }
+    /* retaliates */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) //special case because more complicated
+    {
+      Action *a;
+      int eToRetaliate = 0; //gets set if exactly one enemy attacked
+      int e;
+
+      //cw attack
+      e = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(i)));
+      if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
+        eToRetaliate = e;
+
+      //ccw attack
+      e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(i)));
+      if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
+        eToRetaliate = eToRetaliate ? 0 : e;
+
+      if(eToRetaliate)
+      {
+        retaliateActions.enqueue(*action);
+        retaliateActionsWho.enqueue(i);
+        retaliateActionsAgainst.enqueue(eToRetaliate);
+        nRetaliates++;
+      }
+    }
     /* sabotages  */ for(int i = 0; i < 4; i++) if((action = turns[i].action('s'))) { sabotageActions.enqueue(*action);  sabotageActionsWho.enqueue(i);  nSabotages++;  }
     /* messages   */ for(int i = 0; i < 4; i++) if((action = turns[i].action('m'))) { messageActions.enqueue(*action);   messageActionsWho.enqueue(i);   nMessages++;   }
     }
@@ -344,23 +367,8 @@ void PlayScene::draw()
     while(nRetaliates > 0 && st+plen < t)
     {
       action = retaliateActions.next();
-      card = *retaliateActionsWho.next();
-
-      int e;
-      if(health[card] > 1)
-      {
-        Action *a;
-
-        //cw attack
-        e = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(card)));
-        if((a = turns[e].action('a')) && a->who == Compass::cardinal(card))
-        { health[card]--; health[e]--; }
-
-        //ccw attack
-        e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(card)));
-        if((a = turns[e].action('a')) && a->who == Compass::cardinal(card))
-        { health[card]--; health[e]--; }
-      }
+      health[*retaliateActionsWho.next()]--;
+      health[*retaliateActionsAgainst.next()]--;
 
       nRetaliates--;
       st += plen;
@@ -369,28 +377,10 @@ void PlayScene::draw()
     {
       action = retaliateActions.next();
       card = *retaliateActionsWho.next();
+      int e = *retaliateActionsAgainst.next();
 
-      int e;
-      if(health[card] > 1)
-      {
-        Action *a;
-
-        //cw attack
-        e  = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(card)));
-        if((a = turns[e].action('a')) && a->who == Compass::cardinal(card))
-        {
-          graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), Compass::cardinal(e), (t-st)/plen));
-          cardsDrawn[card] = true;
-        }
-
-        //ccw attack
-        e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(card)));
-        if((a = turns[e].action('a')) && a->who == Compass::cardinal(card))
-        {
-          graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), Compass::cardinal(e), (t-st)/plen));
-          cardsDrawn[card] = true;
-        }
-      }
+      graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), Compass::cardinal(e), (t-st)/plen));
+      cardsDrawn[card] = true;
 
       nRetaliates--;
       st += plen;

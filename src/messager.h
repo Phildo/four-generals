@@ -12,16 +12,16 @@ class Messager
   private:
     Action message;
     UI::Box box;
+    UI::Image who;
+    UI::Image when;
   public:
     Messager();
     ~Messager();
 
     void tick();
     void draw(Graphics *g);
-    void clearViewState();
 
     void setMessage(Action m);
-    void reset();
 };
 
 #endif
