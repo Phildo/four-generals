@@ -270,18 +270,21 @@ void PlayScene::draw()
   bool cardsDrawn[4] = {false,false,false,false};
   if(t != 0.0f)
   {
-    Turn turns[4];
-    for(int i = 0; i < 4; i++)
-      turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day);
 
     circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
     circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
     circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho; circQ<int,4> retaliateActionsAgainst; int nRetaliates = 0;
     circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;  int nSabotages  = 0;
     circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;   int nMessages   = 0;
+    circQ<Action,4> ymessageActions;  circQ<int,4> ymessageActionsWho;  int nYMessages  = 0; //yesterday's messages
 
-    { //to scope action
-    Action *action;
+    { //to scope turns/action
+
+      Turn turns[4];
+      Action *action;
+      for(int i = 0; i < 4; i++)
+        turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day);
+
     /* defends    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) { defendActions.enqueue(*action);    defendActionsWho.enqueue(i);    nDefends++;    }
     /* attacks    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('a'))) { attackActions.enqueue(*action);    attackActionsWho.enqueue(i);    nAttacks++;    }
     /* retaliates */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) //special case because more complicated
@@ -310,13 +313,31 @@ void PlayScene::draw()
     }
     /* sabotages  */ for(int i = 0; i < 4; i++) if((action = turns[i].action('s'))) { sabotageActions.enqueue(*action);  sabotageActionsWho.enqueue(i);  nSabotages++;  }
     /* messages   */ for(int i = 0; i < 4; i++) if((action = turns[i].action('m'))) { messageActions.enqueue(*action);   messageActionsWho.enqueue(i);   nMessages++;   }
+
+    if(base_showing_day > 0) //check for yesterday's messages
+    {
+      for(int i = 0; i < 4; i++)
+        turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day-1);
+
+      /* ymessages   */ for(int i = 0; i < 4; i++) if((action = turns[i].action('m')))
+      {
+        Action *a;
+        if(!(a = turns[Compass::icardinal(action->route)].action('s')) || a->how != 'b')
+        {
+          ymessageActions.enqueue(*action);
+          ymessageActionsWho.enqueue(i);
+          nYMessages++;
+        }
+      }
+    }
+
     }
 
     int nActions = (nDefends   > 0 ? 1 : 0)   + //any defends happen simultaneously
                    (nAttacks)                 + //all attacks get played out individually
                    (nRetaliates)              + //all retaliations get played out individually
                    (nSabotages > 0 ? 1 : 0)   + //any sabotages happen simultaneously
-                   (nMessages  > 0 ? 1 : 0)   + //any messages happen simultaneously
+                   (nMessages+nYMessages  > 0 ? 1 : 0)   + //any messages happen simultaneously
                    1; //for "heal" phase
 
     const float n = (float)nActions;
@@ -395,30 +416,43 @@ void PlayScene::draw()
     }
     if(nSabotages > 0 && st < t)
     {
-      action = sabotageActions.next();
-      card = *sabotageActionsWho.next();
+      while(nSabotages > 0)
+      {
+        action = sabotageActions.next();
+        card = *sabotageActionsWho.next();
 
-      graphics->draw(Sprite::knife, cardRects[card]);
-
-      nSabotages = 0;
+        graphics->draw(Sprite::knife, cardRects[card]);
+        nSabotages--;
+      }
       st += plen;
     }
 
     //Messages
-    if(nMessages > 0 && st+plen < t)
+    if(nMessages+nYMessages > 0 && st+plen < t)
     {
       //no need to simulate anything
       nMessages = 0;
+      nYMessages = 0;
       st += plen;
     }
-    if(nMessages > 0 && st < t)
+    if(nMessages+nYMessages > 0 && st < t)
     {
-      action = messageActions.next();
-      card = *messageActionsWho.next();
+      while(nMessages > 0)
+      {
+        action = messageActions.next();
+        card = *messageActionsWho.next();
 
-      graphics->draw(Sprite::envelope,rectForTraversal(Compass::cardinal(card), action->route, (t-st)/plen));
+        graphics->draw(Sprite::envelope,rectForTraversal(Compass::cardinal(card), action->route, (t-st)/plen));
+        nMessages--;
+      }
+      while(nYMessages > 0)
+      {
+        action = ymessageActions.next();
+        card = *ymessageActionsWho.next();
 
-      nMessages = 0;
+        graphics->draw(Sprite::envelope,rectForTraversal(action->route, Compass::opcardinal(Compass::cardinal(card)), (t-st)/plen));
+        nYMessages--;
+      }
       st += plen;
     }
   }

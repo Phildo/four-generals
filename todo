@@ -7,7 +7,12 @@
 - auto-join, then on reset game there are a bunch of aborts?
 
 - message + sabotage reading
-- playscene ui rendering not brute
+- sun graphics need Labels
+- Sabotage who needs to be self, not opponents
+- scout implementation
+- draw 2nd day messages
+- weird blink when day starts
+- scout icon (currently shield for confirm)
 
 - android no ip? (can't host)
 - android startup to gray screen
