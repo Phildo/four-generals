@@ -77,9 +77,9 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   sunBtn = UI::Button(dayRects[0]);
 
-  read_sabotage_0 = UI::ImageButtonRound(Sprite::knife,      10,wh-50,20,20);
-  read_sabotage_1 = UI::ImageButtonRound(Sprite::knife,      10,wh-80,20,20);
-  read_message    = UI::ImageButtonRound(Sprite::envelope,ww-30,wh-50,20,20);
+  read_sabotage_0 = UI::ImageButtonRound(Sprite::knife,       20,wh-100,100,30);
+  read_sabotage_1 = UI::ImageButtonRound(Sprite::knife,       20,wh- 50,100,30);
+  read_message    = UI::ImageButtonRound(Sprite::envelope,ww-150,wh- 50,100,30);
 
   loading = UI::Anim(Sprite::loading_anim, 3, 1.f, ww/2-250, wh/2-120,40,40);
   waiting_on_players_label = UI::Label("waiting on players...", wh/2-20, 200, 40);
@@ -154,9 +154,12 @@ void PlayScene::touch(In &in)
         c->mySabotage(a0,a1);
         if(chooseShowingDay(in)) state = VIEWING;
         if(!c->iHaveTurn() && !c->model.roundOver() && picker.touch(in)) { state = TURN_PICKING; }
-        else if(a.what == 'm'  && read_message.query(in))    { state = MESSAGE; messager.setMessage(a); }
-        else if(a0.what == 's' && read_sabotage_0.query(in)) { state = MESSAGE; messager.setMessage(a0); }
-        else if(a1.what == 's' && read_sabotage_1.query(in)) { state = MESSAGE; messager.setMessage(a1); }
+        else
+        {
+          if(a.what == 'm'  && read_message.query(in))    { state = MESSAGE; messager.setMessage(a); }
+          if(a0.what == 'm' && read_sabotage_0.query(in)) { state = MESSAGE; messager.setMessage(a0); }
+          if(a1.what == 'm' && read_sabotage_1.query(in)) { state = MESSAGE; messager.setMessage(a1); }
+        }
       }
       break;
     case MESSAGE:
@@ -485,9 +488,9 @@ void PlayScene::draw()
     case IDLE:
       c->myMessage(a);
       c->mySabotage(a0,a1);
-           if(a.what == 'm')  read_message.draw(graphics);
-      else if(a0.what == 's') read_sabotage_0.draw(graphics);
-      else if(a1.what == 's') read_sabotage_1.draw(graphics);
+      if(a.what == 'm')  read_message.draw(graphics);
+      if(a0.what == 'm') read_sabotage_0.draw(graphics);
+      if(a1.what == 'm') read_sabotage_1.draw(graphics);
       if(!c->model.roundOver())
       {
         if(!c->iHaveTurn()) picker.draw(graphics);
