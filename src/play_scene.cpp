@@ -91,7 +91,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   picker = TurnPicker(UI::Box(0,0,ww,wh));
   picker.init();
-  messager = Messager();
+  messager = Messager(ww/2-150,wh/2-130,300,260);
 
   known_days = 0.0f;
   shown_days = 0.0f;

@@ -16,6 +16,7 @@ class Messager
     UI::Image when;
   public:
     Messager();
+    Messager(int x, int y, int w, int h);
     ~Messager();
 
     void tick();
