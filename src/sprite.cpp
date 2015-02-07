@@ -335,7 +335,6 @@ void Sprite::init(const char *f)
 
     //hack for SDL_RWops- rewind head to beginning of next line
     Sint64 length = SDL_RWseek(io, file_index, RW_SEEK_SET);
-    fg_log("seeking to %d l %lld",file_index,length);
   }
   //fclose(fp);
   io->close(io);
