@@ -24,6 +24,7 @@ void Messager::draw(Graphics *g)
   box.draw(g);
   who.draw(g);
   when.draw(g);
+  when_l.draw(g);
 }
 
 void Messager::setMessage(Action m)
