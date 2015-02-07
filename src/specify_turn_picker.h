@@ -41,10 +41,15 @@ struct SpecifyRequest
   UI::ImageButton which_who; \
   UI::ImageButton which_when;
 
-#define SPECIFIER_WHO_SPEC \
+#define SPECIFIER_WHO_E_SPEC \
   UI::Label who; \
   UI::ImageButton who_cw; \
   UI::ImageButton who_ccw;
+
+#define SPECIFIER_WHO_F_SPEC \
+  UI::Label who; \
+  UI::ImageButton who_me; \
+  UI::ImageButton who_p;
 
 #define SPECIFIER_WHEN_SPEC \
   UI::Label when; \
@@ -64,7 +69,7 @@ struct SpecifyRequest
 struct AttackSpecifier
 {
   SPECIFIER_FUNC_SPEC
-  SPECIFIER_WHO_SPEC
+  SPECIFIER_WHO_E_SPEC
   UI::Label confirm_label;
   UI::ImageButton confirm_attack;
   UI::ImageButton confirm_who;
@@ -78,7 +83,7 @@ struct DefendSpecifier
 struct MessageSpecifier
 {
   SPECIFIER_FUNC_SPEC
-  SPECIFIER_WHO_SPEC
+  SPECIFIER_WHO_E_SPEC
   SPECIFIER_WHEN_SPEC
   SPECIFIER_ROUTE_SPEC
   UI::Label confirm_label;
@@ -93,7 +98,7 @@ struct SabotageSpecifier
   SPECIFIER_FUNC_SPEC
   SPECIFIER_HOW_SPEC
   SPECIFIER_WHICH_SPEC
-  SPECIFIER_WHO_SPEC
+  SPECIFIER_WHO_F_SPEC
   SPECIFIER_WHEN_SPEC
   UI::Label confirm_label;
   UI::ImageButton confirm_sabotage;

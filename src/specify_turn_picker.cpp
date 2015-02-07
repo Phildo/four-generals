@@ -14,10 +14,15 @@
   which_who  = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
   which_when = UI::ImageButton(Sprite::sun,   r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
 
-#define SPECIFIER_WHO_IMPL \
+#define SPECIFIER_WHO_E_IMPL \
   who = UI::Label("Who?",r.x+10,r.y+10,35); \
   who_cw  = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
   who_ccw = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
+
+#define SPECIFIER_WHO_F_IMPL \
+  who = UI::Label("Who?",r.x+10,r.y+10,35); \
+  who_me = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
+  who_p  = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
 
 #define SPECIFIER_WHEN_IMPL \
   when = UI::Label("When?",r.x+10,r.y+10,35); \
@@ -51,11 +56,18 @@
   which_when.draw(g); \
 }
 
-#define SPECIFIER_DRAW_WHO_IMPL \
+#define SPECIFIER_DRAW_WHO_E_IMPL \
 { \
   who.draw(g); \
   who_cw.draw(g); \
   who_ccw.draw(g); \
+}
+
+#define SPECIFIER_DRAW_WHO_F_IMPL \
+{ \
+  who.draw(g); \
+  who_me.draw(g); \
+  who_p.draw(g); \
 }
 
 #define SPECIFIER_DRAW_WHEN_IMPL \
@@ -91,10 +103,17 @@
   if(which_when.query(in)) { action->which = 'e'; confirm_which.sprite = Sprite::sun; } \
 }
 
-#define SPECIFIER_TOUCH_WHO_IMPL \
+#define SPECIFIER_TOUCH_WHO_E_IMPL \
 { \
   if(who_cw.query(in))  action->who = Compass::cwcardinal(cardinal); \
   if(who_ccw.query(in)) action->who = Compass::ccwcardinal(cardinal); \
+  confirm_who.sprite = Sprite::generals[Compass::icardinal(action->who)]; \
+}
+
+#define SPECIFIER_TOUCH_WHO_F_IMPL \
+{ \
+  if(who_me.query(in))  action->who = cardinal; \
+  if(who_p.query(in)) action->who = Compass::opcardinal(cardinal); \
   confirm_who.sprite = Sprite::generals[Compass::icardinal(action->who)]; \
 }
 
@@ -122,7 +141,7 @@ void AttackSpecifier::init(SDL_Rect r)
 {
   rect = UI::Box(r);
   confirm = UI::TextButton("Confirm",r.x+(r.w/2)+100-50,r.y+r.h-15,100,30);
-  SPECIFIER_WHO_IMPL
+  SPECIFIER_WHO_E_IMPL
   confirm_label = UI::Label("Confirm?",r.x+10,r.y+10,35);
   confirm_attack = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100);
   confirm_who    = UI::ImageButton(Sprite::sread, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
@@ -140,7 +159,7 @@ SpecifyRequest AttackSpecifier::touch(In &in)
 
   if(action->who == '0')
   {
-    SPECIFIER_TOUCH_WHO_IMPL
+    SPECIFIER_TOUCH_WHO_E_IMPL
   }
   else
   {
@@ -158,7 +177,7 @@ void AttackSpecifier::tick()
 void AttackSpecifier::draw(Graphics *g)
 {
   if(action->who == '0')
-    SPECIFIER_DRAW_WHO_IMPL
+    SPECIFIER_DRAW_WHO_E_IMPL
   else
   {
     confirm_label.draw(g);
@@ -204,7 +223,7 @@ void MessageSpecifier::init(SDL_Rect r)
 {
   rect = UI::Box(r);
   confirm = UI::TextButton("Confirm",r.x+(r.w/2)+100-50,r.y+r.h-15,100,30);
-  SPECIFIER_WHO_IMPL
+  SPECIFIER_WHO_E_IMPL
   SPECIFIER_WHEN_IMPL
   SPECIFIER_ROUTE_IMPL
   confirm_label = UI::Label("Confirm?",r.x+10,r.y+10,35);
@@ -228,7 +247,7 @@ SpecifyRequest MessageSpecifier::touch(In &in)
   s.type = SpecifyRequest::NONE;
 
   if(action->who == '0')
-    SPECIFIER_TOUCH_WHO_IMPL
+    SPECIFIER_TOUCH_WHO_E_IMPL
   else if(action->when == '0')
     SPECIFIER_TOUCH_WHEN_IMPL
   else if(action->route == '0')
@@ -251,7 +270,7 @@ void MessageSpecifier::tick()
 void MessageSpecifier::draw(Graphics *g)
 {
   if(action->who == '0')
-    SPECIFIER_DRAW_WHO_IMPL
+    SPECIFIER_DRAW_WHO_E_IMPL
   else if(action->when == '0')
     SPECIFIER_DRAW_WHEN_IMPL
   else if(action->route == '0')
@@ -274,21 +293,21 @@ void SabotageSpecifier::init(SDL_Rect r)
   confirm = UI::TextButton("Confirm",r.x+(r.w/2)+100-50,r.y+r.h-15,100,30);
   SPECIFIER_HOW_IMPL
   SPECIFIER_WHICH_IMPL
-  SPECIFIER_WHO_IMPL
+  SPECIFIER_WHO_F_IMPL
   SPECIFIER_WHEN_IMPL
   confirm_label = UI::Label("Confirm?",r.x+10,r.y+10,35);
   confirm_sabotage = UI::ImageButton(Sprite::knife,  r.x+space(r.w,0,100,5,0), r.y+50, 100, 100);
   confirm_how      = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,1), r.y+50, 100, 100);
   confirm_which    = UI::ImageButton(Sprite::sun,    r.x+space(r.w,0,100,5,2), r.y+50, 100, 100);
   confirm_who      = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,3), r.y+50, 100, 100);
-  confirm_when     = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,4), r.y+50, 100, 100);
+  confirm_when     = UI::ImageButton(Sprite::sun,    r.x+space(r.w,0,100,5,4), r.y+50, 100, 100);
   confirm_when_l   = UI::Label("Sun",                r.x+space(r.w,0,100,5,4), r.y+50,  50);
 }
 void SabotageSpecifier::setCardinal(char c)
 {
   cardinal = c;
-  who_cw.sprite = Sprite::generals[Compass::icardinal(Compass::cwcardinal(cardinal))];
-  who_ccw.sprite = Sprite::generals[Compass::icardinal(Compass::ccwcardinal(cardinal))];
+  who_me.sprite = Sprite::generals[Compass::icardinal(cardinal)];
+  who_p.sprite = Sprite::generals[Compass::icardinal(Compass::opcardinal(cardinal))];
 }
 SpecifyRequest SabotageSpecifier::touch(In &in)
 {
@@ -304,7 +323,7 @@ SpecifyRequest SabotageSpecifier::touch(In &in)
     else if(action->which == 'o')
     {
       if(action->who == '0')
-        SPECIFIER_TOUCH_WHO_IMPL
+        SPECIFIER_TOUCH_WHO_F_IMPL
       else
       {
         if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
@@ -352,7 +371,7 @@ void SabotageSpecifier::draw(Graphics *g)
     else if(action->which == 'o')
     {
       if(action->who == '0')
-        SPECIFIER_DRAW_WHO_IMPL
+        SPECIFIER_DRAW_WHO_F_IMPL
       else
       {
         confirm_label.draw(g);
