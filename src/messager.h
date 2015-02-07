@@ -14,6 +14,7 @@ class Messager
     UI::Box box;
     UI::Image who;
     UI::Image when;
+    UI::Label when_l;
   public:
     Messager();
     Messager(int x, int y, int w, int h);
