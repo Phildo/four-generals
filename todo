@@ -1,17 +1,14 @@
 - host/join specified port
-- sensible text popups
+- sensible text descriptions
 
 - can back out when auto-join attempting
 - shouldn't try auto-join unless ip exists
 - notification of wireless status would be nice
 - auto-join, then on reset game there are a bunch of aborts?
 - handle player leave mid game
+- implement modes
 
-- message + sabotage reading
-- sun graphics need Labels
-- Sabotage who needs to be self, not opponents
 - scout implementation
-- draw 2nd day messages
 - weird blink when day starts
 - scout icon (currently shield for confirm)
 

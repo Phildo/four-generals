@@ -1,5 +1,5 @@
 #include "sprite.h"
-#include "stdio.h"
+//#include "stdio.h"
 #include "string.h"
 #include "logger.h"
 
@@ -128,26 +128,32 @@ AnimSprites loading_anim;
 };
 
 
-static void parseIntoRect(char *b, SDL_Rect *v)
+static int parseIntoRect(char *b, SDL_Rect *v) //returns length traversed
 {
   int i = 0;
   int j = 0;
 
-  j = i;
   while(*(b+i) != ',') i++; *(b+i) = '\0';
   v->x = String(b+j).intVal();
   i++;
   j = i;
+
   while(*(b+i) != ',') i++; *(b+i) = '\0';
   v->y = String(b+j).intVal();
   i++;
   j = i;
+
   while(*(b+i) != ',') i++; *(b+i) = '\0';
   v->w = String(b+j).intVal();
   i++;
   j = i;
+
   while(*(b+i) != ',') i++; *(b+i) = '\0';
   v->h = String(b+j).intVal();
+  i++;
+  j = i;
+
+  return j;
 }
 
 void Sprite::init(const char *f)
@@ -277,8 +283,11 @@ void Sprite::init(const char *f)
   String k;
   SDL_Rect *v;
   char buff[255]; //key+equals+4#s+4,s+buffer
-  FILE *fp = fopen(file_name.ptr(),"r");
-  while(fgets(buff, 255, (FILE*)fp))
+  //FILE *fp = fopen(file_name.ptr(),"r");
+  SDL_RWops *io = SDL_RWFromFile(file_name.ptr(), "r");
+  int file_index = 0; //necessary for SDL_RWops to keep track of next seek
+  //while(fgets(buff, sizeof(buff), (FILE*)fp))
+  while(io->read(io, buff, sizeof(buff), 1) > 0)
   {
     int i = 0;
     int j = 0;
@@ -292,7 +301,9 @@ void Sprite::init(const char *f)
         if(keys[j].equals(k))
         {
           v = values[j];
-          parseIntoRect(&buff[i+1],v);
+          file_index += i;
+          file_index += parseIntoRect(&buff[i+1],v);
+          file_index += 2;
         }
       }
     }
@@ -317,10 +328,17 @@ void Sprite::init(const char *f)
       else if(c == ';') c = ('z'-'a')+('Z'-'A')+('9'-'0')+3+12;
       else if(c == ')') c = ('z'-'a')+('Z'-'A')+('9'-'0')+3+13;
       else if(c == '<') c = ('z'-'a')+('Z'-'A')+('9'-'0')+3+14;
-      parseIntoRect(&buff[i+1],&a[(int)c]);
+      file_index += i;
+      file_index += parseIntoRect(&buff[i+1],&a[(int)c]);
+      file_index += 2;
     }
+
+    //hack for SDL_RWops- rewind head to beginning of next line
+    Sint64 length = SDL_RWseek(io, file_index, RW_SEEK_SET);
+    fg_log("seeking to %d l %lld",file_index,length);
   }
-  fclose(fp);
+  //fclose(fp);
+  io->close(io);
 
   //construct groupings
   pTags[0]  = Sprite::p1;    pTags[1] = Sprite::p2;    pTags[2] = Sprite::p3;    pTags[3] = Sprite::p4;
