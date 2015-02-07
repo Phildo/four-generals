@@ -5,6 +5,7 @@
 - shouldn't try auto-join unless ip exists
 - notification of wireless status would be nice
 - auto-join, then on reset game there are a bunch of aborts?
+- handle player leave mid game
 
 - message + sabotage reading
 - sun graphics need Labels
@@ -17,6 +18,5 @@
 - android no ip? (can't host)
 - android startup to gray screen
 - android freeze on disconnect
+- android not loading sprites
 
-- Disallow repeat actions
-- Disallow 2 cost actions when 1 cost used

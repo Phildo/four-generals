@@ -48,13 +48,13 @@ struct SpecifyRequest
 
 #define SPECIFIER_WHEN_SPEC \
   UI::Label when; \
-  UI::ImageButton when_su; \
-  UI::ImageButton when_mo; \
-  UI::ImageButton when_tu; \
-  UI::ImageButton when_we; \
-  UI::ImageButton when_th; \
-  UI::ImageButton when_fr; \
-  UI::ImageButton when_sa;
+  UI::ImageButton when_su; UI::Label when_su_l; \
+  UI::ImageButton when_mo; UI::Label when_mo_l; \
+  UI::ImageButton when_tu; UI::Label when_tu_l; \
+  UI::ImageButton when_we; UI::Label when_we_l; \
+  UI::ImageButton when_th; UI::Label when_th_l; \
+  UI::ImageButton when_fr; UI::Label when_fr_l; \
+  UI::ImageButton when_sa; UI::Label when_sa_l;
 
 #define SPECIFIER_ROUTE_SPEC \
   UI::Label route; \
@@ -85,6 +85,7 @@ struct MessageSpecifier
   UI::ImageButton confirm_message;
   UI::ImageButton confirm_who;
   UI::ImageButton confirm_when;
+  UI::Label confirm_when_l;
   UI::ImageButton confirm_route;
 };
 struct SabotageSpecifier
@@ -100,6 +101,7 @@ struct SabotageSpecifier
   UI::ImageButton confirm_which;
   UI::ImageButton confirm_who;
   UI::ImageButton confirm_when;
+  UI::Label confirm_when_l;
 };
 struct ScoutSpecifier
 {

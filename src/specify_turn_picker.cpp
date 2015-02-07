@@ -21,13 +21,13 @@
 
 #define SPECIFIER_WHEN_IMPL \
   when = UI::Label("When?",r.x+10,r.y+10,35); \
-  when_su = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,0), r.y+50, 100, 100); \
-  when_mo = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,1), r.y+50, 100, 100); \
-  when_tu = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,2), r.y+50, 100, 100); \
-  when_we = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,3), r.y+50, 100, 100); \
-  when_th = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,4), r.y+50, 100, 100); \
-  when_fr = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,5), r.y+50, 100, 100); \
-  when_sa = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,6), r.y+50, 100, 100);
+  when_su = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,0), r.y+50, 100, 100); when_su_l = UI::Label("Sun", r.x+space(r.w,0,100,7,0), r.y+50, 50); \
+  when_mo = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,1), r.y+50, 100, 100); when_mo_l = UI::Label("Mon", r.x+space(r.w,0,100,7,1), r.y+50, 50); \
+  when_tu = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,2), r.y+50, 100, 100); when_tu_l = UI::Label("Tue", r.x+space(r.w,0,100,7,2), r.y+50, 50); \
+  when_we = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,3), r.y+50, 100, 100); when_we_l = UI::Label("Wed", r.x+space(r.w,0,100,7,3), r.y+50, 50); \
+  when_th = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,4), r.y+50, 100, 100); when_th_l = UI::Label("Thu", r.x+space(r.w,0,100,7,4), r.y+50, 50); \
+  when_fr = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,5), r.y+50, 100, 100); when_fr_l = UI::Label("Fri", r.x+space(r.w,0,100,7,5), r.y+50, 50); \
+  when_sa = UI::ImageButton(Sprite::sun, r.x+space(r.w,0,100,7,6), r.y+50, 100, 100); when_sa_l = UI::Label("Sat", r.x+space(r.w,0,100,7,6), r.y+50, 50);
 
 #define SPECIFIER_ROUTE_IMPL \
   route = UI::Label("Which route should the messenger take?",r.x+10,r.y+10,35); \
@@ -61,13 +61,13 @@
 #define SPECIFIER_DRAW_WHEN_IMPL \
 { \
   when.draw(g); \
-  when_su.draw(g); \
-  when_mo.draw(g); \
-  when_tu.draw(g); \
-  when_we.draw(g); \
-  when_th.draw(g); \
-  when_fr.draw(g); \
-  when_sa.draw(g); \
+  when_su.draw(g); when_su_l.draw(g); \
+  when_mo.draw(g); when_mo_l.draw(g); \
+  when_tu.draw(g); when_tu_l.draw(g); \
+  when_we.draw(g); when_we_l.draw(g); \
+  when_th.draw(g); when_th_l.draw(g); \
+  when_fr.draw(g); when_fr_l.draw(g); \
+  when_sa.draw(g); when_sa_l.draw(g); \
 }
 
 #define SPECIFIER_DRAW_ROUTE_IMPL \
@@ -100,13 +100,13 @@
 
 #define SPECIFIER_TOUCH_WHEN_IMPL \
 { \
-  if(when_su.query(in)) action->when = 's'; \
-  if(when_mo.query(in)) action->when = 'm'; \
-  if(when_tu.query(in)) action->when = 't'; \
-  if(when_we.query(in)) action->when = 'w'; \
-  if(when_th.query(in)) action->when = 'h'; \
-  if(when_fr.query(in)) action->when = 'f'; \
-  if(when_sa.query(in)) action->when = 'a'; \
+  if(when_su.query(in)) { action->when = 's'; confirm_when_l.text = String("Sun"); } \
+  if(when_mo.query(in)) { action->when = 'm'; confirm_when_l.text = String("Mon"); } \
+  if(when_tu.query(in)) { action->when = 't'; confirm_when_l.text = String("Tue"); } \
+  if(when_we.query(in)) { action->when = 'w'; confirm_when_l.text = String("Wed"); } \
+  if(when_th.query(in)) { action->when = 'h'; confirm_when_l.text = String("Thu"); } \
+  if(when_fr.query(in)) { action->when = 'f'; confirm_when_l.text = String("Fri"); } \
+  if(when_sa.query(in)) { action->when = 'a'; confirm_when_l.text = String("Sat"); } \
 }
 
 #define SPECIFIER_TOUCH_ROUTE_IMPL \
@@ -211,6 +211,7 @@ void MessageSpecifier::init(SDL_Rect r)
   confirm_message = UI::ImageButton(Sprite::envelope, r.x+space(r.w,0,100,4,0), r.y+50, 100, 100);
   confirm_who     = UI::ImageButton(Sprite::shield,   r.x+space(r.w,0,100,4,1), r.y+50, 100, 100);
   confirm_when    = UI::ImageButton(Sprite::sun,      r.x+space(r.w,0,100,4,2), r.y+50, 100, 100);
+  confirm_when_l  = UI::Label("Sun",                  r.x+space(r.w,0,100,4,2), r.y+50,  50);
   confirm_route   = UI::ImageButton(Sprite::shield,   r.x+space(r.w,0,100,4,3), r.y+50, 100, 100);
 }
 void MessageSpecifier::setCardinal(char c)
@@ -261,6 +262,7 @@ void MessageSpecifier::draw(Graphics *g)
     confirm_message.draw(g);
     confirm_who.draw(g);
     confirm_when.draw(g);
+    confirm_when_l.draw(g);
     confirm_route.draw(g);
     confirm.draw(g);
   }
@@ -280,6 +282,7 @@ void SabotageSpecifier::init(SDL_Rect r)
   confirm_which    = UI::ImageButton(Sprite::sun,    r.x+space(r.w,0,100,5,2), r.y+50, 100, 100);
   confirm_who      = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,3), r.y+50, 100, 100);
   confirm_when     = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,4), r.y+50, 100, 100);
+  confirm_when_l   = UI::Label("Sun",                r.x+space(r.w,0,100,5,4), r.y+50,  50);
 }
 void SabotageSpecifier::setCardinal(char c)
 {
@@ -371,6 +374,7 @@ void SabotageSpecifier::draw(Graphics *g)
         confirm_how.draw(g);
         confirm_which.draw(g);
         confirm_when.draw(g);
+        confirm_when_l.draw(g);
         confirm.draw(g);
       }
     }
