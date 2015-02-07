@@ -10,7 +10,8 @@
 
 #ifdef FG_ANDROID
 #include "third/android_ifaddrs.h" //android impl of ifaddrs
-#else
+#endif
+#ifdef FG_PC
 #include <ifaddrs.h>
 #endif
 
