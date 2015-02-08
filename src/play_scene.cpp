@@ -283,10 +283,11 @@ void PlayScene::draw()
 
     { //to scope turns/action
 
-      Turn turns[4];
-      Action *action;
-      for(int i = 0; i < 4; i++)
-        turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day);
+    Turn turns[4];
+    Action *action;
+    for(int i = 0; i < 4; i++)
+      turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day);
+    bool iscouted = (turns[Compass::icardinal(c->myCardinal())].action('c') != 0);
 
     /* defends    */
     for(int i = 0; i < 4; i++)
@@ -339,7 +340,7 @@ void PlayScene::draw()
     /* sabotages  */
     for(int i = 0; i < 4; i++)
     {
-      if(Compass::icardinal(c->myCardinal()) == i || turns[Compass::icardinal(c->myCardinal())].action('c')) //only show if mine or I scouted
+      if(Compass::icardinal(c->myCardinal()) == i || iscouted) //only show if mine or I scouted
       {
         if((action = turns[i].action('s')))
         {
@@ -352,7 +353,7 @@ void PlayScene::draw()
     /* messages   */
     for(int i = 0; i < 4; i++)
     {
-      if(Compass::icardinal(c->myCardinal()) == i || turns[Compass::icardinal(c->myCardinal())].action('c')) //only show if mine or I scouted
+      if(Compass::icardinal(c->myCardinal()) == i || iscouted) //only show if mine or I scouted
       {
         if((action = turns[i].action('m')))
         {
@@ -368,7 +369,7 @@ void PlayScene::draw()
       for(int i = 0; i < 4; i++)
         turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day-1);
 
-      if(turns[Compass::icardinal(c->myCardinal())].action('c')) //only show if mine or I scouted
+      if(iscouted) //only show if I scouted (not nec. if mine, because could be blocked)
       {
         /* ymessages   */
         for(int i = 0; i < 4; i++)
