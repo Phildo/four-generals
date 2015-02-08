@@ -83,6 +83,8 @@ void Server::tick()
   tv.tv_sec = 0; tv.tv_usec = FG_US_PER_TICK;
 
   retval = select(biggest_fd+1, &sock_fds, NULL, NULL, &tv);
+  if(retval == 0) FD_ZERO(&sock_fds);
+
   if(retval == -1) con_state = CONNECTION_STATE_DISCONNECTING;
   else
   {

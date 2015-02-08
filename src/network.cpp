@@ -25,7 +25,7 @@ namespace AndroidNetwork
     String ret;
     if(s)
     {
-      fg_log("In C, the received string is: %s\n", s);
+      fg_log("In C, the received string is: %s", s);
       ret = String(s);
       env->ReleaseStringUTFChars(js, s);
     }
