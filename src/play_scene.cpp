@@ -288,48 +288,101 @@ void PlayScene::draw()
       for(int i = 0; i < 4; i++)
         turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day);
 
-    /* defends    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) { defendActions.enqueue(*action);    defendActionsWho.enqueue(i);    nDefends++;    }
-    /* attacks    */ for(int i = 0; i < 4; i++) if((action = turns[i].action('a'))) { attackActions.enqueue(*action);    attackActionsWho.enqueue(i);    nAttacks++;    }
-    /* retaliates */ for(int i = 0; i < 4; i++) if((action = turns[i].action('d'))) //special case because more complicated
+    /* defends    */
+    for(int i = 0; i < 4; i++)
     {
-      Action *a;
-      int eToRetaliate = 0; //gets set if exactly one enemy attacked
-      int e;
-
-      //cw attack
-      e = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(i)));
-      if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
-        eToRetaliate = e;
-
-      //ccw attack
-      e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(i)));
-      if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
-        eToRetaliate = eToRetaliate ? 0 : e;
-
-      if(eToRetaliate)
+      if((action = turns[i].action('d')))
       {
-        retaliateActions.enqueue(*action);
-        retaliateActionsWho.enqueue(i);
-        retaliateActionsAgainst.enqueue(eToRetaliate);
-        nRetaliates++;
+        defendActions.enqueue(*action);
+        defendActionsWho.enqueue(i);
+        nDefends++;
       }
     }
-    /* sabotages  */ for(int i = 0; i < 4; i++) if((action = turns[i].action('s'))) { sabotageActions.enqueue(*action);  sabotageActionsWho.enqueue(i);  nSabotages++;  }
-    /* messages   */ for(int i = 0; i < 4; i++) if((action = turns[i].action('m'))) { messageActions.enqueue(*action);   messageActionsWho.enqueue(i);   nMessages++;   }
+    /* attacks    */
+    for(int i = 0; i < 4; i++)
+    {
+      if((action = turns[i].action('a')))
+      {
+        attackActions.enqueue(*action);
+        attackActionsWho.enqueue(i);
+        nAttacks++;
+      }
+    }
+    /* retaliates */
+    for(int i = 0; i < 4; i++)
+    {
+      if((action = turns[i].action('d'))) //special case because more complicated
+      {
+        Action *a;
+        int eToRetaliate = 0; //gets set if exactly one enemy attacked
+        int e;
+
+        //cw attack
+        e = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(i)));
+        if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
+          eToRetaliate = e;
+
+        //ccw attack
+        e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(i)));
+        if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
+          eToRetaliate = eToRetaliate ? 0 : e;
+
+        if(eToRetaliate)
+        {
+          retaliateActions.enqueue(*action);
+          retaliateActionsWho.enqueue(i);
+          retaliateActionsAgainst.enqueue(eToRetaliate);
+          nRetaliates++;
+        }
+      }
+    }
+    /* sabotages  */
+    for(int i = 0; i < 4; i++)
+    {
+      if(Compass::icardinal(c->myCardinal()) == i || turns[Compass::icardinal(c->myCardinal())].action('c')) //only show if mine or I scouted
+      {
+        if((action = turns[i].action('s')))
+        {
+          sabotageActions.enqueue(*action);
+          sabotageActionsWho.enqueue(i);
+          nSabotages++;
+        }
+      }
+    }
+    /* messages   */
+    for(int i = 0; i < 4; i++)
+    {
+      if(Compass::icardinal(c->myCardinal()) == i || turns[Compass::icardinal(c->myCardinal())].action('c')) //only show if mine or I scouted
+      {
+        if((action = turns[i].action('m')))
+        {
+          messageActions.enqueue(*action);
+          messageActionsWho.enqueue(i);
+          nMessages++;
+        }
+      }
+    }
 
     if(base_showing_day > 0) //check for yesterday's messages
     {
       for(int i = 0; i < 4; i++)
         turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day-1);
 
-      /* ymessages   */ for(int i = 0; i < 4; i++) if((action = turns[i].action('m')))
+      if(turns[Compass::icardinal(c->myCardinal())].action('c')) //only show if mine or I scouted
       {
-        Action *a;
-        if(!(a = turns[Compass::icardinal(action->route)].action('s')) || a->how != 'b')
+        /* ymessages   */
+        for(int i = 0; i < 4; i++)
         {
-          ymessageActions.enqueue(*action);
-          ymessageActionsWho.enqueue(i);
-          nYMessages++;
+          if((action = turns[i].action('m')))
+          {
+            Action *a;
+            if(!(a = turns[Compass::icardinal(action->route)].action('s')) || a->how != 'b')
+            {
+              ymessageActions.enqueue(*action);
+              ymessageActionsWho.enqueue(i);
+              nYMessages++;
+            }
+          }
         }
       }
     }
