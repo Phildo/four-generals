@@ -1,19 +1,23 @@
+//Networking
 - host/join specified port
-- sensible text descriptions
-
 - can back out when auto-join attempting
 - shouldn't try auto-join unless ip exists
 - notification of wireless status would be nice
 - auto-join, then on reset game there are a bunch of aborts?
 - handle player leave mid game
-- implement modes
 
-- scout implementation
+//Bugs
 - weird blink when day starts
+
+//Details
+- sensible text descriptions
+- scout implementation details
 - scout icon (currently shield for confirm)
 
-- android no ip? (can't host)
+//Android
 - android startup to gray screen
 - android freeze on disconnect
-- android not loading sprites
+
+//Major
+- implement modes
 
