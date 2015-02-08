@@ -285,9 +285,13 @@ void Sprite::init(const char *f)
   char buff[255]; //key+equals+4#s+4,s+buffer
   //FILE *fp = fopen(file_name.ptr(),"r");
   SDL_RWops *io = SDL_RWFromFile(file_name.ptr(), "r");
-  int file_index = 0; //necessary for SDL_RWops to keep track of next seek
   //while(fgets(buff, sizeof(buff), (FILE*)fp))
-  while(io->read(io, buff, sizeof(buff), 1) > 0)
+
+  //first time
+  int l = 0;
+  while(io->read(io, buff+l, 1, 1) > 0 && buff[l] != '\n') l++;
+
+  while(l)
   {
     int i = 0;
     int j = 0;
@@ -301,9 +305,7 @@ void Sprite::init(const char *f)
         if(keys[j].equals(k))
         {
           v = values[j];
-          file_index += i;
-          file_index += parseIntoRect(&buff[i+1],v);
-          file_index += 2;
+          parseIntoRect(&buff[i+1],v);
         }
       }
     }
@@ -328,13 +330,12 @@ void Sprite::init(const char *f)
       else if(c == ';') c = ('z'-'a')+('Z'-'A')+('9'-'0')+3+12;
       else if(c == ')') c = ('z'-'a')+('Z'-'A')+('9'-'0')+3+13;
       else if(c == '<') c = ('z'-'a')+('Z'-'A')+('9'-'0')+3+14;
-      file_index += i;
-      file_index += parseIntoRect(&buff[i+1],&a[(int)c]);
-      file_index += 2;
+      parseIntoRect(&buff[i+1],&a[(int)c]);
     }
 
-    //hack for SDL_RWops- rewind head to beginning of next line
-    SDL_RWseek(io, file_index, RW_SEEK_SET);
+    //hack for SDL_RWops
+    l = 0;
+    while(io->read(io, buff+l, 1, 1) > 0 && buff[l] != '\n') l++;
   }
   //fclose(fp);
   io->close(io);
