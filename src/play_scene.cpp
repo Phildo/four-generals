@@ -427,6 +427,9 @@ void PlayScene::draw()
     //Attacks
     while(nAttacks > 0 && st+plen < t) //already done
     {
+      attackActions.next();
+      attackActionsWho.next();
+
       nAttacks--;
       st += plen;
     }
@@ -445,6 +448,10 @@ void PlayScene::draw()
     //Retaliate
     while(nRetaliates > 0 && st+plen < t) //already done
     {
+      retaliateActions.next();
+      retaliateActionsWho.next();
+      retaliateActionsAgainst.next();
+
       nRetaliates--;
       st += plen;
     }

@@ -314,10 +314,12 @@ Array<int,4> Model::healthForRound(int day)
   }
 
   //Attacks
-  while(nAttacks > 0) //already done
+  while(nAttacks > 0)
   {
     action = attackActions.next();
+    #ifdef FG_CONFIG_ATTACK_2_WAY
     health[*attackActionsWho.next()]--;
+    #endif
     health[Compass::icardinal(action->who)]--;
 
     nAttacks--;
@@ -325,7 +327,7 @@ Array<int,4> Model::healthForRound(int day)
 
   #ifdef FG_CONFIG_RETALIATE
   //Retaliate
-  while(nRetaliates > 0) //already done
+  while(nRetaliates > 0)
   {
     action = retaliateActions.next();
     health[*retaliateActionsWho.next()]--;
@@ -491,7 +493,9 @@ Array<int,4> Model::healthForTInRound(int day, char card, float t)
   while(nAttacks > 0 && st+plen < t) //already done
   {
     action = attackActions.next();
+    #ifdef FG_CONFIG_ATTACK_2_WAY
     health[*attackActionsWho.next()]--;
+    #endif
     health[Compass::icardinal(action->who)]--;
 
     nAttacks--;
