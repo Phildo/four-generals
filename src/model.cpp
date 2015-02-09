@@ -48,56 +48,12 @@ void Model::assignCardinalTurn(char card, Turn t)
 
 void Model::commitTurns()
 {
-  char hp[] = {2,2,2,2};
-  char card;
-  Turn t;
-  //first, defenses
-  for(int i = 0; i < 4; i++)
-  {
-    card = Compass::cardinal(i);
-    t = cardinalTurn(card);
-
-    if(t.actions[0].what == 'd')
-      hp[i]++;
-  }
-  //then, attacks
-  for(int i = 0; i < 4; i++)
-  {
-    card = Compass::cardinal(i);
-    t = cardinalTurn(card);
-
-    if(t.actions[0].what == 'a')
-    {
-      hp[i]--;
-      hp[Compass::icardinal(t.actions[0].who)]--;
-    }
-  }
-  //then, retaliations
-  for(int i = 0; i < 4; i++)
-  {
-    card = Compass::cardinal(i);
-    t = cardinalTurn(card);
-
-    if(t.actions[0].what == 'd' && hp[i] == 2) //hp == 1, means retaliate and die. hp == 3 means noone attacked.
-    {
-      for(int j = 0; j < 4; j++)
-      {
-        char card2 = Compass::cardinal(j);
-        Turn t2 = cardinalTurn(card2);
-        if(t2.actions[0].what == 'a' && t2.actions[0].who == card)
-        {
-          hp[i]--;
-          hp[j]--;
-        }
-      }
-    }
-  }
-
+  Array<int,4> health = healthForRound(days);
   bool loser = false;
   //find losers
   for(int i = 0; i < 4; i++)
   {
-    if(hp[i] <= 0)
+    if(health[i] <= 0)
     {
       victory_status[i]       = 'l';
       victory_status[(i+2)%4] = 'l';
@@ -130,7 +86,6 @@ void Model::commitTurns()
   zeroTomorrowsTurns();
   days++;
 }
-
 
 //routers
 
@@ -279,8 +234,105 @@ bool Model::roundOver()
   return victory_status[0] != '0';
 }
 
+Array<int,4> Model::healthForRound(int day)
+{
+  Array<int,4> health; for(int i = 0; i < 4; i++) health[i] = 2;
 
-Array<int,4> Model::healthForTInRound(char card, int day, float t)
+  circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
+  circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
+  circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho; circQ<int,4> retaliateActionsAgainst; int nRetaliates = 0;
+
+  { //to scope turns/action
+
+  Turn turns[4];
+  Action *action;
+  for(int i = 0; i < 4; i++)
+    turns[i] = cardinalDayTurn(Compass::cardinal(i), day);
+
+  /* defends    */
+  for(int i = 0; i < 4; i++)
+  {
+    if((action = turns[i].action('d')))
+    {
+      defendActions.enqueue(*action);
+      defendActionsWho.enqueue(i);
+      nDefends++;
+    }
+  }
+  /* attacks    */
+  for(int i = 0; i < 4; i++)
+  {
+    if((action = turns[i].action('a')))
+    {
+      attackActions.enqueue(*action);
+      attackActionsWho.enqueue(i);
+      nAttacks++;
+    }
+  }
+  /* retaliates */
+  for(int i = 0; i < 4; i++)
+  {
+    if((action = turns[i].action('d'))) //special case because more complicated
+    {
+      Action *a;
+      int eToRetaliate = 0; //gets set if exactly one enemy attacked
+      int e;
+
+      //cw attack
+      e = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(i)));
+      if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
+        eToRetaliate = e;
+
+      //ccw attack
+      e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(i)));
+      if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
+        eToRetaliate = eToRetaliate ? 0 : e;
+
+      if(eToRetaliate)
+      {
+        retaliateActions.enqueue(*action);
+        retaliateActionsWho.enqueue(i);
+        retaliateActionsAgainst.enqueue(eToRetaliate);
+        nRetaliates++;
+      }
+    }
+  }
+
+  }
+
+  Action *action = 0;
+
+  //Defends
+  if(nDefends)
+  {
+    while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+    nDefends = 0;
+  }
+
+  //Attacks
+  while(nAttacks > 0) //already done
+  {
+    action = attackActions.next();
+    health[*attackActionsWho.next()]--;
+    health[Compass::icardinal(action->who)]--;
+
+    nAttacks--;
+  }
+
+  //Retaliate
+  while(nRetaliates > 0) //already done
+  {
+    action = retaliateActions.next();
+    health[*retaliateActionsWho.next()]--;
+    health[*retaliateActionsAgainst.next()]--;
+
+    nRetaliates--;
+  }
+
+  return health;
+}
+
+Array<int,4> Model::healthForTInRound(int day, char card, float t)
 {
   Array<int,4> health; for(int i = 0; i < 4; i++) health[i] = 2;
 

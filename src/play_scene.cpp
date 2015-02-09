@@ -272,7 +272,7 @@ void PlayScene::draw()
     dayLbls[i].draw(graphics);
 
   //compute intermediate state
-  Array<int,4> health = c->model.healthForTInRound(c->myCardinal(),base_showing_day,t);
+  Array<int,4> health = c->model.healthForTInRound(base_showing_day,c->myCardinal(),t);
   bool cardsDrawn[4] = {false,false,false,false};
   if(t != 0.0f)
   {

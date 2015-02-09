@@ -52,7 +52,8 @@ class Model
     bool cardinalTie(char card);
     bool roundOver();
 
-    Array<int,4> healthForTInRound(char card, int day, float t);
+    Array<int,4> healthForRound(int day);
+    Array<int,4> healthForTInRound(int day, char card, float t);
 
     bool rolesAssigned();
     bool turnsAssigned();
