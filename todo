@@ -20,6 +20,7 @@
 
 //Major
 - implement modes
+  - combine sabotage (read+switch), on day of
   - refactor heart calculation
   - disable retaliation
   - attack one-way

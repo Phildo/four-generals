@@ -278,7 +278,9 @@ void PlayScene::draw()
   {
     circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
     circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
+    #ifdef FG_CONFIG_RETALIATE
     circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho; circQ<int,4> retaliateActionsAgainst; int nRetaliates = 0;
+    #endif
     circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;  int nSabotages  = 0;
     circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;   int nMessages   = 0;
     circQ<Action,4> ymessageActions;  circQ<int,4> ymessageActionsWho;  int nYMessages  = 0; //yesterday's messages
@@ -311,6 +313,7 @@ void PlayScene::draw()
         nAttacks++;
       }
     }
+    #ifdef FG_CONFIG_RETALIATE
     /* retaliates */
     for(int i = 0; i < 4; i++)
     {
@@ -339,6 +342,7 @@ void PlayScene::draw()
         }
       }
     }
+    #endif
     /* sabotages  */
     for(int i = 0; i < 4; i++)
     {
@@ -394,7 +398,9 @@ void PlayScene::draw()
 
     int nActions = (nDefends   > 0 ? 1 : 0)   + //any defends happen simultaneously
                    (nAttacks)                 + //all attacks get played out individually
+                   #ifdef FG_CONFIG_RETALIATE
                    (nRetaliates)              + //all retaliations get played out individually
+                   #endif
                    (nSabotages > 0 ? 1 : 0)   + //any sabotages happen simultaneously
                    (nMessages+nYMessages  > 0 ? 1 : 0)   + //any messages happen simultaneously
                    1; //for "heal" phase
@@ -435,6 +441,7 @@ void PlayScene::draw()
       st += plen;
     }
 
+    #ifdef FG_CONFIG_RETALIATE
     //Retaliate
     while(nRetaliates > 0 && st+plen < t) //already done
     {
@@ -453,6 +460,7 @@ void PlayScene::draw()
       nRetaliates--;
       st += plen;
     }
+    #endif
 
     //Sabotages
     if(nSabotages > 0 && st+plen < t) //already done

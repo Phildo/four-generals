@@ -117,8 +117,8 @@ int JoinScene::tick()
       {
         searching++;
         if(searching == 256) searching = 0;
-        else client->connect(ipPrefix.concat(String::decimalRep(searching)),4040); //PHIL HACK
-        //else client->connect(String("localhost"),4040); //PHIL HACK
+        //else client->connect(ipPrefix.concat(String::decimalRep(searching)),4040); //PHIL HACK
+        else client->connect(String("localhost"),4040); //PHIL HACK
       }
     }
   }

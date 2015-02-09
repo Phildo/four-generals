@@ -9,5 +9,8 @@
 //#define FG_HALF_SIZE
 #endif
 
+#define FG_CONFIG_ATTACK_2_WAY
+//#define FG_CONFIG_RETALIATE
+
 #endif
 
