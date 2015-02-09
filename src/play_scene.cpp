@@ -12,6 +12,9 @@
 #include "compass.h"
 #include "week.h"
 
+#include "circ_q.h"
+#include "array.h"
+
 #include "SDL.h"
 
 static float snapToInt(float v)
@@ -269,11 +272,10 @@ void PlayScene::draw()
     dayLbls[i].draw(graphics);
 
   //compute intermediate state
-  int health[4] = {2,2,2,2};
+  Array<int,4> health = c->model.healthForTInRound(c->myCardinal(),base_showing_day,t);
   bool cardsDrawn[4] = {false,false,false,false};
   if(t != 0.0f)
   {
-
     circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
     circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
     circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho; circQ<int,4> retaliateActionsAgainst; int nRetaliates = 0;
@@ -405,32 +407,24 @@ void PlayScene::draw()
     int card;
 
     //Defends
-    if(nDefends > 0 && st+plen < t)
+    if(nDefends > 0 && st+plen < t) //already done
     {
-      while((action = defendActions.next())) health[*defendActionsWho.next()]++;
-
       nDefends = 0;
       st += plen;
     }
-    if(nDefends > 0 && st < t)
+    if(nDefends > 0 && st < t) //currently doing
     {
-      while((action = defendActions.next())) health[*defendActionsWho.next()]++;
-
       nDefends = 0;
       st += plen;
     }
 
     //Attacks
-    while(nAttacks > 0 && st+plen < t)
+    while(nAttacks > 0 && st+plen < t) //already done
     {
-      action = attackActions.next();
-      health[*attackActionsWho.next()]--;
-      health[Compass::icardinal(action->who)]--;
-
       nAttacks--;
       st += plen;
     }
-    if(nAttacks > 0 && st < t)
+    if(nAttacks > 0 && st < t) //currently doing
     {
       action = attackActions.next();
       card = *attackActionsWho.next();
@@ -442,16 +436,12 @@ void PlayScene::draw()
     }
 
     //Retaliate
-    while(nRetaliates > 0 && st+plen < t)
+    while(nRetaliates > 0 && st+plen < t) //already done
     {
-      action = retaliateActions.next();
-      health[*retaliateActionsWho.next()]--;
-      health[*retaliateActionsAgainst.next()]--;
-
       nRetaliates--;
       st += plen;
     }
-    if(nRetaliates > 0 && st < t)
+    if(nRetaliates > 0 && st < t) //currently doing
     {
       action = retaliateActions.next();
       card = *retaliateActionsWho.next();
@@ -465,13 +455,13 @@ void PlayScene::draw()
     }
 
     //Sabotages
-    if(nSabotages > 0 && st+plen < t)
+    if(nSabotages > 0 && st+plen < t) //already done
     {
       //no need to simulate anything
       nSabotages = 0;
       st += plen;
     }
-    if(nSabotages > 0 && st < t)
+    if(nSabotages > 0 && st < t) //currently doing
     {
       while(nSabotages > 0)
       {
@@ -485,14 +475,14 @@ void PlayScene::draw()
     }
 
     //Messages
-    if(nMessages+nYMessages > 0 && st+plen < t)
+    if(nMessages+nYMessages > 0 && st+plen < t) //already done
     {
       //no need to simulate anything
       nMessages = 0;
       nYMessages = 0;
       st += plen;
     }
-    if(nMessages+nYMessages > 0 && st < t)
+    if(nMessages+nYMessages > 0 && st < t) //currently doing
     {
       while(nMessages > 0)
       {

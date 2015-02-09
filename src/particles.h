@@ -1,7 +1,7 @@
 #ifndef _FG_PARTICLES_H_
 #define _FG_PARTICLES_H_
 
-#include "array.h"
+#include "darray.h"
 #include "lerp.h"
 
 class Graphics;
@@ -58,7 +58,7 @@ struct Particle
 class ParticleSys
 {
   private:
-    Array<Particle,256> particles;
+    DArray<Particle,256> particles;
   public:
     ParticleSys();
     ~ParticleSys();

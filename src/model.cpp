@@ -279,6 +279,186 @@ bool Model::roundOver()
   return victory_status[0] != '0';
 }
 
+
+Array<int,4> Model::healthForTInRound(char card, int day, float t)
+{
+  Array<int,4> health; for(int i = 0; i < 4; i++) health[i] = 2;
+
+  circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
+  circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
+  circQ<Action,4> retaliateActions; circQ<int,4> retaliateActionsWho; circQ<int,4> retaliateActionsAgainst; int nRetaliates = 0;
+  circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;  int nSabotages  = 0;
+  circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;   int nMessages   = 0;
+  circQ<Action,4> ymessageActions;  circQ<int,4> ymessageActionsWho;  int nYMessages  = 0; //yesterday's messages
+
+  { //to scope turns/action
+
+  Turn turns[4];
+  Action *action;
+  for(int i = 0; i < 4; i++)
+    turns[i] = cardinalDayTurn(Compass::cardinal(i), day);
+  bool iscouted = (turns[Compass::icardinal(card)].action('c') != 0);
+
+  /* defends    */
+  for(int i = 0; i < 4; i++)
+  {
+    if((action = turns[i].action('d')))
+    {
+      defendActions.enqueue(*action);
+      defendActionsWho.enqueue(i);
+      nDefends++;
+    }
+  }
+  /* attacks    */
+  for(int i = 0; i < 4; i++)
+  {
+    if((action = turns[i].action('a')))
+    {
+      attackActions.enqueue(*action);
+      attackActionsWho.enqueue(i);
+      nAttacks++;
+    }
+  }
+  /* retaliates */
+  for(int i = 0; i < 4; i++)
+  {
+    if((action = turns[i].action('d'))) //special case because more complicated
+    {
+      Action *a;
+      int eToRetaliate = 0; //gets set if exactly one enemy attacked
+      int e;
+
+      //cw attack
+      e = Compass::icardinal(Compass::cwcardinal(Compass::cardinal(i)));
+      if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
+        eToRetaliate = e;
+
+      //ccw attack
+      e = Compass::icardinal(Compass::ccwcardinal(Compass::cardinal(i)));
+      if((a = turns[e].action('a')) && a->who == Compass::cardinal(i))
+        eToRetaliate = eToRetaliate ? 0 : e;
+
+      if(eToRetaliate)
+      {
+        retaliateActions.enqueue(*action);
+        retaliateActionsWho.enqueue(i);
+        retaliateActionsAgainst.enqueue(eToRetaliate);
+        nRetaliates++;
+      }
+    }
+  }
+  /* sabotages  */
+  for(int i = 0; i < 4; i++)
+  {
+    if(Compass::icardinal(card) == i || iscouted) //only show if mine or I scouted
+    {
+      if((action = turns[i].action('s')))
+      {
+        nSabotages++;
+      }
+    }
+  }
+  /* messages   */
+  for(int i = 0; i < 4; i++)
+  {
+    if(Compass::icardinal(card) == i || iscouted) //only show if mine or I scouted
+    {
+      if((action = turns[i].action('m')))
+      {
+        nMessages++;
+      }
+    }
+  }
+
+  if(day > 0) //check for yesterday's messages
+  {
+    for(int i = 0; i < 4; i++)
+      turns[i] = cardinalDayTurn(Compass::cardinal(i), day-1);
+
+    if(iscouted) //only show if I scouted (not nec. if mine, because could be blocked)
+    {
+      /* ymessages   */
+      for(int i = 0; i < 4; i++)
+      {
+        if((action = turns[i].action('m')))
+        {
+          Action *a;
+          if(!(a = turns[Compass::icardinal(action->route)].action('s')) || a->how != 'b')
+          {
+            nYMessages++;
+          }
+        }
+      }
+    }
+  }
+
+  }
+
+  int nActions = (nDefends   > 0 ? 1 : 0)   + //any defends happen simultaneously
+                 (nAttacks)                 + //all attacks get played out individually
+                 (nRetaliates)              + //all retaliations get played out individually
+                 (nSabotages > 0 ? 1 : 0)   + //any sabotages happen simultaneously
+                 (nMessages+nYMessages  > 0 ? 1 : 0)   + //any messages happen simultaneously
+                 1; //for "heal" phase
+
+  const float n = (float)nActions;
+  const float plen = 1.0f/n;
+  float st = 0.0; //simulated time
+
+  Action *action = 0;
+
+  //Defends
+  if(nDefends > 0 && st+plen < t) //already done
+  {
+    while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+
+    nDefends = 0;
+    st += plen;
+  }
+  if(nDefends > 0 && st < t) //currently doing
+  {
+    while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+
+    nDefends = 0;
+    st += plen;
+  }
+
+  //Attacks
+  while(nAttacks > 0 && st+plen < t) //already done
+  {
+    action = attackActions.next();
+    health[*attackActionsWho.next()]--;
+    health[Compass::icardinal(action->who)]--;
+
+    nAttacks--;
+    st += plen;
+  }
+  if(nAttacks > 0 && st < t) //currently doing
+  {
+    nAttacks--;
+    st += plen;
+  }
+
+  //Retaliate
+  while(nRetaliates > 0 && st+plen < t) //already done
+  {
+    action = retaliateActions.next();
+    health[*retaliateActionsWho.next()]--;
+    health[*retaliateActionsAgainst.next()]--;
+
+    nRetaliates--;
+    st += plen;
+  }
+  if(nRetaliates > 0 && st < t) //currently doing
+  {
+    nRetaliates--;
+    st += plen;
+  }
+
+  return health;
+}
+
+
 bool Model::rolesAssigned()
 {
   return

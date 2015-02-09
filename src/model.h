@@ -5,6 +5,7 @@
 #include "turn.h"
 #include "victory_record.h"
 
+#include "circ_q.h"
 #include "array.h"
 
 #define FG_MAX_ACTION_HIST 32
@@ -50,6 +51,8 @@ class Model
     bool cardinalLose(char card);
     bool cardinalTie(char card);
     bool roundOver();
+
+    Array<int,4> healthForTInRound(char card, int day, float t);
 
     bool rolesAssigned();
     bool turnsAssigned();
