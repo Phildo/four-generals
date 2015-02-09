@@ -20,4 +20,8 @@
 
 //Major
 - implement modes
+  - refactor heart calculation
+  - disable retaliation
+  - attack one-way
+  - attack cool-down
 
