@@ -17,6 +17,7 @@ class TurnPicker
   private:
     Turn turn;
     char cardinal;
+    bool attackEnabled;
 
     circQ<Turn, 2> turn_q; //really should only ever be 1 in here.
     UI::Box win_box;
@@ -44,6 +45,7 @@ class TurnPicker
 
     void init();
     void setCardinal(char c);
+    void setAttackEnabled(bool e);
 
     bool touch(In &in);
     void tick();

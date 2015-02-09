@@ -29,7 +29,7 @@ void TurnPicker::init()
   b = UI::Box(win_box.x+(win_box.w/2)-(w/2),win_box.y+(win_box.h/2)-(h/2),w,h);
   specify = SpecifyTurnPicker(&turn, b.rect);
 
-  setViewState(SHOW);
+  reset();
 }
 
 void TurnPicker::setCardinal(char c)
@@ -37,6 +37,12 @@ void TurnPicker::setCardinal(char c)
   turn.cardinal = c;
   cardinal = c;
   specify.setCardinal(c);
+}
+
+void TurnPicker::setAttackEnabled(bool e)
+{
+  attackEnabled = e;
+  browse.setAttackEnabled(e);
 }
 
 TurnPicker::~TurnPicker()
@@ -181,6 +187,7 @@ void TurnPicker::setViewState(TURN_PICKER_STATE s)
       box.rect = browse.box.rect;
       button.rect = browse.box.rect;
       browse.setPower(power);
+      browse.setAttackEnabled(attackEnabled);
       browse.activate();
       break;
     case SPECIFY:
@@ -207,6 +214,7 @@ bool TurnPicker::getTurn(Turn &t)
 
 void TurnPicker::reset()
 {
+  setAttackEnabled(true);
   turn.zero();
   setViewState(SHOW);
 }

@@ -36,6 +36,7 @@ class BrowseTurnPicker
   private:
     Turn *turn;
     Action *action;
+    bool attackEnabled;
 
     UI::Label titleLabel;
     UI::Image power_0;
@@ -63,6 +64,7 @@ class BrowseTurnPicker
 
     void setAction(Action *a);
     void setPower(int p);
+    void setAttackEnabled(bool e);
     void deactivate();
     void activate();
 };

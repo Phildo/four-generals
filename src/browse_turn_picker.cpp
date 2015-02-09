@@ -153,6 +153,7 @@ BrowseRequest BrowseTurnPicker::touch(In &in)
     b.type = BrowseRequest::SPECIFY_ACTION;
     b.action = action;
 
+         //if(attack.button.query(i)   && (turn->actions[0].power() == 0 && attackEnabled)) action->what = 'a';
          if(attack.button.query(i)   && (turn->actions[0].power() == 0)) action->what = 'a';
     else if(defend.button.query(i)   && (turn->actions[0].power() == 0)) action->what = 'd';
     else if(message.button.query(i)  && (turn->actions[0].what != 'm'))  action->what = 'm';
@@ -174,6 +175,7 @@ void BrowseTurnPicker::draw(Graphics *g)
   box.draw(g);
 
   scroll.draw(g);
+  //attack.drawAtOffsetInMask(  scroll.offset,g,scroll.rect.rect,(turn->actions[0].power() == 0 && attackEnabled));
   attack.drawAtOffsetInMask(  scroll.offset,g,scroll.rect.rect,(turn->actions[0].power() == 0));
   defend.drawAtOffsetInMask(  scroll.offset,g,scroll.rect.rect,(turn->actions[0].power() == 0));
   message.drawAtOffsetInMask( scroll.offset,g,scroll.rect.rect,(turn->actions[0].what != 'm'));
@@ -196,6 +198,11 @@ void BrowseTurnPicker::setPower(int p)
 {
   if(p > 0) power_0.sprite = Sprite::bolt; else power_0.sprite = Sprite::bolt_empty;
   if(p > 1) power_1.sprite = Sprite::bolt; else power_1.sprite = Sprite::bolt_empty;
+}
+
+void BrowseTurnPicker::setAttackEnabled(bool e)
+{
+  attackEnabled = e;
 }
 
 void BrowseTurnPicker::deactivate()
