@@ -471,7 +471,8 @@ SpecifyTurnPicker::SpecifyTurnPicker(Turn *t, UI::Box b)
   action_description_0 = UI::Label("So good tho",action_image.rect.x+action_image.rect.w+10,action_image.rect.y+40,25);
   action_description_1 = UI::Label("So good tho",action_image.rect.x+action_image.rect.w+10,action_image.rect.y+70,25);
 
-  cancel  = UI::TextButton("Cancel", box.x+(box.w/2)-100-50,box.y+box.h-15,100,30);
+  cancel  = UI::TextButton("Cancel",  box.x+(box.w/2)-100-50,box.y+box.h-15,100,30);
+  confirm = UI::TextButton("Confirm", box.x+(box.w/2)-100-50,box.y+box.h-15,100,30); //not used!!!
 
   SDL_Rect r;
   r.x = b.x+10;
@@ -598,7 +599,6 @@ void SpecifyTurnPicker::draw(Graphics *g)
   }
 
   cancel.draw(g);
-  confirm.draw(g);
 }
 
 void SpecifyTurnPicker::setAction(Action *a)

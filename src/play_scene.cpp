@@ -215,7 +215,7 @@ int PlayScene::tick()
     else
     {
       #ifdef FG_CONFIG_ATTACK_COOL
-      Turn t = cardinalDayTurn(c->myCardinal(), (int)(known_days-1.0f));
+      Turn t = c->model.cardinalDayTurn(c->myCardinal(), (int)(known_days-1.0f));
       if(t.action('a')) picker.setAttackEnabled(false);
       #endif
       shown_days = known_days-1.0f;
