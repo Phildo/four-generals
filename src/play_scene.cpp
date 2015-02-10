@@ -54,8 +54,9 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
   for(int i = 0; i < 4; i++)
   {
-    posRects[i]      = UI::Box(xs[i],       ys[i], ws[i],   hs[i]).rect;
-    posLabelRects[i] = UI::Box(xs[i], ys[i]+hs[i], ws[i], hs[i]/3).rect;
+    posRects[i]            = UI::Box(xs[i],       ys[i],       ws[i],   hs[i]).rect;
+    posLabelRects[i]       = UI::Box(xs[i], ys[i]+hs[i],       ws[i], hs[i]/3).rect;
+    posHealthLabelRects[i] = UI::Box(xs[i], ys[i]+(2*hs[i]/3), ws[i], hs[i]/5).rect;
   }
 
   for(int i = 0; i < 7; i++)
@@ -73,6 +74,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   {
     cardImgs[i] = UI::Anim(Sprite::general_anims[i], 4, 1.f, posRects[i]);
     cardLbls[i] = UI::Label(&cardnamehacks[i*6], posLabelRects[i]);
+    cardHealthLbls[i] = UI::Label("x10", posHealthLabelRects[i]);
   }
 
   for(int i = 0; i < 7; i++)
@@ -114,8 +116,9 @@ void PlayScene::enter()
   char pos  = 's';             int ip = Compass::icardinal(pos);
   for(int i = 0; i < 4; i++)
   {
-    cardRects[ic]      = posRects[ip];
-    cardLabelRects[ic] = posLabelRects[ip];
+    cardRects[ic]            = posRects[ip];
+    cardLabelRects[ic]       = posLabelRects[ip];
+    cardHealthLabelRects[ic] = posHealthLabelRects[ip];
     card = Compass::cwcardinal(card); ic = Compass::icardinal(card);
     pos  = Compass::cwcardinal(pos);  ip = Compass::icardinal(pos);
   }
@@ -125,6 +128,7 @@ void PlayScene::enter()
   {
     cardImgs[i] = UI::Anim(Sprite::general_anims[i], 4, 1.f, cardRects[i]);
     cardLbls[i].rect = cardLabelRects[i];
+    cardHealthLbls[i].rect = cardHealthLabelRects[i];
   }
 
   picker.setCardinal(c->myCardinal());
@@ -276,7 +280,7 @@ void PlayScene::draw()
     dayLbls[i].draw(graphics);
 
   //compute intermediate state
-  Array<int,4> health = c->model.healthForTInRound(base_showing_day,c->myCardinal(),t);
+  Array<int,4> defense = c->model.defenseForTInRound(base_showing_day,c->myCardinal(),t);
   bool cardsDrawn[4] = {false,false,false,false};
   if(t != 0.0f)
   {
@@ -528,21 +532,25 @@ void PlayScene::draw()
   {
     if(!cardsDrawn[i]) cardImgs[i].draw(graphics);
     cardLbls[i].draw(graphics);
-    SDL_Rect heart_0;
-    SDL_Rect heart_1;
-    SDL_Rect heart_2;
-    heart_0 = cardImgs[i].rect.rect;
-    heart_0.w /= 4;
-    heart_0.h /= 4;
-    heart_0.x += heart_0.w*2;
-    heart_1 = heart_0;
-    heart_1.x += heart_1.w*0.75;
-    heart_2 = heart_1;
-    heart_2.x += heart_2.w*0.75;
+    int h = c->model.cardinalDayHealth(Compass::cardinal(i),base_showing_day);
+    if(defense[i] < 0) h += defense[i];
+    cardHealthLbls[i].text = String("x").concat(String::decimalRep(h));
+    cardHealthLbls[i].draw(graphics);
+    SDL_Rect def_0;
+    SDL_Rect def_1;
+    SDL_Rect heart;
+    def_0 = cardImgs[i].rect.rect;
+    def_0.w /= 4;
+    def_0.h /= 4;
+    def_0.x += def_0.w*3;
+    def_1 = def_0;
+    def_1.x += def_1.w*0.75;
+    heart = def_1;
+    heart.y = (cardImgs[i].rect.rect.y+cardImgs[i].rect.rect.h)-(heart.h/2);
 
-    if(health[i] > 0) graphics->draw(Sprite::heart,  heart_0);
-    if(health[i] > 1) graphics->draw(Sprite::heart,  heart_1);
-    if(health[i] > 2) graphics->draw(Sprite::shield, heart_2);
+    if(defense[i] > 0) graphics->draw(Sprite::shield, def_0);
+    if(defense[i] > 1) graphics->draw(Sprite::shield, def_1);
+    graphics->draw(Sprite::heart, heart);
   }
 
   Action a, a0, a1;

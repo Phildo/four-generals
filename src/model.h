@@ -9,6 +9,7 @@
 #include "array.h"
 
 #define FG_MAX_ACTION_HIST 32
+#define FG_FULL_HEALTH 10
 
 class Model
 {
@@ -21,6 +22,7 @@ class Model
     //in cardinal order
     General generals[5];
     Turn turns[4*FG_MAX_ACTION_HIST+1]; //2d array [(day*4)+general]
+    int health[4*FG_MAX_ACTION_HIST+1];
 
     int days;
     char victory_status[4]; //'w' = win, 'l' = lose, 't' = tie, '0' = NA
@@ -42,6 +44,8 @@ class Model
     General& cardinalGeneral(char card);
     Turn& cardinalTurn(char card);
     Turn& cardinalDayTurn(char card, int day);
+    int& cardinalHealth(char card);
+    int& cardinalDayHealth(char card, int day);
     bool cardinalMessage(  char card, Action& a);
     bool cardinalIntruder( char card, Action& a0, Action& a1);
     bool cardinalSabotage( char card, Action& a0, Action& a1);
@@ -52,8 +56,8 @@ class Model
     bool cardinalTie(char card);
     bool roundOver();
 
-    Array<int,4> healthForRound(int day);
-    Array<int,4> healthForTInRound(int day, char card, float t);
+    Array<int,4> defenseForRound(int day);
+    Array<int,4> defenseForTInRound(int day, char card, float t);
 
     bool rolesAssigned();
     bool turnsAssigned();
@@ -62,6 +66,7 @@ class Model
 
     void zeroCurrentTurns();
     void zeroTomorrowsTurns();
+    void zeroTomorrowsHealth(); //doesn't actually "zero", transfers prev day's
     void zeroRound(); //leaves score/connections
     void zeroAll();
 

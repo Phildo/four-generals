@@ -28,14 +28,17 @@ class PlayScene : public Scene
     //rects
     SDL_Rect posRects[4];
     SDL_Rect posLabelRects[4];
+    SDL_Rect posHealthLabelRects[4];
     SDL_Rect cardRects[4];
     SDL_Rect cardLabelRects[4];
+    SDL_Rect cardHealthLabelRects[4];
     SDL_Rect dayRects[7];
     SDL_Rect sunRects[7];
 
     //views
     UI::Anim cardImgs[4];
     UI::Label cardLbls[4];
+    UI::Label cardHealthLbls[4];
 
     UI::Label dayLbls[7];
     UI::Button sunBtn;

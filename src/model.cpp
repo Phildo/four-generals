@@ -48,12 +48,19 @@ void Model::assignCardinalTurn(char card, Turn t)
 
 void Model::commitTurns()
 {
-  Array<int,4> health = healthForRound(days);
+  Array<int,4> defense = defenseForRound(days);
+
+  zeroTomorrowsTurns();
+  zeroTomorrowsHealth();
+  days++;
+  for(int i = 0; i < 4; i++)
+    if(defense[i] <= 0) cardinalHealth(Compass::cardinal(i)) += defense[i];
+
   bool loser = false;
   //find losers
   for(int i = 0; i < 4; i++)
   {
-    if(health[i] <= 0)
+    if(cardinalHealth(Compass::cardinal(i)) <= 0)
     {
       victory_status[i]       = 'l';
       victory_status[(i+2)%4] = 'l';
@@ -83,8 +90,6 @@ void Model::commitTurns()
     if(victory_status[i] == 't') connectionVictoryRecord(cardinalConnection(card)).tie++;
   }
 
-  zeroTomorrowsTurns();
-  days++;
 }
 
 //routers
@@ -121,6 +126,15 @@ Turn& Model::cardinalDayTurn(char card, int day)
 {
   if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return turns[FG_MAX_ACTION_HIST*4];
   return turns[(day*4)+Compass::icardinal(card)];
+}
+int& Model::cardinalHealth(char card)
+{
+  return cardinalDayHealth(card, days);
+}
+int& Model::cardinalDayHealth(char card, int day)
+{
+  if(day < 0 || day >= FG_MAX_ACTION_HIST || day > days) return health[FG_MAX_ACTION_HIST*4];
+  return health[(day*4)+Compass::icardinal(card)];
 }
 
 bool Model::cardinalMessage(char card, Action& a)
@@ -234,9 +248,9 @@ bool Model::roundOver()
   return victory_status[0] != '0';
 }
 
-Array<int,4> Model::healthForRound(int day)
+Array<int,4> Model::defenseForRound(int day)
 {
-  Array<int,4> health; for(int i = 0; i < 4; i++) health[i] = 2;
+  Array<int,4> defense; for(int i = 0; i < 4; i++) defense[i] = 1;
 
   circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
   circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
@@ -309,7 +323,7 @@ Array<int,4> Model::healthForRound(int day)
   //Defends
   if(nDefends)
   {
-    while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+    while((action = defendActions.next())) defense[*defendActionsWho.next()]++;
     nDefends = 0;
   }
 
@@ -318,9 +332,9 @@ Array<int,4> Model::healthForRound(int day)
   {
     action = attackActions.next();
     #ifdef FG_CONFIG_ATTACK_2_WAY
-    health[*attackActionsWho.next()]--;
+    defense[*attackActionsWho.next()]--;
     #endif
-    health[Compass::icardinal(action->who)]--;
+    defense[Compass::icardinal(action->who)]--;
 
     nAttacks--;
   }
@@ -330,19 +344,19 @@ Array<int,4> Model::healthForRound(int day)
   while(nRetaliates > 0)
   {
     action = retaliateActions.next();
-    health[*retaliateActionsWho.next()]--;
-    health[*retaliateActionsAgainst.next()]--;
+    defense[*retaliateActionsWho.next()]--;
+    defense[*retaliateActionsAgainst.next()]--;
 
     nRetaliates--;
   }
   #endif
 
-  return health;
+  return defense;
 }
 
-Array<int,4> Model::healthForTInRound(int day, char card, float t)
+Array<int,4> Model::defenseForTInRound(int day, char card, float t)
 {
-  Array<int,4> health; for(int i = 0; i < 4; i++) health[i] = 2;
+  Array<int,4> defense; for(int i = 0; i < 4; i++) defense[i] = 1;
 
   circQ<Action,4> defendActions;    circQ<int,4> defendActionsWho;    int nDefends    = 0;
   circQ<Action,4> attackActions;    circQ<int,4> attackActionsWho;    int nAttacks    = 0;
@@ -476,14 +490,14 @@ Array<int,4> Model::healthForTInRound(int day, char card, float t)
   //Defends
   if(nDefends > 0 && st+plen < t) //already done
   {
-    while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+    while((action = defendActions.next())) defense[*defendActionsWho.next()]++;
 
     nDefends = 0;
     st += plen;
   }
   if(nDefends > 0 && st < t) //currently doing
   {
-    while((action = defendActions.next())) health[*defendActionsWho.next()]++;
+    while((action = defendActions.next())) defense[*defendActionsWho.next()]++;
 
     nDefends = 0;
     st += plen;
@@ -494,9 +508,9 @@ Array<int,4> Model::healthForTInRound(int day, char card, float t)
   {
     action = attackActions.next();
     #ifdef FG_CONFIG_ATTACK_2_WAY
-    health[*attackActionsWho.next()]--;
+    defense[*attackActionsWho.next()]--;
     #endif
-    health[Compass::icardinal(action->who)]--;
+    defense[Compass::icardinal(action->who)]--;
 
     nAttacks--;
     st += plen;
@@ -512,8 +526,8 @@ Array<int,4> Model::healthForTInRound(int day, char card, float t)
   while(nRetaliates > 0 && st+plen < t) //already done
   {
     action = retaliateActions.next();
-    health[*retaliateActionsWho.next()]--;
-    health[*retaliateActionsAgainst.next()]--;
+    defense[*retaliateActionsWho.next()]--;
+    defense[*retaliateActionsAgainst.next()]--;
 
     nRetaliates--;
     st += plen;
@@ -525,7 +539,7 @@ Array<int,4> Model::healthForTInRound(int day, char card, float t)
   }
   #endif
 
-  return health;
+  return defense;
 }
 
 
@@ -566,10 +580,19 @@ void Model::zeroTomorrowsTurns()
     turns[((days+1)*4)+i].zero();
 }
 
+void Model::zeroTomorrowsHealth()
+{
+  if(days < -1 || days >= (FG_MAX_ACTION_HIST-1)) return;
+
+  if(days < 0) for(int i = 0; i < 5; i++) health[((days+1)*4)+i] = FG_FULL_HEALTH;
+  else         for(int i = 0; i < 5; i++) health[((days+1)*4)+i] = health[(days*4)+i];
+}
+
 void Model::zeroRound()
 {
   days = -1; //set to "not yet a valid day"
   zeroTomorrowsTurns();
+  zeroTomorrowsHealth();
   for(int i = 0; i < 4; i++)
     victory_status[i] = '0';
 }
