@@ -11,10 +11,12 @@ static float clamp(float v, float min, float max)
 
 DayPicker::DayPicker() : rect(0,0,100,40)
 {
+  init();
 }
 
 DayPicker::DayPicker(UI::Box r) : rect(r)
 {
+  init();
 }
 
 void DayPicker::init()
