@@ -30,11 +30,6 @@ struct SpecifyRequest
   void tick(); \
   void draw(Graphics *g);
 
-#define SPECIFIER_HOW_SPEC \
-  UI::Label how; \
-  UI::ImageButton how_block; \
-  UI::ImageButton how_read; \
-  UI::ImageButton how_switch;
 
 #define SPECIFIER_WHICH_SPEC \
   UI::Label which; \
@@ -96,13 +91,11 @@ struct MessageSpecifier
 struct SabotageSpecifier
 {
   SPECIFIER_FUNC_SPEC
-  SPECIFIER_HOW_SPEC
   SPECIFIER_WHICH_SPEC
   SPECIFIER_WHO_F_SPEC
   SPECIFIER_WHEN_SPEC
   UI::Label confirm_label;
   UI::ImageButton confirm_sabotage;
-  UI::ImageButton confirm_how;
   UI::ImageButton confirm_which;
   UI::ImageButton confirm_who;
   UI::ImageButton confirm_when;

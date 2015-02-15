@@ -155,14 +155,6 @@ bool Model::cardinalMessage(char card, Action& a)
        if(t.actions[0].what == 's') a.beSabotaged(t.actions[0]);
   else if(t.actions[1].what == 's') a.beSabotaged(t.actions[1]);
 
-  //if sabotage was block
-  if((t.actions[0].what == 's' && t.actions[0].how == 'b') &&
-     (t.actions[0].what == 's' && t.actions[0].how == 'b'))
-  {
-    a.zero();
-    return false;
-  }
-
   return true;
 }
 
@@ -209,8 +201,7 @@ bool Model::cardinalSabotage(char card, Action& a0, Action& a1)
   else if(t.actions[1].what == 's') a = t.actions[1];
   else                              return false;
 
-  if(a.how != 'r') return false;
-  else return cardinalIntruder(card, a0, a1);
+  return cardinalIntruder(card, a0, a1);
 }
 
 bool Model::cardinalConnected(char card)
@@ -453,19 +444,13 @@ Array<int,4> Model::defenseForTInRound(int day, char card, float t)
     for(int i = 0; i < 4; i++)
       turns[i] = cardinalDayTurn(Compass::cardinal(i), day-1);
 
-    if(iscouted) //only show if I scouted (not nec. if mine, because could be blocked)
+    if(iscouted) //only show if I scouted
     {
       /* ymessages   */
       for(int i = 0; i < 4; i++)
       {
         if((action = turns[i].action('m')))
-        {
-          Action *a;
-          if(!(a = turns[Compass::icardinal(action->route)].action('s')) || a->how != 'b')
-          {
-            nYMessages++;
-          }
-        }
+          nYMessages++;
       }
     }
   }

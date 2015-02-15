@@ -339,20 +339,16 @@ void PlayScene::draw()
       for(int i = 0; i < 4; i++)
         turns[i] = c->model.cardinalDayTurn(Compass::cardinal(i), base_showing_day-1);
 
-      if(iscouted) //only show if I scouted (not nec. if mine, because could be blocked)
+      if(iscouted) //only show if I scouted
       {
         /* ymessages   */
         for(int i = 0; i < 4; i++)
         {
           if((action = turns[i].action('m')))
           {
-            Action *a;
-            if(!(a = turns[Compass::icardinal(action->route)].action('s')) || a->how != 'b')
-            {
-              ymessageActions.enqueue(*action);
-              ymessageActionsWho.enqueue(i);
-              nYMessages++;
-            }
+            ymessageActions.enqueue(*action);
+            ymessageActionsWho.enqueue(i);
+            nYMessages++;
           }
         }
       }

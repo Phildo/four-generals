@@ -3,12 +3,6 @@
 #include "input.h"
 #include "compass.h"
 
-#define SPECIFIER_HOW_IMPL \
-  how = UI::Label("How will you sabotage?",r.x+10,r.y+10,35); \
-  how_block  = UI::ImageButton(Sprite::sblock,  r.x+space(r.w,0,100,3,0), r.y+50, 100, 100); \
-  how_read   = UI::ImageButton(Sprite::sread,   r.x+space(r.w,0,100,3,1), r.y+50, 100, 100); \
-  how_switch = UI::ImageButton(Sprite::sswitch, r.x+space(r.w,0,100,3,2), r.y+50, 100, 100);
-
 #define SPECIFIER_WHICH_IMPL \
   which = UI::Label("Which data will you switch?",r.x+10,r.y+10,35); \
   which_who  = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
@@ -40,14 +34,6 @@
   route_ccw = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
 
 
-
-#define SPECIFIER_DRAW_HOW_IMPL \
-{ \
-  how.draw(g); \
-  how_block.draw(g); \
-  how_read.draw(g); \
-  how_switch.draw(g); \
-}
 
 #define SPECIFIER_DRAW_WHICH_IMPL \
 { \
@@ -89,13 +75,6 @@
   route_ccw.draw(g); \
 }
 
-
-#define SPECIFIER_TOUCH_HOW_IMPL \
-{ \
-  if(how_block.query(in))  { action->how = 'b'; confirm_how.sprite = Sprite::sblock; } \
-  if(how_read.query(in))   { action->how = 'r'; confirm_how.sprite = Sprite::sread; } \
-  if(how_switch.query(in)) { action->how = 's'; confirm_how.sprite = Sprite::sswitch; } \
-}
 
 #define SPECIFIER_TOUCH_WHICH_IMPL \
 { \
@@ -291,17 +270,15 @@ void SabotageSpecifier::init(SDL_Rect r)
 {
   rect = UI::Box(r);
   confirm = UI::TextButton("Confirm",r.x+(r.w/2)+100-50,r.y+r.h-15,100,30);
-  SPECIFIER_HOW_IMPL
   SPECIFIER_WHICH_IMPL
   SPECIFIER_WHO_F_IMPL
   SPECIFIER_WHEN_IMPL
   confirm_label = UI::Label("Confirm?",r.x+10,r.y+10,35);
-  confirm_sabotage = UI::ImageButton(Sprite::knife,  r.x+space(r.w,0,100,5,0), r.y+50, 100, 100);
-  confirm_how      = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,1), r.y+50, 100, 100);
-  confirm_which    = UI::ImageButton(Sprite::sun,    r.x+space(r.w,0,100,5,2), r.y+50, 100, 100);
-  confirm_who      = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,5,3), r.y+50, 100, 100);
-  confirm_when     = UI::ImageButton(Sprite::sun,    r.x+space(r.w,0,100,5,4), r.y+50, 100, 100);
-  confirm_when_l   = UI::Label("Sun",                r.x+space(r.w,0,100,5,4), r.y+50,  50);
+  confirm_sabotage = UI::ImageButton(Sprite::knife,  r.x+space(r.w,0,100,3,0), r.y+50, 100, 100);
+  confirm_which    = UI::ImageButton(Sprite::sun,    r.x+space(r.w,0,100,3,1), r.y+50, 100, 100);
+  confirm_who      = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,3,2), r.y+50, 100, 100);
+  confirm_when     = UI::ImageButton(Sprite::sun,    r.x+space(r.w,0,100,3,2), r.y+50, 100, 100);
+  confirm_when_l   = UI::Label("Sun",                r.x+space(r.w,0,100,3,2), r.y+50,  50);
 }
 void SabotageSpecifier::setCardinal(char c)
 {
@@ -314,44 +291,31 @@ SpecifyRequest SabotageSpecifier::touch(In &in)
   SpecifyRequest s;
   s.type = SpecifyRequest::NONE;
 
-  if(action->how == '0')
-    SPECIFIER_TOUCH_HOW_IMPL
-  else if(action->how == 's')
+  if(action->which == '0')
+    SPECIFIER_TOUCH_WHICH_IMPL
+  else if(action->which == 'o')
   {
-    if(action->which == '0')
-      SPECIFIER_TOUCH_WHICH_IMPL
-    else if(action->which == 'o')
+    if(action->who == '0')
+      SPECIFIER_TOUCH_WHO_F_IMPL
+    else
     {
-      if(action->who == '0')
-        SPECIFIER_TOUCH_WHO_F_IMPL
-      else
-      {
-        if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
-        if(confirm_how.query(in)) action->how = '0';
-        if(confirm_which.query(in)) action->which = '0';
-        if(confirm_who.query(in)) action->who = '0';
-        if(confirm.query(in)) s.type = SpecifyRequest::CONFIRM_ACTION;
-      }
-    }
-    else if(action->which == 'e')
-    {
-      if(action->when == '0')
-         SPECIFIER_TOUCH_WHEN_IMPL
-      else
-      {
-        if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
-        if(confirm_how.query(in)) action->how = '0';
-        if(confirm_which.query(in)) action->which = '0';
-        if(confirm_when.query(in)) action->when = '0';
-        if(confirm.query(in)) s.type = SpecifyRequest::CONFIRM_ACTION;
-      }
+      if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
+      if(confirm_which.query(in)) action->which = '0';
+      if(confirm_who.query(in)) action->who = '0';
+      if(confirm.query(in)) s.type = SpecifyRequest::CONFIRM_ACTION;
     }
   }
-  else
+  else if(action->which == 'e')
   {
-    if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
-    if(confirm_how.query(in)) action->how = '0';
-    if(confirm.query(in)) s.type = SpecifyRequest::CONFIRM_ACTION;
+    if(action->when == '0')
+       SPECIFIER_TOUCH_WHEN_IMPL
+    else
+    {
+      if(confirm_sabotage.query(in)) s.type = SpecifyRequest::CANCEL_SPECIFY;
+      if(confirm_which.query(in)) action->which = '0';
+      if(confirm_when.query(in)) action->when = '0';
+      if(confirm.query(in)) s.type = SpecifyRequest::CONFIRM_ACTION;
+    }
   }
 
   return s;
@@ -362,48 +326,34 @@ void SabotageSpecifier::tick()
 }
 void SabotageSpecifier::draw(Graphics *g)
 {
-  if(action->how == '0')
-    SPECIFIER_DRAW_HOW_IMPL
-  else if(action->how == 's')
+  if(action->which == '0')
+    SPECIFIER_DRAW_WHICH_IMPL
+  else if(action->which == 'o')
   {
-    if(action->which == '0')
-      SPECIFIER_DRAW_WHICH_IMPL
-    else if(action->which == 'o')
+    if(action->who == '0')
+      SPECIFIER_DRAW_WHO_F_IMPL
+    else
     {
-      if(action->who == '0')
-        SPECIFIER_DRAW_WHO_F_IMPL
-      else
-      {
-        confirm_label.draw(g);
-        confirm_sabotage.draw(g);
-        confirm_how.draw(g);
-        confirm_which.draw(g);
-        confirm_who.draw(g);
-        confirm.draw(g);
-      }
-    }
-    else if(action->which == 'e')
-    {
-      if(action->when == '0')
-         SPECIFIER_DRAW_WHEN_IMPL
-      else
-      {
-        confirm_label.draw(g);
-        confirm_sabotage.draw(g);
-        confirm_how.draw(g);
-        confirm_which.draw(g);
-        confirm_when.draw(g);
-        confirm_when_l.draw(g);
-        confirm.draw(g);
-      }
+      confirm_label.draw(g);
+      confirm_sabotage.draw(g);
+      confirm_which.draw(g);
+      confirm_who.draw(g);
+      confirm.draw(g);
     }
   }
-  else
+  else if(action->which == 'e')
   {
-    confirm_label.draw(g);
-    confirm_sabotage.draw(g);
-    confirm_how.draw(g);
-    confirm.draw(g);
+    if(action->when == '0')
+       SPECIFIER_DRAW_WHEN_IMPL
+    else
+    {
+      confirm_label.draw(g);
+      confirm_sabotage.draw(g);
+      confirm_which.draw(g);
+      confirm_when.draw(g);
+      confirm_when_l.draw(g);
+      confirm.draw(g);
+    }
   }
 }
 
