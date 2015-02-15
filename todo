@@ -13,14 +13,15 @@
 - sensible text descriptions
 - scout implementation details
 - scout icon (currently shield for confirm)
+- join scene "you" indicator
 
 //Android
+- old android crashes on getIP
 - android startup to gray screen
 - android freeze on disconnect
 
 //Major
-- implement modes
-  - combine sabotage (read+switch), on day of
-  - attack cool-down
+- sun drag invert
+- combine sabotage (read+switch), on day of
 - art. lol.
 

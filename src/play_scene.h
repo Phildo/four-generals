@@ -6,6 +6,7 @@
 #include "lerp_rect.h"
 #include "network.h"
 
+#include "day_picker.h"
 #include "turn_picker.h"
 #include "messager.h"
 
@@ -32,16 +33,11 @@ class PlayScene : public Scene
     SDL_Rect cardRects[4];
     SDL_Rect cardLabelRects[4];
     SDL_Rect cardHealthLabelRects[4];
-    SDL_Rect dayRects[7];
-    SDL_Rect sunRects[7];
 
     //views
     UI::Anim cardImgs[4];
     UI::Label cardLbls[4];
     UI::Label cardHealthLbls[4];
-
-    UI::Label dayLbls[7];
-    UI::Button sunBtn;
 
     UI::ImageButtonRound read_sabotage_0;
     UI::ImageButtonRound read_sabotage_1;
@@ -54,7 +50,8 @@ class PlayScene : public Scene
     UI::Image lose_img;
     UI::Image tie_img;
 
-    TurnPicker picker;
+    DayPicker dayPicker;
+    TurnPicker turnPicker;
     Messager messager;
 
     //state
@@ -75,17 +72,12 @@ class PlayScene : public Scene
     float shown_days;   //day shown up til (animates toward goal)
     float showing_days; //currently showing day (animation, history)
 
-    bool sunDragging;
-
     void drawWin();
     void drawLose();
     void drawTie();
 
-    bool chooseShowingDay(In &in);
-
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);
-    SDL_Rect rectForTransition(char fd, char td, float t);
 
   public:
     PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);

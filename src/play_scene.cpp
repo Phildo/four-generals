@@ -59,14 +59,7 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
     posHealthLabelRects[i] = UI::Box(xs[i], ys[i]+(2*hs[i]/3), ws[i], hs[i]/5).rect;
   }
 
-  for(int i = 0; i < 7; i++)
-  {
-    dayRects[i] = UI::Box(space(ww,60,40,7,i), 20, 40, 40).rect;
-    sunRects[i] = UI::Box(space(ww,50,60,7,i), 10, 60, 60).rect;
-  }
-
   //Hacks
-  char daynamehacks[] = {'S','u','\0','M','o','\0','T','u','\0','W','e','\0','T','h','\0','F','r','\0','S','a','\0'};
   char cardnamehacks[] = {'N','o','r','t','h','\0','E','a','s','t','\0','\0','S','o','u','t','h','\0','W','e','s','t','\0','\0'};
 
   //Views
@@ -77,13 +70,8 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
     cardHealthLbls[i] = UI::Label("x10", posHealthLabelRects[i]);
   }
 
-  for(int i = 0; i < 7; i++)
-    dayLbls[i] = UI::Label(&daynamehacks[i*3], dayRects[i]);
-
-  sunBtn = UI::Button(dayRects[0]);
-
-  read_sabotage_0 = UI::ImageButtonRound(Sprite::knife,       20,wh-100,100,30);
-  read_sabotage_1 = UI::ImageButtonRound(Sprite::knife,       20,wh- 50,100,30);
+  read_sabotage_0 = UI::ImageButtonRound(   Sprite::knife,    20,wh-100,100,30);
+  read_sabotage_1 = UI::ImageButtonRound(   Sprite::knife,    20,wh- 50,100,30);
   read_message    = UI::ImageButtonRound(Sprite::envelope,ww-150,wh- 50,100,30);
 
   loading = UI::Anim(Sprite::loading_anim, 3, 1.f, ww/2-250, wh/2-120,40,40);
@@ -94,8 +82,9 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
   lose_img = UI::Image(Sprite::ex,  ww/2-100, wh/2-100, 200, 200);
   tie_img  = UI::Image(Sprite::sun, ww/2-100, wh/2-100, 200, 200);
 
-  picker = TurnPicker(UI::Box(0,0,ww,wh));
-  picker.init();
+  dayPicker = DayPicker(UI::Box(0,0,ww,40));
+  turnPicker = TurnPicker(UI::Box(0,0,ww,wh));
+  turnPicker.init();
   messager = Messager(ww/2-150,wh/2-130,300,260);
 
   known_days = 0.0f;
@@ -131,22 +120,7 @@ void PlayScene::enter()
     cardHealthLbls[i].rect = cardHealthLabelRects[i];
   }
 
-  picker.setCardinal(c->myCardinal());
-}
-
-bool PlayScene::chooseShowingDay(In &in)
-{
-  if(sunBtn.query(in)) sunDragging = true;
-
-  if(sunDragging)
-  {
-    int firstX = dayRects[0].x+(dayRects[0].w/2);
-    int lastX  = dayRects[6].x+(dayRects[6].w/2);
-    showing_days = ((float)(in.x-firstX)/(float)(lastX-firstX))*6.0f;
-    showing_days = clamp(showing_days, 0, shown_days);
-  }
-
-  return sunDragging;
+  turnPicker.setCardinal(c->myCardinal());
 }
 
 void PlayScene::touch(In &in)
@@ -159,8 +133,8 @@ void PlayScene::touch(In &in)
       {
         c->myMessage(a);
         c->mySabotage(a0,a1);
-        if(chooseShowingDay(in)) state = VIEWING;
-        if(!c->iHaveTurn() && !c->model.roundOver() && picker.touch(in)) { state = TURN_PICKING; }
+        if(dayPicker.touch(in)) state = VIEWING;
+        if(!c->iHaveTurn() && !c->model.roundOver() && turnPicker.touch(in)) { state = TURN_PICKING; }
         else
         {
           if(a.what == 'm'  && read_message.query(in))    { state = MESSAGE; messager.setMessage(a); }
@@ -173,12 +147,12 @@ void PlayScene::touch(In &in)
       if(in.type == In::UP) state = IDLE;
       break;
     case TURN_PICKING:
-      if(!picker.touch(in)) state = IDLE;
+      if(!turnPicker.touch(in)) state = IDLE;
       break;
     case VIEWING:
-      if(in.type == In::DOWN || (in.type == In::MOVE && sunDragging)) chooseShowingDay(in);
-      if(in.type == In::UP) sunDragging = false;
-      if(!sunDragging && showing_days == shown_days) state = IDLE;
+      dayPicker.touch(in);
+      showing_days = dayPicker.day;
+      if(!dayPicker.dragging() && showing_days == shown_days) state = IDLE;
       break;
     case SHOWING:
       //interaction disabled
@@ -202,25 +176,25 @@ int PlayScene::tick()
 
   for(int i = 0; i < 4; i++)
     cardImgs[i].tick(0.4f);
-  picker.tick();
+  turnPicker.tick();
   messager.tick();
   loading.tick(0.4f);
 
   if(known_days != c->model.days)
   {
-    picker.reset();
+    turnPicker.reset();
     if(c->model.days == -1) return -1; //game was reset- go back to room
     known_days = c->model.days;
     if(known_days == 0)
     {
-      shown_days = 0.0f;;
-      showing_days = 0.0f;;
+      shown_days = 0.0f;
+      showing_days = 0.0f;
     }
     else
     {
       #ifdef FG_CONFIG_ATTACK_COOL
       Turn t = c->model.cardinalDayTurn(c->myCardinal(), (int)(known_days-1.0f));
-      if(t.action('a')) picker.setAttackEnabled(false);
+      if(t.action('a')) turnPicker.setAttackEnabled(false);
       #endif
       shown_days = known_days-1.0f;
       showing_days = shown_days;
@@ -230,7 +204,7 @@ int PlayScene::tick()
   if(shown_days < known_days)
   {
     state = SHOWING;
-    sunDragging = false;
+    dayPicker.stopDragging();
 
     shown_days += 0.005f;
     if(shown_days >= known_days)
@@ -239,10 +213,12 @@ int PlayScene::tick()
       state = IDLE;
     }
     showing_days = shown_days; //force showing of "currently progressing day"
+    dayPicker.setMaxDay(shown_days);
+    dayPicker.setDay(showing_days);
   }
 
   Turn t;
-  if(picker.getTurn(t)) c->commitTurn(t);
+  if(turnPicker.getTurn(t)) c->commitTurn(t);
 
   switch(state)
   {
@@ -273,11 +249,7 @@ void PlayScene::draw()
   int base_showing_day = (int)snapped_showing_days;
   float t = snapped_showing_days-((float)base_showing_day);
 
-  SDL_Rect sunr = rectForTransition(Week::day(base_showing_day%7), Week::day((base_showing_day+1)%7), t);
-  graphics->draw(Sprite::sun,sunr);
-  sunBtn.rect.rect = sunr;
-  for(int i = 0; i < 7; i++)
-    dayLbls[i].draw(graphics);
+  dayPicker.draw(graphics);
 
   //compute intermediate state
   Array<int,4> defense = c->model.defenseForTInRound(base_showing_day,c->myCardinal(),t);
@@ -564,7 +536,7 @@ void PlayScene::draw()
       if(a1.what == 'm') read_sabotage_1.draw(graphics);
       if(!c->model.roundOver())
       {
-        if(!c->iHaveTurn()) picker.draw(graphics);
+        if(!c->iHaveTurn()) turnPicker.draw(graphics);
         else                loading.draw(graphics);
       }
       else
@@ -579,7 +551,7 @@ void PlayScene::draw()
       messager.draw(graphics);
       break;
     case TURN_PICKING:
-      picker.draw(graphics);
+      turnPicker.draw(graphics);
       break;
     case VIEWING:
       //already drawn- t != 0.0f
@@ -620,10 +592,5 @@ SDL_Rect PlayScene::rectForExpansion(char card, float t)
   tmp.w *= 2;
   tmp.h *= 2;
   return LerpRect::lerp(cardRects[Compass::icardinal(card)], tmp, t);
-}
-
-SDL_Rect PlayScene::rectForTransition(char fd, char td, float t)
-{
-  return LerpRect::lerp(sunRects[Week::iday(fd)], sunRects[Week::iday(td)], t);
 }
 
