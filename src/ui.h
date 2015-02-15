@@ -8,8 +8,13 @@
 
 //convenient bro
 // total (l)ength, (p)adding, (u)nit length, total (n)umber of members, (i)ndex
-//#define space(l,p,u,n,i) ((p+((l-(2.0*p))/n)*i)+(((l-(2.0*p))/n)/2.0)-(u/2.0))
-#define space(l,p,u,n,i) ((p+(((float)l-(2.0*p))/(float)n)*i)+((((float)l-(2.0*p))/(float)n)/2.0)-(u/2.0))
+
+// n = 3
+// /----------------------l---------------------\
+// |-----[------xxx------xxx-----xxx------]-----|
+// \-p--/       \u/
+
+#define space(l,p,u,n,i) ((((((float)l-(2.0f*p))/((float)n+1.0f))*((float)i+1.0f))-((float)u/2.0f))+p)
 
 struct In;
 class Graphics;

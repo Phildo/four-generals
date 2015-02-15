@@ -17,21 +17,6 @@
 
 #include "SDL.h"
 
-static float snapToInt(float v)
-{
-  float left = (float)((int)v);
-  float right = (float)((int)(v+1.0f));
-  if(v < left +0.01f) return left;
-  if(v > right-0.01f) return right;
-  return v;
-}
-static float clamp(float v, float min, float max)
-{
-  if(v < min) return min;
-  if(v > max) return max;
-  return v;
-}
-
 PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
@@ -245,9 +230,8 @@ int PlayScene::tick()
 
 void PlayScene::draw()
 {
-  float snapped_showing_days = clamp(snapToInt(showing_days), 0, shown_days);
-  int base_showing_day = (int)snapped_showing_days;
-  float t = snapped_showing_days-((float)base_showing_day);
+  int base_showing_day = (int)dayPicker.day;
+  float t = dayPicker.day-((float)base_showing_day);
 
   dayPicker.draw(graphics);
 

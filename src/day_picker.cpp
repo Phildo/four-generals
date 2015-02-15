@@ -8,6 +8,14 @@ static float clamp(float v, float min, float max)
   if(v > max) return max;
   return v;
 }
+static float snapToInt(float v)
+{
+  float left = (float)((int)v);
+  float right = (float)((int)(v+1.0f));
+  if(v < left +0.01f) return left;
+  if(v > right-0.01f) return right;
+  return v;
+}
 
 DayPicker::DayPicker() : rect(0,0,100,40)
 {
@@ -31,11 +39,12 @@ void DayPicker::init()
   char daynamehacks[] = {'S','u','\0','M','o','\0','T','u','\0','W','e','\0','T','h','\0','F','r','\0','S','a','\0'};
   for(int i = 0; i < 7; i++)
   {
-    int offset = (i+4)%7; //leftmost day is Th (center is Su)
+    int offset = (i+3)%7; //leftmost day is Th (center is Su)
     dayRects[i] = UI::Box(space(rect.w,0,rect.h,7,offset), rect.y, rect.h, rect.h);
-    dayLbls[i] = UI::Label(&daynamehacks[offset*3], dayRects[i].rect);
+    dayLbls[i] = UI::Label(&daynamehacks[i*3], dayRects[i].rect);
   }
-  dayDist = dayRects[1].x - dayRects[0].x;
+  dayDist = dayRects[1].x-dayRects[0].x;
+  setDay(0.0f);
 }
 
 DayPicker::~DayPicker()
@@ -49,7 +58,7 @@ bool DayPicker::touch(In &in)
   if(in.type == In::MOVE && lastdrag != -1)
   {
     float delta = in.x-lastdrag;
-    setDay(((float)day)-delta/100.0f);
+    setDay(day-(delta/150.0f));
     lastdrag = in.x;
   }
 
@@ -69,9 +78,9 @@ void DayPicker::draw(Graphics *g)
 
 void DayPicker::setDay(float d)
 {
-  day = clamp(d, 0.0f, maxDay);
+  day = clamp(snapToInt(d), 0.0f, maxDay);
   for(int i = 0; i < 7; i++)
-    dayLbls[i].rect.x = (((dayRects[i].rect.x-((int)((float)dayDist*day)))-dayRects[0].x)+100*rect.w)%rect.w;
+    dayLbls[i].rect.x = (((dayRects[i].rect.x-dayRects[4].rect.x-(int)(dayDist*day))+(100*7*dayDist))%(7*dayDist))+dayRects[4].rect.x;
 }
 
 void DayPicker::setMaxDay(float d)
