@@ -190,16 +190,16 @@ bool Model::cardinalIntruder(char card, Action& a0, Action& a1)
   return (a0.what != '0');
 }
 
-bool Model::cardinalSabotage(char card, Action& a0, Action& a1)
+bool Model::cardinalSabotage(char card, Action& ac, Action& a0, Action& a1)
 {
+  ac.zero();
   a0.zero();
   a1.zero();
 
   Turn t = cardinalDayTurn(card, days-1);
-  Action a;
-       if(t.actions[0].what == 's') a = t.actions[0];
-  else if(t.actions[1].what == 's') a = t.actions[1];
-  else                              return false;
+  Action *a = t.action('s');
+  if(!(a = t.action('s'))) return false;
+  ac = *a;
 
   return cardinalIntruder(card, a0, a1);
 }

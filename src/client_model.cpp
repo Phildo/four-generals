@@ -128,15 +128,16 @@ bool ClientModel::myIntruder(Action& a0, Action&a1)
   else return model.cardinalIntruder(myCardinal(),a0,a1);
 }
 
-bool ClientModel::mySabotage(Action& a0, Action&a1)
+bool ClientModel::mySabotage(Action& am, Action& a0, Action& a1)
 {
   if(!imConnected())
   {
+    am.zero();
     a0.zero();
     a1.zero();
     return false;
   }
-  else return model.cardinalSabotage(myCardinal(),a0,a1);
+  else return model.cardinalSabotage(myCardinal(),am,a0,a1);
 }
 
 bool ClientModel::iWin()

@@ -110,21 +110,21 @@ void PlayScene::enter()
 
 void PlayScene::touch(In &in)
 {
-  Action a, a0, a1;
+  Action a, am, a0, a1;
   switch(state)
   {
     case IDLE:
       if(in.type == In::DOWN)
       {
         c->myMessage(a);
-        c->mySabotage(a0,a1);
+        c->mySabotage(am,a0,a1);
         if(dayPicker.touch(in)) state = VIEWING;
         if(!c->iHaveTurn() && !c->model.roundOver() && turnPicker.touch(in)) { state = TURN_PICKING; }
         else
         {
-          if(a.what == 'm'  && read_message.query(in))    { state = MESSAGE; messager.setMessage(a); }
-          if(a0.what == 'm' && read_sabotage_0.query(in)) { state = MESSAGE; messager.setMessage(a0); }
-          if(a1.what == 'm' && read_sabotage_1.query(in)) { state = MESSAGE; messager.setMessage(a1); }
+          if(a.what  == 'm' && read_message.query(in))    { state = MESSAGE; messager.setMessage(a); }
+          if(a0.what == 'm' && read_sabotage_0.query(in)) { state = MESSAGE; messager.setMessageSabotage(a0,am); }
+          if(a1.what == 'm' && read_sabotage_1.query(in)) { state = MESSAGE; messager.setMessageSabotage(a1,am); }
         }
       }
       break;
@@ -505,12 +505,12 @@ void PlayScene::draw()
     graphics->draw(Sprite::heart, heart);
   }
 
-  Action a, a0, a1;
+  Action a, am, a0, a1;
   switch(state)
   {
     case IDLE:
       c->myMessage(a);
-      c->mySabotage(a0,a1);
+      c->mySabotage(am,a0,a1);
       if(a.what == 'm')  read_message.draw(graphics);
       if(a0.what == 'm') read_sabotage_0.draw(graphics);
       if(a1.what == 'm') read_sabotage_1.draw(graphics);

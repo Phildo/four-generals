@@ -48,7 +48,7 @@ class Model
     int& cardinalDayHealth(char card, int day);
     bool cardinalMessage(  char card, Action& a);
     bool cardinalIntruder( char card, Action& a0, Action& a1);
-    bool cardinalSabotage( char card, Action& a0, Action& a1);
+    bool cardinalSabotage( char card, Action& ac, Action& a0, Action& a1);
     bool cardinalConnected(char card);
     bool cardinalHasTurn(char card);
     bool cardinalWin(char card);

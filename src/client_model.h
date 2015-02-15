@@ -33,8 +33,8 @@ class ClientModel
     bool iHaveTurn();
 
     bool myMessage(Action& a);
-    bool myIntruder(Action& m0, Action& m1);
-    bool mySabotage(Action& m0, Action& m1);
+    bool myIntruder(Action& a0, Action& a1);
+    bool mySabotage(Action& am, Action& a0, Action& a1);
 
     bool iWin();
     bool iLose();
