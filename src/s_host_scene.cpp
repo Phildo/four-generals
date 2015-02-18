@@ -79,7 +79,22 @@ int HostScene::tick()
         }
         c_model->tick();
         s_model->tick();
-        if(c_model->model.days != -1) SCENE_CHANGE_HACK = 3;
+        if(c_model->model.days != -1)
+        {
+          Turn t;
+          //mock up model
+          t.cardinal = 's';
+          t.actions[0].what = 'a';
+          t.actions[0].who = 'n';
+          c_model->model.assignCardinalTurn('e', t);
+          s_model->model.assignCardinalTurn('e', t);
+          c_model->model.assignCardinalTurn('w', t);
+          s_model->model.assignCardinalTurn('w', t);
+          t.actions[0].who = 'e';
+          c_model->model.assignCardinalTurn('s', t);
+          s_model->model.assignCardinalTurn('s', t);
+          SCENE_CHANGE_HACK = 3;
+        }
       }
     }
     if(client->con_state == Network::CONNECTION_STATE_STALE)
