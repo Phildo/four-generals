@@ -17,6 +17,16 @@
 
 #include "SDL.h"
 
+float attackTween(float t)
+{
+  const float b = 0.2f;
+  const float f = 0.25f;
+  const float m = 0.35f;
+  if(t < f) return (t*-b);
+  if(t < m)  return (f*-b)+((t-f)/(m-f))*(1.0f+(f*b));
+  return 1.0f-((t-m)/(1.0f-m));
+}
+
 PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
@@ -397,7 +407,7 @@ void PlayScene::draw()
     {
       action = attackActions.next();
       card = *attackActionsWho.next();
-      graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), action->who, (t-st)/plen));
+      graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), action->who, attackTween((t-st)/plen)));
       cardsDrawn[card] = true;
 
       nAttacks--;
@@ -421,7 +431,7 @@ void PlayScene::draw()
       card = *retaliateActionsWho.next();
       int e = *retaliateActionsAgainst.next();
 
-      graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), Compass::cardinal(e), (t-st)/plen));
+      graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), Compass::cardinal(e), attackTween((t-st)/plen)));
       cardsDrawn[card] = true;
 
       nRetaliates--;
