@@ -10,6 +10,9 @@ class Graphics
     SDL_Window* window;
     SDL_Renderer* renderer;
     SDL_Texture* tex;
+
+    int xshake;
+    int yshake;
   public:
     Graphics();
     ~Graphics();
@@ -19,6 +22,8 @@ class Graphics
     void drawAt(const SDL_Rect& src, int x, int y);
     void clear();
     void flip();
+
+    void setShake(int x, int y);
 
     int winHeight();
     int winWidth();

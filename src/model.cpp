@@ -7,6 +7,7 @@
 #include "week.h"
 #include "conids.h"
 
+extern float attack_peak;
 Model::Model()
 {
   connections[0] = '0';
@@ -502,6 +503,14 @@ Array<int,4> Model::defenseForTInRound(int day, char card, float t)
   }
   if(nAttacks > 0 && st < t) //currently doing
   {
+    if((t-st)/plen > attack_peak)
+    {
+      action = attackActions.next();
+      #ifdef FG_CONFIG_ATTACK_2_WAY
+      defense[*attackActionsWho.next()]--;
+      #endif
+      defense[Compass::icardinal(action->who)]--;
+    }
     nAttacks--;
     st += plen;
   }
@@ -519,6 +528,13 @@ Array<int,4> Model::defenseForTInRound(int day, char card, float t)
   }
   if(nRetaliates > 0 && st < t) //currently doing
   {
+    if((t-st)/plen > attack_peak)
+    {
+      action = retaliateActions.next();
+      defense[*retaliateActionsWho.next()]--;
+      defense[*retaliateActionsAgainst.next()]--;
+    }
+
     nRetaliates--;
     st += plen;
   }

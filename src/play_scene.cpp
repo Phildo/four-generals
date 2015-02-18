@@ -17,11 +17,14 @@
 
 #include "SDL.h"
 
+#include <cstdlib>
+
+float attack_peak = 0.35f;
 float attackTween(float t)
 {
   const float b = 0.2f;
   const float f = 0.25f;
-  const float m = 0.35f;
+  const float m = attack_peak;
   if(t < f) return (t*-b);
   if(t < m)  return (f*-b)+((t-f)/(m-f))*(1.0f+(f*b));
   return 1.0f-((t-m)/(1.0f-m));
@@ -240,6 +243,8 @@ int PlayScene::tick()
 
 void PlayScene::draw()
 {
+  static int shake = 0;
+  if(shake) graphics->setShake(((rand()%40)/2)-10,((rand()%40)/2)-10);
   int base_showing_day = (int)dayPicker.day;
   float t = dayPicker.day-((float)base_showing_day);
 
@@ -408,6 +413,7 @@ void PlayScene::draw()
       action = attackActions.next();
       card = *attackActionsWho.next();
       graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), action->who, attackTween((t-st)/plen)));
+      if((t-st)/plen > attack_peak && (t-st)/plen < attack_peak+0.05) shake = 5;
       cardsDrawn[card] = true;
 
       nAttacks--;
@@ -432,6 +438,7 @@ void PlayScene::draw()
       int e = *retaliateActionsAgainst.next();
 
       graphics->draw(cardImgs[card].curSprite(),rectForTraversal(Compass::cardinal(card), Compass::cardinal(e), attackTween((t-st)/plen)));
+      if((t-st)/plen > attack_peak && (t-st)/plen < attack_peak+0.05) shake = 5;
       cardsDrawn[card] = true;
 
       nRetaliates--;
@@ -551,6 +558,9 @@ void PlayScene::draw()
       break;
     default: break;
   }
+
+  if(shake) shake--;
+  graphics->setShake(0,0);
 }
 
 void PlayScene::leave()

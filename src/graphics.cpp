@@ -32,6 +32,9 @@ Graphics::Graphics()
 
   tex = SDL_CreateTextureFromSurface(renderer, surf);
   SDL_FreeSurface(surf);
+
+  xshake = 0;
+  yshake = 0;
 }
 
 Graphics::~Graphics()
@@ -55,6 +58,8 @@ void Graphics::draw(const SDL_Rect& src, const SDL_Rect& dest)
   offsetDest.w = dest.w;
   offsetDest.h = dest.h;
   #endif
+  offsetDest.x += xshake;
+  offsetDest.y += yshake;
   SDL_RenderCopy(renderer, tex, &src, &offsetDest);
 }
 
@@ -109,6 +114,8 @@ void Graphics::drawInMask(SDL_Rect src, SDL_Rect dest, SDL_Rect mask)
   offsetDest.w = dest.w;
   offsetDest.h = dest.h;
   #endif
+  offsetDest.x += xshake;
+  offsetDest.y += yshake;
   SDL_RenderCopy(renderer, tex, &src, &offsetDest);
 }
 
@@ -126,6 +133,8 @@ void Graphics::drawAt(const SDL_Rect& src, int x, int y)
   offsetDest.w = src.w;
   offsetDest.h = src.h;
   #endif
+  offsetDest.x += xshake;
+  offsetDest.y += yshake;
   SDL_RenderCopy(renderer, tex, &src, &offsetDest);
 }
 
@@ -137,6 +146,12 @@ void Graphics::clear()
 void Graphics::flip()
 {
   SDL_RenderPresent(renderer);
+}
+
+void Graphics::setShake(int x, int y)
+{
+  xshake = x;
+  yshake = y;
 }
 
 int Graphics::winWidth()  { return FG_FAKE_WIDTH; }
