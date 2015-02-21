@@ -57,10 +57,6 @@ using namespace Network;
 
 String Network::getIP()
 {
-#ifdef FG_ANDROID
-  return AndroidNetwork::getIP();
-#endif
-#ifdef FG_PC
   struct ifaddrs *ap;
   struct ifaddrs *cur;
   int r;
@@ -81,8 +77,11 @@ String Network::getIP()
   }
 
  freeifaddrs(ap);
+  #ifdef FG_ANDROID
+  if(!ip.len())
+    return AndroidNetwork::getIP();
+  #endif
  return ip;
-#endif
 }
 
 
