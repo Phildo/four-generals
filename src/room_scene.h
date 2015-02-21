@@ -15,8 +15,6 @@ class RoomScene : public Scene
   private:
     Graphics *graphics;
 
-    Network::Client *client;
-    Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
     ServerModel *s;
     ServerModel **s_ptr; //Pointers to the server model pointer 'owned' by game
     ClientModel *c;
@@ -59,7 +57,7 @@ class RoomScene : public Scene
 
     int SCENE_CHANGE_HACK;
   public:
-    RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
+    RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm);
     ~RoomScene();
     void enter();
     void touch(In &in);

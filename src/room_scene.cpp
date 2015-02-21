@@ -3,7 +3,6 @@
 #include "sprite.h"
 #include "network.h"
 #include "input.h"
-#include "client.h"
 #include "server_model.h"
 #include "client_model.h"
 
@@ -14,14 +13,12 @@
 
 #include "SDL.h"
 
-RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
+RoomScene::RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
 
-  client_ptr = &c;
   s_ptr = &sm;
   c_ptr = &cm;
-  client = 0;
   s = 0;
   c = 0;
 
@@ -92,7 +89,6 @@ RoomScene::RoomScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 
 void RoomScene::enter()
 {
-  client = *client_ptr;
   s = *s_ptr;
   c = *c_ptr;
 

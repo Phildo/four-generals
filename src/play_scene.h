@@ -19,8 +19,6 @@ class PlayScene : public Scene
   private:
     Graphics *graphics;
 
-    Network::Client *client;
-    Network::Client **client_ptr; //Pointers to the client pointer 'owned' by game
     ServerModel *s;
     ServerModel **s_ptr; //Pointers to the server model pointer 'owned' by game
     ClientModel *c;
@@ -59,6 +57,7 @@ class PlayScene : public Scene
     //note - all states can be interrupted by history viewing
     enum PLAY_SCENE_STATE //the visual state of the view
     {
+      //IDLE is spoke from which all others branch
       IDLE,         // can choose to look at messages, pick turn, or view history
       MESSAGE,      // full screen message/sabotage showing
       TURN_PICKING, // full screen action picker
@@ -80,7 +79,7 @@ class PlayScene : public Scene
     SDL_Rect rectForExpansion(char card, float t);
 
   public:
-    PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm);
+    PlayScene(Graphics *g, ServerModel *&sm, ClientModel *&cm);
     ~PlayScene();
     void enter();
     void touch(In &in);

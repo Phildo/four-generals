@@ -37,8 +37,8 @@ Game::Game()
   scenes[0] = new IntroScene(graphics);
   scenes[1] = new HostScene(graphics, server, client, s_model, c_model);
   scenes[2] = new JoinScene(graphics, client, c_model);
-  scenes[3] = new RoomScene(graphics, client, s_model, c_model);
-  scenes[4] = new PlayScene(graphics, client, s_model, c_model);
+  scenes[3] = new RoomScene(graphics, s_model, c_model);
+  scenes[4] = new PlayScene(graphics, s_model, c_model);
 
   #ifdef FG_DEBUG
   DebugList::inst()->init(graphics);

@@ -3,7 +3,6 @@
 #include "input.h"
 #include "sprite.h"
 #include "network.h"
-#include "client.h"
 #include "server_model.h"
 #include "client_model.h"
 
@@ -19,7 +18,7 @@
 
 #include <cstdlib>
 
-float attack_peak = 0.35f;
+float attack_peak = 0.35f; //not static!
 float attackTween(float t)
 {
   const float b = 0.2f;
@@ -30,14 +29,12 @@ float attackTween(float t)
   return 1.0f-((t-m)/(1.0f-m));
 }
 
-PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientModel *&cm)
+PlayScene::PlayScene(Graphics *g, ServerModel *&sm, ClientModel *&cm)
 {
   graphics = g;
 
-  client_ptr = &c;
   s_ptr = &sm;
   c_ptr = &cm;
-  client = 0;
   s = 0;
   c = 0;
 
@@ -94,7 +91,6 @@ PlayScene::PlayScene(Graphics *g, Network::Client *&c, ServerModel *&sm, ClientM
 void PlayScene::enter()
 {
   //need to wait until c_model is obtained
-  client = *client_ptr;
   s = *s_ptr;
   c = *c_ptr;
 
