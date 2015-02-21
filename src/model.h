@@ -9,7 +9,7 @@
 #include "array.h"
 
 #define FG_MAX_ACTION_HIST 32
-#define FG_FULL_HEALTH 10
+#define FG_FULL_HEALTH 3
 
 class Model
 {
