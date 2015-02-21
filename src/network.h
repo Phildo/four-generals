@@ -29,7 +29,7 @@ extern "C"
 #define FG_ACCEPT_Q_SIZE 5 //recommended (also, can't be more... I don't think...)
 #define FG_LOAD_BUFF_SIZE 256
 #define FG_LOAD_Q_SIZE 32
-#define FG_US_PER_TICK 100000 // 0.1 second
+#define FG_US_PER_TICK 200000 // 0.2 second
 
 namespace Network
 {

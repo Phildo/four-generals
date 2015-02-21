@@ -167,6 +167,7 @@ void PlayScene::touch(In &in)
 //shown_days   - latest state shown at least once
 //showing_days - currently visible days
 
+static bool submitTurn = false; //hack
 int PlayScene::tick()
 {
   if(s) s->tick();
@@ -180,6 +181,7 @@ int PlayScene::tick()
 
   if(known_days != c->model.days)
   {
+    submitTurn = false;
     turnPicker.reset();
     if(c->model.days == -1) return -1; //game was reset- go back to room
     known_days = c->model.days;
@@ -216,7 +218,11 @@ int PlayScene::tick()
   }
 
   Turn t;
-  if(turnPicker.getTurn(t)) c->commitTurn(t);
+  if(!submitTurn && turnPicker.getTurn(t))
+  {
+    submitTurn = true;
+    c->commitTurn(t);
+  }
 
   switch(state)
   {

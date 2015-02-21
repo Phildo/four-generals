@@ -35,4 +35,9 @@
 - info about attack cooldown
 - better indicator for loading
 - bug where it thinks you picked a move
+- autojoin effed
+- takes multiple tries to join (even w correct IP)
+- back button on keyboard
+- HUGE BUG- auto determines move? (allows for double attack)
+- messages difficult to tell who's is whose
 
