@@ -71,10 +71,6 @@ class PlayScene : public Scene
     float shown_days;   //day shown up til (animates toward goal)
     float showing_days; //currently showing day (animation, history)
 
-    void drawWin();
-    void drawLose();
-    void drawTie();
-
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);
 
