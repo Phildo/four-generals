@@ -232,7 +232,10 @@ bool Server::read(Load &l)
 
 void Server::disconnect()
 {
-  fg_log("Server: abort connection (dealloc)");
+  if(con_state == CONNECTION_STATE_DISCONNECTING) return;
+  if(con_state == CONNECTION_STATE_DISCONNECTED)  return;
+  if(con_state == CONNECTION_STATE_STALE) fg_log("Server: abort connection (cleanup)");
+  else                                    fg_log("Server: abort connection (on purpose)");
   con_state = CONNECTION_STATE_DISCONNECTING;
   pthread_join(thread, NULL);
   con_state = CONNECTION_STATE_DISCONNECTED;
@@ -248,6 +251,6 @@ bool Server::hasConnection(char con_id)
 
 Server::~Server()
 {
-  if(con_state != CONNECTION_STATE_DISCONNECTED) disconnect();
+  disconnect(); //will pass through if not needed
 }
 

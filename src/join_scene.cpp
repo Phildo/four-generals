@@ -64,7 +64,12 @@ void JoinScene::touch(In &in)
 {
   if(in.type != In::DOWN) return;
 
-  if(backButton.query(in)) SCENE_CHANGE_HACK = -2;
+  if(backButton.query(in))
+  {
+    searching = 0;
+    client->disconnect();
+    SCENE_CHANGE_HACK = -2;
+  }
 
   if(manualEntry)
   {
@@ -180,7 +185,7 @@ void JoinScene::pass()
 void JoinScene::pop()
 {
   if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
-  if(client) { if(client->con_state == Network::CONNECTION_STATE_CONNECTED) client->disconnect(); delete client; client = 0; *client_ptr = 0; }
+  if(client)  { delete client;  client  = 0; *client_ptr  = 0; }
 }
 
 

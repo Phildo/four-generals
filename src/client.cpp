@@ -203,7 +203,10 @@ bool Client::read(Load &l)
 
 void Client::disconnect()
 {
-  fg_log("Client: abort connection (dealloc)");
+  if(con_state == CONNECTION_STATE_DISCONNECTING) return;
+  if(con_state == CONNECTION_STATE_DISCONNECTED)  return;
+  if(con_state == CONNECTION_STATE_STALE) fg_log("Client: abort connection (cleanup)");
+  else                                    fg_log("Client: abort connection (on purpose)");
   con_state = CONNECTION_STATE_DISCONNECTING;
   pthread_join(thread, NULL);
   con_state = CONNECTION_STATE_DISCONNECTED;
@@ -212,6 +215,6 @@ void Client::disconnect()
 
 Client::~Client()
 {
-  if(con_state != CONNECTION_STATE_DISCONNECTED) disconnect();
+  disconnect(); //will pass through if not needed
 }
 

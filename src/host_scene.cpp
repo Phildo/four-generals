@@ -116,8 +116,8 @@ void HostScene::pop()
 {
   if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
   if(s_model) { delete s_model; s_model = 0; *s_model_ptr = 0; }
-  if(client) { if(client->con_state == Network::CONNECTION_STATE_CONNECTED) client->disconnect(); delete client; client = 0; *clientPtr = 0; }
-  if(server) { if(server->con_state == Network::CONNECTION_STATE_CONNECTED) server->disconnect(); delete server; server = 0; *serverPtr = 0; }
+  if(client) {  delete client;  client  = 0; *clientPtr = 0; }
+  if(server) {  delete server;  server  = 0; *serverPtr = 0; }
 }
 
 HostScene::~HostScene()
