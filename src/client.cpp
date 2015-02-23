@@ -43,7 +43,9 @@ void * Client::fork()
   sock_fd = socket(AF_INET, SOCK_STREAM, 0);
 
   serv_host = gethostbyname(serv_ip.ptr());
-  if(serv_host)
+  if(!serv_host) { con_state = CONNECTION_STATE_DISCONNECTING; fg_log("Client: abort connection (unable to resolve host)"); }
+
+  if(con_state != CONNECTION_STATE_DISCONNECTING)
   {
     bzero((char *)&serv_sock_addr, sizeof(serv_sock_addr));
     serv_sock_addr.sin_family = AF_INET;
@@ -51,15 +53,29 @@ void * Client::fork()
     serv_sock_addr.sin_port = htons(port);
 
     fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL)|O_NONBLOCK); //set nonblocking
-
     retval = ::connect(sock_fd,(struct sockaddr *)&serv_sock_addr, sizeof(serv_sock_addr));
     fcntl(sock_fd, F_SETFL, fcntl(sock_fd, F_GETFL)&(~O_NONBLOCK)); //set blocking
+
     if(retval < 0) // 0 = success
     {
-      if(errno == EINPROGRESS) ; //everything's OK
+      if(errno == EINPROGRESS) //give a second to connect
+      {
+        FD_ZERO(&sock_fds);
+        FD_SET(sock_fd, &sock_fds);
+        tv.tv_sec = 0; tv.tv_usec = FG_US_CONNECT;
+
+        retval = select(sock_fd+1, NULL, &sock_fds, NULL, &tv);
+        if(retval == 0) FD_ZERO(&sock_fds);
+
+        if(retval < 0)                    { con_state = CONNECTION_STATE_DISCONNECTING; fg_log("Client: abort connection (connect error)"); }
+        if(!FD_ISSET(sock_fd, &sock_fds)) { con_state = CONNECTION_STATE_DISCONNECTING; fg_log("Client: abort connection (connect timeout)"); }
+      }
       else { con_state = CONNECTION_STATE_DISCONNECTING; fg_log("Client: abort connection (connection error)"); }
     }
+  }
 
+  if(con_state != CONNECTION_STATE_DISCONNECTING)
+  {
     con_state = CONNECTION_STATE_WAITING;
 
     FD_ZERO(&sock_fds);
@@ -100,10 +116,11 @@ void * Client::fork()
       }
       else { con_state = CONNECTION_STATE_DISCONNECTING; fg_log("Client: abort connection (ack read failed)"); }
     }
-
-    while(con_state == CONNECTION_STATE_CONNECTED)
-      tick();
   }
+
+  while(con_state == CONNECTION_STATE_CONNECTED)
+    tick();
+
   fg_log("Client: disconnecting (left tick loop)");
   con_state = CONNECTION_STATE_DISCONNECTING;
 
@@ -186,7 +203,7 @@ bool Client::read(Load &l)
 
 void Client::disconnect()
 {
-  fg_log("Client: abort connection (on purpose)");
+  fg_log("Client: abort connection (dealloc)");
   con_state = CONNECTION_STATE_DISCONNECTING;
   pthread_join(thread, NULL);
   con_state = CONNECTION_STATE_DISCONNECTED;

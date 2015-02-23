@@ -30,6 +30,8 @@ extern "C"
 #define FG_LOAD_BUFF_SIZE 256
 #define FG_LOAD_Q_SIZE 32
 #define FG_US_PER_TICK 200000 // 0.2 second
+#define FG_US_CONNECT 200000 // 0.2 second
+#define FG_US_ACK 200000 // 0.2 second
 
 namespace Network
 {

@@ -232,7 +232,7 @@ bool Server::read(Load &l)
 
 void Server::disconnect()
 {
-  fg_log("Server: abort connection (on purpose)");
+  fg_log("Server: abort connection (dealloc)");
   con_state = CONNECTION_STATE_DISCONNECTING;
   pthread_join(thread, NULL);
   con_state = CONNECTION_STATE_DISCONNECTED;
