@@ -26,7 +26,7 @@ Server::Server()
 
 void Server::connect(int _port)
 {
-  if(con_state != CONNECTION_STATE_DISCONNECTED) { fg_log("Server: abort connect (connection exists)"); return; }
+  if(con_state != CONNECTION_STATE_DISCONNECTED) { fg_log("Server: refuse connect (connection exists)"); return; }
   con_state = CONNECTION_STATE_CONNECTING;
   port = _port;
 
@@ -51,7 +51,7 @@ void * Server::fork()
     while(con_state == CONNECTION_STATE_CONNECTED)
       tick();
   }
-  fg_log("Server: disconnecting");
+  fg_log("Server: disconnecting (left tick loop)");
   con_state = CONNECTION_STATE_DISCONNECTING;
 
   recv_q.empty();
@@ -67,37 +67,59 @@ void * Server::fork()
 
 void Server::tick()
 {
-  fd_set sock_fds;
+  fd_set read_sock_fds;
+  fd_set except_sock_fds;
   struct timeval tv;
   int retval;
   int biggest_fd;
 
-  FD_ZERO(&sock_fds);
+  FD_ZERO(&read_sock_fds);
+  FD_ZERO(&except_sock_fds);
   biggest_fd = sock_fd;
-  FD_SET(sock_fd, &sock_fds);
+  FD_SET(sock_fd, &read_sock_fds);
+  FD_SET(sock_fd, &except_sock_fds);
   for(int i = 0; i < n_cons; i++)
   {
-    FD_SET(con_ptrs[i]->sock_fd, &sock_fds);
-    if(biggest_fd > con_ptrs[i]->sock_fd) biggest_fd = con_ptrs[i]->sock_fd;
+    FD_SET(con_ptrs[i]->sock_fd, &read_sock_fds);
+    FD_SET(con_ptrs[i]->sock_fd, &except_sock_fds);
+    if(biggest_fd < con_ptrs[i]->sock_fd) biggest_fd = con_ptrs[i]->sock_fd;
   }
   tv.tv_sec = 0; tv.tv_usec = FG_US_PER_TICK;
 
-  retval = select(biggest_fd+1, &sock_fds, NULL, NULL, &tv);
-  if(retval == 0) FD_ZERO(&sock_fds);
+  retval = select(biggest_fd+1, &read_sock_fds, NULL, &except_sock_fds, &tv);
+  if(retval == 0) //some impls don't zero out sets...
+  {
+    FD_ZERO(&read_sock_fds);
+    FD_ZERO(&except_sock_fds);
+  }
 
   if(retval == -1) con_state = CONNECTION_STATE_DISCONNECTING;
   else
   {
-    if(FD_ISSET(sock_fd, &sock_fds))
-      acceptConnection();
-
-    Load l;
-    for(int i = 0; i < n_cons; i++)
+    if(retval > 0)
     {
-      int ret;
-      ret = receiveLoad(con_ptrs[i], &l);
-      if(ret > 0) recv_q.enqueue(l);
-      if(ret == 0 || (FD_ISSET(con_ptrs[i]->sock_fd, &sock_fds) && ret < 0)) closeConnection(con_ptrs[i--]);
+      if(FD_ISSET(sock_fd, &read_sock_fds))
+        acceptConnection();
+
+      for(int i = 0; i < n_cons; i++)
+      {
+        if(FD_ISSET(con_ptrs[i]->sock_fd, &except_sock_fds))
+        {
+          fg_log("Exception ! %d",con_ptrs[i]->con_id);
+        }
+      }
+
+      Load l;
+      for(int i = 0; i < n_cons; i++)
+      {
+        if(FD_ISSET(con_ptrs[i]->sock_fd, &read_sock_fds))
+        {
+          int ret;
+          ret = receiveLoad(con_ptrs[i], &l);
+          if(ret > 0) recv_q.enqueue(l);
+          else closeConnection(con_ptrs[i--]);
+        }
+      }
     }
 
     Load *l_p;
@@ -177,6 +199,7 @@ int Server::receiveLoad(Connection *con, Load *l)
   l->con_id = con->con_id;
   len = recv(con->sock_fd, l->data, FG_LOAD_BUFF_SIZE, 0);
   if(len > 0) fg_log("Server: recv %s",l->data);
+  else        fg_log("Server: failed recv");
   return len;
 }
 
@@ -185,6 +208,7 @@ int Server::sendLoad(Connection *con, Load *l)
   int len;
   len = send(con->sock_fd, l->data, FG_LOAD_BUFF_SIZE, 0);
   if(len > 0) fg_log("Server: sent %s",l->data);
+  else        fg_log("Server: failed sent %s",l->data);
   return len;
 }
 
