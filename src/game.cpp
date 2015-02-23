@@ -78,6 +78,13 @@ void Game::run()
     if(tmp >  0) scenes[scene]->pass();
     if(tmp <  0) scenes[scene]->pop();
     scene += tmp;
+    if(tmp != 0 && scene == 0) //back to intro- clear out models/server infra
+    {
+      if(c_model) { delete c_model; c_model = 0; }
+      if(s_model) { delete s_model; s_model = 0; }
+      if(client)  { delete client;  client  = 0; }
+      if(server)  { delete server;  server  = 0; }
+    }
     if(tmp != 0) scenes[scene]->enter();
 
     graphics->clear();

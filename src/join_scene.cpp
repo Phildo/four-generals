@@ -67,7 +67,6 @@ void JoinScene::touch(In &in)
   if(backButton.query(in))
   {
     searching = 0;
-    client->disconnect();
     SCENE_CHANGE_HACK = -2;
   }
 
@@ -184,10 +183,10 @@ void JoinScene::pass()
 }
 void JoinScene::pop()
 {
-  if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
-  if(client)  { delete client;  client  = 0; *client_ptr  = 0; }
+  //game will take care of actual deletion
+  if(c_model) { c_model = 0; }
+  if(client)  { client  = 0; }
 }
-
 
 JoinScene::~JoinScene()
 {

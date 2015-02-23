@@ -114,10 +114,11 @@ void HostScene::pass()
 }
 void HostScene::pop()
 {
-  if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
-  if(s_model) { delete s_model; s_model = 0; *s_model_ptr = 0; }
-  if(client) {  delete client;  client  = 0; *clientPtr = 0; }
-  if(server) {  delete server;  server  = 0; *serverPtr = 0; }
+  //game will take care of actual deletion
+  if(c_model) { c_model = 0; }
+  if(s_model) { s_model = 0; }
+  if(client)  { client  = 0; }
+  if(server)  { server  = 0; }
 }
 
 HostScene::~HostScene()

@@ -8,6 +8,7 @@
 ClientModel::ClientModel(Network::Client *c)
 {
   client = c;
+  already_tried_joining = false;
 }
 
 ClientModel::~ClientModel()
@@ -159,7 +160,6 @@ void ClientModel::tick()
 {
   Network::Load l;
 
-  static bool already_tried_joining = false;
   if(imConnected() && !model.connectionConnected(myConnection()) && !already_tried_joining)
   {
     requestJoin();

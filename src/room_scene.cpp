@@ -115,7 +115,10 @@ void RoomScene::touch(In &in)
 {
   if(in.type == In::UP) showingIp = false;
   if(in.type != In::DOWN) return;
-  if(backButton.query(in)) { }
+  if(backButton.query(in))
+  {
+    SCENE_CHANGE_HACK = -3;
+  }
 
   if(showIpButton.query(in)) showingIp = true;
 
@@ -233,6 +236,9 @@ void RoomScene::pass()
 }
 void RoomScene::pop()
 {
+  //game will take care of actual deletion
+  if(c) { c = 0; }
+  if(s) { s = 0; }
 }
 
 RoomScene::~RoomScene()

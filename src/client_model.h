@@ -11,6 +11,7 @@ class ClientModel
 {
   private :
     Network::Client *client;
+    bool already_tried_joining; //bad
 
     void sendEvent(const Event &e);
   public :
