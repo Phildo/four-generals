@@ -32,6 +32,7 @@ class HostScene : public Scene
     ClientModel **c_model_ptr; //Pointers to the client model pointer 'owned' by game
 
     int SCENE_CHANGE_HACK;
+    void reset();
   public:
     HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, ServerModel *& sm, ClientModel *& cm);
     ~HostScene();

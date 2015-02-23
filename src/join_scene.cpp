@@ -46,12 +46,19 @@ JoinScene::JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm)
 
   client_ptr = &c;
   c_model_ptr = &cm;
+
+  reset();
+}
+
+void JoinScene::reset()
+{
   client = 0;
   c_model = 0;
 
-  SCENE_CHANGE_HACK = 0;
   manualEntry = false;
   searching = 0;
+
+  SCENE_CHANGE_HACK = 0;
 }
 
 void JoinScene::enter()
@@ -175,7 +182,7 @@ void JoinScene::draw()
 
 void JoinScene::leave()
 {
-
+  reset();
 }
 void JoinScene::pass()
 {
@@ -183,9 +190,6 @@ void JoinScene::pass()
 }
 void JoinScene::pop()
 {
-  //game will take care of actual deletion
-  if(c_model) { c_model = 0; }
-  if(client)  { client  = 0; }
 }
 
 JoinScene::~JoinScene()

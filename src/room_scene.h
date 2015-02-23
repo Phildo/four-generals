@@ -56,6 +56,7 @@ class RoomScene : public Scene
     bool showingIp;
 
     int SCENE_CHANGE_HACK;
+    void reset();
   public:
     RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm);
     ~RoomScene();

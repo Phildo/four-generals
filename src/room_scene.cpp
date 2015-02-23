@@ -19,8 +19,6 @@ RoomScene::RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm)
 
   s_ptr = &sm;
   c_ptr = &cm;
-  s = 0;
-  c = 0;
 
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
@@ -80,6 +78,14 @@ RoomScene::RoomScene(Graphics *g, ServerModel *&sm, ClientModel *&cm)
   cwBtn  = UI::ImageButton(Sprite::arrow_left_up, r);
   r.x += 4*r.w;
   ccwBtn = UI::ImageButton(Sprite::arrow_right_up, r);
+
+  reset();
+}
+
+void RoomScene::reset()
+{
+  s = 0;
+  c = 0;
 
   cardCWOffset = 0;
   showingIp = false;
@@ -236,9 +242,7 @@ void RoomScene::pass()
 }
 void RoomScene::pop()
 {
-  //game will take care of actual deletion
-  if(c) { c = 0; }
-  if(s) { s = 0; }
+  reset();
 }
 
 RoomScene::~RoomScene()

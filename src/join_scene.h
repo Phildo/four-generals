@@ -40,6 +40,7 @@ class JoinScene : public Scene
     ClientModel **c_model_ptr; //Pointer to the client model pointer 'owned' by game
 
     int SCENE_CHANGE_HACK;
+    void reset();
   public:
     JoinScene(Graphics *g, Network::Client *& c, ClientModel *& cm);
     ~JoinScene();
