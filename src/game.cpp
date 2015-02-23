@@ -86,7 +86,7 @@ void Game::run()
     #endif
     scenes[scene]->draw();
     #ifdef FG_DEBUG
-    debugBtn.draw(graphics);
+    //debugBtn.draw(graphics);
     if(debug_toggle) DebugList::inst()->draw(graphics);
     #endif
     graphics->flip();

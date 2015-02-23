@@ -23,21 +23,19 @@
 //Major
 - art. lol.
 
-- scout art 
+- scout art
 - leave game
 - abort join
 - prevent need to restart
-- set 3 health
-- make debug invisible
 - make phone size bigger?
-- android host
+- android host (partially done)
 - cancel button grayed out when impossible
 - info about attack cooldown
 - better indicator for loading
-- bug where it thinks you picked a move
-- autojoin effed
-- takes multiple tries to join (even w correct IP)
+- autojoin effed //slowdown fixed?
+- takes multiple tries to join (even w correct IP) //slowdown fixed?
 - back button on keyboard
 - HUGE BUG- auto determines move? (allows for double attack)
+- bug where it thinks you picked a move
 - messages difficult to tell who's is whose
 
