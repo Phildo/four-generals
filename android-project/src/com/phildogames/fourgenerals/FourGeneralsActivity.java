@@ -73,6 +73,7 @@ public class FourGeneralsActivity extends SDLActivity
     super.onCreate(savedInstanceState);
     setupEnv();
     context = getApplicationContext();
+    getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
 }
 
