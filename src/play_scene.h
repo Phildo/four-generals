@@ -70,6 +70,7 @@ class PlayScene : public Scene
     float known_days;   //day known about in model
     float shown_days;   //day shown up til (animates toward goal)
     float showing_days; //currently showing day (animation, history)
+    bool hasSubmitTurn;
 
     SDL_Rect rectForTraversal(char fcard, char tcard, float t);
     SDL_Rect rectForExpansion(char card, float t);

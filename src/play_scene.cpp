@@ -85,6 +85,7 @@ PlayScene::PlayScene(Graphics *g, ServerModel *&sm, ClientModel *&cm)
   known_days = 0.0f;
   shown_days = 0.0f;
   showing_days = 0.0f;
+  hasSubmitTurn = false;
   state = IDLE;
 }
 
@@ -128,7 +129,7 @@ void PlayScene::touch(In &in)
         c->myMessage(a);
         c->mySabotage(am,a0,a1);
         if(dayPicker.touch(in)) state = VIEWING;
-        if(!c->iHaveTurn() && !c->model.roundOver() && turnPicker.touch(in)) { state = TURN_PICKING; }
+        if(!c->iHaveTurn() && !c->model.roundOver() && !hasSubmitTurn && turnPicker.touch(in)) { state = TURN_PICKING; }
         else
         {
           if(a.what  == 'm' && read_message.query(in))    { state = MESSAGE; messager.setMessage(a); }
@@ -163,7 +164,6 @@ void PlayScene::touch(In &in)
 //shown_days   - latest state shown at least once
 //showing_days - currently visible days
 
-static bool submitTurn = false; //hack
 int PlayScene::tick()
 {
   if(s) s->tick();
@@ -177,7 +177,7 @@ int PlayScene::tick()
 
   if(known_days != c->model.days)
   {
-    submitTurn = false;
+    hasSubmitTurn = false;
     turnPicker.reset();
     if(c->model.days == -1) return -1; //game was reset- go back to room
     known_days = c->model.days;
@@ -214,9 +214,9 @@ int PlayScene::tick()
   }
 
   Turn t;
-  if(!submitTurn && turnPicker.getTurn(t))
+  if(!hasSubmitTurn && turnPicker.getTurn(t))
   {
-    submitTurn = true;
+    hasSubmitTurn = true;
     c->commitTurn(t);
   }
 
