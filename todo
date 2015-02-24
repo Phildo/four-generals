@@ -35,8 +35,6 @@
 - autojoin effed //slowdown fixed?
 - takes multiple tries to join (even w correct IP) //slowdown fixed?
 - back button on keyboard
-- HUGE BUG- auto determines move? (allows for double attack)
-- bug where it thinks you picked a move
 - messages difficult to tell who's is whose
 - win/lose/tie graphics
 - prevent phone sleep
@@ -44,4 +42,5 @@
 - start game button
 - button sizing (hard to touch)
 - connection heartbeat
+- iphone
 
