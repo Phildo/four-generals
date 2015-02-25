@@ -19,10 +19,6 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, Se
   clientPtr = &c;
   s_model_ptr = &sm;
   c_model_ptr = &cm;
-  server = 0;
-  client = 0;
-  s_model = 0;
-  c_model = 0;
 
   int ww = graphics->winWidth();
   int wh = graphics->winHeight();
@@ -34,6 +30,16 @@ HostScene::HostScene(Graphics *g, Network::Server *& s, Network::Client *& c, Se
   portLabel   = UI::Label("4040",ww/2+150, wh/2-120,40);
 
   sessionButton = UI::TextButton("Start Session",ww/2-250, wh/2-70, 500, 40);
+
+  reset();
+}
+
+void HostScene::reset()
+{
+  server = 0;
+  client = 0;
+  s_model = 0;
+  c_model = 0;
 
   SCENE_CHANGE_HACK = 0;
 }
@@ -106,18 +112,13 @@ void HostScene::draw()
 
 void HostScene::leave()
 {
-
+  reset();
 }
 void HostScene::pass()
 {
-
 }
 void HostScene::pop()
 {
-  if(c_model) { delete c_model; c_model = 0; *c_model_ptr = 0; }
-  if(s_model) { delete s_model; s_model = 0; *s_model_ptr = 0; }
-  if(client) { if(client->con_state == Network::CONNECTION_STATE_CONNECTED) client->disconnect(); delete client; client = 0; *clientPtr = 0; }
-  if(server) { if(server->con_state == Network::CONNECTION_STATE_CONNECTED) server->disconnect(); delete server; server = 0; *serverPtr = 0; }
 }
 
 HostScene::~HostScene()
