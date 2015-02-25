@@ -161,9 +161,7 @@ int main(int argc, char* argv[])
   sprite(buff,"knife",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
   sprite(buff,"envelope",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
   sprite(buff,"sun",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
-  sprite(buff,"sblock",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
-  sprite(buff,"sread",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
-  sprite(buff,"sswitch",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
+  sprite(buff,"telescope",x,y,w,h); fputs(buff,fp); right(x,y,w,h);
 
   down(x,y,w,h);
 

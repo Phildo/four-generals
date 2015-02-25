@@ -124,8 +124,8 @@ void ShowTurnPicker::activate()
       action_0_2.sprite = Sprite::knife;
       break;
     case 'c':
-      action_0_1.sprite = Sprite::knife;
-      action_0_2.sprite = Sprite::knife;
+      action_0_1.sprite = Sprite::telescope;
+      action_0_2.sprite = Sprite::telescope;
       break;
   }
 
@@ -141,7 +141,7 @@ void ShowTurnPicker::activate()
       action_1_2.sprite = Sprite::knife;
       break;
     case 'c':
-      action_1_2.sprite = Sprite::knife;
+      action_1_2.sprite = Sprite::telescope;
       break;
   }
 }

@@ -66,9 +66,7 @@ namespace Sprite
   extern SDL_Rect knife;
   extern SDL_Rect envelope;
   extern SDL_Rect sun;
-  extern SDL_Rect sblock;
-  extern SDL_Rect sread;
-  extern SDL_Rect sswitch;
+  extern SDL_Rect telescope;
 
   extern SDL_Rect square;
   extern SDL_Rect circle;

@@ -102,7 +102,7 @@ BrowseTurnPicker::BrowseTurnPicker(Turn *t, UI::Box b)
   defend.image.sprite = Sprite::shield;
   message.image.sprite = Sprite::envelope;
   sabotage.image.sprite = Sprite::knife;
-  scout.image.sprite = Sprite::knife;
+  scout.image.sprite = Sprite::telescope;
 
   attack.title.text = String("Attack");
   defend.title.text = String("Fortify");

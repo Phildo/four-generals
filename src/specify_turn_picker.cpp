@@ -362,7 +362,7 @@ void ScoutSpecifier::init(SDL_Rect r)
   rect = UI::Box(r);
   confirm = UI::TextButton("Confirm",r.x+(r.w/2)+100-50,r.y+r.h-15,100,30);
   confirm_label = UI::Label("Confirm?",r.x+10,r.y+10,35);
-  confirm_scout = UI::ImageButton(Sprite::shield, r.x+space(r.w,0,100,1,0), r.y+50, 100, 100);
+  confirm_scout = UI::ImageButton(Sprite::telescope, r.x+space(r.w,0,100,1,0), r.y+50, 100, 100);
 }
 void ScoutSpecifier::setCardinal(char c)
 {
@@ -590,7 +590,7 @@ void SpecifyTurnPicker::setAction(Action *a)
       sabotage_specifier.action = a;
       break;
     case 'c':
-      action_image.sprite = Sprite::knife;
+      action_image.sprite = Sprite::telescope;
       action_power_1.sprite = Sprite::bolt_empty;
       action_title.text = String("Scout");
       action_description_0.text = String("Dawg you can see everything");

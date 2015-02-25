@@ -50,9 +50,7 @@ SDL_Rect sword;
 SDL_Rect knife;
 SDL_Rect envelope;
 SDL_Rect sun;
-SDL_Rect sblock;
-SDL_Rect sread;
-SDL_Rect sswitch;
+SDL_Rect telescope;
 
 SDL_Rect square;
 SDL_Rect circle;
@@ -213,9 +211,7 @@ void Sprite::init(const char *f)
   values[i] = &knife; keys[i] = String("knife"); i++;
   values[i] = &envelope; keys[i] = String("envelope"); i++;
   values[i] = &sun; keys[i] = String("sun"); i++;
-  values[i] = &sblock; keys[i] = String("sblock"); i++;
-  values[i] = &sread; keys[i] = String("sread"); i++;
-  values[i] = &sswitch; keys[i] = String("sswitch"); i++;
+  values[i] = &telescope; keys[i] = String("telescope"); i++;
 
   values[i] = &square; keys[i] = String("square"); i++;
   values[i] = &circle; keys[i] = String("circle"); i++;
