@@ -10,13 +10,13 @@
 
 #define SPECIFIER_WHO_E_IMPL \
   who = UI::Label("Who?",r.x+10,r.y+10,35); \
-  who_cw  = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
-  who_ccw = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
+  who_cw  = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
+  who_ccw = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
 
 #define SPECIFIER_WHO_F_IMPL \
   who = UI::Label("Who?",r.x+10,r.y+10,35); \
-  who_me = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
-  who_p  = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
+  who_me = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
+  who_p  = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
 
 #define SPECIFIER_WHEN_IMPL \
   when = UI::Label("When?",r.x+10,r.y+10,35); \
@@ -30,8 +30,8 @@
 
 #define SPECIFIER_ROUTE_IMPL \
   route = UI::Label("Which route should the messenger take?",r.x+10,r.y+10,35); \
-  route_cw  = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
-  route_ccw = UI::ImageButton(Sprite::sblock, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
+  route_cw  = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100); \
+  route_ccw = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
 
 
 
@@ -123,7 +123,7 @@ void AttackSpecifier::init(SDL_Rect r)
   SPECIFIER_WHO_E_IMPL
   confirm_label = UI::Label("Confirm?",r.x+10,r.y+10,35);
   confirm_attack = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,0), r.y+50, 100, 100);
-  confirm_who    = UI::ImageButton(Sprite::sread, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
+  confirm_who    = UI::ImageButton(Sprite::sword, r.x+space(r.w,0,100,2,1), r.y+50, 100, 100);
 }
 void AttackSpecifier::setCardinal(char c)
 {
