@@ -16,6 +16,7 @@ namespace AndroidNetwork
 
   String getIP()
   {
+/*
     JNIEnv *env;
     jvm->AttachCurrentThread(&env, NULL);
 
@@ -31,13 +32,18 @@ namespace AndroidNetwork
     }
 
     return ret;
+    */
+    String x("");
+    return x;
   }
 
   void destruct()
   {
+  /*
     JNIEnv *env;
     jvm->AttachCurrentThread(&env, NULL);
     env->DeleteGlobalRef(jc);
+    */
   }
 }
 
@@ -45,13 +51,14 @@ extern "C"
 {
   JNIEXPORT void JNICALL Java_com_phildogames_fourgenerals_FourGeneralsActivity_setupEnv(JNIEnv* env, jclass jc)
   {
+  /*
     env->GetJavaVM(&AndroidNetwork::jvm);
     AndroidNetwork::jc = (jclass)env->NewGlobalRef(jc);
+  */
   }
 }
 
 #endif
-
 
 using namespace Network;
 
