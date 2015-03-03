@@ -44,3 +44,8 @@
 - connection heartbeat
 - iphone
 
+- android quits (black) after sleep
+- feedback on local press
+- still multiple tries to join (even on manual/explicit ip)
+- align heart and x3 health
+

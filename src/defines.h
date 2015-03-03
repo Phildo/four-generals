@@ -3,11 +3,7 @@
 
 #define FG_DEBUG
 
-#define FG_ANDROID
-
-#ifdef FG_PC
-//#define FG_HALF_SIZE
-#endif
+#define FG_PC
 
 #define FG_CONFIG_ATTACK_2_WAY
 #define FG_CONFIG_ATTACK_COOL

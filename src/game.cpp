@@ -60,6 +60,7 @@ void Game::run()
   {
     while(!q && input->poll(in))
     {
+      fg_log("%d,%d",in.x,in.y);
       q = (in.type == In::QUIT);
       if(in.type != In::NONE)
       {

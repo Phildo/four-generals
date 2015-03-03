@@ -31,6 +31,7 @@ class Graphics
     int trueWinHeight();
     int offsetX();
     int offsetY();
+    SDL_Rect mapRect(SDL_Rect in);
     int texHeight();
     int texWidth();
 };

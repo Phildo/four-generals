@@ -31,6 +31,7 @@ class Input
     Input(Graphics *g);
     ~Input();
     bool poll(In &in);
+    In mapIn(In in);
 };
 
 #endif

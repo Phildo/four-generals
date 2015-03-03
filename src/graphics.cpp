@@ -10,11 +10,7 @@ Graphics::Graphics()
   #ifdef FG_ANDROID
   window = SDL_CreateWindow(NULL, 0, 0, 0, 0, 0);
   #elif defined FG_PC
-    #ifdef FG_HALF_SIZE
-    window = SDL_CreateWindow(NULL, 0, 0, FG_FAKE_WIDTH/2, FG_FAKE_HEIGHT/2, 0);
-    #else
-    window = SDL_CreateWindow(NULL, 0, 0, FG_FAKE_WIDTH, FG_FAKE_HEIGHT, 0);
-    #endif
+  window = SDL_CreateWindow(NULL, 0, 0, FG_FAKE_WIDTH, FG_FAKE_HEIGHT, 0);
   #endif
 
   renderer = SDL_CreateRenderer(window, -1, 0);
@@ -46,20 +42,10 @@ Graphics::~Graphics()
 
 void Graphics::draw(const SDL_Rect& src, const SDL_Rect& dest)
 {
-  SDL_Rect offsetDest;
-  #ifdef FG_HALF_SIZE
-  offsetDest.x = (dest.x/2)+offsetX();
-  offsetDest.y = (dest.y/2)+offsetY();
-  offsetDest.w = (dest.w/2);
-  offsetDest.h = (dest.h/2);
-  #else
-  offsetDest.x = dest.x+offsetX();
-  offsetDest.y = dest.y+offsetY();
-  offsetDest.w = dest.w;
-  offsetDest.h = dest.h;
-  #endif
+  SDL_Rect offsetDest = dest;
   offsetDest.x += xshake;
   offsetDest.y += yshake;
+  offsetDest = mapRect(offsetDest);
   SDL_RenderCopy(renderer, tex, &src, &offsetDest);
 }
 
@@ -102,39 +88,21 @@ void Graphics::drawInMask(SDL_Rect src, SDL_Rect dest, SDL_Rect mask)
     dest.h -= d;
   }
 
-  SDL_Rect offsetDest;
-  #ifdef FG_HALF_SIZE
-  offsetDest.x = (dest.x/2)+offsetX();
-  offsetDest.y = (dest.y/2)+offsetY();
-  offsetDest.w = (dest.w/2);
-  offsetDest.h = (dest.h/2);
-  #else
-  offsetDest.x = dest.x+offsetX();
-  offsetDest.y = dest.y+offsetY();
-  offsetDest.w = dest.w;
-  offsetDest.h = dest.h;
-  #endif
+  SDL_Rect offsetDest = dest;
   offsetDest.x += xshake;
   offsetDest.y += yshake;
+  offsetDest = mapRect(offsetDest);
   SDL_RenderCopy(renderer, tex, &src, &offsetDest);
 }
 
 void Graphics::drawAt(const SDL_Rect& src, int x, int y)
 {
   SDL_Rect offsetDest;
-  #ifdef FG_HALF_SIZE
-  offsetDest.x = (x/2)+offsetX();
-  offsetDest.y = (y/2)+offsetY();
-  offsetDest.w = (src.w/2);
-  offsetDest.h = (src.h/2);
-  #else
-  offsetDest.x = x+offsetX();
-  offsetDest.y = y+offsetY();
+  offsetDest.x = x+xshake;
+  offsetDest.y = y+yshake;
   offsetDest.w = src.w;
   offsetDest.h = src.h;
-  #endif
-  offsetDest.x += xshake;
-  offsetDest.y += yshake;
+  offsetDest = mapRect(offsetDest);
   SDL_RenderCopy(renderer, tex, &src, &offsetDest);
 }
 
@@ -158,13 +126,27 @@ int Graphics::winWidth()  { return FG_FAKE_WIDTH; }
 int Graphics::winHeight() { return FG_FAKE_HEIGHT; }
 int Graphics::trueWinWidth()  { int w; SDL_GetWindowSize(window, &w, NULL); return w; }
 int Graphics::trueWinHeight() { int h; SDL_GetWindowSize(window, NULL, &h); return h; }
-#ifdef FG_HALF_SIZE
-int Graphics::offsetX() { return (trueWinWidth()-(winWidth()/2))/2; }
-int Graphics::offsetY() { return (trueWinHeight()-(winHeight()/2))/2; }
-#else
 int Graphics::offsetX() { return (trueWinWidth()-winWidth())/2; }
 int Graphics::offsetY() { return (trueWinHeight()-winHeight())/2; }
-#endif
+SDL_Rect Graphics::mapRect(SDL_Rect in)
+{
+  SDL_Rect r;
+  if(offsetX() >= 0 && offsetY() >= 0)
+  {
+    r.x = in.x+offsetX();
+    r.y = in.y+offsetY();
+    r.w = in.w;
+    r.h = in.h;
+  }
+  else
+  {
+    r.x = ((float)in.x/(float)winWidth())*trueWinWidth();
+    r.y = ((float)in.y/(float)winHeight())*trueWinHeight();
+    r.w = ((float)in.w/(float)winWidth())*trueWinWidth();
+    r.h = ((float)in.h/(float)winHeight())*trueWinHeight();
+  }
+  return r;
+}
 int Graphics::texWidth()  { int w; SDL_QueryTexture(tex, NULL, NULL, &w, NULL); return w; }
 int Graphics::texHeight() { int h; SDL_QueryTexture(tex, NULL, NULL, NULL, &h); return h; }
 
