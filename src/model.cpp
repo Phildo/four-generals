@@ -141,18 +141,18 @@ int& Model::cardinalDayHealth(char card, int day)
 bool Model::cardinalMessage(char card, Action& a)
 {
   a.zero();
-  if(days < 2) return false;
+  if(days < 1) return false;
 
   char p = Compass::opcardinal(card);
 
   //if partner sent message
-  Turn t = cardinalDayTurn(p, days-2);
+  Turn t = cardinalDayTurn(p, days-1);
        if(t.actions[0].what == 'm') a = t.actions[0];
   else if(t.actions[1].what == 'm') a = t.actions[1];
   else                              return false;
 
   //if route was sabotaged
-  t = cardinalDayTurn(a.route, days-2);
+  t = cardinalDayTurn(a.route, days-1);
        if(t.actions[0].what == 's') a.beSabotaged(t.actions[0]);
   else if(t.actions[1].what == 's') a.beSabotaged(t.actions[1]);
 
@@ -357,7 +357,6 @@ Array<int,4> Model::defenseForTInRound(int day, char card, float t)
   #endif
   circQ<Action,4> sabotageActions;  circQ<int,4> sabotageActionsWho;  int nSabotages  = 0;
   circQ<Action,4> messageActions;   circQ<int,4> messageActionsWho;   int nMessages   = 0;
-  circQ<Action,4> ymessageActions;  circQ<int,4> ymessageActionsWho;  int nYMessages  = 0; //yesterday's messages
 
   { //to scope turns/action
 
@@ -440,22 +439,6 @@ Array<int,4> Model::defenseForTInRound(int day, char card, float t)
     }
   }
 
-  if(day > 0) //check for yesterday's messages
-  {
-    for(int i = 0; i < 4; i++)
-      turns[i] = cardinalDayTurn(Compass::cardinal(i), day-1);
-
-    if(iscouted) //only show if I scouted
-    {
-      /* ymessages   */
-      for(int i = 0; i < 4; i++)
-      {
-        if((action = turns[i].action('m')))
-          nYMessages++;
-      }
-    }
-  }
-
   }
 
   int nActions = (nDefends   > 0 ? 1 : 0)   + //any defends happen simultaneously
@@ -464,7 +447,7 @@ Array<int,4> Model::defenseForTInRound(int day, char card, float t)
                  (nRetaliates)              + //all retaliations get played out individually
                  #endif
                  (nSabotages > 0 ? 1 : 0)   + //any sabotages happen simultaneously
-                 (nMessages+nYMessages  > 0 ? 1 : 0)   + //any messages happen simultaneously
+                 (nMessages  > 0 ? 1 : 0)   + //any messages happen simultaneously
                  1; //for "heal" phase
 
   const float n = (float)nActions;
